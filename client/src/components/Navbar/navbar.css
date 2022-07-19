@@ -1,0 +1,24 @@
+.navbar {
+  background-color: #252525;
+}
+
+.navbar .home {
+  height: 60px;
+  width: 60px;
+  border-radius: 100%;
+  background-color: #575757;
+  color: #fff;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar .actions {
+  display: flex;
+  color: white;
+  align-items: center;
+  gap: 20px;
+}
