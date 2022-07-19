@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 import { IUser } from "../../types";
 
 
-let userSchema = new Schema<IUser>({
+export let userSchema = new Schema<IUser>({
     _id: {type:Schema.Types.ObjectId, required:true, unique:true},
     username: {type:String, required:true},
     email: {type:String, required:true, unique:true},
