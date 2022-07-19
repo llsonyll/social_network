@@ -34,10 +34,5 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
             }
         }
     ))
-
-
-
-
-
 }
 

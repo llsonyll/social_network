@@ -6,22 +6,28 @@ exports.postSchema = new mongoose_1.Schema({
     _id: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
-        unique: true
+        unique: true,
     },
     userId: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Post'
+        ref: 'Post',
     },
-    commentsId: [{
+    commentsId: [
+        {
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'Comment'
-        }],
-    likes: [{
+            ref: 'Comment',
+        },
+    ],
+    likes: [
+        {
             types: mongoose_1.Schema.Types.ObjectId,
-            ref: 'User'
-        }],
-    dislikes: [{
+            ref: 'User',
+        },
+    ],
+    dislikes: [
+        {
             types: mongoose_1.Schema.Types.ObjectId,
-            ref: 'User'
-        }]
+            ref: 'User',
+        },
+    ],
 });
