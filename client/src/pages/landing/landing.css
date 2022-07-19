@@ -1,0 +1,51 @@
+/* father container styles */
+.landing_container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: #2e2e2e;
+	height: 100vh;
+}
+
+/* form */
+.landing_container form {
+	width: 80%;
+	background-color: #00000070;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+.landing_container form h1 {
+	color: white;
+}
+
+.sn_review {
+	margin-top: 20px;
+	border-radius: 5px;
+	background-color: #666666;
+	color: white;
+}
+/* inputs styles*/
+
+.landing_container button {
+	background-color: #363636;
+	border: none;
+	border-radius: 5px;
+	color: white;
+}
+.landing_container .on {
+	background-color: #4e864c;
+	border: none;
+	border-radius: 5px;
+	color: white;
+}
+.landing_container .input_container {
+	display: flex;
+	flex-direction: column;
+}
+.landing_container .input_container input {
+	background-color: #363636;
+	box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.596);
+	border: none;
+	border-radius: 5px;
+}
