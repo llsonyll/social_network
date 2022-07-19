@@ -1,7 +1,7 @@
 button {
   width: 35px;
   height: 35px;
-  background-color: #4e864c;
+  background-color: #4e864c !important;
   display: flex;
   justify-content: center;
   align-items: center;
