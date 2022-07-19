@@ -1,6 +1,9 @@
 import "./App.css";
-import Landing from "./pages/landing";
-import Home from "./pages/home";
+import Landing from "./pages/Landing";
+import Home from "./pages/Home";
+import Messages from "./pages/Messages";
+import Profile from "./pages/Profile";
+import DashBoard from "./layout/Dashboard";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
@@ -8,10 +11,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/profile" element={<Landing />} />
-        <Route path="/chat" element={<Landing />} />
-        <Route path="/postDetailPage" element={<Landing />} />
+        <Route path="/home" element={<DashBoard />}>
+          <Route path="" element={<Home />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="messages" element={<Messages />} />
+          {/* <Route path="post/:id" element={<Landing />} /> */}
+        </Route>
         <Route path="/team" element={<Landing />} />
       </Routes>
     </BrowserRouter>
