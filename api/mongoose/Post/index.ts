@@ -9,7 +9,8 @@ export let postSchema = new Schema<IPost>({
 	},
 	userId: {
 		type: Schema.Types.ObjectId,
-		ref: 'Post',
+		ref: 'User',
+		required: true
 	},
 	commentsId: [
 		{
