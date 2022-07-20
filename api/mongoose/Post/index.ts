@@ -6,6 +6,7 @@ export let postSchema = new Schema<IPost>({
 		type: Schema.Types.ObjectId,
 		required: true,
 		unique: true,
+		auto: true
 	},
 	userId: {
 		type: Schema.Types.ObjectId,
