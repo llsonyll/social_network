@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={<DashBoard />}>
-          <Route path="" element={<Home />} />
+          <Route index element={<Home />} />
           <Route path="profile" element={<Profile />} />
           <Route path="messages" element={<Messages />} />
           {/* <Route path="post/:id" element={<Landing />} /> */}
