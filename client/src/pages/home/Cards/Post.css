@@ -1,0 +1,63 @@
+
+
+.imagenPost{
+    /* Rectangle 25 */
+  
+  box-sizing: border-box;
+  
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  left: 30px;
+  top:30px;
+  
+  background: rgb(122, 122, 122);
+  border-radius: 40px;
+  
+  }
+  .notifD{
+  
+    /* Rectangle 22 */
+  
+  box-sizing: border-box;
+  
+  position: relative;
+  width: 704px;
+  height: 400px;
+  left: 418px;
+  top: 138px;
+  
+  background: rgba(0, 0, 0, 0.377);
+  border-radius: 12px;
+  
+  }
+  .notifD .name{
+  
+     
+    font-weight: normal;
+    font-display:inherit;
+    position: absolute;
+    width: 126px;
+    left:120px;
+    top:30px;
+    margin:2px;
+  
+    font-family: "Segoe UI";
+  
+  font-size: 24px;
+  
+  color: #fcfcfc;
+  
+  
+  
+  }
+   .post{
+    font-weight: normal;
+    font-display:inherit;
+    position: absolute;
+    width: 100%;
+    left:10px;
+    top:150px;
+    color: white
+  }
+  
