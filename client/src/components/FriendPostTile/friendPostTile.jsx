@@ -21,7 +21,7 @@ const FriendPostTile = ({ tile }) => {
 
   return (
     <button className="flex w-full my-3 py-1" onClick={handleTileClick}>
-      <Avatar imgUrl={tile.user.url} />
+      <Avatar size="l" imgUrl={tile.user.url} />
       <div className="px-2 flex flex-col justify-start items-start ">
         <div className="text-white text-lg font-bold">{tile.user.name}</div>
         <div className="text-opacity-50 text-white text-sm font-normal leading-3">

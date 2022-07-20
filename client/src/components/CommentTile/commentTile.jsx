@@ -11,8 +11,8 @@ const CommentTile = () => {
   };
 
   return (
-    <div className="bg-neutral-700 rounded-md px-2 py-2 flex my-3">
-      <Avatar />
+    <div className="bg-neutral-700 rounded-md md:p-2 p-1 flex my-3">
+      <Avatar size="m" />
       <div className="content flex-1 text-white pl-2">
         <div className="font-medium text-base">Username</div>
         <div className="font-light text-sm">

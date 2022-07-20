@@ -25,7 +25,7 @@ const PostTile = () => {
   return (
     <>
       <div className="flex ">
-        <Avatar />
+        <Avatar size="l" />
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
             <div className="text-white font-medium">Username</div>
