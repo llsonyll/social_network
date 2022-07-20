@@ -3,7 +3,7 @@ import { IUser } from "../../types";
 
 
 export let userSchema = new Schema<IUser>({
-    _id: {type:Schema.Types.ObjectId, required:true, unique:true, auto: true},
+    _id: {type:Schema.Types.ObjectId, required:true, auto: true},
     username: {type:String, required:true},
     email: {type:String, required:true, unique:true},
     firstname: {type:String, required:true},
