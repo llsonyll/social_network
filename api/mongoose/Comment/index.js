@@ -7,4 +7,9 @@ exports.commentsSchema = new mongoose_1.Schema({
     postId: { type: mongoose_1.Schema.Types.ObjectId, required: true, ref: 'Post' },
     userId: { type: mongoose_1.Schema.Types.ObjectId, required: true, ref: 'User' },
     content: { type: String, required: true },
+}, {
+    timestamps: {
+        createdAt: true,
+        updatedAt: false
+    }
 });
