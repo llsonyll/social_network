@@ -30,7 +30,7 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         let salt = yield bcrypt_1.default.genSalt(10);
         req.body.password = yield bcrypt_1.default.hash(password, salt);
         let newUser = new mongoose_1.User(req.body);
-        newUser.save();
+        yield newUser.save();
         res.status(200).json(newUser);
     }
     catch (error) {

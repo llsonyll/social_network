@@ -23,7 +23,7 @@ router.post("/register", async (req:Request,res:Response)=>{
      
      let newUser = new User (req.body);
      
-     newUser.save();
+     await newUser.save();
 
      res.status(200).json(newUser);
      } catch (error) {
