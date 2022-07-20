@@ -1,4 +1,6 @@
 import "./Post.css"
+
+
 export default function Post(){
     return(
 
@@ -12,7 +14,11 @@ export default function Post(){
 
       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, vitae odio dolor officiis, quae possimus corrupti tenetur, nemo quidem adipisci dignissimos? Corporis fugiat eius eligendi voluptatibus rerum quia maiores quo!</p>
       </div>
-  
+      
+  <button>like</button>
+  <button></button>
+
+
     </div>
     )
 }
