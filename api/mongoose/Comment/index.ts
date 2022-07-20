@@ -10,5 +10,6 @@ export let commentsSchema = new Schema<IComments>({
 	timestamps: {
 		createdAt: true,
 		updatedAt: false
-	}
+	},
+	versionKey: false
 })

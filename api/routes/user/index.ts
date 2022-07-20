@@ -12,6 +12,7 @@ router.post('/post/:userId', passport.authenticate('jwt', {session:false, failur
 
     if (!user || !content) return res.status(404).json({msg: 'idk'})
 
+
     try {
         const newPost = new Post({
             content,
@@ -33,7 +34,8 @@ router.post('/comment/:userId', passport.authenticate('jwt', {session:false, fai
     const user = await User.findById(`${userId}`);
     const post = await Post.findById(`${postId}`);
 
-    if (!user || !post || content) return res.status(404).json({msg: 'idk'})
+    if (!user || !post || !content) return res.status(404).json({msg: 'idk'})
+    
 
     try {
         const newComment = new Comment({
