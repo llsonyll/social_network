@@ -1,14 +1,14 @@
-import { IUser } from './../../types/index';
 import express,{  Response, Request } from "express"; 
 import { User } from "../../mongoose";
 import bcrypt from "bcrypt"; 
 
-let  router = express();
+let  router = express.Router();
 
 //------------rute register-----------------------------
 router.post("/register", async (req:Request,res:Response)=>{
-     let {email,password} = req.body;
-     if(!email || password){
+     try {
+      let {email,password} = req.body;
+     if(!email || !password){
         return res.status(400).json({message: "Please, send your email and password" })
      }
      let  user = await User.findOne({email: email});
@@ -26,11 +26,16 @@ router.post("/register", async (req:Request,res:Response)=>{
      newUser.save();
 
      res.status(200).json(newUser);
-     
+     } catch (error) {
+       res.json("error register")
+     }
 })
 
-//-------------rute login---------------------------------
-router.post("/login",)
+router.get("/hola",(req:Request,res:Response)=>{
+   res.json('hola');
+})
 
+// //-------------rute login---------------------------------
+// router.post("/login",)
 
-router.listen(3000,()=>"success connect")
+export default router;
