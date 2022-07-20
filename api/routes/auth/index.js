@@ -87,4 +87,7 @@ router.post("/login", passport_1.default.authenticate("local", { session: false,
         res.json(error);
     }
 }));
+router.get('/test', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => {
+    res.json({ msg: 'Todo funciona a la perfeccion' });
+});
 exports.default = router;

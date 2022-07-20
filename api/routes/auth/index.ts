@@ -87,6 +87,9 @@ async (req:Request,res:Response)=>{
  }
 })
 
+router.get('/test', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), (req:Request, res:Response)=>{
+   res.json({msg: 'Todo funciona a la perfeccion'})
+})
 
 
 export default router;
