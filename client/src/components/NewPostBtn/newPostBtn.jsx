@@ -3,7 +3,7 @@ import { FaPlus } from "react-icons/fa";
 
 const NewPostBtn = ({ action }) => {
   return (
-    <button onClick={action}>
+    <button className="newPostBtn" onClick={action}>
       <FaPlus />
     </button>
   );
