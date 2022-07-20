@@ -16,19 +16,22 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 let router = express_1.default.Router();
-//------------rute register-----------------------------
+//------------rute register----------------------------- 
 router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let { email, password } = req.body;
-        if (!email || !password) {
+        let { email, password, firstname, lastname, username } = req.body;
+        if (!email || !password || !firstname || !lastname || !username) {
             return res.status(400).json({ message: "Please, send your email and password" });
         }
+        //search if User already exists
         let user = yield mongoose_1.User.findOne({ email: email });
         if (user) {
             return res.status(400).json({ message: "User already exists" });
         }
+        //password encryption
         let salt = yield bcrypt_1.default.genSalt(10);
         req.body.password = yield bcrypt_1.default.hash(password, salt);
+        //create new User
         let newUser = new mongoose_1.User(req.body);
         yield newUser.save();
         res.status(200).json(newUser);
@@ -37,9 +40,4 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.json("error register");
     }
 }));
-router.get("/hola", (req, res) => {
-    res.json('hola');
-});
-// //-------------rute login---------------------------------
-// router.post("/login",)
 exports.default = router;
