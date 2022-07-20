@@ -6,8 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Para las rutas en general
 const express_1 = __importDefault(require("express"));
 const index_1 = __importDefault(require("./auth/index"));
+const index_2 = __importDefault(require("./user/index"));
 const server = (0, express_1.default)();
 server.use(express_1.default.json());
-// server.use("/auth",(req,res)=>authRouter.get(req,res));
+server.use('/user', index_2.default);
 server.use("/auth", index_1.default);
 exports.default = server;

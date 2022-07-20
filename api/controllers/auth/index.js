@@ -17,12 +17,16 @@ const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = __importDefault(require("passport-local"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+//Auth configuration function
 function Auth(app, userCollection) {
+    //Local strategy for authentication
     passport_1.default.use('local', new passport_local_1.default.Strategy(function (email, password, done) {
+        //Try to find an user with that email
         userCollection.findOne({ email: email }, (err, user) => {
             console.log(`user ${email} tried to log in`);
             if (err)
                 return done(err);
+            //If no user found or wrong password the authentication fails, else it executes a callback
             else if (!user)
                 return done(null, false);
             else if (!bcrypt_1.default.compareSync(password, user.password))
@@ -31,10 +35,15 @@ function Auth(app, userCollection) {
                 return done(null, user);
         });
     }));
-    passport_1.default.use('jwt', new passport_jwt_1.default.Strategy({
+    //JasonWebToken strategy for auth
+    passport_1.default.use('jwt', new passport_jwt_1.default.Strategy(
+    //Extracts the token
+    {
         secretOrKey: `${process.env.SECRET_TEST}`,
         jwtFromRequest: passport_jwt_1.default.ExtractJwt.fromAuthHeaderAsBearerToken()
-    }, (token, done) => __awaiter(this, void 0, void 0, function* () {
+    }, 
+    //Tryes to read the user from the token, or auth fails 
+    (token, done) => __awaiter(this, void 0, void 0, function* () {
         try {
             done(null, token.user);
         }
