@@ -1,74 +1,61 @@
 import './landing.css'
-import {Link} from 'react-router-dom'
+
+
+//componentes
+import Register from './register'
+import ButtonsState from './buttonsState'
+import Signin from './Signin'
+import { useState } from 'react'
+
 //logo
 import Logo from '../../../assets/LogoSN.png'
-
-
 //iconos
-import {BsGoogle} from 'react-icons/bs'
-import {AiFillFacebook} from 'react-icons/ai'
-import {AiOutlineTwitter} from 'react-icons/ai'
 import {AiFillStar} from 'react-icons/ai'
 
+
+
+//elementos html
 const Landing = () => {
+
+	const [form , setForm] = useState('Sign in')
+
+	const handleChangeCheck = () => {
+		if (form === 'Sign in') {
+			setForm('Register')
+		}
+		if (form === 'Register') {
+			setForm('Sign in')
+		}
+	}
+	
 	return (
 		<div className='landing_container'>
 			<div className="wrap_toggle">
 	
-				<input id='toggle'type="checkbox" name=""  />
+				<input id='toggle'type="checkbox" name=""  onClick={handleChangeCheck}/>
 				<label for='toggle'className='switch' htmlFor="toggle"></label>
 				<div className='text_toggle'>
 				<p>Sign in</p>
 				<img src={Logo} alt="" />
-				<p className='register_text'>Register</p>
+				<p className={form === 'Register' ? 'event_check_encender' : 'register_text'}>Register</p>
 				</div>
 			</div>
-			<form action=''>
+			{/* Componente de Sign in */}
+			<form action="">
+				<div className='buttons_container'>
+					<button type='button'onClick={() => setForm('Sign in')}>Sign in</button>
+					<button type='button' onClick={() => setForm('Register')}>Register</button>
+				</div>
 				<div className="logo">
 					<img src={Logo} alt="" />
 					<h1>Sign in now</h1>
 				</div>
-				<div className='input_container'>
-					<div className='buttons_container'>
-						<button>Sign in</button>
-						<button>Register</button>
-					</div>
-					<div className='email_container'>
-						<label htmlFor=''>Email</label>
-						<input type='text' name='' id='' placeholder='Email'/>
-					</div>
-					<div className='password_container'>
-						<label htmlFor=''>Password</label>
-						<input type='password' name='' id='' placeholder='Password'/>
-					</div>
-					<div className='checkbox_container'>
-						<div className='remember_container'>
-							<input type="checkbox" name="" id="" /> 
-							<span>Remember me</span>
-						</div>
-						<Link to=''>Forgot your password?</Link>
-					</div>
-					<button className='on' type='submit'>
-						Sign in
-					</button>
-					<div className='orcontinue'>
-						<div className='line'></div>
-						<div className='text_line'>Or continue with</div>
-						<div className='line'></div>
-					</div>
-					<div className='social_buttons'>
-						<button>
-							<BsGoogle/>
-						</button>
-						<button>
-							<AiFillFacebook/>
-						</button>
-						<button>
-							<AiOutlineTwitter/>
-						</button>
-					</div>
-				</div>
+				{
+					form === 'Sign in' ? <Signin/> : <Register/>
+					
+				}
 			</form>
+
 			<div className='sn_review'>
 				<div className='star'>
 					<AiFillStar/>
