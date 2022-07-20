@@ -30,6 +30,7 @@ export interface IPost{
    commentsId: Types.Array<Types.ObjectId>;
    likes: Types.Array<Types.ObjectId>;
    dislikes: Types.Array<Types.ObjectId>;
+   createdAt: Date
 }
 
 export  interface IComments {
@@ -37,6 +38,7 @@ export  interface IComments {
    postId: Types.ObjectId;
    userId: Types.ObjectId;
    content: string;
+   createdAt: Date
 }
 
 export interface IReview {
