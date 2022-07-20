@@ -10,7 +10,7 @@ import {IUser} from '../../types'
 export function Auth(app: express.Application, userCollection: mongoose.Model<IUser>){
 
     //Local strategy for authentication
-    passport.use('local', new passportLocal.Strategy(
+    passport.use('local', new passportLocal.Strategy({usernameField: 'email'},
         function(email,password, done){
             //Try to find an user with that email
             userCollection.findOne({email: email}, (err:Error, user:IUser) => {
