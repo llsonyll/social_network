@@ -64,6 +64,9 @@ async (req:Request,res:Response)=>{
 router.get("/login",(req:Request,res:Response)=>{
    res.status(400).json('Incorrect email or password.');
 })
+router.get("/loginjwt", (req:Request, res:Response) =>{
+   res.status(400).json('Token needed')
+})
 
 //-----------------------------login user -----------------------------
 /*
@@ -83,6 +86,7 @@ async (req:Request,res:Response)=>{
    res.json(error);
  }
 })
+
 
 
 export default router;

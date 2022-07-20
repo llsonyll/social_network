@@ -66,6 +66,9 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
 router.get("/login", (req, res) => {
     res.status(400).json('Incorrect email or password.');
 });
+router.get("/loginjwt", (req, res) => {
+    res.status(400).json('Token needed');
+});
 //-----------------------------login user -----------------------------
 /*
   strategy passport local, verify user in database if error redirect route error login
