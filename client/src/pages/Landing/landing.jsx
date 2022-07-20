@@ -1,9 +1,9 @@
 import "./landing.css";
 
 //componentes
-import Register from "./register";
-import ButtonsState from "./buttonsState";
-import Signin from "./Signin";
+import Register from "../../components/LandingRegister/register";
+import Signin from "../../components/LandingSignIn/Signin";
+
 import { useState } from "react";
 
 //logo
