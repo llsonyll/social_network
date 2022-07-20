@@ -1,5 +1,7 @@
 import "./friendPostTile.css";
 
+import Avatar from "../../components/Avatar";
+
 const FriendPostTile = ({ tile }) => {
   // console.log(user);
 
@@ -19,13 +21,7 @@ const FriendPostTile = ({ tile }) => {
 
   return (
     <button className="flex w-full my-3 py-1" onClick={handleTileClick}>
-      <div className="rounded-full w-12 h-12 p-1 bg-white overflow-hidden">
-        <img
-          className="object-cover h-full rounded-full"
-          src={tile.user.url}
-          alt="avatarIMG"
-        />
-      </div>
+      <Avatar imgUrl={tile.user.url} />
       <div className="px-2 flex flex-col justify-start items-start ">
         <div className="text-white text-lg font-bold">{tile.user.name}</div>
         <div className="text-opacity-50 text-white text-sm font-normal leading-3">

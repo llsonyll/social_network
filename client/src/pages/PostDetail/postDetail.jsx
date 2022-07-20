@@ -1,6 +1,8 @@
 import "./postDetail.css";
 
+import { useEffect } from "react";
 import FriendPostTile from "../../components/FriendPostTile";
+import PostTile from "../../components/PostTile";
 
 const dummyFriendPost = [
   {
@@ -37,16 +39,22 @@ const PostDetail = () => {
     backgroundColor: "#2e2e2e",
   };
 
+  useEffect(() => {
+    console.log("Component Mounted");
+  }, []);
+
   return (
     <div className="flex-1 flex px-11 pt-11 gap-8" style={containerStyle}>
       <div className="bg-stone-800 basis-1/4 p-6 flex flex-col items-center rounded-md">
-        <div className="text-white font-medium text-xl mb-8"> Following </div>
+        <div className="text-white font-normal text-xl mb-4"> Following </div>
         {dummyFriendPost.map((tile) => (
           <FriendPostTile tile={tile} key={tile.postId} />
         ))}
       </div>
       <div className="bg-stone-800 basis-3/4 p-6 rounded-md">
-        <div className=""> Your Friends</div>
+        <PostTile />
+        {/* Comments */}
+        {/* SubComments */}
       </div>
     </div>
   );
