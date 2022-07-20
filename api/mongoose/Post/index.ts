@@ -20,15 +20,21 @@ export let postSchema = new Schema<IPost>({
 	],
 	likes: [
 		{
-			types: Schema.Types.ObjectId,
+			type: Schema.Types.ObjectId,
 			ref: 'User',
 		},
 	],
 	dislikes: [
 		{
-			types: Schema.Types.ObjectId,
+			type: Schema.Types.ObjectId,
 			ref: 'User',
 		},
 	],
 	content: {type: String, required: true}
-})
+}, {
+	timestamps: {
+		createdAt: true,
+		updatedAt: false
+	}
+}
+)
