@@ -7,6 +7,7 @@ exports.postSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
         unique: true,
+        auto: true
     },
     userId: {
         type: mongoose_1.Schema.Types.ObjectId,
