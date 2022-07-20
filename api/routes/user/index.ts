@@ -1,9 +1,10 @@
 import express, { request, Request, Response } from "express";
 import { Comment, Post, User } from "../../mongoose";
+import passport from 'passport'
 
 const router = express.Router();
 
-router.post('/post/:userId', async (req: Request, res: Response) => {
+router.post('/post/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     const { userId } = req.params;
     const { content } = req.body;
     
@@ -25,7 +26,7 @@ router.post('/post/:userId', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/comment/:userId', async (req: Request, res: Response) => {
+router.post('/comment/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     const { userId } = req.params;
     const { content, postId } = req.body;
 
