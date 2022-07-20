@@ -19,7 +19,7 @@ router.post('/post/:userId', (req, res) => __awaiter(void 0, void 0, void 0, fun
     const { userId } = req.params;
     const { content } = req.body;
     const user = yield mongoose_1.User.findById(`${userId}`);
-    if (!user)
+    if (!user || !content)
         return res.status(404).json({ msg: 'idk' });
     try {
         const newPost = new mongoose_1.Post({
@@ -36,9 +36,9 @@ router.post('/post/:userId', (req, res) => __awaiter(void 0, void 0, void 0, fun
 router.post('/comment/:userId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { content, postId } = req.body;
-    const user = yield mongoose_1.User.findById(userId);
-    const post = yield mongoose_1.Post.findById(postId);
-    if (!user || !post)
+    const user = yield mongoose_1.User.findById(`${userId}`);
+    const post = yield mongoose_1.Post.findById(`${postId}`);
+    if (!user || !post || content)
         return res.status(404).json({ msg: 'idk' });
     try {
         const newComment = new mongoose_1.Comment({

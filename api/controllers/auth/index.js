@@ -20,7 +20,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 //Auth configuration function
 function Auth(app, userCollection) {
     //Local strategy for authentication
-    passport_1.default.use('local', new passport_local_1.default.Strategy(function (email, password, done) {
+    passport_1.default.use('local', new passport_local_1.default.Strategy({ usernameField: 'email' }, function (email, password, done) {
         //Try to find an user with that email
         userCollection.findOne({ email: email }, (err, user) => {
             console.log(`user ${email} tried to log in`);
