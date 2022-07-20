@@ -30,4 +30,8 @@ exports.postSchema = new mongoose_1.Schema({
             ref: 'User',
         },
     ],
+<<<<<<< HEAD
+=======
+    content: { type: String, required: true }
+>>>>>>> e6dc321ac4c106b11497e9b149ee03e90d4fa10c
 });
