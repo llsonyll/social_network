@@ -6,13 +6,15 @@ import mongoose from "mongoose";
 import express from 'express';
 import {IUser} from '../../types'
 
+
 export function Auth(app: express.Application, userCollection: mongoose.Model<IUser>){
 
 
     passport.use('local', new passportLocal.Strategy(
-        function(username,password, done){
-            userCollection.findOne({username: username}, (err:Error, user:IUser) => {
-                console.log(`user ${username} tried to log in`)
+        function(email,password, done){
+ 
+            userCollection.findOne({email: email}, (err:Error, user:IUser) => {
+                console.log(`user ${email} tried to log in`)
                 if(err) return done(err)
                 else if (!user) return done(null, false)
                 else if(!bcrypt.compareSync(password, user.password)) return done(null, false)

@@ -18,9 +18,9 @@ const passport_local_1 = __importDefault(require("passport-local"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 function Auth(app, userCollection) {
-    passport_1.default.use('local', new passport_local_1.default.Strategy(function (username, password, done) {
-        userCollection.findOne({ username: username }, (err, user) => {
-            console.log(`user ${username} tried to log in`);
+    passport_1.default.use('local', new passport_local_1.default.Strategy(function (email, password, done) {
+        userCollection.findOne({ email: email }, (err, user) => {
+            console.log(`user ${email} tried to log in`);
             if (err)
                 return done(err);
             else if (!user)
