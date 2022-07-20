@@ -10,7 +10,8 @@ exports.postSchema = new mongoose_1.Schema({
     },
     userId: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Post',
+        ref: 'User',
+        required: true
     },
     commentsId: [
         {
@@ -20,15 +21,20 @@ exports.postSchema = new mongoose_1.Schema({
     ],
     likes: [
         {
-            types: mongoose_1.Schema.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
             ref: 'User',
         },
     ],
     dislikes: [
         {
-            types: mongoose_1.Schema.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
             ref: 'User',
         },
     ],
     content: { type: String, required: true }
+}, {
+    timestamps: {
+        createdAt: true,
+        updatedAt: false
+    }
 });
