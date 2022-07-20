@@ -19,4 +19,6 @@ exports.userSchema = new mongoose_1.Schema({
     birthday: Date,
     biography: String,
     review: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' }
+}, {
+    versionKey: false
 });

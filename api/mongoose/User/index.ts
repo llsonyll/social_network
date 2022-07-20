@@ -19,4 +19,6 @@ export let userSchema = new Schema<IUser>({
     birthday: Date,
     biography: String,
     review: {type: Schema.Types.ObjectId, ref: 'Review'}
+}, {
+	versionKey: false
 })
