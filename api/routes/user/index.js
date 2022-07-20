@@ -14,8 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
+const passport_1 = __importDefault(require("passport"));
 const router = express_1.default.Router();
-router.post('/post/:userId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/post/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { content } = req.body;
     const user = yield mongoose_1.User.findById(`${userId}`);
@@ -33,7 +34,7 @@ router.post('/post/:userId', (req, res) => __awaiter(void 0, void 0, void 0, fun
         return res.status(400).json(error);
     }
 }));
-router.post('/comment/:userId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/comment/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { content, postId } = req.body;
     const user = yield mongoose_1.User.findById(`${userId}`);
