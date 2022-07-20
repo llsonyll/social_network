@@ -1,5 +1,5 @@
 import "./App.css";
-import Landing from "./pages/Landing";
+import Landing from "./pages/Landing/Index";
 import Home from "./pages/Home";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
@@ -13,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={<DashBoard />}>
+          <Route path="/home"element ={<Home/>}/>
           <Route index element={<Home />} />
           <Route path="profile" element={<Profile />} />
           <Route path="messages" element={<Messages />} />

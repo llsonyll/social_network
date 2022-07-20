@@ -1,0 +1,71 @@
+.friends {
+  /* Rectangle 22 */
+
+  box-sizing: border-box;
+
+  position: fixed;
+  width: 280px;
+  height: 500px;
+  left: 0px;
+  top: 129px;
+  bottom: 20px;
+
+  background: rgba(0, 0, 0, 0.466);
+
+  border-radius: 12px;
+}
+
+.titlesFriends {
+  position: relative;
+  left: 40px;
+  color: rgba(255, 255, 255, 0.767);
+font-weight: bold;
+  font-family: "Segoe UI";
+}
+
+.imagen {
+  /* Rectangle 25 */
+
+  box-sizing: border-box;
+
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  left: 8px;
+  top: 7px;
+
+  background: rgb(122, 122, 122);
+  border-radius: 20px;
+}
+.asdas {
+  /* Rectangle 12 */
+  display: grid;
+  box-sizing: border-box;
+
+  position: relative;
+  width: 256px;
+  height: 44px;
+  left: 10px;
+  top: 10px;
+  margin: 2px;
+  background: rgba(0, 0, 0, 0.29);
+  border-radius: 12px;
+}
+.nameUser{
+
+    /* Rectangle 12 */
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;;
+   
+   font-size: 12px;
+   font-weight: bold;
+   font-display:inherit;
+   position:relative;
+   width: 126px;
+   left:45px;
+   top:1px;
+   margin:1px;
+   color: white
+
+    
+   }
+
