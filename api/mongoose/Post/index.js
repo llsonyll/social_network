@@ -6,7 +6,6 @@ exports.postSchema = new mongoose_1.Schema({
     _id: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
-        unique: true,
         auto: true
     },
     userId: {
