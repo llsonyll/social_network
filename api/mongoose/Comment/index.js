@@ -11,5 +11,6 @@ exports.commentsSchema = new mongoose_1.Schema({
     timestamps: {
         createdAt: true,
         updatedAt: false
-    }
+    },
+    versionKey: false
 });

@@ -1,0 +1,108 @@
+.p-container {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: 20% 60% 20%;
+	grid-template-rows: 1fr 1fr;
+	background-color: #2e2e2e;
+	min-width: 320px;
+}
+.profile-container {
+	margin-top: 5%;
+	grid-column: 2 / 3;
+	grid-row: 1;
+	display: grid;
+	grid-template-columns: 20% 60% 20%;
+	grid-template-rows: 55% 8% 5% 12% 4% 4% auto;
+
+	width: 100%;
+	height: 35em;
+	background-color: rgba(0, 0, 0, 0.2);
+	/* background-color: #00000043; */
+}
+.user-fullname {
+	grid-column: 2;
+	grid-row: 2;
+	color: aliceblue;
+}
+
+.shadow-box {
+	grid-column: 2;
+	grid-row: 2 /7;
+	width: 100%;
+	height: 110%;
+	left: 377px;
+	top: 414px;
+	background: rgba(255, 255, 255, 0.04);
+	border-radius: 5px;
+}
+.profile-img {
+	grid-column: 2;
+	grid-row: 1;
+	place-self: center;
+	border-radius: 50%;
+	height: 90%;
+	width: 40%;
+	border-color: rgb(62, 62, 62);
+	border-style: solid;
+	border-width: 3px;
+}
+
+.buttonsito {
+	grid-column: 3;
+	grid-row: 1;
+	margin-top: 20%;
+	margin-left: 20%;
+	width: 120px;
+	height: 50px;
+	background: rgba(14, 11, 11, 0.561);
+	border-radius: 5px;
+	color: aliceblue;
+}
+
+.user-firstname {
+	grid-column: 2;
+	grid-row: 2;
+	color: aliceblue;
+	font-weight: bold;
+	font-size: 1.8em;
+	margin-bottom: 0%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.user-username {
+	grid-column: 2;
+	grid-row: 3;
+	color: rgb(188, 188, 188);
+	font-weight: lighter;
+	font-size: 0.9em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-bottom: 0%;
+}
+.user-followers {
+	grid-column: 2;
+	grid-row: 5;
+
+	color: rgb(188, 188, 188);
+	font-weight: lighter;
+	font-size: 0.9em;
+	margin-left: 8%;
+}
+.user-following {
+	grid-column: 2;
+	grid-row: 6;
+	color: rgb(188, 188, 188);
+	font-weight: lighter;
+	font-size: 0.9em;
+	margin-left: 8%;
+}
+.user-biography {
+	grid-column: 2;
+	grid-row: 4;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: aliceblue;
+}
