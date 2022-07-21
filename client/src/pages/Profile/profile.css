@@ -4,8 +4,10 @@
 	align-items: center;
 }
 .profile-container {
+
 	margin-top: 85px;
 	width: 75%;
+
 	display: grid;
 	grid-template-rows: 100px 1fr;
 	background-color: #202225;
@@ -24,6 +26,7 @@
 	/* grid-column: 2;
 	grid-row: 1; */
 	border-radius: 50%;
+
 	width: 150px;
 	border: 3px solid #202225;
 	position: absolute;
@@ -35,6 +38,10 @@
 	grid-row: 1; */
 	cursor: pointer;
 	filter: brightness(10%);
+
+}
+.profile-buttonsito:hover {
+	transform: scale(1.2);
 }
 
 .img_profile{
@@ -79,6 +86,8 @@
 .profile-container  .shadow-box {
 	display: flex;
 	justify-content: center;
+
+
 }
 .profile-container  .shadow-box .user_description{
 	background-color: #2F3136;

@@ -1,13 +1,29 @@
 import './profile.css'
 import { UsersDummy } from '../../data/20UsersDummy'
+import { useState } from 'react'
+import Settings from '../../components/ProfileSettings'
+import settingsLogo from '../../../assets/settings.png'
 
 const Profile = () => {
+	const [showingSettings, setSshowingSettings] = useState(false)
+
 	let user = UsersDummy[0]
+
+	const renderSettings = () => {
+		if (showingSettings === true) {
+			return <Settings />
+		}
+	}
+
+	const setShowingSettingsToFalse = () => {
+		setSshowingSettings(false)
+	}
 
 	return (
 		<>
 			<div className='p-container'>
 				<div className='profile-container'>
+
 						<div className='img-container'>
 							{/* <img
 								className='profile-img'
@@ -70,7 +86,9 @@ const Profile = () => {
 								</div>
 							</div>
 						</div>
+
 				</div>
+				{showingSettings === true && <Settings setShowingSettingsToFalse={setShowingSettingsToFalse} />}
 			</div>
 
 			{/* Espacio para mapear 20 objetos con el componente renderizador de los posts y los 20 posts que le pido a la db */}
