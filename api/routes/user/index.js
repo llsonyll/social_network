@@ -19,41 +19,46 @@ const router = express_1.default.Router();
 router.post('/post/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { content } = req.body;
-    const user = yield mongoose_1.User.findById(`${userId}`);
-    if (!user || !content)
-        return res.status(404).json({ msg: 'idk' });
     try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user || !content)
+            return res.status(404).json({ msg: 'idk' });
         const newPost = new mongoose_1.Post({
             content,
             userId: user._id
         });
         yield newPost.save();
+        user.posts.push(newPost._id);
+        yield user.save();
         return res.status(201).json({ msg: 'Post created successfully' });
     }
     catch (error) {
         return res.status(400).json(error);
     }
 }));
-router.post('/comment/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params;
-    const { content, postId } = req.body;
-    const user = yield mongoose_1.User.findById(`${userId}`);
-    const post = yield mongoose_1.Post.findById(`${postId}`);
-    if (!user || !post || !content)
-        return res.status(404).json({ msg: 'idk' });
+router.post('/comment/:userId/:postId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, postId } = req.params;
+    const { content } = req.body;
     try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        const post = yield mongoose_1.Post.findById(`${postId}`);
+        if (!user || !post || !content)
+            return res.status(404).json({ msg: 'idk' });
         const newComment = new mongoose_1.Comment({
             content,
             userId: user._id,
             postId: post._id
         });
         yield newComment.save();
-        return res.status(201).json({ msg: 'Comment created successfully' });
+        post.commentsId.push(newComment._id);
+        yield post.save();
+        return res.status(201).json(post);
     }
     catch (error) {
         return res.status(400).json(error);
     }
 }));
+<<<<<<< HEAD
 router.get("/browser/:username", passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username } = req.params;
@@ -65,6 +70,27 @@ router.get("/browser/:username", passport_1.default.authenticate('jwt', { sessio
         return res.status(200).json(users);
     }
     catch (error) {
+=======
+router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    let page = parseInt(`${req.query.page}`);
+    if (!page)
+        page = 0;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            return res.status(404).json({ errorMsg: 'who are you?' });
+        if (user.following.length === 0) {
+            const posts = yield mongoose_1.Post.find({}).skip(page * 20).limit(20);
+            res.json(posts);
+        }
+        //  else {
+        //si el usuario sigue a otros usuarios
+        // }
+    }
+    catch (err) {
+        return res.status(404).json({ errorMsg: err });
+>>>>>>> 263fa2f85907700b7fbc9114c9f8ccc107460d18
     }
 }));
 exports.default = router;
