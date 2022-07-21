@@ -20,6 +20,10 @@ router.post('/post/:userId', passport.authenticate('jwt', {session:false, failur
 
         await newPost.save();
 
+        user.posts.push(newPost._id);
+
+        await user.save();
+
         return res.status(201).json({msg: 'Post created successfully'});
     } catch (error) {
         return res.status(400).json(error);
