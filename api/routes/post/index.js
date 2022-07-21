@@ -43,4 +43,23 @@ router.put('/:userId/:postId', passport_1.default.authenticate('jwt', { session:
         res.status(400).json('Something went wrong');
     }
 }));
+router.get('/:postId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { postId } = req.params;
+        let post = yield mongoose_1.Post.findById(`${postId}`)
+            .populate({ path: 'commentsId', select: 'content', populate: { path: 'userId', select: ['username'] } })
+            .populate('userId', 'username')
+            .populate('likes', 'username')
+            .populate('dislikes', 'username');
+        if (!post) {
+            res.status(400).json("Post doesn't exist");
+        }
+        else {
+            res.json(post);
+        }
+    }
+    catch (err) {
+        res.status(400).json('Something went wrong');
+    }
+}));
 exports.default = router;

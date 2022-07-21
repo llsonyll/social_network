@@ -29,6 +29,23 @@ router.put('/:userId/:postId', passport.authenticate('jwt', {session:false, fail
     }
 })
 
+router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req:Request, res:Response) =>{
+    try{
+        const {postId} = req.params
+        let post = await Post.findById(`${postId}`)
+        .populate({path: 'commentsId',select: 'content', populate:{path: 'userId', select: ['username']}})
+        .populate('userId', 'username')
+        .populate('likes', 'username')
+        .populate('dislikes', 'username')
+        if(!post){
+            res.status(400).json("Post doesn't exist")
+        }else{
+            res.json(post)
+        }
+    }catch(err){
+        res.status(400).json('Something went wrong')
+    }
+})
 
 
 
