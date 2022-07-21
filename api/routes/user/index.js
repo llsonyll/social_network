@@ -58,7 +58,6 @@ router.post('/comment/:userId/:postId', passport_1.default.authenticate('jwt', {
         return res.status(400).json(error);
     }
 }));
-<<<<<<< HEAD
 router.get("/browser/:username", passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username } = req.params;
@@ -70,7 +69,8 @@ router.get("/browser/:username", passport_1.default.authenticate('jwt', { sessio
         return res.status(200).json(users);
     }
     catch (error) {
-=======
+    }
+}));
 router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     let page = parseInt(`${req.query.page}`);
@@ -90,7 +90,6 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });
->>>>>>> 263fa2f85907700b7fbc9114c9f8ccc107460d18
     }
 }));
 exports.default = router;
