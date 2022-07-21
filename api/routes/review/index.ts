@@ -21,11 +21,31 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
 
         await newReview.save();
 
+        user.review = newReview._id;
+
+        await user.save();
+
         return res.status(201).json({msg: 'Review created successfully'})
     } catch (error) {
         return res.status(400).json(error)
     }
 
 })
+
+// router.delete('/reviewId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
+//     const { reviewId } = req.params;
+
+//     const review = await Review.findById(`${reviewId}`);
+
+//     if (!review) return res.status(404).json({msg: 'Review not found'});
+
+//     try {
+//         await Review.deleteById(review._id)
+        
+//         return res.json({msg: 'Review deleted successfully'})
+//     } catch (error) {
+//         return res.status(400).json(error);
+//     }
+// });
 
 export default router;
