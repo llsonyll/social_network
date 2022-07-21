@@ -52,7 +52,6 @@ async (req:Request,res:Response)=>{
    let{user} = req; 
    if(user){
      return res.status(200).json({token: createToken(user as IUser)});
-      //res.redirect()
     }
    return res.status(400).json("The user does not exists");
  } catch (error) {
@@ -79,7 +78,6 @@ async (req:Request,res:Response)=>{
    let{user} = req; 
    if(user){
      return res.status(200).json({token: createToken(user as IUser)});
-      //res.redirect()
     }
    return res.status(400).json("The user does not exists");
  } catch (error) {
