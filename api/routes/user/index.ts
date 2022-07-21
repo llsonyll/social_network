@@ -91,7 +91,10 @@ router.get('/home/:userId', passport.authenticate('jwt', {session:false, failure
         if(!user) return res.status(404).json({errorMsg: 'who are you?'})
         
         if(user.following.length === 0) {
-            const posts = await Post.find({}).skip(page * 20).limit(20)
+            const posts = await Post.find({})
+            .sort({createdAt: -1})
+            .skip(page * 20)
+            .limit(20)
             res.json(posts)
         }
         //  else {
@@ -105,5 +108,21 @@ router.get('/home/:userId', passport.authenticate('jwt', {session:false, failure
     }
 });
 
+router.get('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
+    const {userId} = req.params
+
+    try{
+        
+        const user = await User.findById(`${userId}`)
+        .populate('posts', ['_id', 'likes', 'dislikes'])
+        .populate('following', 'username')
+        .populate('followers', 'username')
+        .select("-password")
+        if(!user) return res.status(404).json({errorMsg: "who are you?"})
+        return res.status(201).json(user);
+    } catch(err) {
+        res.status(404).json({errorMsg: err})
+    }
+});
 
 export default router;
