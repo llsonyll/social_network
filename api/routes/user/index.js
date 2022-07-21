@@ -16,26 +16,6 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const passport_1 = __importDefault(require("passport"));
 const router = express_1.default.Router();
-router.post('/post/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params;
-    const { content } = req.body;
-    try {
-        const user = yield mongoose_1.User.findById(`${userId}`);
-        if (!user || !content)
-            return res.status(404).json({ msg: 'idk' });
-        const newPost = new mongoose_1.Post({
-            content,
-            userId: user._id
-        });
-        yield newPost.save();
-        user.posts.push(newPost._id);
-        yield user.save();
-        return res.status(201).json({ msg: 'Post created successfully' });
-    }
-    catch (error) {
-        return res.status(400).json(error);
-    }
-}));
 router.post('/comment/:userId/:postId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, postId } = req.params;
     const { content } = req.body;
