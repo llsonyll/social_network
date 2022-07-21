@@ -35,6 +35,7 @@ export let postSchema = new Schema<IPost>({
 	timestamps: {
 		createdAt: true,
 		updatedAt: false
-	}
+	},
+	versionKey: false
 }
 )

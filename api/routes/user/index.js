@@ -39,7 +39,7 @@ router.post('/comment/:userId', passport_1.default.authenticate('jwt', { session
     const { content, postId } = req.body;
     const user = yield mongoose_1.User.findById(`${userId}`);
     const post = yield mongoose_1.Post.findById(`${postId}`);
-    if (!user || !post || content)
+    if (!user || !post || !content)
         return res.status(404).json({ msg: 'idk' });
     try {
         const newComment = new mongoose_1.Comment({
