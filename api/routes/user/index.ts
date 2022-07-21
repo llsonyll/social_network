@@ -1,4 +1,4 @@
-import express, { request, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import { Comment, Post, User } from "../../mongoose";
 import passport from 'passport'
 
@@ -8,12 +8,11 @@ router.post('/post/:userId', passport.authenticate('jwt', {session:false, failur
     const { userId } = req.params;
     const { content } = req.body;
     
-    const user = await User.findById(`${userId}`)
-
-    if (!user || !content) return res.status(404).json({msg: 'idk'})
-
-
     try {
+        const user = await User.findById(`${userId}`)
+    
+        if (!user || !content) return res.status(404).json({msg: 'idk'})
+
         const newPost = new Post({
             content,
             userId: user._id
@@ -27,17 +26,17 @@ router.post('/post/:userId', passport.authenticate('jwt', {session:false, failur
     }
 });
 
-router.post('/comment/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const { content, postId } = req.body;
-
-    const user = await User.findById(`${userId}`);
-    const post = await Post.findById(`${postId}`);
-
-    if (!user || !post || !content) return res.status(404).json({msg: 'idk'})
+router.post('/comment/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
+    const { userId, postId } = req.params;
+    const { content } = req.body;
     
-
+    
     try {
+        const user = await User.findById(`${userId}`);
+        const post = await Post.findById(`${postId}`);
+        
+        if (!user || !post || !content) return res.status(404).json({msg: 'idk'})
+
         const newComment = new Comment({
             content,
             userId: user._id,
@@ -46,7 +45,11 @@ router.post('/comment/:userId', passport.authenticate('jwt', {session:false, fai
 
         await newComment.save();
 
-        return res.status(201).json({msg: 'Comment created successfully'});
+        post.commentsId.push(newComment._id);
+
+        await post.save();
+
+        return res.status(201).json(post);
     } catch (error) {
         return res.status(400).json(error)
     }
@@ -79,7 +82,7 @@ router.get('/home/:userId', passport.authenticate('jwt', {session:false, failure
     } catch(err) {
         return res.status(404).json({errorMsg: err})
     }
-})
+});
 
 
 export default router;
