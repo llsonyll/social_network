@@ -22,7 +22,7 @@ const NavBar = ({ openModal }) => {
         <img src={logoSN} alt="logoSN" className="h-6" />
         <div className="search-box w-full md:w-60">
           <input
-            className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-1 pl-2 pr-7 border-transparent bg-gray-700 text-white sm:text-sm rounded-md w-full"
+            className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full"
             type="text"
             placeholder="Search a friend"
           />
