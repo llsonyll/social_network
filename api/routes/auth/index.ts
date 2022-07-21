@@ -87,6 +87,15 @@ async (req:Request,res:Response)=>{
  }
 })
 
+//------------------------route data user----------------------------------
+router.post("/",passport.authenticate("local", { session: false,failureRedirect: '/auth/loginjwt'},
+   async (req:Request,res:Response)=>{
+   const token = req.headers['authorization'];
+   const verifyToken = jwt.verify(`${token}`,`${process.env.SECRET_TEST}`);
+   res.status(200).json(verifyToken);
+  }))
+
+//-------------------------route test---------------------------------
 router.get('/test', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), (req:Request, res:Response)=>{
    res.json({msg: 'Todo funciona a la perfeccion'})
 })
