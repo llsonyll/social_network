@@ -48,4 +48,22 @@ router.get('/', passport_1.default.authenticate('jwt', { session: false, failure
         return res.status(400).json(error);
     }
 }));
+router.delete('/:reviewId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { reviewId } = req.params;
+    try {
+        const findReview = yield mongoose_1.Review.findById(`${reviewId}`);
+        if (!findReview)
+            return res.status(404).json({ msg: 'Review not found, but you can create one with 5 stars ;)' });
+        const user = yield mongoose_1.User.findById(findReview.userId);
+        if (!user)
+            return res.json({ msg: 'Anonymus review xd' });
+        yield mongoose_1.Review.deleteOne({ _id: findReview._id });
+        user.review = undefined;
+        yield user.save();
+        return res.json({ msg: 'Review deleted successfully' });
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+}));
 exports.default = router;
