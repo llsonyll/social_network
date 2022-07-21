@@ -15,6 +15,12 @@ const createToken = (user:IUser)=>{
     });
 }
 
+const createRefreshToken = ()=>{
+  return jwt.sign({},`${process.env.SECRET_TEST}`,{
+    expiresIn : 60 * 2
+  });
+}
+
 //---------------middleware new User-----------------------------
 const middlewareNewUser = async (req:Request,res:Response,next:NextFunction)=>{
    try {
@@ -47,26 +53,51 @@ const middlewareNewUser = async (req:Request,res:Response,next:NextFunction)=>{
    }
 }
 
+let refreshTokens = {
+  refreshToken:"",
+};
+
+//-----------------------------retorna new token ---------------------------------
+router.post("/token",passport.authenticate("jwt",{session: false, failureRedirect: "/auth/loginjwt"}) ,async(req:Request,res:Response)=>{
+   try {
+       let email = req.body.email;
+
+       if(refreshTokens.hasOwnProperty("refreshToken") && email === refreshTokens.refreshToken ){
+          let user: any = User.findOne({email: email});
+         if(!user){
+           return res.status(400).json("user does not exist");
+         }
+           
+           let newToken = createToken(user as IUser);
+           let newRefreshToken = createRefreshToken(); 
+     
+          return res.status(200).json({token: newToken, refreshToken: newRefreshToken });
+       }
+      return res.status(401).json("error refresh token");
+   } catch (err) {
+     return res.status(400).json(err)
+   }
+})
+
 //------------rute register----------------------------- 
 router.post("/register", middlewareNewUser, passport.authenticate("local",{session: false, failureRedirect: '/auth/login'}),
 async (req:Request,res:Response)=>{
    //user return of passport strategy
  try {
    let{user} = req; 
-   
+   //------------crea  token y refreshtoken----------------------------------
    if(user){
      const send:IUser = user as IUser
-
-     let refreshTokens = {};
-
+    
      const token = createToken(user as IUser);
-     let refreshToken = randToken.uid(256);
-
-     refreshTokens[refreshToken] = send.username;
-
-     return res.status(200).json({token: token, username: send.username, _id: send._id});
+     let refreshToken = createRefreshToken();
+     
+     refreshTokens.refreshToken = send.email;
+    
+     return res.status(200).json({token: token, username: send.username, _id: send._id,refreshToken});
       //res.redirect()
     }
+
    return res.status(400).json("The user does not exists");
  } catch (error) {
    res.json(error);

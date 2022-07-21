@@ -40,6 +40,9 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
                 if(expiredToken < new Date()){
                   return done(null,false);
                 }
+                if(!token.user){
+                    return done(null, token)
+                }
                 done(null, token.user)
             }catch(err){
                 done(err)

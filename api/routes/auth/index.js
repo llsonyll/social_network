@@ -24,6 +24,11 @@ const createToken = (user) => {
         expiresIn: 60
     });
 };
+const createRefreshToken = () => {
+    return jsonwebtoken_1.default.sign({}, `${process.env.SECRET_TEST}`, {
+        expiresIn: 60 * 2
+    });
+};
 //---------------middleware new User-----------------------------
 const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -49,14 +54,40 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         res.json(error);
     }
 });
+let refreshTokens = {
+    refreshToken: "",
+};
+//-----------------------------retorna new token ---------------------------------
+router.post("/token", passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let email = req.body.email;
+        if (refreshTokens.hasOwnProperty("refreshToken") && email === refreshTokens.refreshToken) {
+            let user = mongoose_1.User.findOne({ email: email });
+            if (!user) {
+                return res.status(400).json("user does not exist");
+            }
+            let newToken = createToken(user);
+            let newRefreshToken = createRefreshToken();
+            return res.status(200).json({ token: newToken, refreshToken: newRefreshToken });
+        }
+        return res.status(401).json("error refresh token");
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
 //------------rute register----------------------------- 
 router.post("/register", middlewareNewUser, passport_1.default.authenticate("local", { session: false, failureRedirect: '/auth/login' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //user return of passport strategy
     try {
         let { user } = req;
+        //------------crea  token y refreshtoken----------------------------------
         if (user) {
             const send = user;
-            return res.status(200).json({ token: createToken(user), username: send.username, _id: send._id });
+            const token = createToken(user);
+            let refreshToken = createRefreshToken();
+            refreshTokens.refreshToken = send.email;
+            return res.status(200).json({ token: token, username: send.username, _id: send._id, refreshToken });
             //res.redirect()
         }
         return res.status(400).json("The user does not exists");
