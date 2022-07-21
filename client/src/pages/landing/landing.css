@@ -16,7 +16,7 @@
 .landing_container .wrap_toggle {
 	
 	display: none;
-	margin: 30px 0px;
+	margin: 20px 0px;
 	text-align: center;
 	
 }
@@ -77,6 +77,9 @@
 .landing_container .wrap_toggle #toggle:checked + .switch{
 	background-color: #4e864c;
 }
+.landing_container .wrap_toggle #toggle:checked > .register_text {
+	color: white;
+}
 
 
 /* logo styles */
@@ -87,6 +90,7 @@
 	color:white;
 	align-items: center;
 	justify-content: center;
+	grid-column: 1;
 }
 .landing_container .logo img{
 	height: 90px;
@@ -153,10 +157,13 @@
 }
 
 /* inputs_Text styles */
-.landing_container .input_container .email_container , .password_container {
+.landing_container .input_container 
+.email_container , 
+.password_container,
+.fullName_container,
+.lastName_container {
 	display: flex;
 	flex-direction: column;
-	margin: 10px 0px;
 }
 .landing_container .input_container input[type='text'] , input[type='password'] {
 	padding: 8px;
@@ -174,16 +181,17 @@ input[type='password']::placeholder {
 
 
 /* buttons-container */
-.landing_container .input_container .buttons_container{ 
+.buttons_container{ 
 	display: flex;
 	justify-content: space-around;
+	grid-column: 2;
 }
-.landing_container .input_container .buttons_container button{ 
+.buttons_container button{ 
 	font-size: 17px;
 	padding: 5px 30px;
 	transition: all .3s;
 }
-.landing_container .input_container .buttons_container button:hover{ 
+.buttons_container button:hover{ 
 	transform: scale(.98);
 	background-color: #2e2e2e98;
 }
@@ -280,6 +288,27 @@ input[type='password']::placeholder {
 		left: 28px;
 }
 
+/* Register buttons  */
+.register_buttons{
+	display: flex;
+}
+
+.register_buttons 
+.fullName_container,
+.lastName_container{
+	margin: 0;
+}
+.register_buttons 
+.fullName_container{
+	margin-right: 10px;
+}
+
+
+/* Agregamos clases por medio de eventos */
+
+.event_check_encender{
+	color: white;
+}
 
 
 
@@ -292,6 +321,12 @@ input[type='password']::placeholder {
 	.landing_container form {
 		
 		grid-template-columns: 1fr ;
+	}
+	.buttons_container{
+		grid-column: 1;
+	}
+	.register_buttons{
+		flex-direction: column;
 	}
 }
 @media (max-width: 650px) {
@@ -307,6 +342,15 @@ input[type='password']::placeholder {
 	
 		display: block;
 		
+	}
+	
+	.landing_container .wrap_toggle {
+	
+		display: block;
+		
+	}
+	.buttons_container{
+		display: none;
 	}
 	.landing_container  {
 	

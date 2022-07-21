@@ -3,14 +3,14 @@ export const UsersDummy = [
 		_id: 112.48506703434695,
 		username: 'Username1.4850670343469614',
 		email: 'aa@gmail.com1.4850670343469614',
-		firstname: 'Firstname',
-		lastname: 'Lastname',
+		firstname: 'Goku',
+		lastname: 'Son',
 		posts: [
 			{
 				_id: 223.48506703434697,
 				userId: 334.48506703434697,
 				content: 'Contenido del post Contenido del postContenido del postContenido del postContenido del post',
-				commentsId: 'Comentario Comentario Comentario Comentario Comentario ',
+				commentsId: 'Comentario Comentario Comentario Comentario Comentario',
 				likes: 445.48506703434697,
 				dislikes: 556.4850670343469,
 			},
