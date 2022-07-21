@@ -8,17 +8,68 @@ const Profile = () => {
 		<>
 			<div className='p-container'>
 				<div className='profile-container'>
-					<div className='shadow-box'></div>
-					<img
-						className='profile-img'
-						src='https://japanpowered.com/media/images//goku.png'
-						alt='Profile Picture'></img>
-					<button className='buttonsito'>Settings</button>
-					<div className='user-firstname'> {user.firstname} </div>
-					<div className='user-username'> {user.username} </div>
-					<div className='user-followers'> Followers: {user.followers.length} </div>
-					<div className='user-following'> Following: {user.following.length} </div>
-					<p className='user-biography'> {user.biography}</p>
+						<div className='img-container'>
+							{/* <img
+								className='profile-img'
+								src='https://japanpowered.com/media/images//goku.png'
+								alt='Profile Picture'>
+							</img> */}
+							<div className='img_profile'>
+								<div className='info'>
+									<p>Change Image</p>
+								</div>
+							</div>
+						</div>
+						<div className='shadow-box'>
+							<div className='user_description'>
+								<div className='user-firstname'>
+									<div className="info_container">
+										<span className='span-info'>Full name</span>
+										<p>
+										 {user.firstname} 
+										</p>
+									</div>
+									<div className="button_container">
+										<button type='button'>
+										Edit
+										</button>
+									</div>
+								</div>
+								<div className='user-username'> 
+									<div className="info_container">
+										<span className='span-info'>Username</span>
+										{user.username} 
+									</div>
+									<div className="button_container">
+										<button type='button'>
+										Edit
+										</button>
+									</div>
+								</div>
+								<div className='user-followers'>
+									<div className="info_container">
+										<span className='span-info'>Followers</span> 
+										{user.followers.length} 
+									</div>
+								</div>
+								<div className='user-following'>
+									<div className="info_container">
+										<span className='span-info'>Following</span>
+										{user.following.length}
+									</div>
+								</div>
+								
+								<div className='user-biography'>
+									<div className="info_container">
+										<span className='span-info'>biography</span>
+										{user.biography}
+									</div>
+									<div className="button_container">
+										<button type='button'>Edit</button>
+									</div>
+								</div>
+							</div>
+						</div>
 				</div>
 			</div>
 
