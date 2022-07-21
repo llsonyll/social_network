@@ -19,10 +19,13 @@ const router = express_1.default.Router();
 router.post('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { description, stars } = req.body;
-    const user = yield mongoose_1.User.findById(`${userId}`);
-    if (!user || !description || !stars)
-        return res.status(404).json({ msg: 'idk' });
     try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user || !description || !stars)
+            return res.status(404).json({ msg: 'idk' });
+        const review = yield mongoose_1.Review.findOne({ userId: user._id });
+        if (review)
+            return res.status(401).json({ msg: 'User already has a review' });
         const newReview = new mongoose_1.Review({
             description,
             stars,

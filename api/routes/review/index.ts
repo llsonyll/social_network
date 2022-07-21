@@ -7,12 +7,16 @@ const router = express.Router();
 router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     const { userId } = req.params;
     const { description, stars } = req.body;
-
-    const user = await User.findById(`${userId}`);
-
-    if (!user || !description || !stars) return res.status(404).json({msg: 'idk'})
-
+    
     try {
+        const user = await User.findById(`${userId}`);
+        
+        if (!user || !description || !stars) return res.status(404).json({msg: 'idk'});
+
+        const review = await Review.findOne({userId: user._id});
+
+        if (review) return res.status(401).json({msg: 'User already has a review'});
+
         const newReview = new Review({
             description,
             stars,
