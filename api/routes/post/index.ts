@@ -8,15 +8,18 @@ router.put('/:userId/:postId', passport.authenticate('jwt', {session:false, fail
     try{
         const {postId, userId} = req.params
         const {content} = req.body
+        //Checks if body has content
         if(!content){
             return res.status(400).json('Necesita tener contenido')
         }
         let post = await Post.findById(`${postId}`)
+        //Checks if post exists and if the post was made by the user
         if(!post){
             res.status(400).json("Post doesn't exist")
         }else if(`${post.userId}` !== userId){
             res.status(400).json("Only modify your own posts")
         }else{
+            //Change content and save
             post.content = content
             await post.save()
             res.status(200).json('Comment modified')
@@ -25,6 +28,7 @@ router.put('/:userId/:postId', passport.authenticate('jwt', {session:false, fail
         res.status(400).json('Something went wrong')
     }
 })
+
 
 
 

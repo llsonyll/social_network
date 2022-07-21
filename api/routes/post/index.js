@@ -20,10 +20,12 @@ router.put('/:userId/:postId', passport_1.default.authenticate('jwt', { session:
     try {
         const { postId, userId } = req.params;
         const { content } = req.body;
+        //Checks if body has content
         if (!content) {
             return res.status(400).json('Necesita tener contenido');
         }
         let post = yield mongoose_1.Post.findById(`${postId}`);
+        //Checks if post exists and if the post was made by the user
         if (!post) {
             res.status(400).json("Post doesn't exist");
         }
@@ -31,6 +33,7 @@ router.put('/:userId/:postId', passport_1.default.authenticate('jwt', { session:
             res.status(400).json("Only modify your own posts");
         }
         else {
+            //Change content and save
             post.content = content;
             yield post.save();
             res.status(200).json('Comment modified');
