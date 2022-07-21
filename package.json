@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "rand-token": "^1.0.1"
+  }
+}

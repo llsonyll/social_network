@@ -4,6 +4,7 @@ import { User } from "../../mongoose";
 import bcrypt from "bcrypt"; 
 import  passport  from 'passport';
 import jwt from "jsonwebtoken";
+import randToken from "rand-token";
 
 let  router = express.Router();
 
@@ -55,7 +56,15 @@ async (req:Request,res:Response)=>{
    
    if(user){
      const send:IUser = user as IUser
-     return res.status(200).json({token: createToken(user as IUser), username: send.username, _id: send._id});
+
+     let refreshTokens = {};
+
+     const token = createToken(user as IUser);
+     let refreshToken = randToken.uid(256);
+
+     refreshTokens[refreshToken] = send.username;
+
+     return res.status(200).json({token: token, username: send.username, _id: send._id});
       //res.redirect()
     }
    return res.status(400).json("The user does not exists");
