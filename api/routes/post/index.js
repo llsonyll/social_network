@@ -46,11 +46,13 @@ router.put('/:userId/:postId', passport_1.default.authenticate('jwt', { session:
 router.get('/:postId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { postId } = req.params;
+        //Search a post and select the data we want to send
         let post = yield mongoose_1.Post.findById(`${postId}`)
-            .populate({ path: 'commentsId', select: 'content', populate: { path: 'userId', select: ['username'] } })
+            .populate({ path: 'commentsId', select: 'content', populate: { path: 'userId', select: 'username' } })
             .populate('userId', 'username')
             .populate('likes', 'username')
             .populate('dislikes', 'username');
+        //If no post found send error, else send the post
         if (!post) {
             res.status(400).json("Post doesn't exist");
         }
@@ -60,6 +62,31 @@ router.get('/:postId', passport_1.default.authenticate('jwt', { session: false, 
     }
     catch (err) {
         res.status(400).json('Something went wrong');
+    }
+}));
+router.delete('/:userId/:postId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId, postId } = req.params;
+        let post = yield mongoose_1.Post.findById(`${postId}`);
+        if (!post) {
+            return res.status(400).json('Post not found');
+        }
+        if (`${post.userId}` !== userId) {
+            return res.status(400).json('Delete only your own posts');
+        }
+        let user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user) {
+            return res.status(400).json('Wtf who did this post????');
+        }
+        yield user.updateOne({ $pull: { posts: postId } });
+        yield user.save();
+        let comments = post.commentsId;
+        yield mongoose_1.Comment.deleteMany({ _id: { $in: comments } });
+        post.remove();
+        res.json('Eliminated from the world');
+    }
+    catch (err) {
+        res.status(400).json('something went wrong');
     }
 }));
 exports.default = router;

@@ -1,6 +1,6 @@
 import express, {Request,Response} from 'express';
 import passport from 'passport';
-import { Post } from '../../mongoose';
+import { Comment, Post, User } from '../../mongoose';
 
 const router = express.Router()
 
@@ -34,7 +34,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
         const {postId} = req.params
         //Search a post and select the data we want to send
         let post = await Post.findById(`${postId}`)
-        .populate({path: 'commentsId',select: 'content', populate:{path: 'userId', select: ['username']}})
+        .populate({path: 'commentsId',select: 'content', populate:{path: 'userId', select: 'username'}})
         .populate('userId', 'username')
         .populate('likes', 'username')
         .populate('dislikes', 'username')
@@ -46,6 +46,32 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
         }
     }catch(err){
         res.status(400).json('Something went wrong')
+    }
+})
+
+router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req:Request, res:Response) =>{
+    try{
+        const {userId, postId} = req.params
+        let post = await Post.findById(`${postId}`)
+        if(!post){
+            return res.status(400).json('Post not found')
+        }
+        if(`${post.userId}` !== userId){
+            return res.status(400).json('Delete only your own posts')
+        }
+        let user = await User.findById(`${userId}`)
+        if(!user){
+            return res.status(400).json('Wtf who did this post????')
+        }
+        await user.updateOne({$pull: {posts: postId}})
+        await user.save()
+
+        let comments = post.commentsId
+        await Comment.deleteMany({_id: {$in: comments}})
+        post.remove()
+        res.json('Eliminated from the world')
+    }catch(err){
+        res.status(400).json('something went wrong')
     }
 })
 
