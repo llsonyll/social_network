@@ -80,7 +80,7 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
     }
 });
 
-router.post('/post/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
+router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     const { userId } = req.params;
     const { content } = req.body;
     

@@ -94,7 +94,7 @@ router.delete('/:userId/:postId', passport_1.default.authenticate('jwt', { sessi
         res.status(400).json('something went wrong');
     }
 }));
-router.post('/post/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { content } = req.body;
     try {
