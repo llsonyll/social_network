@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import mongoose from "mongoose";
 import express from 'express';
 import {IUser} from '../../types'
+import jwt  from 'jsonwebtoken';
 
 //Auth configuration function
 export function Auth(app: express.Application, userCollection: mongoose.Model<IUser>){
@@ -35,6 +36,10 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
         //Tryes to read the user from the token, or auth fails 
         async (token, done) =>{
             try{
+                let expiredToken = new Date(token.exp * 1000);
+                if(expiredToken < new Date()){
+                  return done(null,false);
+                }
                 done(null, token.user)
             }catch(err){
                 done(err)

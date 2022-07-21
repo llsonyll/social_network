@@ -20,7 +20,9 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 let router = express_1.default.Router();
 //---------------function create Token--------------------
 const createToken = (user) => {
-    return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`);
+    return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`, {
+        expiresIn: 60
+    });
 };
 //---------------middleware new User-----------------------------
 const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

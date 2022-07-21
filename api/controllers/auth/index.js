@@ -45,6 +45,10 @@ function Auth(app, userCollection) {
     //Tryes to read the user from the token, or auth fails 
     (token, done) => __awaiter(this, void 0, void 0, function* () {
         try {
+            let expiredToken = new Date(token.exp * 1000);
+            if (expiredToken < new Date()) {
+                return done(null, false);
+            }
             done(null, token.user);
         }
         catch (err) {

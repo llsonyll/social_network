@@ -9,7 +9,9 @@ let  router = express.Router();
 
 //---------------function create Token--------------------
 const createToken = (user:IUser)=>{
-    return jwt.sign({user:{id: user._id,email:user.email}},`${process.env.SECRET_TEST}`);
+    return jwt.sign({user:{id: user._id,email:user.email}},`${process.env.SECRET_TEST}`,{
+      expiresIn : 60
+    });
 }
 
 //---------------middleware new User-----------------------------
