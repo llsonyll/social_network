@@ -53,6 +53,7 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
     try{
         const {userId, postId} = req.params
         let post = await Post.findById(`${postId}`)
+        //if no post founded or the post was made by other user sends error
         if(!post){
             return res.status(400).json('Post not found')
         }
@@ -60,14 +61,18 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
             return res.status(400).json('Delete only your own posts')
         }
         let user = await User.findById(`${userId}`)
+        //If no user found send an error
         if(!user){
             return res.status(400).json('Wtf who did this post????')
         }
+        //Delete the post from the posts of the User
         await user.updateOne({$pull: {posts: postId}})
         await user.save()
 
+        //Delete comments done at this post
         let comments = post.commentsId
         await Comment.deleteMany({_id: {$in: comments}})
+        //Remove post and send response
         post.remove()
         res.json('Eliminated from the world')
     }catch(err){
