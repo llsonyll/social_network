@@ -32,11 +32,13 @@ router.put('/:userId/:postId', passport.authenticate('jwt', {session:false, fail
 router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req:Request, res:Response) =>{
     try{
         const {postId} = req.params
+        //Search a post and select the data we want to send
         let post = await Post.findById(`${postId}`)
         .populate({path: 'commentsId',select: 'content', populate:{path: 'userId', select: ['username']}})
         .populate('userId', 'username')
         .populate('likes', 'username')
         .populate('dislikes', 'username')
+        //If no post found send error, else send the post
         if(!post){
             res.status(400).json("Post doesn't exist")
         }else{
