@@ -94,6 +94,8 @@ async (req:Request,res:Response)=>{
 router.post("/",passport.authenticate("jwt", { session: false,failureRedirect: '/auth/loginjwt'}),
    async (req:Request,res:Response)=>{
    try {
+
+    //-------------extract Authorization from HTTP headers----------------
     const authorization: string [] | undefined = req.headers.authorization?.split(" ");
 
     if(!authorization || authorization.length !== 2 || authorization[0] !== "Bearer"){
@@ -101,6 +103,8 @@ router.post("/",passport.authenticate("jwt", { session: false,failureRedirect: '
    }
 
   const token = authorization[1];
+
+  //------------------------decode token-----------------------------------
   let verifyToken: any = jwt.verify(`${token}`,`${process.env.SECRET_TEST}`);
   
   if(!verifyToken || !verifyToken.user ){
@@ -109,9 +113,15 @@ router.post("/",passport.authenticate("jwt", { session: false,failureRedirect: '
 
   let  { id } = verifyToken.user;
 
-  const user = await User.findById(`${id}`);
+  const user: IUser | null = await User.findById(`${id}`);
+  
+  if(!user){
+    return res.status(400).json("Invalid Token")
+  }
 
-  return res.status(200).json(user);
+  let { username } = user;
+
+  return res.status(200).json({id,username});
    } catch (err) {
     return res.status(400).json(err);
    }

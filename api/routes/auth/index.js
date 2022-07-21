@@ -93,18 +93,24 @@ router.post("/login", passport_1.default.authenticate("local", { session: false,
 router.post("/", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
+        //-------------extract Authorization from HTTP headers----------------
         const authorization = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ");
         if (!authorization || authorization.length !== 2 || authorization[0] !== "Bearer") {
             return res.status(400).json("no token");
         }
         const token = authorization[1];
+        //------------------------decode token-----------------------------------
         let verifyToken = jsonwebtoken_1.default.verify(`${token}`, `${process.env.SECRET_TEST}`);
         if (!verifyToken || !verifyToken.user) {
             res.status(401).json("Invalid Token");
         }
         let { id } = verifyToken.user;
         const user = yield mongoose_1.User.findById(`${id}`);
-        return res.status(200).json(user);
+        if (!user) {
+            return res.status(400).json("Invalid Token");
+        }
+        let { username } = user;
+        return res.status(200).json({ id, username });
     }
     catch (err) {
         return res.status(400).json(err);
