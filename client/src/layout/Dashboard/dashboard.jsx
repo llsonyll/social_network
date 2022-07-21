@@ -5,11 +5,10 @@ import NewPost from "../../components/NewPost/newPost";
 import { useState } from "react";
 
 const DashBoard = () => {
-  const [showModal, setShowModal] = useState(true);
-  const openModal = () => setShowModal(true);
+  const [showModal, setShowModal] = useState(false);
   return (
     <div className="dashboard flex flex-col h-screen">
-      <Navbar openModal={openModal} />
+      <Navbar openModal={() => setShowModal(true)} />
       <NewPost showModal={showModal} setShowModal={setShowModal} />
       <Outlet />
     </div>

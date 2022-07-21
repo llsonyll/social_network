@@ -90,6 +90,44 @@ async (req:Request,res:Response)=>{
  }
 })
 
+//------------------------route data user----------------------------------
+router.post("/",passport.authenticate("jwt", { session: false,failureRedirect: '/auth/loginjwt'}),
+   async (req:Request,res:Response)=>{
+   try {
+
+    //-------------extract Authorization from HTTP headers----------------
+    const authorization: string [] | undefined = req.headers.authorization?.split(" ");
+
+    if(!authorization || authorization.length !== 2 || authorization[0] !== "Bearer"){
+     return  res.status(400).json("no token")
+   }
+
+  const token = authorization[1];
+
+  //------------------------decode token-----------------------------------
+  let verifyToken: any = jwt.verify(`${token}`,`${process.env.SECRET_TEST}`);
+  
+  if(!verifyToken || !verifyToken.user ){
+    res.status(401).json("Invalid Token")
+  }
+
+  let  { id } = verifyToken.user;
+
+  const user: IUser | null = await User.findById(`${id}`);
+  
+  if(!user){
+    return res.status(400).json("Invalid Token")
+  }
+
+  let { username } = user;
+
+  return res.status(200).json({id,username});
+   } catch (err) {
+    return res.status(400).json(err);
+   }
+  })
+
+//-------------------------route test---------------------------------
 router.get('/test', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), (req:Request, res:Response)=>{
    res.json({msg: 'Todo funciona a la perfeccion'})
 })
