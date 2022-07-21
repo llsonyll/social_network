@@ -37,15 +37,15 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
         return res.status(400).json(error);
     }
 }));
-// router.delete('/reviewId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
-//     const { reviewId } = req.params;
-//     const review = await Review.findById(`${reviewId}`);
-//     if (!review) return res.status(404).json({msg: 'Review not found'});
-//     try {
-//         await Review.deleteById(review._id)
-//         return res.json({msg: 'Review deleted successfully'})
-//     } catch (error) {
-//         return res.status(400).json(error);
-//     }
-// });
+router.get('/', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userReviews = yield mongoose_1.Review.find({});
+        if (!userReviews.length)
+            return res.status(404).json({ msg: "No hay reviews pero somos la mejor red social del mercado actual" });
+        return res.json(userReviews);
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+}));
 exports.default = router;
