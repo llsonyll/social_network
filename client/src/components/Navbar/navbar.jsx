@@ -6,7 +6,7 @@ import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
 import NewPostBtn from "../NewPostBtn";
 import logoSN from "../../../assets/LogoSN.png";
 
-const NavBar = () => {
+const NavBar = ({ openModal }) => {
   let activeStyle = {
     fontWeight: "bold",
   };
@@ -50,7 +50,7 @@ const NavBar = () => {
           <FaFacebookMessenger />
           Messages
         </NavLink>
-        <NewPostBtn action={() => {}} />
+        <NewPostBtn action={openModal} />
       </div>
     </div>
   );

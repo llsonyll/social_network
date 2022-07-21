@@ -53,7 +53,8 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
     try {
         let { user } = req;
         if (user) {
-            return res.status(200).json({ token: createToken(user) });
+            const send = user;
+            return res.status(200).json({ token: createToken(user), username: send.username, _id: send._id });
             //res.redirect()
         }
         return res.status(400).json("The user does not exists");
@@ -78,7 +79,8 @@ router.post("/login", passport_1.default.authenticate("local", { session: false,
     try {
         let { user } = req;
         if (user) {
-            return res.status(200).json({ token: createToken(user) });
+            const send = user;
+            return res.status(200).json({ token: createToken(user), username: send.username, _id: send._id });
             //res.redirect()
         }
         return res.status(400).json("The user does not exists");

@@ -1,108 +1,155 @@
-.p-container {
-	box-sizing: border-box;
-	display: grid;
-	grid-template-columns: 20% 60% 20%;
-	grid-template-rows: 1fr 1fr;
-	background-color: #2e2e2e;
-	min-width: 320px;
+.p-container{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 .profile-container {
-	margin-top: 5%;
-	grid-column: 2 / 3;
-	grid-row: 1;
-	display: grid;
-	grid-template-columns: 20% 60% 20%;
-	grid-template-rows: 55% 8% 5% 12% 4% 4% auto;
 
-	width: 100%;
-	height: 35em;
-	background-color: rgba(0, 0, 0, 0.2);
+	margin-top: 85px;
+	width: 75%;
+
+	display: grid;
+	grid-template-rows: 100px 1fr;
+	background-color: #202225;
+	padding: 20px;
+	border-radius: 5px;
 	/* background-color: #00000043; */
 }
-.user-fullname {
-	grid-column: 2;
-	grid-row: 2;
-	color: aliceblue;
-}
 
-.shadow-box {
-	grid-column: 2;
-	grid-row: 2 /7;
-	width: 100%;
-	height: 110%;
-	left: 377px;
-	top: 414px;
-	background: rgba(255, 255, 255, 0.04);
-	border-radius: 5px;
+/* img style */
+.profile-container  .img-container{
+	display: flex;
+	justify-content: center;
+	position: relative;
 }
 .profile-img {
-	grid-column: 2;
-	grid-row: 1;
-	place-self: center;
+	/* grid-column: 2;
+	grid-row: 1; */
 	border-radius: 50%;
-	height: 90%;
-	width: 40%;
-	border-color: rgb(62, 62, 62);
-	border-style: solid;
-	border-width: 3px;
+
+	width: 150px;
+	border: 3px solid #202225;
+	position: absolute;
+	top: -80px;
+	transition: .2s all;
+}
+.profile-img:hover {
+	/* grid-column: 2;
+	grid-row: 1; */
+	cursor: pointer;
+	filter: brightness(10%);
+
+}
+.profile-buttonsito:hover {
+	transform: scale(1.2);
 }
 
-.buttonsito {
-	grid-column: 3;
-	grid-row: 1;
-	margin-top: 20%;
-	margin-left: 20%;
-	width: 120px;
-	height: 50px;
-	background: rgba(14, 11, 11, 0.561);
+.img_profile{
+	display: flex;
+	width: 150px;
+	height: 150px;
+	border: 3px solid #202225;
+	background-image: url(https://japanpowered.com/media/images//goku.png);
+	background-position: center;
+	background-size: cover;
+	border-radius: 50%;
+	position: absolute;
+	top: -80px;
+	align-items: center;
+	justify-content: center;
+	transition: .2s all;
+}
+.img_profile .info{
+	color: white;
+	text-align: center;
+	font-weight: 700;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #202225c9;
+	transition: .2s all;
+	opacity: 0;
+}
+
+.img_profile:hover{
+	cursor: pointer;
+}
+.img_profile:hover  .info{
+	
+	opacity: 1;
+}
+
+/* user description */
+.profile-container  .shadow-box {
+	display: flex;
+	justify-content: center;
+
+
+}
+.profile-container  .shadow-box .user_description{
+	background-color: #2F3136;
+	width: 90%;
+	color: white;
 	border-radius: 5px;
-	color: aliceblue;
+}
+.profile-container  .shadow-box .user_description .span-info{
+	color: #929497;
+	display: block;
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 13px;
+}
+.profile-container  .shadow-box .user_description div{
+	display: flex;
+	justify-content: space-between;
+	margin: 3px 10px;
+	flex-wrap: wrap;
+}
+.profile-container  .shadow-box .user_description div > div{
+	display: flex;
+	flex-direction: column;
+}
+.profile-container  .shadow-box .user_description div .button_container{
+	align-self: center;
+	
+}
+.profile-container  .shadow-box .user_description div button{
+	background-color: #4e864c;
+	border-radius: 5px;
+	padding: 5px 15px;
+	transition: .3s all;
+}
+.profile-container  .shadow-box .user_description div button:hover{
+	background-color: #447543;
 }
 
-.user-firstname {
-	grid-column: 2;
-	grid-row: 2;
-	color: aliceblue;
-	font-weight: bold;
-	font-size: 1.8em;
-	margin-bottom: 0%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+@media (max-width:960px) {
+	.profile-container  .shadow-box .user_description div{
+		flex-direction: column;
+		flex-wrap: none;
+		
+	}
+	.profile-container  .shadow-box .user_description  div{
+		
+		margin: 0;
+		
+	}
+	.profile-container  .shadow-box .user_description  div > div{
+		
+		padding: 5px;
+		
+	}
+	.profile-container  .shadow-box .user_description div .button_container{
+		width: 100%;
+		
+	}
+	.profile-container  .shadow-box .user_description div button{
+		width: 100%;
+		
+	}
 }
-.user-username {
-	grid-column: 2;
-	grid-row: 3;
-	color: rgb(188, 188, 188);
-	font-weight: lighter;
-	font-size: 0.9em;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding-bottom: 0%;
-}
-.user-followers {
-	grid-column: 2;
-	grid-row: 5;
 
-	color: rgb(188, 188, 188);
-	font-weight: lighter;
-	font-size: 0.9em;
-	margin-left: 8%;
-}
-.user-following {
-	grid-column: 2;
-	grid-row: 6;
-	color: rgb(188, 188, 188);
-	font-weight: lighter;
-	font-size: 0.9em;
-	margin-left: 8%;
-}
-.user-biography {
-	grid-column: 2;
-	grid-row: 4;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: aliceblue;
-}
+
