@@ -54,4 +54,25 @@ router.post('/comment/:userId', passport_1.default.authenticate('jwt', { session
         return res.status(400).json(error);
     }
 }));
+router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    let page = parseInt(`${req.query.page}`);
+    if (!page)
+        page = 0;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            return res.status(404).json({ errorMsg: 'who are you?' });
+        if (user.following.length === 0) {
+            const posts = yield mongoose_1.Post.find({}).skip(page * 20).limit(20);
+            res.json(posts);
+        }
+        //  else {
+        //si el usuario sigue a otros usuarios
+        // }
+    }
+    catch (err) {
+        return res.status(404).json({ errorMsg: err });
+    }
+}));
 exports.default = router;
