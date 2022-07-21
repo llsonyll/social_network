@@ -2,6 +2,8 @@ import "./friendPostTile.css";
 
 import Avatar from "../../components/Avatar";
 
+import { NavLink } from "react-router-dom";
+
 const FriendPostTile = ({ tile }) => {
   // console.log(user);
 
@@ -20,7 +22,11 @@ const FriendPostTile = ({ tile }) => {
   };
 
   return (
-    <button className="flex w-full my-3 py-1" onClick={handleTileClick}>
+    <NavLink
+      to="/home/post/1"
+      className="flex w-full my-3 py-1"
+      onClick={handleTileClick}
+    >
       <Avatar size="l" imgUrl={tile.user.url} />
       <div className="px-2 flex flex-col justify-start items-start ">
         <div className="text-white text-lg font-bold">{tile.user.name}</div>
@@ -28,7 +34,7 @@ const FriendPostTile = ({ tile }) => {
           {getTimePublished()}
         </div>
       </div>
-    </button>
+    </NavLink>
   );
 };
 
