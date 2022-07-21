@@ -49,17 +49,19 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
-router.delete('/:reviewId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
-    const { reviewId } = req.params;
+router.delete('/:userId/:reviewId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
+    const { reviewId, userId } = req.params;
     
     try {
         const findReview = await Review.findById(`${reviewId}`);
     
         if (!findReview) return res.status(404).json({msg: 'Review not found, but you can create one with 5 stars ;)'});
 
-        const user = await User.findById(findReview.userId);
+        if (`${findReview.userId}` !== userId) return res.status(400).json({msg: 'You can only delete your own review'});
+        
+        const user = await User.findById(`${userId}`);
 
-        if (!user) return res.json({msg: 'Anonymus review xd'})
+        if (!user) return res.status(400).json({msg: 'Anonymus review xd'});
 
         await Review.deleteOne({_id: findReview._id});
 
@@ -70,6 +72,33 @@ router.delete('/:reviewId', passport.authenticate('jwt', {session:false, failure
         return res.json({msg: 'Review deleted successfully'});
     } catch (error) {
         return res.status(400).json(error);
+    }
+});
+
+router.put('/:userId/:reviewId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req:Request, res:Response) => {
+    try{
+        const {reviewId, userId} = req.params
+        const {description, stars} = req.body
+        //Checks if body has content
+        if(!description && !stars){
+            return res.status(400).json('Necesita tener descripción o estrellas');
+        };
+        const review = await Review.findById(`${reviewId}`);
+        //Checks if review exists and if the review was made by the user
+        if(!review){
+            res.status(404).json("Review doesn't exist");
+        }else if(`${review.userId}` !== userId){
+            res.status(400).json("You can only modify your own review");
+        }else{
+            //Change description or stars and save
+            if (description) review.description = description;
+            if (stars) review.stars = stars;
+            
+            await review.save();
+            res.status(200).json('Review modified successfully');
+        };
+    }catch(err){
+        res.status(400).json('Something went wrong');
     }
 });
 
