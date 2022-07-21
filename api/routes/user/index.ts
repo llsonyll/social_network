@@ -4,32 +4,6 @@ import passport from 'passport'
 
 const router = express.Router();
 
-router.post('/post/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const { content } = req.body;
-    
-    try {
-        const user = await User.findById(`${userId}`)
-    
-        if (!user || !content) return res.status(404).json({msg: 'idk'})
-
-        const newPost = new Post({
-            content,
-            userId: user._id
-        });
-
-        await newPost.save();
-
-        user.posts.push(newPost._id);
-
-        await user.save();
-
-        return res.status(201).json({msg: 'Post created successfully'});
-    } catch (error) {
-        return res.status(400).json(error);
-    }
-});
-
 router.post('/comment/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     const { userId, postId } = req.params;
     const { content } = req.body;

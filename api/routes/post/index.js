@@ -94,4 +94,24 @@ router.delete('/:userId/:postId', passport_1.default.authenticate('jwt', { sessi
         res.status(400).json('something went wrong');
     }
 }));
+router.post('/post/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const { content } = req.body;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user || !content)
+            return res.status(404).json({ msg: 'idk' });
+        const newPost = new mongoose_1.Post({
+            content,
+            userId: user._id
+        });
+        yield newPost.save();
+        user.posts.push(newPost._id);
+        yield user.save();
+        return res.status(201).json({ msg: 'Post created successfully' });
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+}));
 exports.default = router;
