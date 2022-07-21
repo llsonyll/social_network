@@ -6,14 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Para las rutas en general
 const express_1 = __importDefault(require("express"));
 const index_1 = __importDefault(require("./auth/index"));
-<<<<<<< HEAD
 const cors_1 = __importDefault(require("cors"));
-=======
 const auth_1 = require("../controllers/auth");
 const mongoose_1 = require("../mongoose");
 const passport_1 = __importDefault(require("passport"));
 const index_2 = __importDefault(require("./user/index"));
->>>>>>> 1fcf2d8b345756773efde1dabf84b399904ffc6d
 const server = (0, express_1.default)();
 const options = {
     allowedHeaders: [
