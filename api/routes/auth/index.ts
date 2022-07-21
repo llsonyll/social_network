@@ -50,8 +50,10 @@ async (req:Request,res:Response)=>{
    //user return of passport strategy
  try {
    let{user} = req; 
+   
    if(user){
-     return res.status(200).json({token: createToken(user as IUser)});
+     const send:IUser = user as IUser
+     return res.status(200).json({token: createToken(user as IUser), username: send.username, _id: send._id});
       //res.redirect()
     }
    return res.status(400).json("The user does not exists");
@@ -78,7 +80,8 @@ async (req:Request,res:Response)=>{
  try {
    let{user} = req; 
    if(user){
-     return res.status(200).json({token: createToken(user as IUser)});
+     const send:IUser = user as IUser
+     return res.status(200).json({token: createToken(user as IUser), username: send.username, _id: send._id});
       //res.redirect()
     }
    return res.status(400).json("The user does not exists");
