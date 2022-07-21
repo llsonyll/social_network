@@ -13,6 +13,7 @@ const passport_1 = __importDefault(require("passport"));
 const index_2 = __importDefault(require("./user/index"));
 const review_1 = __importDefault(require("./review"));
 const post_1 = __importDefault(require("./post"));
+const comment_1 = __importDefault(require("./comment"));
 const server = (0, express_1.default)();
 const options = {
     allowedHeaders: [
@@ -36,4 +37,5 @@ server.use("/post", post_1.default);
 server.use('/user', index_2.default);
 server.use("/auth", index_1.default);
 server.use('/review', review_1.default);
+server.use('/comment', comment_1.default);
 exports.default = server;

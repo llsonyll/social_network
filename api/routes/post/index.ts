@@ -27,7 +27,7 @@ router.put('/:userId/:postId', passport.authenticate('jwt', {session:false, fail
     }catch(err){
         res.status(400).json('Something went wrong')
     }
-})
+});
 
 router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req:Request, res:Response) =>{
     try{
@@ -47,7 +47,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
     }catch(err){
         res.status(400).json('Something went wrong')
     }
-})
+});
 
 router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req:Request, res:Response) =>{
     try{
@@ -78,8 +78,32 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
     }catch(err){
         res.status(400).json('something went wrong')
     }
-})
+});
 
+router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const { content } = req.body;
+    
+    try {
+        const user = await User.findById(`${userId}`)
+    
+        if (!user || !content) return res.status(404).json({msg: 'idk'})
 
+        const newPost = new Post({
+            content,
+            userId: user._id
+        });
+
+        await newPost.save();
+
+        user.posts.push(newPost._id);
+
+        await user.save();
+
+        return res.status(201).json({msg: 'Post created successfully'});
+    } catch (error) {
+        return res.status(400).json(error);
+    }
+});
 
 export default router

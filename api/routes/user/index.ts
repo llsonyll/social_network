@@ -4,61 +4,6 @@ import passport from 'passport'
 
 const router = express.Router();
 
-router.post('/post/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const { content } = req.body;
-    
-    try {
-        const user = await User.findById(`${userId}`)
-    
-        if (!user || !content) return res.status(404).json({msg: 'idk'})
-
-        const newPost = new Post({
-            content,
-            userId: user._id
-        });
-
-        await newPost.save();
-
-        user.posts.push(newPost._id);
-
-        await user.save();
-
-        return res.status(201).json({msg: 'Post created successfully'});
-    } catch (error) {
-        return res.status(400).json(error);
-    }
-});
-
-router.post('/comment/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
-    const { userId, postId } = req.params;
-    const { content } = req.body;
-    
-    
-    try {
-        const user = await User.findById(`${userId}`);
-        const post = await Post.findById(`${postId}`);
-        
-        if (!user || !post || !content) return res.status(404).json({msg: 'idk'})
-
-        const newComment = new Comment({
-            content,
-            userId: user._id,
-            postId: post._id
-        });
-
-        await newComment.save();
-
-        post.commentsId.push(newComment._id);
-
-        await post.save();
-
-        return res.status(201).json(post);
-    } catch (error) {
-        return res.status(400).json(error)
-    }
-});
-
 router.get("/browser/:username",passport.authenticate('jwt',{session: false, failureRedirect: '/auth/loginjwt'}),
 async (req:Request,res:Response)=>{
     try {
@@ -91,7 +36,10 @@ router.get('/home/:userId', passport.authenticate('jwt', {session:false, failure
         if(!user) return res.status(404).json({errorMsg: 'who are you?'})
         
         if(user.following.length === 0) {
-            const posts = await Post.find({}).skip(page * 20).limit(20)
+            const posts = await Post.find({})
+            .sort({createdAt: -1})
+            .skip(page * 20)
+            .limit(20)
             res.json(posts)
         }
         //  else {
@@ -105,5 +53,21 @@ router.get('/home/:userId', passport.authenticate('jwt', {session:false, failure
     }
 });
 
+router.get('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
+    const {userId} = req.params
+
+    try{
+        
+        const user = await User.findById(`${userId}`)
+        .populate('posts', ['_id', 'likes', 'dislikes'])
+        .populate('following', 'username')
+        .populate('followers', 'username')
+        .select("-password")
+        if(!user) return res.status(404).json({errorMsg: "who are you?"})
+        return res.status(201).json(user);
+    } catch(err) {
+        res.status(404).json({errorMsg: err})
+    }
+});
 
 export default router;

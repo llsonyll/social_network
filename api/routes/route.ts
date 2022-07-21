@@ -5,9 +5,10 @@ import cors from "cors";
 import { Auth } from '../controllers/auth';
 import { User } from '../mongoose';
 import passport  from 'passport';
-import userRoute from './user/index'
-import reviewRoute from './review'
-import postRoute from './post'
+import userRoute from './user/index';
+import reviewRoute from './review';
+import postRoute from './post';
+import commentRoute from './comment';
 
 const server = express();
 
@@ -26,16 +27,17 @@ const options: cors.CorsOptions = {
   preflightContinue: false,
 };
 
-server.use(cors(options))
+server.use(cors(options));
 
 server.use(express.json());
 Auth(server,User);
 server.use(passport.initialize());
 
 
-server.use("/post", postRoute)
-server.use('/user', userRoute)
-server.use("/auth",authRouter);
+server.use("/post", postRoute);
+server.use('/user', userRoute);
+server.use("/auth", authRouter);
 server.use('/review', reviewRoute);
+server.use('/comment', commentRoute);
 
 export default server;
