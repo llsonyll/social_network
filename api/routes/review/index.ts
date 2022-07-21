@@ -32,7 +32,7 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
 
 })
 
-router.get('/', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
 
     try{
         const userReviews = await Review.find({});

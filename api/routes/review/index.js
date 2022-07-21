@@ -37,7 +37,7 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
         return res.status(400).json(error);
     }
 }));
-router.get('/', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userReviews = yield mongoose_1.Review.find({});
         if (!userReviews.length)
