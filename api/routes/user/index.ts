@@ -59,6 +59,23 @@ router.post('/comment/:userId/:postId', passport.authenticate('jwt', {session:fa
     }
 });
 
+router.get("/browser/:username",passport.authenticate('jwt',{session: false, failureRedirect: '/auth/loginjwt'}),
+async (req:Request,res:Response)=>{
+    try {
+        const {username} = req.params;
+     
+    //---------------------find User by username---------------------------
+    const users = await User.find({username: new RegExp(`^${username}`,"i")});
+
+     if(!Object.values(users).length){
+       return res.status(400).json({err:"User not fount"})
+     }
+    
+     return  res.status(200).json(users)
+    } catch (error) {
+      
+    }
+});
 
 router.get('/home/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
 
