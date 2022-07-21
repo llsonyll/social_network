@@ -1,7 +1,5 @@
 import React from 'react'
 
-//logo
-import Logo from '../../../assets/LogoSN.png'
 
 //iconos
 import {BsGoogle} from 'react-icons/bs'
@@ -11,19 +9,48 @@ import {AiOutlineTwitter} from 'react-icons/ai'
 //componentes 
 import {Link} from 'react-router-dom'
 
+//Hooks
+import { useState } from 'react'
+
 
 const Signin = () => {
+	const [input , setInput] = useState({
+		email: '',
+		password :''
+	})
+
+	let errores = {}
+  // validacion de email
+	if (input.email === '') {
+		errores.email = 'Email is required'
+	}
+	else if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(input.email)) {
+		errores.email = 'Email no valited'
+	}
+	//validacion de Password
+	if (input.password === '') {
+		errores.password = 'Password is required'
+	} else if(!/^.{6,25}$/i.test(input.password)) {
+		errores.password = 'The password must be at least 6 characters'
+	}
+
   return (
         <>
 				<div className='input_container'>
 				
 					<div className='email_container'>
 						<label htmlFor=''>Email</label>
-						<input type='text' name='' id='' placeholder='Email'/>
+						<input type='text' name='email' id='' placeholder='Email' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
+						{
+						errores.email ?  <p className='err_sign'>{errores.email}</p> : null
+						}
 					</div>
 					<div className='password_container'>
 						<label htmlFor=''>Password</label>
-						<input type='password' name='' id='' placeholder='Password'/>
+						<input type='password' name='password' id='' placeholder='Password' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
+						{
+						errores.password ?  <p className='err_sign'>{errores.password}</p> : null
+						}
 					</div>
 					<div className='checkbox_container'>
 						<div className='remember_container'>
@@ -32,7 +59,7 @@ const Signin = () => {
 						</div>
 						<Link to=''>Forgot your password?</Link>
 					</div>
-					<button className='on' type='submit'>
+					<button className='on' type='submit' disabled>
 						Sign in
 					</button>
 					<div className='orcontinue'>
