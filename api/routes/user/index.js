@@ -16,26 +16,6 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const passport_1 = __importDefault(require("passport"));
 const router = express_1.default.Router();
-router.post('/post/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params;
-    const { content } = req.body;
-    try {
-        const user = yield mongoose_1.User.findById(`${userId}`);
-        if (!user || !content)
-            return res.status(404).json({ msg: 'idk' });
-        const newPost = new mongoose_1.Post({
-            content,
-            userId: user._id
-        });
-        yield newPost.save();
-        user.posts.push(newPost._id);
-        yield user.save();
-        return res.status(201).json({ msg: 'Post created successfully' });
-    }
-    catch (error) {
-        return res.status(400).json(error);
-    }
-}));
 router.post('/comment/:userId/:postId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, postId } = req.params;
     const { content } = req.body;
@@ -81,7 +61,10 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
         if (!user)
             return res.status(404).json({ errorMsg: 'who are you?' });
         if (user.following.length === 0) {
-            const posts = yield mongoose_1.Post.find({}).skip(page * 20).limit(20);
+            const posts = yield mongoose_1.Post.find({})
+                .sort({ createdAt: -1 })
+                .skip(page * 20)
+                .limit(20);
             res.json(posts);
         }
         //  else {
@@ -90,6 +73,22 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });
+    }
+}));
+router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`)
+            .populate('posts', ['_id', 'likes', 'dislikes'])
+            .populate('following', 'username')
+            .populate('followers', 'username')
+            .select("-password");
+        if (!user)
+            return res.status(404).json({ errorMsg: "who are you?" });
+        return res.status(201).json(user);
+    }
+    catch (err) {
+        res.status(404).json({ errorMsg: err });
     }
 }));
 exports.default = router;
