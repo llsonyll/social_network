@@ -51,15 +51,17 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(400).json(error);
     }
 }));
-router.delete('/:reviewId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { reviewId } = req.params;
+router.delete('/:userId/:reviewId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { reviewId, userId } = req.params;
     try {
         const findReview = yield mongoose_1.Review.findById(`${reviewId}`);
         if (!findReview)
             return res.status(404).json({ msg: 'Review not found, but you can create one with 5 stars ;)' });
-        const user = yield mongoose_1.User.findById(findReview.userId);
+        if (`${findReview.userId}` !== userId)
+            return res.status(400).json({ msg: 'You can only delete your own review' });
+        const user = yield mongoose_1.User.findById(`${userId}`);
         if (!user)
-            return res.json({ msg: 'Anonymus review xd' });
+            return res.status(400).json({ msg: 'Anonymus review xd' });
         yield mongoose_1.Review.deleteOne({ _id: findReview._id });
         user.review = undefined;
         yield user.save();
@@ -67,6 +69,38 @@ router.delete('/:reviewId', passport_1.default.authenticate('jwt', { session: fa
     }
     catch (error) {
         return res.status(400).json(error);
+    }
+}));
+router.put('/:userId/:reviewId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { reviewId, userId } = req.params;
+        const { description, stars } = req.body;
+        //Checks if body has content
+        if (!description && !stars) {
+            return res.status(400).json('Necesita tener descripción o estrellas');
+        }
+        ;
+        const review = yield mongoose_1.Review.findById(`${reviewId}`);
+        //Checks if review exists and if the review was made by the user
+        if (!review) {
+            res.status(404).json("Review doesn't exist");
+        }
+        else if (`${review.userId}` !== userId) {
+            res.status(400).json("You can only modify your own review");
+        }
+        else {
+            //Change description or stars and save
+            if (description)
+                review.description = description;
+            if (stars)
+                review.stars = stars;
+            yield review.save();
+            res.status(200).json('Review modified successfully');
+        }
+        ;
+    }
+    catch (err) {
+        res.status(400).json('Something went wrong');
     }
 }));
 exports.default = router;
