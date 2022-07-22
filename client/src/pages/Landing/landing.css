@@ -148,6 +148,7 @@
 	display: flex;
 	flex-direction: column;
 	padding: 10px;
+	animation: aparecer .9s ;
 }
 
 .landing_container .input_container label {
@@ -313,10 +314,12 @@ input[type='password']::placeholder {
 		width: 60%;
 		margin-top: 10px;
 		border-radius: 5px;
-		background-color: #5a5959fd;
+		background: linear-gradient(51deg, rgba(57,57,57,1) 0%, rgba(109,109,109,1) 69%, rgb(163, 163, 163) 100%); 
 		color: white;
 		display: flex;
 		padding: 10px ;
+		
+	
 }
 .sn_review .star{
 		align-self: center;
@@ -356,6 +359,28 @@ input[type='password']::placeholder {
 	color: white;
 }
 
+
+/* animaciones */
+@keyframes aparecer{
+	from{
+		opacity: 0;
+	}
+	/* 50%{
+		opacity: 0.5;
+	} */
+	to{
+		opacity: 1;
+	}
+}
+@keyframes iluminar{
+	0%{
+		background-color: #6e6e6e;
+	}
+	
+	100%{
+		background-color: #505050;
+	}
+}
 
 
 /* media queries */
