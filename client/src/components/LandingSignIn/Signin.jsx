@@ -11,7 +11,9 @@ import {Link} from 'react-router-dom'
 
 //Hooks
 import { useState } from 'react'
-
+//Dispatch
+import {useDispatch} from 'react-redux'
+import { loginAction } from '../../redux/actions/authActions'
 
 const Signin = () => {
 	const [input , setInput] = useState({
@@ -20,6 +22,10 @@ const Signin = () => {
 	})
 
 	let errores = {}
+
+  // llamo al dispatch	
+	let dispatch = useDispatch()
+
   // validacion de email
 	if (input.email === '') {
 		errores.email = 'Email is required'
@@ -32,6 +38,11 @@ const Signin = () => {
 		errores.password = 'Password is required'
 	} else if(!/^.{6,25}$/i.test(input.password)) {
 		errores.password = 'The password must be at least 6 characters'
+	}
+
+	//Login
+	function handleLogin(){
+		dispatch(loginAction(input))
 	}
 
   return (
@@ -59,7 +70,7 @@ const Signin = () => {
 						</div>
 						<Link to=''>Forgot your password?</Link>
 					</div>
-					<button className='on' type='submit' disabled={errores.email||errores.password}>
+					<button className='on' type='button' disabled={errores.email||errores.password} onClick={handleLogin}>
 						Sign in
 					</button>
 					<div className='orcontinue'>
