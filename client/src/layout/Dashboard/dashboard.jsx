@@ -7,7 +7,7 @@ import { useState } from "react";
 const DashBoard = () => {
   const [showModal, setShowModal] = useState(false);
   return (
-    <div className="dashboard flex flex-col h-screen">
+    <div className="flex flex-col">
       <Navbar openModal={() => setShowModal(true)} />
       <NewPost showModal={showModal} setShowModal={setShowModal} />
       <Outlet />
