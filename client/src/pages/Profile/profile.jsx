@@ -4,6 +4,8 @@ import { useState } from 'react'
 import EditFullname from '../../components/EditFullname'
 import EditUsername from '../../components/EditUsername'
 import EditBiography from '../../components/EditBiography'
+import ProfilePosts from '../../components/ProfilePostsRenderer'
+import { mockPost } from '../../data/20DummyPosts'
 
 const Profile = () => {
 	const [firstname, setFirstname] = useState(false)
@@ -12,6 +14,7 @@ const Profile = () => {
 	const [biography, setBiography] = useState(false)
 
 	let user = UsersDummy[0]
+	let post = mockPost[0]
 
 	const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
 		if (nameOfTheComponentToRender === 'firstname') {
@@ -20,13 +23,22 @@ const Profile = () => {
 		if (nameOfTheComponentToRender === 'username') {
 			setUsername(false)
 		}
-		if (nameOfTheComponentToRender === 'image') {
-			setImage(false)
-		}
 		if (nameOfTheComponentToRender === 'biography') {
 			setBiography(false)
 		}
+		if (nameOfTheComponentToRender === 'image') {
+			setImage(false)
+		}
 	}
+
+	let postNumber = 1
+	let fullname = `${user.firstname + ' ' + user.lastname}`
+	let timeAgo = '9hr'
+	let description = post.content
+		? post.content
+		: 'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum '
+	let commentsLength = post.comments.length
+	let likes = post.likes.length
 
 	return (
 		<>
@@ -92,7 +104,7 @@ const Profile = () => {
 
 							<div className='user-biography'>
 								<div className='info_container'>
-									<span className='span-info'>biography</span>
+									<span className='span-info'>Biography</span>
 									{user.biography}
 								</div>
 								<div className='button_container'>
@@ -121,6 +133,14 @@ const Profile = () => {
 			{/* {image === true && <EditLastname renderChangeRenderComponents={renderChangeRenderComponents} user={user} />} */}
 
 			{/* Espacio para mapear 20 objetos con el componente renderizador de los posts y los 20 posts que le pido a la db */}
+			<ProfilePosts
+				postNumber={postNumber}
+				fullname={fullname}
+				timeAgo={timeAgo}
+				description={description}
+				comments={commentsLength}
+				likes={likes}
+			/>
 		</>
 	)
 }
