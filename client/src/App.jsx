@@ -14,7 +14,7 @@ function App() {
 				<Route path='/' element={<Landing />} />
 				<Route path='/home' element={<DashBoard />}>
 					<Route index element={<Home />} />
-					<Route path='profile/:id' element={<Profile />} />
+					<Route path='profile:id' element={<Profile />} />
 					<Route path='messages' element={<Messages />} />
 					<Route path='post/:id' element={<PostDetail />} />
 				</Route>
