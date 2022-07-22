@@ -1,4 +1,4 @@
-import { loginUser, registerUser, addLoggedUser } from "../reducers/authReducer.slice";
+import { loginUser } from "../reducers/authReducer.slice";
 import axios from 'axios';
 
 export const loginAction = (obj) => async (dispatch) => {

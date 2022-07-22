@@ -15,12 +15,6 @@ const authReducer = createSlice({
 		loginUser(state, action){
 			state.loggedUser = action.payload
 		},
-		registerUser(state, action){
-			state.loggedUser = action.payload
-		},
-		addLoggedUser(state, action){
-			state.loggedUser = action.payload
-		},
 		logOutUser(state, action){
 			localStorage.removeItem('token')
 			state.loggedUser = {}
