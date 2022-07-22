@@ -51,14 +51,14 @@ const Signin = () => {
 				
 					<div className='email_container'>
 						<label htmlFor=''>Email</label>
-						<input type='text' name='email' id='' placeholder='Email' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
+						<input autoComplete='off' type='text' name='email' id='' placeholder='Email' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
 						{
 						errores.email ?  <p className='err_sign'>{errores.email}</p> : null
 						}
 					</div>
 					<div className='password_container'>
 						<label htmlFor=''>Password</label>
-						<input type='password' name='password' id='' placeholder='Password' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
+						<input  autoComplete='off' type='password' name='password' id='' placeholder='Password' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
 						{
 						errores.password ?  <p className='err_sign'>{errores.password}</p> : null
 						}

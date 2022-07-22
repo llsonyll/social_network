@@ -1,4 +1,4 @@
-import {Types} from "mongoose";
+import {TrigonometryExpressionOperator, Types} from "mongoose";
 
 export interface IUser {
    _id: Types.ObjectId;
@@ -38,7 +38,8 @@ export  interface IComments {
    postId: Types.ObjectId;
    userId: Types.ObjectId;
    content: string;
-   createdAt: Date
+   createdAt: Date,
+   likes: Types.Array<Types.ObjectId>
 }
 
 export interface IReview {

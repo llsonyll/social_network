@@ -29,7 +29,7 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
 
         await user.save();
 
-        return res.status(201).json({msg: 'Review created successfully'})
+        return res.status(201).json(newReview)
     } catch (error) {
         return res.status(400).json(error)
     }
@@ -41,7 +41,7 @@ router.get('/', async (req: Request, res: Response) => {
     try{
         const userReviews = await Review.find({});
 
-        if(!userReviews.length) return res.status(404).json({msg: "No hay reviews pero somos la mejor red social del mercado actual"});
+        if(!userReviews.length) return res.json([]);
 
         return res.json(userReviews)
     } catch(error) {
@@ -69,7 +69,11 @@ router.delete('/:userId/:reviewId', passport.authenticate('jwt', {session:false,
 
         await user.save();
 
-        return res.json({msg: 'Review deleted successfully'});
+        const allReviews = await Review.find({})
+
+        if (!allReviews.length) return res.json([]);
+
+        return res.json(allReviews);
     } catch (error) {
         return res.status(400).json(error);
     }
@@ -95,7 +99,12 @@ router.put('/:userId/:reviewId', passport.authenticate('jwt', {session:false, fa
             if (stars) review.stars = stars;
             
             await review.save();
-            res.status(200).json('Review modified successfully');
+
+            const allReviews = await Review.find({});
+
+            if (!allReviews.length) return res.json([])
+
+            res.status(200).json(allReviews);
         };
     }catch(err){
         res.status(400).json('Something went wrong');

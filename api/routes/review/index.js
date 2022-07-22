@@ -34,7 +34,7 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
         yield newReview.save();
         user.review = newReview._id;
         yield user.save();
-        return res.status(201).json({ msg: 'Review created successfully' });
+        return res.status(201).json(newReview);
     }
     catch (error) {
         return res.status(400).json(error);
@@ -44,7 +44,7 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userReviews = yield mongoose_1.Review.find({});
         if (!userReviews.length)
-            return res.status(404).json({ msg: "No hay reviews pero somos la mejor red social del mercado actual" });
+            return res.json([]);
         return res.json(userReviews);
     }
     catch (error) {
@@ -65,7 +65,10 @@ router.delete('/:userId/:reviewId', passport_1.default.authenticate('jwt', { ses
         yield mongoose_1.Review.deleteOne({ _id: findReview._id });
         user.review = undefined;
         yield user.save();
-        return res.json({ msg: 'Review deleted successfully' });
+        const allReviews = yield mongoose_1.Review.find({});
+        if (!allReviews.length)
+            return res.json([]);
+        return res.json(allReviews);
     }
     catch (error) {
         return res.status(400).json(error);
@@ -95,7 +98,10 @@ router.put('/:userId/:reviewId', passport_1.default.authenticate('jwt', { sessio
             if (stars)
                 review.stars = stars;
             yield review.save();
-            res.status(200).json('Review modified successfully');
+            const allReviews = yield mongoose_1.Review.find({});
+            if (!allReviews.length)
+                return res.json([]);
+            res.status(200).json(allReviews);
         }
         ;
     }
