@@ -166,10 +166,21 @@
 
 /* POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSTS */
 
-.profile-posts-div {
+.profile-posts-component {
 	display: flex;
-	flex-direction: column;
+	/* min-width: 300px; */
+	min-width: 1000px;
+	place-self: center;
+	margin-top: 0px;
+	background-color: #202225;
+}
+/* @media screen and (max-width: 960px) {
+	.profile-posts-component {
+		min-width: 700px;
+	}
+} */
 
-	justify-content: center;
+.profile-posts-component-outside-div {
 	margin-top: 50px;
+	place-self: center;
 }
