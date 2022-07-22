@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  searches: {},
-  obj: { user: "juan" },
+  searches: [],
 };
 
 const browserReducer = createSlice({
