@@ -21,7 +21,11 @@ router.post('/:userId/:postId', passport_1.default.authenticate('jwt', { session
     const { content } = req.body;
     try {
         const user = yield mongoose_1.User.findById(`${userId}`);
-        const post = yield mongoose_1.Post.findById(`${postId}`);
+        const post = yield mongoose_1.Post.findById(`${postId}`)
+            .populate({ path: 'commentsId', select: 'content', populate: { path: 'userId', select: ['username', 'likes'] } })
+            .populate('userId', 'username')
+            .populate('likes', 'username')
+            .populate('dislikes', 'username');
         if (!user || !post || !content)
             return res.status(404).json({ msg: 'idk' });
         const newComment = new mongoose_1.Comment({

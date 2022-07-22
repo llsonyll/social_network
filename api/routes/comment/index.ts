@@ -11,7 +11,11 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
     
     try {
         const user = await User.findById(`${userId}`);
-        const post = await Post.findById(`${postId}`);
+        const post = await Post.findById(`${postId}`)
+        .populate({path: 'commentsId',select: 'content', populate:{path: 'userId', select: ['username', 'likes']}})
+        .populate('userId', 'username')
+        .populate('likes', 'username')
+        .populate('dislikes', 'username')
         
         if (!user || !post || !content) return res.status(404).json({msg: 'idk'})
 
