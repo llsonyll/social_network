@@ -34,7 +34,7 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
         yield newReview.save();
         user.review = newReview._id;
         yield user.save();
-        return res.status(201).json({ msg: 'Review created successfully' });
+        return res.status(201).json(newReview);
     }
     catch (error) {
         return res.status(400).json(error);
@@ -65,7 +65,10 @@ router.delete('/:userId/:reviewId', passport_1.default.authenticate('jwt', { ses
         yield mongoose_1.Review.deleteOne({ _id: findReview._id });
         user.review = undefined;
         yield user.save();
-        return res.json({ msg: 'Review deleted successfully' });
+        const allReviews = yield mongoose_1.Review.find({});
+        if (!allReviews.length)
+            return res.status(404).json([]);
+        return res.json(allReviews);
     }
     catch (error) {
         return res.status(400).json(error);
@@ -95,7 +98,10 @@ router.put('/:userId/:reviewId', passport_1.default.authenticate('jwt', { sessio
             if (stars)
                 review.stars = stars;
             yield review.save();
-            res.status(200).json('Review modified successfully');
+            const allReviews = yield mongoose_1.Review.find({});
+            if (!allReviews.length)
+                return res.status(404).json([]);
+            res.status(200).json(allReviews);
         }
         ;
     }
