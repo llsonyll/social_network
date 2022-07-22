@@ -1,6 +1,7 @@
 import './profile.css'
 import { UsersDummy } from '../../data/20UsersDummy'
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import EditFullname from '../../components/EditFullname'
 import EditUsername from '../../components/EditUsername'
 import EditBiography from '../../components/EditBiography'
@@ -8,13 +9,11 @@ import ProfilePosts from '../../components/ProfilePostsRenderer'
 import { mockPost } from '../../data/20DummyPosts'
 
 const Profile = () => {
+	const params = useParams()
 	const [firstname, setFirstname] = useState(false)
 	const [username, setUsername] = useState(false)
-	const [image, setImage] = useState(false)
 	const [biography, setBiography] = useState(false)
-
-	let user = UsersDummy[0]
-	let post = mockPost[0]
+	const [image, setImage] = useState(false)
 
 	const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
 		if (nameOfTheComponentToRender === 'firstname') {
@@ -31,14 +30,21 @@ const Profile = () => {
 		}
 	}
 
-	let postNumber = 1
-	let fullname = `${user.firstname + ' ' + user.lastname}`
-	let timeAgo = '9hr'
-	let description = post.content
-		? post.content
-		: 'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum '
-	let commentsLength = post.comments.length
-	let likes = post.likes.length
+	if (params) console.log(params.id)
+
+	let user = UsersDummy[0]
+	let post = mockPost[0]
+
+	let userPosts = {
+		postNumber: 1,
+		fullname: `${user.firstname + ' ' + user.lastname}`,
+		timeAgo: '9hr',
+		description: post.content
+			? post.content
+			: 'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum ',
+		commentsLength: `${post.comments.length}`,
+		likes: `${post.likes.length}`,
+	}
 
 	return (
 		<>
@@ -64,13 +70,15 @@ const Profile = () => {
 									<p>{`${user.firstname + ' ' + user.lastname}`}</p>
 								</div>
 								<div className='button_container'>
-									<button
-										onClick={() => {
-											setFirstname(true)
-										}}
-										type='button'>
-										Edit
-									</button>
+									{params.id === params.id ? (
+										<button
+											onClick={() => {
+												setFirstname(true)
+											}}
+											type='button'>
+											Edit
+										</button>
+									) : null}
 								</div>
 							</div>
 							<div className='user-username'>
@@ -79,13 +87,15 @@ const Profile = () => {
 									{user.username}
 								</div>
 								<div className='button_container'>
-									<button
-										onClick={() => {
-											setUsername(true)
-										}}
-										type='button'>
-										Edit
-									</button>
+									{params.id === params.id ? (
+										<button
+											onClick={() => {
+												setUsername(true)
+											}}
+											type='button'>
+											Edit
+										</button>
+									) : null}
 								</div>
 							</div>
 
@@ -108,13 +118,15 @@ const Profile = () => {
 									{user.biography}
 								</div>
 								<div className='button_container'>
-									<button
-										onClick={() => {
-											setBiography(true)
-										}}
-										type='button'>
-										Edit
-									</button>
+									{params.id === params.id ? (
+										<button
+											onClick={() => {
+												setBiography(true)
+											}}
+											type='button'>
+											Edit
+										</button>
+									) : null}
 								</div>
 							</div>
 						</div>
@@ -133,14 +145,8 @@ const Profile = () => {
 			{/* {image === true && <EditLastname renderChangeRenderComponents={renderChangeRenderComponents} user={user} />} */}
 
 			{/* Espacio para mapear 20 objetos con el componente renderizador de los posts y los 20 posts que le pido a la db */}
-			<ProfilePosts
-				postNumber={postNumber}
-				fullname={fullname}
-				timeAgo={timeAgo}
-				description={description}
-				comments={commentsLength}
-				likes={likes}
-			/>
+
+			<ProfilePosts userPosts={userPosts} />
 		</>
 	)
 }
