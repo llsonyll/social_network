@@ -10,7 +10,7 @@
 	display: grid;
 	grid-template-rows: 100px 1fr;
 	background-color: #202225;
-	padding: 20px;
+	padding: 10px 10px 35px 10px;
 	border-radius: 5px;
 	/* background-color: #00000043; */
 }
@@ -92,6 +92,7 @@
 	width: 90%;
 	color: white;
 	border-radius: 5px;
+	padding: 10px;
 }
 .profile-container .shadow-box .user_description .span-info {
 	color: #929497;
