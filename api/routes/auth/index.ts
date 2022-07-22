@@ -17,7 +17,7 @@ const createToken = (user:IUser)=>{
 
 const createRefreshToken = ()=>{
   return jwt.sign({},`${process.env.SECRET_TEST}`,{
-    expiresIn : 60 * 2
+    expiresIn : 60 * 5
   });
 }
 
@@ -61,6 +61,7 @@ let refreshTokens = {
 router.post("/token",passport.authenticate("jwt",{session: false, failureRedirect: "/auth/loginjwt"}) ,async(req:Request,res:Response)=>{
    try {
        let email = req.body.email;
+       let refreshToken = req.body.refreshToken;
 
        if(refreshTokens.hasOwnProperty("refreshToken") && email === refreshTokens.refreshToken ){
           let user: any = User.findOne({email: email});
@@ -70,7 +71,9 @@ router.post("/token",passport.authenticate("jwt",{session: false, failureRedirec
            
            let newToken = createToken(user as IUser);
            let newRefreshToken = createRefreshToken(); 
-     
+           
+           //await jwt.destroy(refreshToken);
+
           return res.status(200).json({token: newToken, refreshToken: newRefreshToken });
        }
       return res.status(401).json("error refresh token");

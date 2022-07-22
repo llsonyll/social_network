@@ -26,7 +26,7 @@ const createToken = (user) => {
 };
 const createRefreshToken = () => {
     return jsonwebtoken_1.default.sign({}, `${process.env.SECRET_TEST}`, {
-        expiresIn: 60 * 2
+        expiresIn: 60 * 5
     });
 };
 //---------------middleware new User-----------------------------
@@ -61,6 +61,7 @@ let refreshTokens = {
 router.post("/token", passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let email = req.body.email;
+        let refreshToken = req.body.refreshToken;
         if (refreshTokens.hasOwnProperty("refreshToken") && email === refreshTokens.refreshToken) {
             let user = mongoose_1.User.findOne({ email: email });
             if (!user) {
@@ -68,6 +69,7 @@ router.post("/token", passport_1.default.authenticate("jwt", { session: false, f
             }
             let newToken = createToken(user);
             let newRefreshToken = createRefreshToken();
+            //await jwt.destroy(refreshToken);
             return res.status(200).json({ token: newToken, refreshToken: newRefreshToken });
         }
         return res.status(401).json("error refresh token");
