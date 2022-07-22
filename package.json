@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@types/morgan": "^1.9.3"
+  }
+}
