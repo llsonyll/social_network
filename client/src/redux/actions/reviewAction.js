@@ -8,7 +8,7 @@ export const getAllReviewes = () => async (dispatch) => {
         const response = await axios.get('http://localhost:3001/review');
         return dispatch(AllReviewes(response.data));
     } catch (error) {
-        console.log('oops');
+        console.log(error);
     }
 };
 
@@ -21,7 +21,7 @@ export const createNewReview = (userId, info) => async (dispatch) => {
         });
         return dispatch(NewReview(response.data));
     } catch (error) {
-        console.log('oops')
+        console.log(error)
     }
 };
 
@@ -34,19 +34,19 @@ export const modifyReview = (userId, reviewId, info) => async (dispatch) => {
         });
         return dispatch(AllReviewes(response.data));
     } catch (error) {
-        console.log('oops')
+        console.log(error)
     }
 };
 
 export const deleteReview = (userId, reviewId) => async (dispatch) => {
     try {
-        const response = await axios.delete(`http://localhost:3001/review/${userId}/${reviewId}`, {}, {
+        const response = await axios.delete(`http://localhost:3001/review/${userId}/${reviewId}`, {
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         });
         return dispatch(AllReviewes(response.data));
     } catch (error) {
-        console.log('oops')
+        console.log(error)
     }
 };
