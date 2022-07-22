@@ -23,7 +23,7 @@ const NavBar = ({ openModal }) => {
   const handleInputValue = (e) => setSearchInput(e.target.value);
 
   return (
-    <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center relative">
+    <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50">
       <div className="flex items-center gap-4 flex-1 justify-between md:justify-start">
         <Link to="/home">
           <img src={logoSN} alt="logoSN" className="md:h-10 h-6 md:mr-4 mr-2" />
