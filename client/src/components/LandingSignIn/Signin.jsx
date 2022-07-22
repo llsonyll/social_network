@@ -50,27 +50,28 @@ const Signin = () => {
 				<div className='input_container'>
 				
 					<div className='email_container'>
-						<label htmlFor=''>Email</label>
-						<input autoComplete='off' type='text' name='email' id='' placeholder='Email' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
+						<label >Email</label>
+						<input autoComplete='off' type='text' name='email'  placeholder='Email' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
 						{
 						errores.email ?  <p className='err_sign'>{errores.email}</p> : null
 						}
 					</div>
 					<div className='password_container'>
-						<label htmlFor=''>Password</label>
-						<input  autoComplete='off' type='password' name='password' id='' placeholder='Password' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
+						<label >Password</label>
+						<input  autoComplete='off' type='password' name='password'  placeholder='Password' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
 						{
 						errores.password ?  <p className='err_sign'>{errores.password}</p> : null
 						}
 					</div>
 					<div className='checkbox_container'>
 						<div className='remember_container'>
-							<input type="checkbox" name="" id="" /> 
+							<input type="checkbox"  /> 
 							<span>Remember me</span>
 						</div>
-						<Link to=''>Forgot your password?</Link>
+						<Link to='/'>Forgot your password?</Link>
 					</div>
-					<button className='on' type='button' disabled={errores.email||errores.password} onClick={handleLogin}>
+					<button className='on' type='button' onClick={handleLogin}>
+					{/* disabled={errores.email||errores.password} */}
 						Sign in
 					</button>
 					<div className='orcontinue'>
