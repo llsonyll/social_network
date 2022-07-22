@@ -98,7 +98,7 @@ router.post("/",passport.authenticate("jwt", { session: false,failureRedirect: '
     //-------------extract Authorization from HTTP headers----------------
     const authorization: string [] | undefined = req.headers.authorization?.split(" ");
 
-    if(!authorization || authorization.length !== 2 || authorization[0].toLocaleLowerCase() !== "Bearer"){
+    if(!authorization || authorization.length !== 2 || authorization[0].toLocaleLowerCase() !== "bearer"){
      return  res.status(400).json("no token")
    }
 
