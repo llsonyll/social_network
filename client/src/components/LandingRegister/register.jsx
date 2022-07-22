@@ -9,6 +9,9 @@ import {FaTimesCircle} from 'react-icons/fa'
 
 //Hooks
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+//Redux register Action
+import { registerAction } from "../../redux/actions/authActions";
 
 
 const Register = () => {
@@ -20,6 +23,7 @@ const Register = () => {
     password :''
   })
 
+  let dispatch = useDispatch()
 
   let errores = {}
   //validacion de nombre
@@ -57,13 +61,24 @@ const Register = () => {
     errores.username = 'The username cannot be more than 13 characters'
   }
 
+  //Register
+	function handleRegister(){
+		dispatch(registerAction({
+      firstname: input.fullname,
+      lastname: input.lastname,
+      password: input.password,
+      email: input.email,
+      username: input.username
+    }))
+	}
+
   return (
     <>
       <div className="input_container">
         <div className="register_buttons">
           <div className="fullName_container">
           
-            <input type="text" name="fullname" id="" placeholder="Name" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}         />
+            <input autoComplete='off' type="text" name="fullname" id="" placeholder="Name" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}         />
               { 
                 !errores.fullname && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -73,7 +88,7 @@ const Register = () => {
           </div>
           <div className="lastName_container">
             
-            <input type="text" name="lastname" id="" placeholder="Last name" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
+            <input autoComplete='off' type="text" name="lastname" id="" placeholder="Last name" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
             { 
                 !errores.lastname && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -84,7 +99,7 @@ const Register = () => {
         </div>
         <div className="fullName_container">
           
-            <input type="text" name="username" id="" placeholder="Username" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}         />
+            <input autoComplete='off' type="text" name="username" id="" placeholder="Username" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}         />
               { 
                 !errores.username && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -94,7 +109,7 @@ const Register = () => {
           </div>
         <div className="email_container">
         
-          <input type="text" name="email" id="" placeholder="example@example.com" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
+          <input autoComplete='off' type="text" name="email" id="" placeholder="example@example.com" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
             { 
                 !errores.email && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -104,7 +119,7 @@ const Register = () => {
         </div>
         <div className="password_container">
         
-          <input type="password" name="password" id="" placeholder="Password" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
+          <input autoComplete='off' type="password" name="password" id="" placeholder="Password" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
           { 
                 !errores.password && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -112,7 +127,7 @@ const Register = () => {
               errores.password ?  <p>{errores.password}</p> : null
             }
         </div>
-        <button className="on" type="submit" disabled={errores.fullname || errores.lastname|| errores.email || errores.password ||errores.username}>
+        <button className="on" type="button" disabled={errores.fullname || errores.lastname|| errores.email || errores.password ||errores.username} onClick={handleRegister}>
           Create account
         </button>
         <div className="orcontinue">

@@ -1,5 +1,6 @@
 import Avatar from "../Avatar";
 import { FaHeart } from "react-icons/fa";
+// import { Link } from "react-router-dom";
 
 const CommentTile = () => {
   // const handleReplyComment = () => {
@@ -11,9 +12,13 @@ const CommentTile = () => {
   };
 
   return (
-    <div className="bg-neutral-700 rounded-md md:p-2 p-1 flex my-3">
+    <div className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
+      {/* TODO: Avatar should redirect to user profile */}
+      {/* <Link to="/user/:id"> */}
       <Avatar size="m" />
+      {/* </Link> */}
       <div className="content flex-1 text-white pl-2">
+        {/* TODO: Username should redirect to user profile */}
         <div className="font-medium text-base">Username</div>
         <div className="font-light text-sm">
           Adipisicing fugiat elit officia ullamco id sit proident occaecat
@@ -27,7 +32,7 @@ const CommentTile = () => {
           </button> */}
           <button
             onClick={handleLikeComment}
-            className="flex gap-1 items-center"
+            className="flex gap-1 items-center hover:text-gray-300"
           >
             <FaHeart /> 12
           </button>

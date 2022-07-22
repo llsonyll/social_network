@@ -11,7 +11,9 @@ import {Link} from 'react-router-dom'
 
 //Hooks
 import { useState } from 'react'
-
+//Dispatch
+import {useDispatch} from 'react-redux'
+import { loginAction } from '../../redux/actions/authActions'
 
 const Signin = () => {
 	const [input , setInput] = useState({
@@ -20,6 +22,10 @@ const Signin = () => {
 	})
 
 	let errores = {}
+
+  // llamo al dispatch	
+	let dispatch = useDispatch()
+
   // validacion de email
 	if (input.email === '') {
 		errores.email = 'Email is required'
@@ -34,20 +40,25 @@ const Signin = () => {
 		errores.password = 'The password must be at least 6 characters'
 	}
 
+	//Login
+	function handleLogin(){
+		dispatch(loginAction(input))
+	}
+
   return (
         <>
 				<div className='input_container'>
 				
 					<div className='email_container'>
 						<label htmlFor=''>Email</label>
-						<input type='text' name='email' id='' placeholder='Email' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
+						<input autoComplete='off' type='text' name='email' id='' placeholder='Email' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
 						{
 						errores.email ?  <p className='err_sign'>{errores.email}</p> : null
 						}
 					</div>
 					<div className='password_container'>
 						<label htmlFor=''>Password</label>
-						<input type='password' name='password' id='' placeholder='Password' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
+						<input  autoComplete='off' type='password' name='password' id='' placeholder='Password' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
 						{
 						errores.password ?  <p className='err_sign'>{errores.password}</p> : null
 						}
@@ -59,7 +70,7 @@ const Signin = () => {
 						</div>
 						<Link to=''>Forgot your password?</Link>
 					</div>
-					<button className='on' type='submit' disabled={errores.email||errores.password}>
+					<button className='on' type='button' disabled={errores.email||errores.password} onClick={handleLogin}>
 						Sign in
 					</button>
 					<div className='orcontinue'>

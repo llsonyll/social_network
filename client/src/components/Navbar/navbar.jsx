@@ -1,6 +1,6 @@
 import "./navbar.css";
 
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
 
 import NewPostBtn from "../NewPostBtn";
@@ -23,9 +23,11 @@ const NavBar = ({ openModal }) => {
   const handleInputValue = (e) => setSearchInput(e.target.value);
 
   return (
-    <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center relative">
+    <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50">
       <div className="flex items-center gap-4 flex-1 justify-between md:justify-start">
-        <img src={logoSN} alt="logoSN" className="md:h-10 h-6 md:mr-4 mr-2" />
+        <Link to="/home">
+          <img src={logoSN} alt="logoSN" className="md:h-10 h-6 md:mr-4 mr-2" />
+        </Link>
         <div className="search-box w-full md:w-60 relative">
           <input
             className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full"

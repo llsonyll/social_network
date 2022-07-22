@@ -1,20 +1,37 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-	loggedUser: 0,
+	loggedUser: {},
 }
 
-const authReducerSlice = createSlice({
+const authReducer = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
-		getUsers(state, action) {
+		/* AddAsyncNumber(state, action) {
 			console.log(action.payload)
 			state.datos = action.payload
+		},  */
+		loginUser(state, action){
+			state.loggedUser = action.payload
 		},
+		logOutUser(state, action){
+			localStorage.removeItem('token')
+			state.loggedUser = {}
+		},
+		removeLoggedUser(state, action){
+			state.loggedUser = {}
+		}
 	},
 })
 
-export const { getUsers } = authReducerSlice.actions
+export const {
+	/* AddAsyncNumber */
+	loginUser,
+	registerUser,
+	addLoggedUser,
+	logOutUser,
+	removeLoggedUser
+} = authReducer.actions
 
-export default authReducerSlice.reducer
+export default authReducer.reducer
