@@ -44,7 +44,7 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 										e.preventDefault()
 										handleOnSubmit()
 									}}
-									className='bg-green-600 text-white  mt-5 py-2 px-8 rounded-md shadow-lg text-sm '>
+									className='bg-green-600 text-white  mt-5 py-2 px-8 rounded-md shadow-lg text-sm transition-all hover:scale-105 '>
 									Submit
 								</button>
 							</div>
