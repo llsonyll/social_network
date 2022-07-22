@@ -1,8 +1,26 @@
+import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaImage } from "react-icons/fa";
 import Avatar from "../Avatar";
 
 const NewPost = ({ showModal, setShowModal }) => {
+  const [postInput, setPostInput] = useState("");
+
+  const handleInputPost = (e) => setPostInput(e.target.value);
+
+  const handleNewPost = (e) => {
+    e.preventDefault();
+    console.log(postInput);
+    setPostInput("");
+  };
+
+  const handleInputImage = () => console.log("Input Image");
+
+  const handlePublishPost = () => {
+    console.log("Publish Post");
+    setShowModal(false);
+  };
+
   return (
     <div
       data-modal-placement="top-middle"
@@ -24,19 +42,27 @@ const NewPost = ({ showModal, setShowModal }) => {
           </button>
           <div className="py-5 px-6 lg:px-8 flex">
             <Avatar size="l" />
-            <form className="space-y-8 flex-1 mx-3" action="#">
+            <form className="space-y-8 flex-1 mx-3" onSubmit={handleNewPost}>
               <textarea
                 id="message"
                 rows="4"
-                class="block p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none"
+                className="block p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none"
                 placeholder="Your message..."
+                onChange={handleInputPost}
+                value={postInput}
               ></textarea>
-
+              {/* TODO: quitarlo del form para evitar el submit del mismo */}
               <div className=" relative flex items-baseline justify-between after:content-[''] after:ml-0 after:absolute after:right-0 after:left-0 after:-top-2 after:bg-[#424242] after:h-0.5">
-                <button className="text-white text-2xl">
+                <button
+                  className="text-white text-2xl hover:opacity-50"
+                  onClick={handleInputImage}
+                >
                   <FaImage />
                 </button>
-                <button className="bg-green-600 text-white py-1 px-7 rounded-md shadow-lg text-sm">
+                <button
+                  className="bg-green-600 text-white py-1 px-7 rounded-md shadow-lg text-sm"
+                  onClick={handlePublishPost}
+                >
                   Publicar
                 </button>
               </div>

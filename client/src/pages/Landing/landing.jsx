@@ -42,7 +42,7 @@ const Landing = () => {
               form === "Register" ? "event_check_encender" : "register_text"
             }
           >
-            Register
+            Sign up
           </p>
         </div>
       </div>
@@ -53,12 +53,12 @@ const Landing = () => {
             Sign in
           </button>
           <button type="button" onClick={() => setForm("Register")}>
-            Register
+            Sign up
           </button>
         </div>
         <div className="logo">
           <img src={Logo} alt="" />
-          <h1>Sign in now</h1>
+          <h1> <i>Social Network</i></h1>
         </div>
         {form === "Sign in" ? <Signin /> : <Register />}
       </form>

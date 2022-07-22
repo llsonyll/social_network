@@ -1,6 +1,6 @@
+/* styles control de formulario */
+
 /* father container styles */
-
-
 .landing_container {
 	display: flex;
 	flex-direction: column;
@@ -34,7 +34,7 @@
 	height: 30px;
 	flex-shrink: 0;
 	margin: 0 15px;
-	
+	filter: drop-shadow(0px 0px 10px #4e864c);
 }
 .landing_container .wrap_toggle .text_toggle p{
 	
@@ -99,6 +99,9 @@
 .landing_container .logo h1{
 	font-size: 40px;
 	font-weight: 700;
+	text-align: center;
+	text-shadow: 15px 0px 6px #4e864c;
+	color: #a8dfa6;
 }
 /* form */
 .landing_container form {
@@ -108,6 +111,7 @@
 	border-radius: 5px;
 	grid-template-columns: 1fr .7fr;
 	padding: 18px 10px;
+	max-width: 1125px;
 }
 
 .landing_container form h1 {
@@ -129,10 +133,10 @@
 	color: white;
 	font-size: 18px;
 	padding: 10px;
-	margin-top: 20px;
+	margin-top: 10px;
 	transition: all .3s;
-
 }
+
 .landing_container .on:hover {
 	background-color: #416b3f;
 	transform: scale(.98);
@@ -164,12 +168,16 @@
 .lastName_container {
 	display: flex;
 	flex-direction: column;
+	position: relative;
+	margin: 10px 0;
+	
 }
 .landing_container .input_container input[type='text'] , input[type='password'] {
 	padding: 8px;
-	margin: 5px 0px;
+	margin: 0px 0px;
 	outline: none;
 	color: white;
+	padding-right: 40px;
 }
 .landing_container .input_container 
 input[type='text']::placeholder , 
@@ -179,6 +187,42 @@ input[type='password']::placeholder {
 	letter-spacing: 1px;
 }
 
+/* control de form styles */
+
+.email_container span ,
+.password_container span,
+.lastName_container span,
+.fullName_container span {
+	position: absolute;
+	bottom: 8px;
+	right: 10px;
+}
+.email_container span .icon_ok,
+.password_container span .icon_ok,
+.lastName_container span .icon_ok,
+.fullName_container span .icon_ok{
+	font-size: 25px;
+	color: #5b9b59;
+	z-index: 100;
+}
+
+.landing_container .on:disabled {
+	background-color:#31532f;
+	transform: none;
+}
+.landing_container .on:disabled  .password_container span  {
+	display: none;
+}
+
+.input_container p{
+	color: rgb(104, 104, 104);
+	position: absolute;
+	font-size: 12px;
+	top: 40px;
+}
+.input_container .err_sign{
+	top: 65px;
+}
 
 /* buttons-container */
 .buttons_container{ 
@@ -205,6 +249,7 @@ input[type='password']::placeholder {
 	justify-content: space-between;
 	flex-wrap: wrap;
 	text-align: center;
+	margin-top: 7px;
 }
 .landing_container .input_container .checkbox_container a{ 
 	color: gray;
@@ -225,7 +270,7 @@ input[type='password']::placeholder {
 	color: white;
 	justify-content: center;
 	align-items: center;
-	margin: 20px 0px;
+	margin: 10px 0px;
 }
 .landing_container .input_container .orcontinue .line{ 
 	width: 100%;
@@ -278,7 +323,7 @@ input[type='password']::placeholder {
 		font-size: 45px;
 		padding: 0px 10px;
 		position: relative;
-}
+	}
 .sn_review .star span{
 		color: black;
 		position: absolute;
@@ -291,12 +336,13 @@ input[type='password']::placeholder {
 /* Register buttons  */
 .register_buttons{
 	display: flex;
+	margin-bottom: 10px;
 }
 
 .register_buttons 
 .fullName_container,
 .lastName_container{
-	margin: 0;
+	margin-bottom: 5px;
 }
 .register_buttons 
 .fullName_container{
@@ -321,6 +367,7 @@ input[type='password']::placeholder {
 	.landing_container form {
 		
 		grid-template-columns: 1fr ;
+		place-content: center;
 	}
 	.buttons_container{
 		grid-column: 1;
@@ -328,6 +375,11 @@ input[type='password']::placeholder {
 	.register_buttons{
 		flex-direction: column;
 	}
+	.register_buttons 
+	.fullName_container{
+	margin-right: 0px;
+	margin-bottom: 10px;
+}
 }
 @media (max-width: 650px) {
 	.sn_review{
@@ -353,7 +405,7 @@ input[type='password']::placeholder {
 		display: none;
 	}
 	.landing_container  {
-	
+		
 		justify-content: flex-start;
 		
 	}
@@ -368,3 +420,4 @@ input[type='password']::placeholder {
 		
 	}
 }
+
