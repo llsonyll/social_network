@@ -9,6 +9,9 @@ import {FaTimesCircle} from 'react-icons/fa'
 
 //Hooks
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+//Redux register Action
+import { registerAction } from "../../redux/actions/authActions";
 
 
 const Register = () => {
@@ -20,6 +23,7 @@ const Register = () => {
     password :''
   })
 
+  let dispatch = useDispatch()
 
   let errores = {}
   //validacion de nombre
@@ -56,6 +60,17 @@ const Register = () => {
   } else if(input.username.length > 13){
     errores.username = 'The username cannot be more than 13 characters'
   }
+
+  //Register
+	function handleRegister(){
+		dispatch(registerAction({
+      firstname: input.fullname,
+      lastname: input.lastname,
+      password: input.password,
+      email: input.email,
+      username: input.username
+    }))
+	}
 
   return (
     <>
@@ -112,7 +127,7 @@ const Register = () => {
               errores.password ?  <p>{errores.password}</p> : null
             }
         </div>
-        <button className="on" type="submit" disabled={errores.fullname || errores.lastname|| errores.email || errores.password ||errores.username}>
+        <button className="on" type="button" disabled={errores.fullname || errores.lastname|| errores.email || errores.password ||errores.username} onClick={handleRegister}>
           Create account
         </button>
         <div className="orcontinue">

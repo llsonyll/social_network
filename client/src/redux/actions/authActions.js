@@ -22,3 +22,17 @@ export const registerAction = (obj) => async (dispatch) =>{
         console.log(err)
     }
 }
+
+export const getLoggedUserInfo = () => async (dispatch) => {
+    try{
+        let res = await axios.post('http://localhost:3001/auth',{}, {
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        res = res.data
+        return dispatch(loginUser({username: res.username, _id: res._id}))
+    }catch(err){
+        console.log(err)
+    }
+}
