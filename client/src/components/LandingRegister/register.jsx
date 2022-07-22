@@ -15,6 +15,7 @@ const Register = () => {
 
   const [input , setInput] = useState({
     fullname:'' , lastname:'',
+    username:'',
     email: '',
     password :''
   })
@@ -25,13 +26,13 @@ const Register = () => {
   if (input.fullname === '') {
     errores.fullname = 'Name is required'
   } else if(!/^[a-zA-ZÀ-ÿ\s]{3,10}$/i.test(input.fullname)) {
-    errores.fullname = 'Name novalited'
+    errores.fullname = 'Name no valited'
   }
   //validacion de Lastname
   if (input.lastname === '') {
-    errores.lastname = 'Lastname is required'
+    errores.lastname = 'Last name is required'
   } else if(!/^[a-zA-ZÀ-ÿ\s]{2,10}$/i.test(input.lastname)) {
-    errores.lastname = 'Lastname novalited'
+    errores.lastname = 'Last name no valited'
   }
   // validacion de email
   if (input.email === '') {
@@ -45,6 +46,15 @@ const Register = () => {
     errores.password = 'Password is required'
   } else if(!/^.{6,25}$/i.test(input.password)) {
     errores.password = 'The password must be at least 6 characters'
+  }
+
+  //validacion de Username
+  if (input.username === '') {
+    errores.username = 'Username is required'
+  } else if(!/^.{4,15}$/i.test(input.username)) {
+    errores.username = 'The username must be at least 4 characters'
+  } else if(input.username.length > 13){
+    errores.username = 'The username cannot be more than 13 characters'
   }
 
   return (
@@ -72,6 +82,16 @@ const Register = () => {
             }
           </div>
         </div>
+        <div className="fullName_container">
+          
+            <input type="text" name="username" id="" placeholder="Username" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}         />
+              { 
+                !errores.username && <span><AiFillCheckCircle className="icon_ok"/> </span>
+              }
+            {
+              errores.username ? <p>{errores.username}</p> : null
+            }
+          </div>
         <div className="email_container">
         
           <input type="text" name="email" id="" placeholder="example@example.com" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
@@ -92,8 +112,8 @@ const Register = () => {
               errores.password ?  <p>{errores.password}</p> : null
             }
         </div>
-        <button className="on" type="submit" disabled={errores.fullname || errores.lastname|| errores.email || errores.password}>
-          Create acount
+        <button className="on" type="submit" disabled={errores.fullname || errores.lastname|| errores.email || errores.password ||errores.username}>
+          Create account
         </button>
         <div className="orcontinue">
           <div className="line"></div>

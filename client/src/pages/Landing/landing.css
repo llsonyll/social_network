@@ -34,7 +34,7 @@
 	height: 30px;
 	flex-shrink: 0;
 	margin: 0 15px;
-	
+	filter: drop-shadow(0px 0px 10px #4e864c);
 }
 .landing_container .wrap_toggle .text_toggle p{
 	
@@ -99,6 +99,9 @@
 .landing_container .logo h1{
 	font-size: 40px;
 	font-weight: 700;
+	text-align: center;
+	text-shadow: 15px 0px 6px #4e864c;
+	color: #a8dfa6;
 }
 /* form */
 .landing_container form {
