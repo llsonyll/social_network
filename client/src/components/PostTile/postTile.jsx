@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+// import { Link } from "react-router-dom";
 
 import Avatar from "../Avatar";
 import CommentTile from "../CommentTile";
@@ -8,6 +9,7 @@ import { FaHeart } from "react-icons/fa";
 
 const PostTile = () => {
   const [showInput, setShowInput] = useState(false);
+  const [commentInput, setCommentInput] = useState("");
   const inputRef = useRef();
 
   const handleLikePost = () => {
@@ -22,10 +24,20 @@ const PostTile = () => {
     }, 200);
   };
 
+  const handleCommentInput = (e) => setCommentInput(e.target.value);
+
+  const handleInputSubmit = (e) => {
+    e.preventDefault();
+    console.log(commentInput);
+    setCommentInput("");
+  };
+
   return (
     <>
       <div className="flex ">
-        <Avatar size="l" />
+        {/* <Link to="/user/:id" >  */}
+        <Avatar size="xl" />
+        {/* </Link> */}
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
             <div className="text-white font-medium">Username</div>
@@ -39,14 +51,14 @@ const PostTile = () => {
             anim ut laborum laborum dolore. Officia nisi reprehenderit excepteur
             nisi. Esse tempor occaecat occaecat ex quis.
           </div>
-          <div className="actions flex gap-3 items-center justify-end my-2 text-white">
+          <div className="actions flex gap-3 items-center justify-end my-2 text-white ">
             <button
               onClick={handleCommentPost}
-              className="opacity-50 text-sm font-light"
+              className="opacity-50 text-sm font-light hover:opacity-100 hover:font-semibold"
             >
               Comment
             </button>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 hover:text-gray-300">
               <button
                 className="flex items-center gap-1"
                 onClick={handleLikePost}
@@ -64,14 +76,16 @@ const PostTile = () => {
             <CommentTile />
 
             {showInput && (
-              <div className="flex items-center">
+              <form className="flex items-center" onSubmit={handleInputSubmit}>
                 <Avatar />
                 <input
                   ref={inputRef}
+                  value={commentInput}
+                  onChange={handleCommentInput}
                   className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 h-full py-1 pl-2 pr-7 border-transparent bg-gray-700 text-white sm:text-sm rounded-md ml-3"
                   type="text"
                 />
-              </div>
+              </form>
             )}
           </div>
         </div>
