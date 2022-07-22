@@ -44,7 +44,7 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userReviews = yield mongoose_1.Review.find({});
         if (!userReviews.length)
-            return res.status(404).json({ msg: "No hay reviews pero somos la mejor red social del mercado actual" });
+            return res.json([]);
         return res.json(userReviews);
     }
     catch (error) {
@@ -67,7 +67,7 @@ router.delete('/:userId/:reviewId', passport_1.default.authenticate('jwt', { ses
         yield user.save();
         const allReviews = yield mongoose_1.Review.find({});
         if (!allReviews.length)
-            return res.status(404).json([]);
+            return res.json([]);
         return res.json(allReviews);
     }
     catch (error) {
@@ -100,7 +100,7 @@ router.put('/:userId/:reviewId', passport_1.default.authenticate('jwt', { sessio
             yield review.save();
             const allReviews = yield mongoose_1.Review.find({});
             if (!allReviews.length)
-                return res.status(404).json([]);
+                return res.json([]);
             res.status(200).json(allReviews);
         }
         ;
