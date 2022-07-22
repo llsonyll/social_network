@@ -1,4 +1,4 @@
-import { browser } from "../reducers/browserReducers.slice";
+import { browser , errorBrowser} from "../reducers/browserReducers.slice";
 import axios from "axios";
 
 export const browserAction = (data) => async (dispatch) => {
@@ -8,6 +8,7 @@ export const browserAction = (data) => async (dispatch) => {
       }})
        return dispatch(browser(searchs.data));
    } catch (err) {
+     err.response.status === 404 && dispatch(errorBrowser(err.response.statusText));
      console.log(err);
    }
 };

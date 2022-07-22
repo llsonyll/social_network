@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   searches: [],
+  error: "",
 };
 
 const browserReducer = createSlice({
@@ -9,11 +10,15 @@ const browserReducer = createSlice({
   initialState,
   reducers: {
     browser(state, action) {
-      state.searches.push(action.payload);
+      state.searches = [action.payload];
     },
+    errorBrowser(state,action){
+       state.error = action.payload;
+       state.searches = [];
+    }
   },
 });
 
-export const { browser } = browserReducer.actions;
+export const { browser, errorBrowser } = browserReducer.actions;
 
 export default browserReducer.reducer;

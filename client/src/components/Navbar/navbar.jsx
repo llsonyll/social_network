@@ -7,7 +7,7 @@ import NewPostBtn from "../NewPostBtn";
 import logoSN from "../../../assets/LogoSN.png";
 import SearchUsersBox from "../SearchUsersBox/searchUsersBox";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { browserAction } from "../../redux/actions/browserActions";
 
 const NavBar = ({ openModal }) => {
@@ -21,16 +21,16 @@ const NavBar = ({ openModal }) => {
   };
 
   const [searchInput, setSearchInput] = useState("");
-
-  // useEffect(() => {
-  //   dispatch(browserAction(searchInput));
-  // }, [searchInput, dispatch]);
+  const { searches } = useSelector((state) => state.browserReducer);
 
   let dispatch = useDispatch();
 
   const handleInputValue = (e) => {
     setSearchInput(e.target.value);
-    dispatch(browserAction(searchInput));
+    let search = e.target.value.trim();
+    if(search || (!search && searches.length !== 0)){
+      dispatch(browserAction(search));
+    }
   };
 
   return (
