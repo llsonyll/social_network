@@ -9,6 +9,7 @@ import userRoute from './user/index';
 import reviewRoute from './review';
 import postRoute from './post';
 import commentRoute from './comment';
+import morgan from "morgan";
 
 const server = express();
 
@@ -30,6 +31,7 @@ const options: cors.CorsOptions = {
 server.use(cors(options));
 
 server.use(express.json());
+server.use(morgan("dev"));
 Auth(server,User);
 server.use(passport.initialize());
 
