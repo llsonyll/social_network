@@ -95,7 +95,7 @@ router.post("/", passport_1.default.authenticate("jwt", { session: false, failur
     try {
         //-------------extract Authorization from HTTP headers----------------
         const authorization = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ");
-        if (!authorization || authorization.length !== 2 || authorization[0] !== "Bearer") {
+        if (!authorization || authorization.length !== 2 || authorization[0].toLocaleLowerCase() !== "bearer") {
             return res.status(400).json("no token");
         }
         const token = authorization[1];

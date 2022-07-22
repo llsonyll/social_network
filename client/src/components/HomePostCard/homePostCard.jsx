@@ -3,35 +3,44 @@ import Avatar from "../Avatar";
 import { Link } from "react-router-dom";
 
 const HomePostCard = () => {
+  const handleCommentPost = () => console.log("PostCard comment");
+  const handleFavoritePost = () => console.log("PostCard favorite");
+
   return (
-    <Link
-      to="post/1"
-      className="bg-stone-800 w-full rounded-md md:p-6 p-3 flex text-white"
-    >
-      <Avatar size="xl" />
-      <div className="flex-1 pl-2 md:pl-4">
-        <div className="">Username</div>
-        <div className="opacity-50">3hr</div>
+    <div className="bg-[#252525] w-full rounded-md md:p-4 p-2 flex flex-col text-white">
+      <div className="flex hover:bg-[#353535] gap-4 md:p-2 rounded-md">
+        {/* <Link to="user/1"> */}
+        <Avatar size="xl" />
+        {/* </Link> */}
+        <Link to="post/1" className="flex-1">
+          <div className="">Username</div>
+          <div className="opacity-50">3hr</div>
 
-        <div className="">
-          Mollit magna est ea anim magna culpa non fugiat reprehenderit. Do anim
-          laboris Lorem pariatur mollit tempor cupidatat aliqua in do.
-          Reprehenderit sit consectetur irure et velit.
-        </div>
-
-        <div className="actions flex gap-3 justify-end mt-2 md:mt-4 text-lg">
-          <button className="flex items-center gap-1">
-            <FaComment />
-            120
-          </button>
-
-          <button className="flex items-center gap-1">
-            <FaHeart />
-            12
-          </button>
-        </div>
+          <div className="">
+            Mollit magna est ea anim magna culpa non fugiat reprehenderit. Do
+            anim laboris Lorem pariatur mollit tempor cupidatat aliqua in do.
+            Reprehenderit sit consectetur irure et velit.
+          </div>
+        </Link>
       </div>
-    </Link>
+      <div className="actions flex gap-3 justify-end mt-1 md:mt-2 text-lg">
+        <button
+          className="flex items-center gap-1 hover:text-gray-300"
+          onClick={handleCommentPost}
+        >
+          <FaComment />
+          120
+        </button>
+
+        <button
+          className="flex items-center gap-1 hover:text-gray-300"
+          onClick={handleFavoritePost}
+        >
+          <FaHeart />
+          12
+        </button>
+      </div>
+    </div>
   );
 };
 
