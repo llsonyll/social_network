@@ -4,7 +4,7 @@ import { User } from "../../mongoose";
 import bcrypt from "bcrypt"; 
 import  passport  from 'passport';
 import jwt from "jsonwebtoken";
-import randToken from "rand-token";
+import { AnyExpression } from "mongoose";
 
 let  router = express.Router();
 
@@ -15,8 +15,8 @@ const createToken = (user:IUser)=>{
     });
 }
 
-const createRefreshToken = ()=>{
-  return jwt.sign({},`${process.env.SECRET_TEST}`,{
+const createRefreshToken = (email: string)=>{
+  return jwt.sign({email: email},`${process.env.SECRET_TEST}`,{
     expiresIn : 60 * 5
   });
 }
@@ -53,24 +53,26 @@ const middlewareNewUser = async (req:Request,res:Response,next:NextFunction)=>{
    }
 }
 
-let refreshTokens = {
-  refreshToken:"",
-};
-
 //-----------------------------retorna new token ---------------------------------
 router.post("/token",passport.authenticate("jwt",{session: false, failureRedirect: "/auth/loginjwt"}) ,async(req:Request,res:Response)=>{
    try {
        let email = req.body.email;
-       let refreshToken = req.body.refreshToken;
+       let refreshToken = req.headers.authorization;
 
-       if(refreshTokens.hasOwnProperty("refreshToken") && email === refreshTokens.refreshToken ){
+       refreshToken = refreshToken?.split(" ")[1];
+       
+       let decryptEmail: any = req.user;
+               
+       console.log(decryptEmail);
+    
+       if( decryptEmail.email && email === decryptEmail.email ){
           let user: any = User.findOne({email: email});
          if(!user){
            return res.status(400).json("user does not exist");
          }
            
            let newToken = createToken(user as IUser);
-           let newRefreshToken = createRefreshToken(); 
+           let newRefreshToken = createRefreshToken(email); 
            
            //await jwt.destroy(refreshToken);
 
@@ -93,10 +95,8 @@ async (req:Request,res:Response)=>{
      const send:IUser = user as IUser
     
      const token = createToken(user as IUser);
-     let refreshToken = createRefreshToken();
-     
-     refreshTokens.refreshToken = send.email;
-    
+     let refreshToken = createRefreshToken(send.email);
+         
      return res.status(200).json({token: token, username: send.username, _id: send._id,refreshToken});
       //res.redirect()
     }
