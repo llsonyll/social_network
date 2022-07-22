@@ -6,7 +6,9 @@ import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
 import NewPostBtn from "../NewPostBtn";
 import logoSN from "../../../assets/LogoSN.png";
 import SearchUsersBox from "../SearchUsersBox/searchUsersBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { browserAction } from "../../redux/actions/browserActions";
 
 const NavBar = ({ openModal }) => {
   let activeStyle = {
@@ -20,7 +22,16 @@ const NavBar = ({ openModal }) => {
 
   const [searchInput, setSearchInput] = useState("");
 
-  const handleInputValue = (e) => setSearchInput(e.target.value);
+  // useEffect(() => {
+  //   dispatch(browserAction(searchInput));
+  // }, [searchInput, dispatch]);
+
+  let dispatch = useDispatch();
+
+  const handleInputValue = (e) => {
+    setSearchInput(e.target.value);
+    dispatch(browserAction(searchInput));
+  };
 
   return (
     <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center relative">
