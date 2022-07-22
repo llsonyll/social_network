@@ -70,8 +70,7 @@ const Signin = () => {
 						</div>
 						<Link to='/'>Forgot your password?</Link>
 					</div>
-					<button className='on' type='button' onClick={handleLogin}>
-					{/* disabled={errores.email||errores.password} */}
+					<button className='on' type='button' disabled={errores.email||errores.password} onClick={handleLogin}>
 						Sign in
 					</button>
 					<div className='orcontinue'>

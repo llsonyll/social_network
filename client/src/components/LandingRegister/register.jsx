@@ -127,8 +127,7 @@ const Register = () => {
               errores.password ?  <p>{errores.password}</p> : null
             }
         </div>
-        <button className="on" type="button"  onClick={handleRegister}>
-        {/* disabled={errores.fullname || errores.lastname|| errores.email || errores.password ||errores.username} */}
+        <button className="on" type="button"   disabled={errores.fullname || errores.lastname|| errores.email || errores.password ||errores.username} onClick={handleRegister}>
           Create account
         </button>
         <div className="orcontinue">
