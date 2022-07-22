@@ -24,7 +24,7 @@ const FriendPostTile = ({ tile }) => {
   return (
     <NavLink
       to="/home/post/1"
-      className="flex w-full my-3 py-1"
+      className="flex w-full my-3 p-2 hover:bg-[#353535] rounded-md"
       onClick={handleTileClick}
     >
       <Avatar size="l" imgUrl={tile.user.url} />
