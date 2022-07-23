@@ -35,7 +35,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
         const {postId} = req.params
         //Search a post and select the data we want to send
         let post = await Post.findById(`${postId}`)
-        .populate({path: 'commentsId',select: 'content', populate:{path: 'userId', select: ['username', 'likes']}})
+        .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes']}})
         .populate('userId', 'username')
         .populate('likes', 'username')
         .populate('dislikes', 'username')

@@ -4,14 +4,25 @@ import { useEffect } from "react";
 import FriendPostTile from "../../components/FriendPostTile";
 import PostTile from "../../components/PostTile";
 import { dummyFriendPost } from "../../data/dummyPostFriend";
+import { useDispatch, useSelector } from "react-redux";
+import { getPost } from "../../redux/actions/postActions";
+import { useParams } from "react-router-dom";
+import { removePostDetail } from "../../redux/reducers/postReducer.slice";
 
 const PostDetail = () => {
+
+  const params = useParams()
+  const postDetail = useSelector((store) => store.post.postDetail)
   const containerStyle = {
     backgroundColor: "#2e2e2e",
   };
 
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    console.log("Component Mounted");
+    console.log("Component Mounted", postDetail);
+    dispatch(getPost(params.id))
+    return (() => dispatch(removePostDetail()))
   }, []);
 
   return (
@@ -23,7 +34,7 @@ const PostDetail = () => {
         ))}
       </div>
       <div className="bg-stone-800 flex-1 md:basis-4/5 md:p-6 p-3 rounded-md">
-        <PostTile />
+        {postDetail._id? <PostTile post={postDetail}/> : <PostTile/>}
       </div>
     </div>
   );
