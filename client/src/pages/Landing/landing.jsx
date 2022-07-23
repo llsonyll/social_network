@@ -33,7 +33,7 @@ const Landing = () => {
           name=""
           onClick={handleChangeCheck}
         />
-        <label for="toggle" className="switch" htmlFor="toggle"></label>
+        <label  className="switch" htmlFor="toggle"></label>
         <div className="text_toggle">
           <p>Sign in</p>
           <img src={Logo} alt="" />
@@ -57,7 +57,7 @@ const Landing = () => {
           </button>
         </div>
         <div className="logo">
-          <img src={Logo} alt="" />
+          <img src={Logo} alt="Social Network Logo" />
           <h1> <i>Social Network</i></h1>
         </div>
         {form === "Sign in" ? <Signin /> : <Register />}

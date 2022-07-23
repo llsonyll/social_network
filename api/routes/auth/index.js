@@ -24,8 +24,8 @@ const createToken = (user) => {
         expiresIn: 60
     });
 };
-const createRefreshToken = () => {
-    return jsonwebtoken_1.default.sign({}, `${process.env.SECRET_TEST}`, {
+const createRefreshToken = (email) => {
+    return jsonwebtoken_1.default.sign({ email: email }, `${process.env.SECRET_TEST}`, {
         expiresIn: 60 * 5
     });
 };
@@ -34,12 +34,12 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     try {
         let { email, password, firstname, lastname, username } = req.body;
         if (!email || !password || !firstname || !lastname || !username) {
-            return res.status(400).json({ message: "Please, send your email and password" });
+            return res.status(400).json({ message: 'Please, send your email and password' });
         }
         //search if User already exists
         let user = yield mongoose_1.User.findOne({ email: email });
         if (user) {
-            return res.status(400).json({ message: "User already exists" });
+            return res.status(400).json({ message: 'User already exists' });
         }
         //password encryption
         let salt = yield bcrypt_1.default.genSalt(10);
@@ -54,21 +54,21 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         res.json(error);
     }
 });
-let refreshTokens = {
-    refreshToken: "",
-};
 //-----------------------------retorna new token ---------------------------------
 router.post("/token", passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let email = req.body.email;
-        let refreshToken = req.body.refreshToken;
-        if (refreshTokens.hasOwnProperty("refreshToken") && email === refreshTokens.refreshToken) {
+        let refreshToken = req.headers.authorization;
+        refreshToken = refreshToken === null || refreshToken === void 0 ? void 0 : refreshToken.split(" ")[1];
+        let decryptEmail = req.user;
+        console.log(decryptEmail);
+        if (decryptEmail.email && email === decryptEmail.email) {
             let user = mongoose_1.User.findOne({ email: email });
             if (!user) {
                 return res.status(400).json("user does not exist");
             }
             let newToken = createToken(user);
-            let newRefreshToken = createRefreshToken();
+            let newRefreshToken = createRefreshToken(email);
             //await jwt.destroy(refreshToken);
             return res.status(200).json({ token: newToken, refreshToken: newRefreshToken });
         }
@@ -87,9 +87,8 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
         if (user) {
             const send = user;
             const token = createToken(user);
-            let refreshToken = createRefreshToken();
-            refreshTokens.refreshToken = send.email;
-            return res.status(200).json({ token: token, username: send.username, _id: send._id, refreshToken });
+            let refreshToken = createRefreshToken(send.email);
+            return res.status(200).json({ token: createToken(user), username: send.username, _id: send._id, refreshToken });
             //res.redirect()
         }
         return res.status(400).json("The user does not exists");
@@ -98,54 +97,56 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
         res.json(error);
     }
 }));
-//route error login 
-router.get("/login", (req, res) => {
+//route error login
+router.get('/login', (req, res) => {
     res.status(400).json('Incorrect email or password.');
 });
-router.get("/loginjwt", (req, res) => {
+router.get('/loginjwt', (req, res) => {
     res.status(400).json('Token needed');
 });
 //-----------------------------login user -----------------------------
 /*
   strategy passport local, verify user in database if error redirect route error login
 */
-router.post("/login", passport_1.default.authenticate("local", { session: false, failureRedirect: '/auth/login' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/login', passport_1.default.authenticate('local', { session: false, failureRedirect: '/auth/login' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //user return of passport strategy
     try {
         let { user } = req;
         if (user) {
             const send = user;
-            return res.status(200).json({ token: createToken(user), username: send.username, _id: send._id });
+            return res
+                .status(200)
+                .json({ token: createToken(user), username: send.username, _id: send._id });
             //res.redirect()
         }
-        return res.status(400).json("The user does not exists");
+        return res.status(400).json('The user does not exists');
     }
     catch (error) {
         res.json(error);
     }
 }));
 //------------------------route data user----------------------------------
-router.post("/", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         //-------------extract Authorization from HTTP headers----------------
-        const authorization = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ");
-        if (!authorization || authorization.length !== 2 || authorization[0].toLocaleLowerCase() !== "bearer") {
-            return res.status(400).json("no token");
+        const authorization = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ');
+        if (!authorization || authorization.length !== 2 || authorization[0].toLocaleLowerCase() !== 'bearer') {
+            return res.status(400).json('no token');
         }
         const token = authorization[1];
         //------------------------decode token-----------------------------------
         let verifyToken = jsonwebtoken_1.default.verify(`${token}`, `${process.env.SECRET_TEST}`);
         if (!verifyToken || !verifyToken.user) {
-            res.status(401).json("Invalid Token");
+            res.status(401).json('Invalid Token');
         }
         let { id } = verifyToken.user;
         const user = yield mongoose_1.User.findById(`${id}`);
         if (!user) {
-            return res.status(400).json("Invalid Token");
+            return res.status(400).json('Invalid Token');
         }
         let { username } = user;
-        return res.status(200).json({ id, username });
+        return res.status(200).json({ _id: id, username });
     }
     catch (err) {
         return res.status(400).json(err);

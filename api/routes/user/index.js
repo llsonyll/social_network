@@ -19,14 +19,15 @@ const router = express_1.default.Router();
 router.get("/browser/:username", passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username } = req.params;
-        //---------------------find User by username---------------------------
-        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, "i") });
+        //---------------------find User by username ---> return ([{id,username},{}....])---------------------------
+        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, "i") }, { username: 1, _id: 1 });
         if (!Object.values(users).length) {
             return res.status(400).json({ err: "User not fount" });
         }
         return res.status(200).json(users);
     }
-    catch (error) {
+    catch (err) {
+        res.status(400).json(err);
     }
 }));
 router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {

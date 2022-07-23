@@ -41,7 +41,7 @@ router.get('/', async (req: Request, res: Response) => {
     try{
         const userReviews = await Review.find({});
 
-        if(!userReviews.length) return res.status(404).json({msg: "No hay reviews pero somos la mejor red social del mercado actual"});
+        if(!userReviews.length) return res.json([]);
 
         return res.json(userReviews)
     } catch(error) {
@@ -71,7 +71,7 @@ router.delete('/:userId/:reviewId', passport.authenticate('jwt', {session:false,
 
         const allReviews = await Review.find({})
 
-        if (!allReviews.length) return res.status(404).json([]);
+        if (!allReviews.length) return res.json([]);
 
         return res.json(allReviews);
     } catch (error) {
@@ -102,7 +102,7 @@ router.put('/:userId/:reviewId', passport.authenticate('jwt', {session:false, fa
 
             const allReviews = await Review.find({});
 
-            if (!allReviews.length) return res.status(404).json([])
+            if (!allReviews.length) return res.json([])
 
             res.status(200).json(allReviews);
         };

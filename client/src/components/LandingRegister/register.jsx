@@ -5,7 +5,7 @@ import { BsGoogle } from "react-icons/bs";
 import { AiFillFacebook } from "react-icons/ai";
 import { AiOutlineTwitter } from "react-icons/ai";
 import {AiFillCheckCircle} from 'react-icons/ai'
-import {FaTimesCircle} from 'react-icons/fa'
+
 
 //Hooks
 import { useState } from "react";
@@ -78,7 +78,7 @@ const Register = () => {
         <div className="register_buttons">
           <div className="fullName_container">
           
-            <input autoComplete='off' type="text" name="fullname" id="" placeholder="Name" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}         />
+            <input autoComplete='off' type="text" name="fullname"  placeholder="Name" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}         />
               { 
                 !errores.fullname && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -88,7 +88,7 @@ const Register = () => {
           </div>
           <div className="lastName_container">
             
-            <input autoComplete='off' type="text" name="lastname" id="" placeholder="Last name" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
+            <input autoComplete='off' type="text" name="lastname"  placeholder="Last name" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
             { 
                 !errores.lastname && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -99,7 +99,7 @@ const Register = () => {
         </div>
         <div className="fullName_container">
           
-            <input autoComplete='off' type="text" name="username" id="" placeholder="Username" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}         />
+            <input autoComplete='off' type="text" name="username"  placeholder="Username" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}         />
               { 
                 !errores.username && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -109,7 +109,7 @@ const Register = () => {
           </div>
         <div className="email_container">
         
-          <input autoComplete='off' type="text" name="email" id="" placeholder="example@example.com" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
+          <input autoComplete='off' type="text" name="email"  placeholder="example@example.com" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
             { 
                 !errores.email && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -119,7 +119,7 @@ const Register = () => {
         </div>
         <div className="password_container">
         
-          <input autoComplete='off' type="password" name="password" id="" placeholder="Password" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
+          <input autoComplete='off' type="password" name="password" placeholder="Password" onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}  />
           { 
                 !errores.password && <span><AiFillCheckCircle className="icon_ok"/> </span>
               }
@@ -127,7 +127,7 @@ const Register = () => {
               errores.password ?  <p>{errores.password}</p> : null
             }
         </div>
-        <button className="on" type="button" disabled={errores.fullname || errores.lastname|| errores.email || errores.password ||errores.username} onClick={handleRegister}>
+        <button className="on" type="button"   disabled={errores.fullname || errores.lastname|| errores.email || errores.password ||errores.username} onClick={handleRegister}>
           Create account
         </button>
         <div className="orcontinue">

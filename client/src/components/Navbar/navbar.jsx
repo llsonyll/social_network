@@ -6,7 +6,9 @@ import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
 import NewPostBtn from "../NewPostBtn";
 import logoSN from "../../../assets/LogoSN.png";
 import SearchUsersBox from "../SearchUsersBox/searchUsersBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { browserAction } from "../../redux/actions/browserActions";
 
 const NavBar = ({ openModal }) => {
   let activeStyle = {
@@ -19,8 +21,19 @@ const NavBar = ({ openModal }) => {
   };
 
   const [searchInput, setSearchInput] = useState("");
+  const { searches } = useSelector((state) => state.browserReducer);
+  const userId = useSelector((state) => state.auth.loggedUser._id)
 
-  const handleInputValue = (e) => setSearchInput(e.target.value);
+
+  let dispatch = useDispatch();
+
+  const handleInputValue = (e) => {
+    setSearchInput(e.target.value);
+    let search = e.target.value.trim();
+    if(search || (!search && searches.length !== 0)){
+      dispatch(browserAction(search));
+    }
+  };
 
   return (
     <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50">
@@ -46,7 +59,7 @@ const NavBar = ({ openModal }) => {
           Home
         </NavLink>
         <NavLink
-          to="profile"
+          to={`profile/${userId}`}
           className="flex items-center gap-2"
           style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
         >
