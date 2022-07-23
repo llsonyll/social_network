@@ -20,7 +20,7 @@ const PostTile = (props) => {
     let created = new Date(date).getTime()
     const minutes = ((now - created)/6000);
     if (minutes <= 1) return "1 minute ago";
-    if (minutes < 60) return `${minutes} minutes ago`;
+    if (minutes < 60) return `${Math.round(minutes)} minutes ago`;
     if (minutes / 60 <= 1.5) return "1 hour ago";
     if ((minutes /60 > 24) && (minutes/60 <= 36)) return '1 day ago';
     if (minutes /60 > 36) return `${Math.round(minutes / (60*24))} days ago`
