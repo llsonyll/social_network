@@ -18,7 +18,7 @@ const PostTile = (props) => {
   function getTimeOfCreation(date){
     let now = new Date().getTime()
     let created = new Date(date).getTime()
-    const minutes = ((now - created)/6000);
+    const minutes = ((now - created)/60000);
     if (minutes <= 1) return "1 minute ago";
     if (minutes < 60) return `${Math.round(minutes)} minutes ago`;
     if (minutes / 60 <= 1.5) return "1 hour ago";
