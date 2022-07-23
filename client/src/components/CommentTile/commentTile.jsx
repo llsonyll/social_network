@@ -2,10 +2,11 @@ import Avatar from "../Avatar";
 import { FaHeart } from "react-icons/fa";
 // import { Link } from "react-router-dom";
 
-const CommentTile = () => {
+const CommentTile = (props) => {
   // const handleReplyComment = () => {
   //   console.log("Reply Comment");
   // };
+  const {data} = props
 
   const handleLikeComment = () => {
     console.log("Like Comment");
@@ -19,12 +20,12 @@ const CommentTile = () => {
       {/* </Link> */}
       <div className="content flex-1 text-white pl-2">
         {/* TODO: Username should redirect to user profile */}
-        <div className="font-medium text-base">Username</div>
+        <div className="font-medium text-base">{data? data.userId.username :"Username"}</div>
         <div className="font-light text-sm">
-          Adipisicing fugiat elit officia ullamco id sit proident occaecat
+          {data? data.content : `Adipisicing fugiat elit officia ullamco id sit proident occaecat
           consequat tempor consequat ipsum nulla. Dolore aliqua pariatur laboris
           amet laborum magna. Ullamco id magna ullamco Lorem ipsum minim labore
-          ipsum magna ullamco.
+          ipsum magna ullamco.`}
         </div>
         <div className="actions flex items-center gap-2 mt-1">
           {/* <button onClick={handleReplyComment} className="text-xs">
@@ -34,7 +35,7 @@ const CommentTile = () => {
             onClick={handleLikeComment}
             className="flex gap-1 items-center hover:text-gray-300"
           >
-            <FaHeart /> 12
+            <FaHeart /> {data? data.likes.length : 12}
           </button>
         </div>
       </div>

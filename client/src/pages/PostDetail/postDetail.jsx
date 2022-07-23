@@ -32,7 +32,7 @@ const PostDetail = () => {
         ))}
       </div>
       <div className="bg-stone-800 flex-1 md:basis-4/5 md:p-6 p-3 rounded-md">
-        {postDetail._id? <PostTile /> : null}
+        {postDetail._id? <PostTile post={postDetail}/> : <PostTile/>}
       </div>
     </div>
   );

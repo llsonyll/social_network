@@ -9,16 +9,16 @@ async (req:Request,res:Response)=>{
     try {
         const {username} = req.params;
      
-    //---------------------find User by username---------------------------
-    const users = await User.find({username: new RegExp(`^${username}`,"i")});
+    //---------------------find User by username ---> return ([{id,username},{}....])---------------------------
+    const users = await User.find({username: new RegExp(`^${username}`,"i")},{username: 1, _id:1});
 
      if(!Object.values(users).length){
        return res.status(400).json({err:"User not fount"})
      }
     
-     return  res.status(200).json(users)
-    } catch (error) {
-      
+     return  res.status(200).json(users);
+    } catch (err) {
+      res.status(400).json(err)
     }
 });
 

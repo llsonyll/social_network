@@ -7,10 +7,12 @@ import CommentTile from "../CommentTile";
 
 import { FaHeart } from "react-icons/fa";
 
-const PostTile = () => {
+const PostTile = (props) => {
   const [showInput, setShowInput] = useState(false);
   const [commentInput, setCommentInput] = useState("");
   const inputRef = useRef();
+
+  let {post} = props
 
   const handleLikePost = () => {
     console.log("Like Post");
@@ -40,16 +42,16 @@ const PostTile = () => {
         {/* </Link> */}
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
-            <div className="text-white font-medium">Username</div>
+            <div className="text-white font-medium">{post? post.userId.username : 'Username'}</div>
             <div className="text-white opacity-50 text-xs">3hr</div>
           </div>
           <div className="text-white font-light text-base">
-            Duis excepteur qui dolor anim non sit cillum velit sint deserunt.
+            {post? post.content : `Duis excepteur qui dolor anim non sit cillum velit sint deserunt.
             Consequat fugiat minim tempor nulla sunt ipsum incididunt enim ipsum
             minim nulla elit magna. Aute amet exercitation incididunt pariatur
             aliquip laborum culpa consectetur proident elit anim sint anim. Anim
             anim ut laborum laborum dolore. Officia nisi reprehenderit excepteur
-            nisi. Esse tempor occaecat occaecat ex quis.
+            nisi. Esse tempor occaecat occaecat ex quis.`}
           </div>
           <div className="actions flex gap-3 items-center justify-end my-2 text-white ">
             <button
@@ -64,16 +66,18 @@ const PostTile = () => {
                 onClick={handleLikePost}
               >
                 <FaHeart />
-                12
+                {post? post.likes.length : 12}
               </button>
             </div>
           </div>
 
           <div className="comments">
+            {post? post.commentsId.map(e =>  <CommentTile data={e}/>) : <>
             <CommentTile />
             <CommentTile />
             <CommentTile />
             <CommentTile />
+            </>}
 
             {showInput && (
               <form className="flex items-center" onSubmit={handleInputSubmit}>
