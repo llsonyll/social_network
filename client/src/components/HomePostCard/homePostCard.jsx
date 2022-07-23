@@ -2,24 +2,36 @@ import { FaComment, FaHeart } from "react-icons/fa";
 import Avatar from "../Avatar";
 import { Link } from "react-router-dom";
 
-const HomePostCard = () => {
+const HomePostCard = (props) => {
+
+
   const handleCommentPost = () => console.log("PostCard comment");
   const handleFavoritePost = () => console.log("PostCard favorite");
 
+  function getTimeOfCreation(date){
+    let now = new Date().getTime()
+    let created = new Date(date).getTime()
+    const minutes = ((now - created)/60000);
+    if (minutes <= 1) return "1 minute ago";
+    if (minutes < 60) return `${Math.round(minutes)} minutes ago`;
+    if (minutes / 60 <= 1.5) return "1 hour ago";
+    if ((minutes /60 > 24) && (minutes/60 <= 36)) return '1 day ago';
+    if (minutes /60 > 36) return `${Math.round(minutes / (60*24))} days ago`
+    return `${Math.round(minutes / 60)} hours ago`;
+  }
+  
   return (
     <div className="bg-[#252525] w-full rounded-md md:p-4 p-2 flex flex-col text-white">
       <div className="flex hover:bg-[#353535] gap-4 md:p-2 rounded-md">
-        {/* <Link to="user/1"> */}
+        <Link to={`profile/${props.userId}`}>
         <Avatar size="xl" />
-        {/* </Link> */}
-        <Link to="post/1" className="flex-1">
+        </Link>
+        <Link to={`post/${props.postId}`} className="flex-1">
           <div className="">Username</div>
-          <div className="opacity-50">3hr</div>
+          <div className="opacity-50">{getTimeOfCreation(props.date)}</div>
 
           <div className="">
-            Mollit magna est ea anim magna culpa non fugiat reprehenderit. Do
-            anim laboris Lorem pariatur mollit tempor cupidatat aliqua in do.
-            Reprehenderit sit consectetur irure et velit.
+           {props.content}
           </div>
         </Link>
       </div>
@@ -29,7 +41,7 @@ const HomePostCard = () => {
           onClick={handleCommentPost}
         >
           <FaComment />
-          120
+          {/* {props.dislikes.length} sería comments.length*/} 
         </button>
 
         <button
@@ -37,7 +49,8 @@ const HomePostCard = () => {
           onClick={handleFavoritePost}
         >
           <FaHeart />
-          12
+          {props.likes.length} 
+
         </button>
       </div>
     </div>

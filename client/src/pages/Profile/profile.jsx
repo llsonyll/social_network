@@ -9,7 +9,7 @@ import ProfilePosts from '../../components/ProfilePostsRenderer'
 import { mockPost } from '../../data/20DummyPosts'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
-import { getUserProfile } from '../../redux/actions/getUserProfile'
+import { getUserProfile } from '../../redux/actions/userActions'
 
 const Profile = () => {
 	const params = useParams()
@@ -18,6 +18,7 @@ const Profile = () => {
 	const [biography, setBiography] = useState(false)
 	const [image, setImage] = useState(false)
 	const userData = useSelector((state) => state.user.userProfileData) 
+	const userLogged = useSelector((state) => state.auth.loggedUser._id)
 	const dispatch = useDispatch()
 
 	const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
@@ -43,7 +44,6 @@ const Profile = () => {
 	}, [ ])
 	//traigo la info del perfil en el q estoy (didMount)
 
-	if (params) console.log(params.id)
 	let user = UsersDummy[0]
 	let post = mockPost[0]
 	let userPosts = {
@@ -56,7 +56,6 @@ const Profile = () => {
 		commentsLength: `${post.comments.length}`,
 		likes: `${post.likes.length}`,
 	}
-
 	return (
 		<>
 			<div className='p-container'>
@@ -81,7 +80,7 @@ const Profile = () => {
 									<p>{`${user.firstname + ' ' + user.lastname}`}</p>
 								</div>
 								<div className='button_container'>
-									{params.id === params.id ? (
+									{params.id === userLogged ? (
 										<button
 											onClick={() => {
 												setFirstname(true)

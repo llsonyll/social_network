@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     userProfileData: {},
-    userPostsData: [],
+    homePostsData: [],
 };
 
 const userReducer = createSlice({
@@ -13,7 +13,7 @@ const userReducer = createSlice({
       state.userProfileData = action.payload;
     },
     homePosts(state,action){
-       state.homePostsData = action.payload;
+       state.homePostsData = state.homePostsData.concat(action.payload);
     }
   },
 });
