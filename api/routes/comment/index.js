@@ -19,15 +19,20 @@ const router = express_1.default.Router();
 router.post('/:userId/:postId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, postId } = req.params;
     const { content } = req.body;
+    console.log('entree');
     try {
         const user = yield mongoose_1.User.findById(`${userId}`);
         const post = yield mongoose_1.Post.findById(`${postId}`)
-            .populate({ path: 'commentsId', select: 'content', populate: { path: 'userId', select: ['username', 'likes'] } })
+            .populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes'] } })
             .populate('userId', 'username')
             .populate('likes', 'username')
             .populate('dislikes', 'username');
-        if (!user || !post || !content)
+        if (!user)
             return res.status(404).json({ msg: 'idk' });
+        if (!post)
+            return res.status(404).json({ msg: 'post error' });
+        if (!content)
+            return res.status(404).json({ msg: 'content error' });
         const newComment = new mongoose_1.Comment({
             content,
             userId: user._id,
@@ -36,6 +41,7 @@ router.post('/:userId/:postId', passport_1.default.authenticate('jwt', { session
         yield newComment.save();
         post.commentsId.push(newComment._id);
         yield post.save();
+        console.log(post);
         return res.status(201).json(post);
     }
     catch (error) {

@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     const { userId, postId } = req.params;
     const { content } = req.body;
-    
+    console.log('entree')
     
     try {
         const user = await User.findById(`${userId}`);
@@ -17,7 +17,9 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
         .populate('likes', 'username')
         .populate('dislikes', 'username')
         
-        if (!user || !post || !content) return res.status(404).json({msg: 'idk'})
+        if (!user) return res.status(404).json({msg: 'idk'})
+        if (!post) return res.status(404).json({msg: 'post error'});
+        if (!content) return res.status(404).json({msg: 'content error'})
 
         const newComment = new Comment({
             content,
@@ -30,6 +32,8 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
         post.commentsId.push(newComment._id);
 
         await post.save();
+
+        console.log(post)
 
         return res.status(201).json(post);
     } catch (error) {
