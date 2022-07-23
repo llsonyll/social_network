@@ -17,9 +17,7 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
         .populate('likes', 'username')
         .populate('dislikes', 'username')
         
-        if (!user) return res.status(404).json({msg: 'idk'})
-        if (!post) return res.status(404).json({msg: 'post error'});
-        if (!content) return res.status(404).json({msg: 'content error'})
+        if (!user || !post || !content) return res.status(404).json({msg: 'idk'})
 
         const newComment = new Comment({
             content,

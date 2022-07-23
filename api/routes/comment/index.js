@@ -27,12 +27,8 @@ router.post('/:userId/:postId', passport_1.default.authenticate('jwt', { session
             .populate('userId', 'username')
             .populate('likes', 'username')
             .populate('dislikes', 'username');
-        if (!user)
+        if (!user || !post || !content)
             return res.status(404).json({ msg: 'idk' });
-        if (!post)
-            return res.status(404).json({ msg: 'post error' });
-        if (!content)
-            return res.status(404).json({ msg: 'content error' });
         const newComment = new mongoose_1.Comment({
             content,
             userId: user._id,
