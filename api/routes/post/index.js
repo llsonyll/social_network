@@ -94,6 +94,80 @@ router.delete('/:userId/:postId', passport_1.default.authenticate('jwt', { sessi
         res.status(400).json('something went wrong');
     }
 }));
+router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let postId = req.params.postId;
+        let userId = req.params.userId;
+        let user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user) {
+            return res.status(400).json("algo salio mal");
+        }
+        let post = yield mongoose_1.Post.findById(`${postId}`);
+        if (!post) {
+            return res.status(400).json("algo salio mal");
+        }
+        let id = user._id;
+        if (post.likes.includes(user._id)) {
+            yield mongoose_1.Post.updateOne({ _id: postId }, {
+                $pull: {
+                    likes: id,
+                },
+            });
+        }
+        if (!post.dislikes.includes(user._id)) {
+            post.dislikes.push({ _id: userId });
+        }
+        else {
+            yield mongoose_1.Post.updateOne({ _id: postId }, {
+                $pull: {
+                    dislikes: id,
+                },
+            });
+        }
+        yield (post === null || post === void 0 ? void 0 : post.save());
+        return res.status(200).json({ message: "funciono" });
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
+router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let postId = req.params.postId;
+        let userId = req.params.userId;
+        let user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user) {
+            return res.status(400).json("algo salio mal");
+        }
+        let post = yield mongoose_1.Post.findById(`${postId}`);
+        if (!post) {
+            return res.status(400).json("algo salio mal");
+        }
+        let id = user._id;
+        if (post.dislikes.includes(user._id)) {
+            yield mongoose_1.Post.updateOne({ _id: postId }, {
+                $pull: {
+                    dislikes: id,
+                },
+            });
+        }
+        if (!post.likes.includes(user._id)) {
+            post.likes.push({ _id: userId });
+        }
+        else {
+            yield mongoose_1.Post.updateOne({ _id: postId }, {
+                $pull: {
+                    likes: id,
+                },
+            });
+        }
+        yield (post === null || post === void 0 ? void 0 : post.save());
+        return res.status(200).json({ message: "funciono" });
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
 router.post('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { content } = req.body;
