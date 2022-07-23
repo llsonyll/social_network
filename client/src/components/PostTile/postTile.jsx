@@ -6,12 +6,17 @@ import CommentTile from "../CommentTile";
 // import CommentInput from "../CommentInput";
 
 import { FaHeart } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { createComment } from '../../redux/actions/commentActions'
 
 
 const PostTile = (props) => {
   const [showInput, setShowInput] = useState(false);
   const [commentInput, setCommentInput] = useState("");
   const inputRef = useRef();
+  const user = useSelector(store => store.user.userProfileData)
+
+  const dispatch = useDispatch();
 
   let {post} = props
 
@@ -41,11 +46,15 @@ const PostTile = (props) => {
     }, 200);
   };
 
-  const handleCommentInput = (e) => setCommentInput(e.target.value);
+  const handleCommentInput = (e) => {
+    setCommentInput(e.target.value);
+  }
 
   const handleInputSubmit = (e) => {
     e.preventDefault();
     console.log(commentInput);
+    
+    dispatch(createComment('62d8bb684bc80effb3b8697a', post._id, {content: commentInput}))
     setCommentInput("");
   };
 
