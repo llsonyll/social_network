@@ -7,6 +7,7 @@ import { dummyFriendPost } from "../../data/dummyPostFriend";
 import { useDispatch, useSelector } from "react-redux";
 import { getPost } from "../../redux/actions/postActions";
 import { useParams } from "react-router-dom";
+import { removePostDetail } from "../../redux/reducers/postReducer.slice";
 
 const PostDetail = () => {
 
@@ -21,6 +22,7 @@ const PostDetail = () => {
   useEffect(() => {
     console.log("Component Mounted", postDetail);
     dispatch(getPost(params.id))
+    return (() => dispatch(removePostDetail()))
   }, []);
 
   return (

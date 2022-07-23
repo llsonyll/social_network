@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 // import { Link } from "react-router-dom";
 
 import Avatar from "../Avatar";
@@ -7,12 +7,27 @@ import CommentTile from "../CommentTile";
 
 import { FaHeart } from "react-icons/fa";
 
+
 const PostTile = (props) => {
   const [showInput, setShowInput] = useState(false);
   const [commentInput, setCommentInput] = useState("");
   const inputRef = useRef();
 
   let {post} = props
+
+  function getTimeOfCreation(date){
+    let now = new Date().getTime()
+    let created = new Date(date).getTime()
+    const minutes = ((now - created)/6000);
+    if (minutes <= 1) return "1 minute ago";
+    if (minutes < 60) return `${minutes} minutes ago`;
+    if (minutes / 60 <= 1.5) return "1 hour ago";
+    if ((minutes /60 > 24) && (minutes/60 <= 36)) return '1 day ago';
+    if (minutes /60 > 36) return `${Math.round(minutes / (60*24))} days ago`
+    return `${Math.round(minutes / 60)} hours ago`;
+  }
+
+
 
   const handleLikePost = () => {
     console.log("Like Post");
@@ -34,6 +49,10 @@ const PostTile = (props) => {
     setCommentInput("");
   };
 
+
+
+
+
   return (
     <>
       <div className="flex ">
@@ -43,7 +62,7 @@ const PostTile = (props) => {
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
             <div className="text-white font-medium">{post? post.userId.username : 'Username'}</div>
-            <div className="text-white opacity-50 text-xs">3hr</div>
+            <div className="text-white opacity-50 text-xs">{post? getTimeOfCreation(post.createdAt):"3hr"}</div>
           </div>
           <div className="text-white font-light text-base">
             {post? post.content : `Duis excepteur qui dolor anim non sit cillum velit sint deserunt.

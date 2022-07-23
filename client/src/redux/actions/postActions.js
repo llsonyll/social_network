@@ -15,3 +15,16 @@ export const getPost = (postId) => async (dispatch) => {
         console.log(err)
     }
 }
+
+export const createPost = (content, userId) => async (dispatch) => {
+    try{
+        let res = await axios.post('http://localhost:3001/post/' + userId, {content: content},{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        return
+    }catch(err){
+        console.log(err)
+    }
+}
