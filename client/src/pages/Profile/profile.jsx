@@ -7,6 +7,9 @@ import EditUsername from '../../components/EditUsername'
 import EditBiography from '../../components/EditBiography'
 import ProfilePosts from '../../components/ProfilePostsRenderer'
 import { mockPost } from '../../data/20DummyPosts'
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { getUserProfile } from '../../redux/actions/getUserProfile'
 
 const Profile = () => {
 	const params = useParams()
@@ -14,6 +17,8 @@ const Profile = () => {
 	const [username, setUsername] = useState(false)
 	const [biography, setBiography] = useState(false)
 	const [image, setImage] = useState(false)
+	const userData = useSelector((state) => state.user.userProfileData) 
+	const dispatch = useDispatch()
 
 	const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
 		if (nameOfTheComponentToRender === 'firstname') {
@@ -30,14 +35,20 @@ const Profile = () => {
 		}
 	}
 
-	if (params) console.log(params.id)
 
+
+	useEffect(() => {
+		dispatch(getUserProfile(params.id))
+
+	}, [ ])
+	//traigo la info del perfil en el q estoy (didMount)
+
+	if (params) console.log(params.id)
 	let user = UsersDummy[0]
 	let post = mockPost[0]
-
 	let userPosts = {
 		postNumber: 1,
-		fullname: `${user.firstname + ' ' + user.lastname}`,
+		fullname: `${userData.firstname + ' ' + user.lastname}`,
 		timeAgo: '9hr',
 		description: post.content
 			? post.content
