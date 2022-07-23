@@ -58,7 +58,8 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
     const { userId } = req.params;
     try {
         const user = yield mongoose_1.User.findById(`${userId}`)
-            .populate('posts', ['_id', 'likes', 'dislikes'])
+            // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
+            .populate({ path: 'posts', select: ['content', 'likes', 'dislikes', '_id', 'commentsId'], populate: { path: 'userId', select: ['username'] } })
             .populate('following', 'username')
             .populate('followers', 'username')
             .select("-password");
