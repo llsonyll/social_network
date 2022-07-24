@@ -1,3 +1,4 @@
+import { IUser } from './../../types/index';
 import express, {Request,Response} from 'express';
 import passport from 'passport';
 import { Comment, Post, User } from '../../mongoose';
@@ -68,7 +69,7 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
         //Delete the post from the posts of the User
         await user.updateOne({$pull: {posts: postId}})
         await user.save()
-
+        
         //Delete comments done at this post
         let comments = post.commentsId
         await Comment.deleteMany({_id: {$in: comments}})
@@ -78,6 +79,98 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
     }catch(err){
         res.status(400).json('something went wrong')
     }
+});
+
+router.put("/dislike/:postId/:userId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
+async (req:Request, res:Response) => {
+   try {
+    let postId = req.params.postId;
+    let userId =req.params.userId;
+    
+    let user:IUser | null = await User.findById(`${userId}`);
+
+    if(!user) {
+        return res.status(400).json("algo salio mal")
+    }
+
+    let post: any = await Post.findById(`${postId}`);
+     
+    if(!post) {
+        return res.status(400).json("algo salio mal");
+    }
+    
+    let id = user._id;
+
+    if(post.likes.includes(user._id)){
+       await Post.updateOne({_id: postId}, {
+           $pull: {
+              likes: id,
+           },
+       });
+     }
+     
+     if( !post.dislikes.includes(user._id)){
+        post.dislikes.push({ _id: userId });
+       }else{
+            await Post.updateOne({_id: postId}, {
+                $pull: {
+                    dislikes: id ,
+                },
+             });
+        }
+    
+    await post?.save();
+    
+     return res.status(200).json({message: "funciono"});
+   } catch (err) {
+     return res.status(400).json(err);
+   }
+});
+
+router.put("/like/:postId/:userId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
+async (req:Request, res:Response) => {
+   try {
+    let postId = req.params.postId;
+    let userId =req.params.userId;
+    
+    let user:IUser | null = await User.findById(`${userId}`);
+
+    if(!user) {
+        return res.status(400).json("algo salio mal")
+    }
+
+    let post: any = await Post.findById(`${postId}`);
+     
+    if(!post) {
+        return res.status(400).json("algo salio mal");
+    }
+    
+    let id = user._id;
+
+    if(post.dislikes.includes(user._id)){
+       await Post.updateOne({_id: postId}, {
+           $pull: {
+              dislikes: id,
+           },
+       });
+     }
+
+     if( !post.likes.includes(user._id)){
+        post.likes.push({ _id: userId });
+       }else{
+            await Post.updateOne({_id: postId}, {
+                $pull: {
+                    likes: id ,
+                },
+             });
+        }
+    
+    await post?.save();
+    
+     return res.status(200).json({message: "funciono"});
+   } catch (err) {
+     return res.status(400).json(err);
+   }
 });
 
 router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
@@ -105,5 +198,6 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
         return res.status(400).json(error);
     }
 });
+
 
 export default router

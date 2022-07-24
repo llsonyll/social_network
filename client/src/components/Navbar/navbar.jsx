@@ -22,6 +22,8 @@ const NavBar = ({ openModal }) => {
 
   const [searchInput, setSearchInput] = useState("");
   const { searches } = useSelector((state) => state.browserReducer);
+  const userId = useSelector((state) => state.auth.loggedUser._id)
+
 
   let dispatch = useDispatch();
 
@@ -57,7 +59,7 @@ const NavBar = ({ openModal }) => {
           Home
         </NavLink>
         <NavLink
-          to="profile"
+          to={`profile/${userId}`}
           className="flex items-center gap-2"
           style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
         >

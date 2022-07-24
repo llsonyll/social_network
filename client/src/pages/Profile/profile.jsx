@@ -1,12 +1,15 @@
 import './profile.css'
 import { UsersDummy } from '../../data/20UsersDummy'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import EditFullname from '../../components/EditFullname'
 import EditUsername from '../../components/EditUsername'
 import EditBiography from '../../components/EditBiography'
 import ProfilePosts from '../../components/ProfilePostsRenderer'
 import { mockPost } from '../../data/20DummyPosts'
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { getUserProfile } from '../../redux/actions/userActions'
 
 const Profile = () => {
 	const params = useParams()
@@ -14,6 +17,9 @@ const Profile = () => {
 	const [username, setUsername] = useState(false)
 	const [biography, setBiography] = useState(false)
 	const [image, setImage] = useState(false)
+	const userLogged = useSelector((state) => state.auth.loggedUser._id)
+	const userData = useSelector((state) => state.user.userProfileData)
+	const dispatch = useDispatch()
 
 	const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
 		if (nameOfTheComponentToRender === 'firstname') {
@@ -29,21 +35,46 @@ const Profile = () => {
 			setImage(false)
 		}
 	}
+	//traigo la info del perfil en el q estoy (didMount)
+	useEffect(() => {
+		dispatch(getUserProfile(params.id))
+	}, [params.id])
 
-	if (params) console.log(params.id)
+	function getTimeOfCreation(date) {
+		let now = new Date().getTime()
+		let created = new Date(date).getTime()
+		const minutes = (now - created) / 60000
+		if (minutes <= 1) return '1 minute ago'
+		if (minutes < 60) return `${Math.round(minutes)} minutes ago`
+		if (minutes / 60 <= 1.5) return '1 hour ago'
+		if (minutes / 60 > 24 && minutes / 60 <= 36) return '1 day ago'
+		if (minutes / 60 > 36) return `${Math.round(minutes / (60 * 24))} days ago`
+		return `${Math.round(minutes / 60)} hours ago`
+	}
 
-	let user = UsersDummy[0]
-	let post = mockPost[0]
-
-	let userPosts = {
-		postNumber: 1,
-		fullname: `${user.firstname + ' ' + user.lastname}`,
-		timeAgo: '9hr',
-		description: post.content
-			? post.content
-			: 'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum ',
-		commentsLength: `${post.comments.length}`,
-		likes: `${post.likes.length}`,
+	let user = userData
+	console.log(user)
+	let userPosts = user.posts
+	let renderer = () => {
+		if (userPosts.length > 0) {
+			return userPosts.map((p) => {
+				return (
+					<Fragment key={p.postNumber}>
+						<div className='profile-posts-container' key={p.postNumber}>
+							<ProfilePosts
+								userId={p.userId._id}
+								postNumber={p._id}
+								fullname={`${user.firstname + ' ' + user.lastname}`}
+								timeAgo={getTimeOfCreation(p.createdAt)}
+								commentsLength={p.commentsId.length}
+								likesLength={p.likes.length}
+								content={p.content}
+							/>
+						</div>
+					</Fragment>
+				)
+			})
+		}
 	}
 
 	return (
@@ -70,7 +101,7 @@ const Profile = () => {
 									<p>{`${user.firstname + ' ' + user.lastname}`}</p>
 								</div>
 								<div className='button_container'>
-									{params.id === params.id ? (
+									{params.id === userLogged ? (
 										<button
 											onClick={() => {
 												setFirstname(true)
@@ -84,10 +115,10 @@ const Profile = () => {
 							<div className='user-username'>
 								<div className='info_container'>
 									<span className='span-info'>Username</span>
-									{user.username}
+									{'@' + user.username}
 								</div>
 								<div className='button_container'>
-									{params.id === params.id ? (
+									{params.id === userLogged ? (
 										<button
 											onClick={() => {
 												setUsername(true)
@@ -102,23 +133,23 @@ const Profile = () => {
 							<div className='user-followers'>
 								<div className='info_container'>
 									<span className='span-info'>Followers</span>
-									{user.followers.length}
+									{user._id ? user.followers.length : null}
 								</div>
 							</div>
 							<div className='user-following'>
 								<div className='info_container'>
 									<span className='span-info'>Following</span>
-									{user.following.length}
+									{user._id ? user.following.length : null}
 								</div>
 							</div>
 
 							<div className='user-biography'>
 								<div className='info_container'>
 									<span className='span-info'>Biography</span>
-									{user.biography}
+									{user.biography ? user.biography : 'No bio yet'}
 								</div>
 								<div className='button_container'>
-									{params.id === params.id ? (
+									{params.id === userLogged ? (
 										<button
 											onClick={() => {
 												setBiography(true)
@@ -146,7 +177,7 @@ const Profile = () => {
 
 			{/* Espacio para mapear 20 objetos con el componente renderizador de los posts y los 20 posts que le pido a la db */}
 
-			<ProfilePosts userPosts={userPosts} />
+			{user._id ? renderer() : null}
 		</>
 	)
 }

@@ -70,3 +70,13 @@
   text-align: left;
   
 }
+
+/* background-size: 100% !important;
+background-repeat:repeat;
+} */
+
+.btn {
+  position: absolute;
+  background-color: red;
+  bottom: 0;
+}

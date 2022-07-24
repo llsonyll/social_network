@@ -6,7 +6,7 @@ export let commentsSchema = new Schema<IComments>({
 	postId: { type: Schema.Types.ObjectId, required: true, ref: 'Post' },
 	userId: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
 	content: { type: String, required: true },
-	likes: [{ type: Schema.Types.ObjectId }],
+	likes: [{ type: Schema.Types.ObjectId , ref: "User" }],
 }, {
 	timestamps: {
 		createdAt: true,

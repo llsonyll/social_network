@@ -7,11 +7,14 @@ const router = express.Router();
 router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     const { userId, postId } = req.params;
     const { content } = req.body;
-    
+    console.log('entree')
     
     try {
         const user = await User.findById(`${userId}`);
-        const post = await Post.findById(`${postId}`);
+        let post = await Post.findById(`${postId}`)
+        .populate('userId', 'username')
+        .populate('likes', 'username')
+        .populate('dislikes', 'username')
         
         if (!user || !post || !content) return res.status(404).json({msg: 'idk'})
 
@@ -26,6 +29,8 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
         post.commentsId.push(newComment._id);
 
         await post.save();
+
+        post = await post.populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes']}})
 
         return res.status(201).json(post);
     } catch (error) {
