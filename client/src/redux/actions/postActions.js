@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { addPostDetail } from '../reducers/postReducer.slice';
+import { addNewPost } from '../reducers/userReducer.slice';
 
 
 export const getPost = (postId) => async (dispatch) => {
@@ -23,7 +24,7 @@ export const createPost = (content, userId) => async (dispatch) => {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-        return
+        return dispatch(addNewPost(res.data))
     }catch(err){
         console.log(err)
     }

@@ -14,10 +14,13 @@ const userReducer = createSlice({
     },
     homePosts(state,action){
        state.homePostsData = state.homePostsData.concat(action.payload);
+    },
+    addNewPost(state, action){
+      state.homePostsData = [action.payload, ...state.homePostsData]
     }
   },
 });
 
-export const { userProfile, homePosts } = userReducer.actions;
+export const { userProfile, homePosts, addNewPost } = userReducer.actions;
 
 export default userReducer.reducer;
