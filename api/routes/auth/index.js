@@ -91,7 +91,7 @@ router.post('/login', passport_1.default.authenticate('local', { session: false,
             const send = user;
             return res
                 .status(200)
-                .json({ token: createToken(user), username: send.username, _id: send._id });
+                .json({ token: createToken(user), username: send.username, _id: send._id, profilePicture: send.profilePicture });
             //res.redirect()
         }
         return res.status(400).json('The user does not exists');
@@ -120,8 +120,8 @@ router.post('/', passport_1.default.authenticate('jwt', { session: false, failur
         if (!user) {
             return res.status(400).json('Invalid Token');
         }
-        let { username } = user;
-        return res.status(200).json({ _id: id, username });
+        let { username, profilePicture } = user;
+        return res.status(200).json({ _id: id, username, profilePicture });
     }
     catch (err) {
         return res.status(400).json(err);

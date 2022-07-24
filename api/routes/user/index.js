@@ -85,7 +85,7 @@ router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, 
             return res.status(400).json({ errprMsg: 'Please send data' });
         }
         const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
-            .populate({ path: 'posts', select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt'], populate: { path: 'userId', select: ['username'] } })
+            .populate({ path: 'posts', select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt'], populate: { path: 'userId', select: ['username', 'profilePicture'] } })
             .populate('following', 'username')
             .populate('followers', 'username')
             .select("-password");

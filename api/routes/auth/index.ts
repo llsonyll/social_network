@@ -97,7 +97,7 @@ router.post(
 				const send: IUser = user as IUser
 				return res
 					.status(200)
-					.json({ token: createToken(user as IUser), username: send.username, _id: send._id })
+					.json({ token: createToken(user as IUser), username: send.username, _id: send._id , profilePicture: send.profilePicture})
 				//res.redirect()
 			}
 			return res.status(400).json('The user does not exists')
@@ -137,9 +137,9 @@ router.post(
 				return res.status(400).json('Invalid Token')
 			}
 
-			let { username } = user
+			let { username, profilePicture } = user
 
-			return res.status(200).json({ _id: id, username })
+			return res.status(200).json({ _id: id, username , profilePicture})
 		} catch (err) {
 			return res.status(400).json(err)
 		}
