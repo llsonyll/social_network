@@ -95,7 +95,7 @@ router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedir
         }
 
         const user = await User.findByIdAndUpdate(`${userId}`, req.body, {new: true})
-        .populate({path: 'posts',select: ['content', 'likes', 'dislikes', '_id', 'commentsId','createdAt'], populate:{path: 'userId', select: ['username']}})
+        .populate({path: 'posts',select: ['content', 'likes', 'dislikes', '_id', 'commentsId','createdAt'], populate:{path: 'userId', select: ['username', 'profilePicture']}})
         .populate('following', 'username')
         .populate('followers', 'username')
         .select("-password")
