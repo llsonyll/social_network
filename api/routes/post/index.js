@@ -193,7 +193,8 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
         yield newPost.save();
         user.posts.push(newPost._id);
         yield user.save();
-        return res.status(201).json({ msg: 'Post created successfully' });
+        yield newPost.populate('userId', 'username');
+        return res.status(201).json(newPost);
     }
     catch (error) {
         return res.status(400).json(error);
