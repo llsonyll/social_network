@@ -5,14 +5,16 @@ import Messages from './pages/Messages'
 import Profile from './pages/Profile'
 import PostDetail from './pages/PostDetail'
 import DashBoard from './layout/Dashboard'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedUserInfo } from './redux/actions/authActions'
+import { removeLoggedUser } from './redux/reducers/authReducer.slice'
 
 function App() {
 	const dispatch = useDispatch()
-
+	let navigate = useNavigate()
+	let location = useLocation()
 	const loggedUser = useSelector((state) => state.auth.loggedUser)
 
 	useEffect(() => {
@@ -21,8 +23,18 @@ function App() {
 		}
 	}, [])
 
+	useEffect(()=> {
+		
+		
+		if(!localStorage.getItem('token') && location.pathname !== '/'){
+			dispatch(removeLoggedUser())
+			navigate('/')
+		}
+	}, [location])
+
+
+
 	return (
-		<BrowserRouter>
 			<Routes>
 				<Route path='/' element={<Landing />} />
 				<Route path='/home' element={<DashBoard />}>
@@ -33,7 +45,6 @@ function App() {
 				</Route>
 				<Route path='/team' element={<Landing />} />
 			</Routes>
-		</BrowserRouter>
 	)
 }
 
