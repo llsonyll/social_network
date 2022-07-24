@@ -118,7 +118,7 @@ const PostTile = (props) => {
 
             {showInput && (
               <form className="flex items-center" onSubmit={handleInputSubmit}>
-                <Avatar />
+                {user.profilePicture? <Avatar imgUrl={user.profilePicture}/>:<Avatar />}
                 <input
                   ref={inputRef}
                   value={commentInput}

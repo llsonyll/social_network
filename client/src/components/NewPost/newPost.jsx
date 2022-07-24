@@ -50,7 +50,7 @@ const NewPost = ({ showModal, setShowModal }) => {
             </span>
           </button>
           <div className="py-5 px-6 lg:px-8 flex">
-            <Avatar size="l" />
+            {loggedUser.profilePicture? <Avatar imgUrl={loggedUser.profilePicture} size="l" />:<Avatar size="l" />}
             <form className="space-y-8 flex-1 mx-3" onSubmit={handleNewPost}>
               <textarea
                 id="message"
