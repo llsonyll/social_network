@@ -17,10 +17,16 @@ const userReducer = createSlice({
     },
     addNewPost(state, action){
       state.homePostsData = [action.payload, ...state.homePostsData]
+    },
+    addNewPostProfile(state, action){
+      if(state.homePostsData.length){
+        state.homePostsData = [action.payload, ...state.homePostsData]
+      }
+      state.userProfileData.posts = [action.payload, ...state.userProfileData.posts]
     }
   },
 });
 
-export const { userProfile, homePosts, addNewPost } = userReducer.actions;
+export const { userProfile, homePosts, addNewPost, addNewPostProfile } = userReducer.actions;
 
 export default userReducer.reducer;

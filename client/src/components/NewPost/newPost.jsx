@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaImage } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { createPost } from "../../redux/actions/postActions";
 import Avatar from "../Avatar";
 
@@ -9,6 +10,7 @@ const NewPost = ({ showModal, setShowModal }) => {
   const [postInput, setPostInput] = useState("");
   const dispatch = useDispatch()
   const loggedUser = useSelector((store) => store.auth.loggedUser)
+  const location = useLocation()
 
   const handleInputPost = (e) => setPostInput(e.target.value);
 
@@ -16,7 +18,7 @@ const NewPost = ({ showModal, setShowModal }) => {
     e.preventDefault();
     console.log(postInput, loggedUser);
     if(postInput){
-      dispatch(createPost(postInput, loggedUser._id))
+      dispatch(createPost(postInput, loggedUser._id, location.pathname))
     }
     setPostInput("");
   };
