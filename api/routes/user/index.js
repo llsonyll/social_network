@@ -76,4 +76,24 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         res.status(404).json({ errorMsg: err });
     }
 }));
+router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const { username, firstname, lastname, biography } = req.body;
+        if (!username && !firstname && !lastname && (!biography && biography !== '')) {
+            return res.status(400).json({ errprMsg: 'Please send data' });
+        }
+        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
+            .populate({ path: 'posts', select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt'], populate: { path: 'userId', select: ['username'] } })
+            .populate('following', 'username')
+            .populate('followers', 'username')
+            .select("-password");
+        if (!user)
+            return res.status(404).json({ errorMsg: "who are you?" });
+        return res.json(user);
+    }
+    catch (err) {
+        res.status(400).json({ errorMsg: err });
+    }
+}));
 exports.default = router;
