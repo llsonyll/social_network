@@ -44,7 +44,7 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
                 .sort({ createdAt: -1 })
                 .skip(page * 20)
                 .limit(20)
-                .populate('userId', 'username');
+                .populate('userId', ['username', 'profilePicture']);
             res.json(posts);
         }
         //  else {

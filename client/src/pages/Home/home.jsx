@@ -55,6 +55,7 @@ const Home = () => {
                     userId={p.userId._id}
                     username={p.userId.username}
                     page = {page}
+                    profilePicture = {p.userId.profilePicture}
                   />
                 );
               })

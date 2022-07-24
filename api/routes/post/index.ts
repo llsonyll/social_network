@@ -216,7 +216,7 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
         user.posts.push(newPost._id);
 
         await user.save();
-        await newPost.populate('userId', 'username')
+        await newPost.populate('userId', ['username', 'profilePicture'])
 
         return res.status(201).json(newPost);
     } catch (error) {
