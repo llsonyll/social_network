@@ -19,7 +19,7 @@ const Avatar = ({
       />
     </div>
   ) : size === "l" ? (
-    <div className={`rounded-full bg-white overflow-hidden p-1 w-12 h-12`}>
+    <div className={`rounded-full  overflow-hidden p-1 w-12 h-12`}>
       <img
         className="object-cover h-full rounded-full"
         src={imgUrl}
@@ -27,7 +27,7 @@ const Avatar = ({
       />
     </div>
   ) : size === "xl" ? (
-    <div className={`rounded-full bg-white overflow-hidden p-1 w-16 h-16`}>
+    <div className={`rounded-full  overflow-hidden p-1 w-16 h-16`}>
       <img
         className="object-cover h-full rounded-full"
         src={imgUrl}
