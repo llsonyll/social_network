@@ -126,7 +126,6 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
             }, { new: true });
         }
         let userPost = yield mongoose_1.User.findById(`${userId}`)
-            // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
             .populate({
             path: 'posts',
             select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
@@ -174,7 +173,6 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             }, { new: true });
         }
         let userPost = yield mongoose_1.User.findById(`${userId}`)
-            // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
             .populate({
             path: 'posts',
             select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],

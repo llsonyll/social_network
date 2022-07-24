@@ -121,7 +121,6 @@ async (req:Request, res:Response) => {
         }
 
     let userPost = await User.findById(`${userId}`)
-    // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
     .populate({
         path: 'posts',
         select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
@@ -179,7 +178,6 @@ async (req:Request, res:Response) => {
         }
      
      let userPost = await User.findById(`${userId}`)
-     // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
      .populate({
          path: 'posts',
          select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],

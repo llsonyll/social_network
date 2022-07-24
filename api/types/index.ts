@@ -40,7 +40,8 @@ export  interface IComments {
    userId: Types.ObjectId;
    content: string;
    createdAt: Date,
-   likes: Types.Array<Types.ObjectId>
+   likes: Types.Array<Types.ObjectId>,
+   dislikes: Types.Array<Types.ObjectId>
 }
 
 export interface IReview {
