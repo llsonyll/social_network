@@ -26,4 +26,16 @@ export const getUserProfile = (id) => async(dispatch) => {
 		  console.log(err);
 		}
 	 };
+
+	 export const modifyUser =(id, obj) => async(dispatch) => {
+		//recibe Id por params, y el obj va a ser la propiedad a modificar
+		try{
+			let res = await axios.put(`http://localhost:3001/user/${id}`, obj, {headers:{
+				Authorization: `Bearer ${localStorage.getItem('token')}`
+			}})
+			return dispatch(userProfile(res.data))
+		}catch(err){
+			console.log(err)
+		}
+	 } 
 		 

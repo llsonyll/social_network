@@ -87,8 +87,12 @@ router.get(
 router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     try{
         const {userId} = req.params
-
+        const {username, firstname, lastname, biography } = req.body
         
+        if(!username && !firstname && !lastname && (!biography && biography !== '')){
+            return res.status(400).json({errprMsg: 'Please send data'})
+        }
+
         const user = await User.findByIdAndUpdate(`${userId}`, req.body, {new: true})
         .populate({path: 'posts',select: ['content', 'likes', 'dislikes', '_id', 'commentsId','createdAt'], populate:{path: 'userId', select: ['username']}})
         .populate('following', 'username')

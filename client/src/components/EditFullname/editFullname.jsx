@@ -2,15 +2,39 @@ import '../../pages/Profile'
 import { useState } from 'react'
 import { AiFillCloseSquare } from 'react-icons/ai'
 import Avatar from '../Avatar'
+import { useDispatch, useSelector } from 'react-redux'
+import { modifyUser } from '../../redux/actions/userActions'
 
 const EditFullname = ({ renderChangeRenderComponents, user }) => {
+	const loggedUser = useSelector(store => store.auth.loggedUser)
+	const dispatch = useDispatch()
 	const handleOnCancel = () => {
 		renderChangeRenderComponents('firstname')
 	}
+	//DESDE AQUI SE PONEN LAS ACCIONES
+	const [firstname, setFirstname] = useState('')
+	const [lastname, setLastname] = useState('')
 
-	const handleOnSubmit = () => {
-		//renderChangeFullnameComponent(false)
-		alert('You changed your name!')
+	const handleOnSubmit = (e) => {
+		e.preventDefault()
+		if (firstname.length > 0 && lastname.length === 0) {
+			dispatch(modifyUser(loggedUser._id, {firstname}))
+			alert('You changed your name!')
+			renderChangeRenderComponents('firstname')
+		}
+		else if (firstname.length === 0 && lastname.length > 0) {
+			dispatch(modifyUser(loggedUser._id, {lastname}))
+			alert('You changed your name!')
+			renderChangeRenderComponents('firstname')
+		}
+		else if (firstname.length > 0 && lastname.length > 0) {
+			dispatch(modifyUser(loggedUser._id, {firstname,lastname}))
+			alert('You changed your name!')
+			renderChangeRenderComponents('firstname')
+		}
+		else if (firstname.length === 0 && lastname.length === 0) {
+			alert('Fill any input before submitting')
+		}
 	}
 
 	return (
@@ -35,11 +59,19 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 							<input
 								id='message'
 								rows='4'
+								onChange={(e) => {
+									e.preventDefault()
+									setFirstname(e.target.value)
+								}}
 								className='block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none'
 								placeholder={`New First name`}></input>
 							<input
 								id='message'
 								rows='4'
+								onChange={(e) => {
+									e.preventDefault()
+									setLastname(e.target.value)
+								}}
 								className='block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none'
 								placeholder={`New Last name`}></input>
 
@@ -47,7 +79,7 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 								<button
 									onClick={(e) => {
 										e.preventDefault()
-										handleOnSubmit()
+										handleOnSubmit(e)
 									}}
 									className='bg-green-600 text-white  mt-5 py-2 px-8 rounded-md shadow-lg text-sm  transition-all hover:scale-105'>
 									Submit
