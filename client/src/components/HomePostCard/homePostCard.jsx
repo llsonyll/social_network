@@ -44,7 +44,9 @@ const HomePostCard = (props) => {
               <Avatar size="xl" />
           </Link>
           <div className="user_post__info">
-            <h2>{props.username}</h2>
+            <Link to={`profile/${props.userId}`}>
+              <h2>{props.username}</h2>
+            </Link>
             <span className="opacity-50" >{getTimeOfCreation(props.date)}</span>
           </div>
         </div>
