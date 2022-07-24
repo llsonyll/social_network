@@ -8,6 +8,7 @@ exports.commentsSchema = new mongoose_1.Schema({
     userId: { type: mongoose_1.Schema.Types.ObjectId, required: true, ref: 'User' },
     content: { type: String, required: true },
     likes: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    dislikes: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
 }, {
     timestamps: {
         createdAt: true,
