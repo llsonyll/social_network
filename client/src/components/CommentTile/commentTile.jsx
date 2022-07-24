@@ -17,7 +17,7 @@ const CommentTile = (props) => {
     <div className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
       {/* TODO: Avatar should redirect to user profile */}
       {/* <Link to="/user/:id"> */}
-      <Avatar size="m" />
+      {data.profilePicture? <Avatar imgUrl={data.userId.profilePicture} size="m" />:<Avatar size="m" />}
       {/* </Link> */}
       <div className="content flex-1 text-white pl-2">
         {/* TODO: Username should redirect to user profile */}
