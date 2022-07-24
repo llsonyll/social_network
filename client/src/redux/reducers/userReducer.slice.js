@@ -13,8 +13,11 @@ const userReducer = createSlice({
       state.userProfileData = action.payload;
     },
     homePosts(state,action){
+      if(!state.homePostsData.length || state.homePostsData[0]._id !== action.payload[0]._id){
        state.homePostsData = state.homePostsData.concat(action.payload);
-    },
+    }else{
+      state.homePostsData = action.payload;
+    }},
     addNewPost(state, action){
       state.homePostsData = [action.payload, ...state.homePostsData]
     },

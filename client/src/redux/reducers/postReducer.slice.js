@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState ={
-    postDetail: {_id: ''}
+    postDetail: {_id: '',likes: "", dislikes: ""},
 }
 
 const postReducer = createSlice({
@@ -13,14 +13,22 @@ const postReducer = createSlice({
         },
         removePostDetail(state, action){
             state.postDetail = {_id: ''}
-        }
+        },
+        likesPost(state,action){
+           state.postDetail.likes = [...action.payload]
+        },
+        dislikesPost(state,action){
+           state.postDetail.dislikes = [...action.payload]
+        },
     }
 })
 
 
 export const {
     addPostDetail,
-    removePostDetail
+    removePostDetail,
+    likesPost,
+    dislikesPost
 } = postReducer.actions
 
 

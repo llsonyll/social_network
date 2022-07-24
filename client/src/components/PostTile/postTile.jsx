@@ -8,6 +8,7 @@ import CommentTile from "../CommentTile";
 import { FaHeart } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { createComment } from '../../redux/actions/commentActions'
+import { newDislikesPostTitle, newlikePostTitle } from "../../redux/actions/postActions";
 import { TiArrowBack } from "react-icons/ti";
 import './postTile.css';
 
@@ -34,10 +35,13 @@ const PostTile = (props) => {
     return `${Math.round(minutes / 60)} hours ago`;
   }
 
+  const handleLikePost  = () => {
+    dispatch(newlikePostTitle(post._id, user._id));
+  };
 
-
-  const handleLikePost = () => {
-    console.log("Like Post");
+  const handleDislikesPost = () => {
+    let { postId } = props;
+    dispatch(newDislikesPostTitle(postId, _id));
   };
 
   const handleCommentPost = async () => {
