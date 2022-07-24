@@ -14,7 +14,7 @@ const PostTile = (props) => {
   const [showInput, setShowInput] = useState(false);
   const [commentInput, setCommentInput] = useState("");
   const inputRef = useRef();
-  const user = useSelector(store => store.user.userProfileData)
+  const user = useSelector(store => store.auth.loggedUser)
 
   const dispatch = useDispatch();
 
@@ -54,7 +54,7 @@ const PostTile = (props) => {
     e.preventDefault();
     console.log(commentInput);
     
-    dispatch(createComment('62d8bb684bc80effb3b8697a', post._id, {content: commentInput}))
+    dispatch(createComment(user._id, post._id, {content: commentInput}))
     setCommentInput("");
   };
 

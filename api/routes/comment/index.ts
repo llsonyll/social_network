@@ -11,8 +11,7 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
     
     try {
         const user = await User.findById(`${userId}`);
-        const post = await Post.findById(`${postId}`)
-        .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes']}})
+        let post = await Post.findById(`${postId}`)
         .populate('userId', 'username')
         .populate('likes', 'username')
         .populate('dislikes', 'username')
@@ -31,7 +30,7 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
 
         await post.save();
 
-        console.log(post)
+        post = await post.populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes']}})
 
         return res.status(201).json(post);
     } catch (error) {
