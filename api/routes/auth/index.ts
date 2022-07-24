@@ -16,7 +16,13 @@ const createToken = (user: IUser) => {
 const middlewareNewUser = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		let { email, password, firstname, lastname, username } = req.body
-
+		const profileArray = [
+			'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png',
+			'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p2_tj88ek.png',
+			'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p3_dlphru.png',
+			'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p4_zy2yhe.png',
+			'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p5_i3n2nd.png'
+		]
 		if (!email || !password || !firstname || !lastname || !username) {
 			return res.status(400).json({ message: 'Please, send your email and password' })
 		}
@@ -33,7 +39,7 @@ const middlewareNewUser = async (req: Request, res: Response, next: NextFunction
 		let hash = await bcrypt.hash(password, salt)
 
 		//create new User
-		let newUser = new User({ ...req.body, password: hash })
+		let newUser = new User({ ...req.body, password: hash , profilePicture: profileArray[Math.floor(Math.random() * 5)]})
 
 		await newUser.save()
 
