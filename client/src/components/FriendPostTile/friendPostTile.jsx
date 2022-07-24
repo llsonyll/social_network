@@ -24,12 +24,12 @@ const FriendPostTile = ({ tile }) => {
   return (
     <NavLink
       to="/home/post/1"
-      className="flex w-full my-3 p-2 hover:bg-[#353535] rounded-md"
+      className="flex w-full my-3 p-2 bg-[#353535] rounded-md hover:scale-105 transition-all"
       onClick={handleTileClick}
     >
       <Avatar size="l" imgUrl={tile.user.url} />
       <div className="px-2 flex flex-col justify-start items-start ">
-        <div className="text-white text-lg font-bold">{tile.user.name}</div>
+        <div className="text-white text-md font-bold mb-1">{tile.user.name}</div>
         <div className="text-opacity-50 text-white text-sm font-normal leading-3">
           {getTimePublished()}
         </div>
