@@ -50,7 +50,8 @@ const Home = () => {
                     date={p.createdAt}
                     likes={p.likes}
                     dislikes={p.dislikes}
-                    userId={p.userId}
+                    userId={p.userId._id}
+                    username={p.userId.username}
                   />
                 );
               })
