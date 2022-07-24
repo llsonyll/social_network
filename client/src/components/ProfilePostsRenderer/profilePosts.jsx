@@ -1,10 +1,43 @@
 import { FaComment, FaHeart } from 'react-icons/fa'
+import { IconContext } from 'react-icons'
+import { useState } from 'react'
+
 import Avatar from '../Avatar'
 import { Link } from 'react-router-dom'
 import { Fragment } from 'react'
 
 const ProfilePosts = (props) => {
 	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength } = props
+
+	const [heartColor, setHeartColor] = useState('white')
+	const [likes, setLikes] = useState(likesLength)
+
+	let handleOnClickOnHeart = (e) => {
+		e.preventDefault()
+		if (heartColor === 'white') {
+			setLikes(likes + 1)
+			setHeartColor('red')
+		}
+		if (heartColor === 'red') {
+			setLikes(likes - 1)
+			setHeartColor('white')
+		}
+	}
+
+	let renderHeartIcon = () => {
+		if (heartColor === 'white') {
+			return <FaHeart />
+		}
+		if (heartColor === 'red') {
+			return (
+				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
+					<div>
+						<FaHeart />
+					</div>
+				</IconContext.Provider>
+			)
+		}
+	}
 
 	return (
 		<Fragment key={postNumber}>
@@ -27,14 +60,15 @@ const ProfilePosts = (props) => {
 				</div>
 
 				<div className='actions flex gap-3 justify-end mt-2 md:mt-4 text-lg'>
-					<button className='flex items-center gap-1'>
-						<FaComment />
-						{commentsLength}
+					<button onClick={(e) => handleOnClickOnHeart(e)} className='flex items-center gap-1'>
+						{renderHeartIcon()}
+						{likes}
 					</button>
-
 					<button className='flex items-center gap-1'>
-						<FaHeart />
-						{likesLength}
+						<Link to={`/home/post/${postNumber}`}>
+							<FaComment />
+						</Link>
+						{commentsLength}
 					</button>
 				</div>
 			</div>
