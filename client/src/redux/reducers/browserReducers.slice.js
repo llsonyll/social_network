@@ -10,11 +10,12 @@ const browserReducer = createSlice({
   initialState,
   reducers: {
     browser(state, action) {
-      state.searches = [action.payload];
+      state.searches = [...action.payload];
     },
     errorBrowser(state,action){
        state.error = action.payload;
        state.searches = [];
+       console.log(action.payload)
     }
   },
 });
