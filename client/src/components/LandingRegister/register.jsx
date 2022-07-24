@@ -29,14 +29,18 @@ const Register = () => {
   //validacion de nombre
   if (input.fullname === '') {
     errores.fullname = 'Name is required'
-  } else if(/[\s-\d]{2}/.test(input.fullname)) {
+  } else if(/[\W\d\s]/.test(input.fullname)) {
     errores.fullname = 'Name no valited'
+  }else if(input.fullname.length < 3 || input.fullname.length > 25) {
+    errores.fullname = 'Name can be between 3 and 25 characters'
   }
   //validacion de Lastname
   if (input.lastname === '') {
     errores.lastname = 'Last name is required'
-  } else if(!/^[a-zA-ZÀ-ÿ\s]{2,10}$/i.test(input.lastname)) {
+  } else if(/[\W\d\s]/.test(input.lastname)) {
     errores.lastname = 'Last name no valited'
+  }else if(input.lastname.length < 3 || input.lastname.length > 25) {
+    errores.lastname = 'Surname can be between 3 and 25 characters'
   }
   // validacion de email
   if (input.email === '') {
@@ -55,10 +59,10 @@ const Register = () => {
   //validacion de Username
   if (input.username === '') {
     errores.username = 'Username is required'
-  } else if(!/^.{4,15}$/i.test(input.username)) {
-    errores.username = 'The username must be at least 4 characters'
-  } else if(input.username.length > 13){
-    errores.username = 'The username cannot be more than 13 characters'
+  } else if(/[\s]/.test(input.username)) {
+    errores.username = 'Username no valited'
+  } else if(input.username.length < 3||input.username.length > 15){
+    errores.username = 'Username cannot be more than 15 characters'
   }
 
   //Register
