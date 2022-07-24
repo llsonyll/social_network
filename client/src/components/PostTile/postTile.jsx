@@ -9,6 +9,8 @@ import { FaHeart } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { createComment } from '../../redux/actions/commentActions'
 import { newDislikesPostTitle, newlikePostTitle } from "../../redux/actions/postActions";
+import { TiArrowBack } from "react-icons/ti";
+import './postTile.css';
 
 
 const PostTile = (props) => {
@@ -74,6 +76,9 @@ const PostTile = (props) => {
         {/* </Link> */}
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
+            <button onClick={() => {history.back()}} className='divStyle' >
+              <TiArrowBack />
+            </button>
             <div className="text-white font-medium">{post? post.userId.username : 'Username'}</div>
             <div className="text-white opacity-50 text-xs">{post? getTimeOfCreation(post.createdAt):"3hr"}</div>
           </div>

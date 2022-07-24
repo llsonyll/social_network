@@ -2,15 +2,26 @@ import '../../pages/Profile'
 import { useState } from 'react'
 import { AiFillCloseSquare } from 'react-icons/ai'
 import Avatar from '../Avatar'
+import { useDispatch, useSelector } from 'react-redux'
+import { modifyUser } from '../../redux/actions/userActions'
 
 const EditFullname = ({ renderChangeRenderComponents, user }) => {
+	const [bio, setBio] = useState('')
+	const loggedUser = useSelector(store => store.auth.loggedUser)
+	const dispatch = useDispatch()
+
+	const handleChange = (e) => {
+		setBio(e.target.value)
+	}
+
 	const handleOnCancel = () => {
 		renderChangeRenderComponents('biography')
 	}
 
 	const handleOnSubmit = () => {
-		//renderChangeFullnameComponent(false)
+		dispatch(modifyUser(loggedUser._id, {biography: bio}))
 		alert('You changed your Biography!')
+		renderChangeRenderComponents('biography')
 	}
 
 	return (
@@ -36,7 +47,9 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 								id='message'
 								rows='4'
 								className='block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none'
-								placeholder={`New Biograpy`}></textarea>
+								placeholder={`New Biograpy`}
+								value={bio}
+								onChange={handleChange}></textarea>
 
 							<div className=" relative flex items-baseline justify-center after:content-[''] after:ml-0 after:absolute after:right-0 after:left-0 after:-top-2 after:bg-[#424242] after:h-0.5">
 								<button

@@ -38,15 +38,22 @@ const HomePostCard = (props) => {
 
   return (
     <div className="bg-[#252525] w-full rounded-md md:p-4 p-2 flex flex-col text-white">
-      <div className="flex hover:bg-[#353535] gap-4 md:p-2 rounded-md">
-        <Link to={`profile/${props.userId}`}>
-          <Avatar size="xl" />
-        </Link>
-        <Link to={`post/${props.postId}`} className="flex-1">
-          <div className="">{props.username}</div>
-          <div className="opacity-50">{getTimeOfCreation(props.date)}</div>
-
-          <div className="">{props.content}</div>
+      <div className="flex  gap-4 md:p-2 rounded-md" id="father__content">
+        <div id="Avatar_Username__container">
+          <Link to={`profile/${props.userId}`}>
+              <Avatar size="xl" />
+          </Link>
+          <div className="user_post__info">
+            <h2>{props.username}</h2>
+            <span className="opacity-50" >{getTimeOfCreation(props.date)}</span>
+          </div>
+        </div>
+        <Link to={`post/${props.postId}`} className="hover:bg-[#353535]"  id="a_content">
+          <div className="text-left" id="post_content">
+            <div>
+            {props.content}
+            </div>
+          </div>
         </Link>
       </div>
       <div className="actions flex gap-3 justify-end mt-1 md:mt-2 text-lg">
@@ -54,8 +61,9 @@ const HomePostCard = (props) => {
           className="flex items-center gap-1 hover:text-gray-300"
           onClick={handleCommentPost}
         >
-          <FaComment />
-          {/* {props.dislikes.length} sería comments.length*/}
+          <FaComment /> 
+          {props.commentsId.length}
+          {/* {props.dislikes.length} sería comments.length*/} 
         </button>
 
         <button
