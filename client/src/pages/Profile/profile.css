@@ -7,7 +7,7 @@
 	max-width: 1000px;
 	margin-top: 85px;
 	width: 75%;
-	min-width: 330px;
+	min-width: 313px;
 	display: grid;
 	grid-template-rows: 100px 1fr;
 
@@ -165,22 +165,53 @@
 }
 
 /* POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSTS */
-
-.profile-posts-component {
+#Profile-posts__container{
+    margin-top: 30px;
+	width: 75%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#Profile-posts__container .profile-posts-component {
 	display: flex;
 	/* min-width: 300px; */
-	min-width: 1000px;
+	width: 100%;
 	place-self: center;
-	margin-top: 0px;
+	margin-top: 30px;
 	background-color: #202225;
+	flex-direction: column;
+	border-radius: 5px;
+	min-width: 260px;
+	
 }
-/* @media screen and (max-width: 960px) {
-	.profile-posts-component {
-		min-width: 700px;
-	}
-} */
+#Profile-posts__container .profile-posts-component .user-post__info{
+	display: flex;
+	align-items: center;
+	
+}
+#Profile-posts__container .profile-posts-component .user-post__info .user-post-info__detalle{
+	margin-left: 10px;
+	
+}
 
-.profile-posts-component-outside-div {
-	margin-top: 50px;
-	place-self: center;
+#Profile-posts__container .user-post-profile__content{
+	border-radius: 5px;
+	
+	width: 100%;
+  	float: right;
+	display: flex;
+	align-items: center;
+	word-break: break-all;
+	padding: 10px;
+	margin-top: 5px;
+	transition: .2s all;
 }
+#Profile-posts__container .user-post-profile__content:hover{
+	
+	background-color: rgb(77, 77, 77);
+	cursor: pointer;
+}
+
+
+
+

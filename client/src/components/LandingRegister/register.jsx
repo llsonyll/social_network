@@ -29,7 +29,7 @@ const Register = () => {
   //validacion de nombre
   if (input.fullname === '') {
     errores.fullname = 'Name is required'
-  } else if(!/^[a-zA-ZÀ-ÿ\s]{3,10}$/i.test(input.fullname)) {
+  } else if(/[\s-\d]{2}/.test(input.fullname)) {
     errores.fullname = 'Name no valited'
   }
   //validacion de Lastname

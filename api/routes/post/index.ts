@@ -214,8 +214,9 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
         user.posts.push(newPost._id);
 
         await user.save();
+        await newPost.populate('userId', 'username')
 
-        return res.status(201).json({msg: 'Post created successfully'});
+        return res.status(201).json(newPost);
     } catch (error) {
         return res.status(400).json(error);
     }

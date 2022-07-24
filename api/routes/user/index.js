@@ -20,7 +20,7 @@ router.get('/browser/:username', passport_1.default.authenticate('jwt', { sessio
     try {
         const { username } = req.params;
         //---------------------find User by username ---> return ([{id,username},{}....])---------------------------
-        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, 'i') }, { username: 1, _id: 1 });
+        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, 'i') }, { username: 1, _id: 1 }).limit(4);
         if (!Object.values(users).length) {
             return res.status(400).json({ err: 'User not fount' });
         }
@@ -63,6 +63,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
             .populate({
             path: 'posts',
             select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            options: { sort: { 'createdAt': -1 } },
             populate: { path: 'userId', select: ['username'] },
         })
             .populate('following', 'username')

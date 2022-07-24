@@ -1,10 +1,14 @@
-const SearchUsersBox = () => {
+import { Link } from "react-router-dom";
+
+const SearchUsersBox = (props) => {
   return (
-    <div className="absolute top-auto left-0 right-0 bg-[#363636] px-2 py-5 rounded-sm shadow-lg">
+    <Link to={`/home/profile/${props.id}`}>
+    <div className=" top-auto left-0 right-0 bg-[#363636] px-2 py-4 rounded-sm shadow-lg outline-2 m-1 rounded-lg hover:bg-neutral-800 active:bg-neutral-900">
       <div className="text-center text-white font-semibold">
-        Buscando 'texto ingresado'...
+       <p> {props.username} </p>
       </div>
     </div>
+    </Link>
   );
 };
 

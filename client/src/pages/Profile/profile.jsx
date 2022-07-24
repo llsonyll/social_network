@@ -60,7 +60,7 @@ const Profile = () => {
 			return userPosts.map((p) => {
 				return (
 					<Fragment key={p.postNumber}>
-						<div className='profile-posts-container' key={p.postNumber}>
+						
 							<ProfilePosts
 								userId={p.userId._id}
 								postNumber={p._id}
@@ -70,7 +70,7 @@ const Profile = () => {
 								likesLength={p.likes.length}
 								content={p.content}
 							/>
-						</div>
+						
 					</Fragment>
 				)
 			})
@@ -163,6 +163,10 @@ const Profile = () => {
 						</div>
 					</div>
 				</div>
+				<hr />
+				<div id='Profile-posts__container'>
+				{user._id ? renderer() : null}
+				</div>
 			</div>
 			{firstname === true && (
 				<EditFullname renderChangeRenderComponents={renderChangeRenderComponents} user={user} />
@@ -176,8 +180,6 @@ const Profile = () => {
 			{/* {image === true && <EditLastname renderChangeRenderComponents={renderChangeRenderComponents} user={user} />} */}
 
 			{/* Espacio para mapear 20 objetos con el componente renderizador de los posts y los 20 posts que le pido a la db */}
-
-			{user._id ? renderer() : null}
 		</>
 	)
 }
