@@ -3,7 +3,7 @@ const Avatar = ({
   size = "s", // 's', 'm', 'l', 'xl', 'xl2'
 }) => {
   return size === "s" ? (
-    <div className={`rounded-full bg-white overflow-hidden p-1 w-8 h-8`}>
+    <div className={`rounded-full  overflow-hidden p-1 w-8 h-8`}>
       <img
         className="object-cover h-full rounded-full"
         src={imgUrl}
@@ -11,7 +11,7 @@ const Avatar = ({
       />
     </div>
   ) : size === "m" ? (
-    <div className={`rounded-full bg-white overflow-hidden p-1 w-10 h-10`}>
+    <div className={`rounded-full  overflow-hidden p-1 w-10 h-10`}>
       <img
         className="object-cover h-full rounded-full"
         src={imgUrl}
