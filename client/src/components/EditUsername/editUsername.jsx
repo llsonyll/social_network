@@ -35,7 +35,7 @@ const EditUsername = ({ renderChangeRenderComponents, user }) => {
 							<input
 								id='message'
 								rows='4'
-								class='block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none'
+								className='block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none'
 								placeholder={`New Username`}></input>
 
 							<div className=" relative text-center flex items-baseline justify-center after:content-[''] after:ml-0 after:absolute after:right-0 after:left-0 after:-top-2 after:bg-[#424242] after:h-0.5">

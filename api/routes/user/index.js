@@ -16,13 +16,13 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const passport_1 = __importDefault(require("passport"));
 const router = express_1.default.Router();
-router.get("/browser/:username", passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/browser/:username', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username } = req.params;
         //---------------------find User by username ---> return ([{id,username},{}....])---------------------------
-        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, "i") }, { username: 1, _id: 1 });
+        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, 'i') }, { username: 1, _id: 1 });
         if (!Object.values(users).length) {
-            return res.status(400).json({ err: "User not fount" });
+            return res.status(400).json({ err: 'User not fount' });
         }
         return res.status(200).json(users);
     }
@@ -43,7 +43,8 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
             const posts = yield mongoose_1.Post.find({})
                 .sort({ createdAt: -1 })
                 .skip(page * 20)
-                .limit(20);
+                .limit(20)
+                .populate('userId', 'username');
             res.json(posts);
         }
         //  else {
@@ -59,12 +60,16 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
     try {
         const user = yield mongoose_1.User.findById(`${userId}`)
             // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
-            .populate({ path: 'posts', select: ['content', 'likes', 'dislikes', '_id', 'commentsId'], populate: { path: 'userId', select: ['username'] } })
+            .populate({
+            path: 'posts',
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            populate: { path: 'userId', select: ['username'] },
+        })
             .populate('following', 'username')
             .populate('followers', 'username')
-            .select("-password");
+            .select('-password');
         if (!user)
-            return res.status(404).json({ errorMsg: "who are you?" });
+            return res.status(404).json({ errorMsg: 'who are you?' });
         return res.status(201).json(user);
     }
     catch (err) {
