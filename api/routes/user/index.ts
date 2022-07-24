@@ -43,6 +43,7 @@ router.get(
 					.sort({ createdAt: -1 })
 					.skip(page * 20)
 					.limit(20)
+                    .populate('userId', 'username')
 				res.json(posts)
 			}
 			//  else {

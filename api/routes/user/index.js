@@ -43,7 +43,8 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
             const posts = yield mongoose_1.Post.find({})
                 .sort({ createdAt: -1 })
                 .skip(page * 20)
-                .limit(20);
+                .limit(20)
+                .populate('userId', 'username');
             res.json(posts);
         }
         //  else {
