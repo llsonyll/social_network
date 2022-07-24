@@ -16,6 +16,76 @@ const passport_1 = __importDefault(require("passport"));
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const router = express_1.default.Router();
+router.put("/like/:commentId/:userId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { userId, commentId } = req.params;
+        let comment = yield mongoose_1.Comment.findById(`${commentId}`);
+        if (!comment) {
+            return res.status(400).json("comment does not exist");
+        }
+        let user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user) {
+            return res.status(400).json("user does not exist");
+        }
+        if (comment.dislikes.includes(user._id)) {
+            yield mongoose_1.Comment.updateOne({ _id: commentId }, {
+                $pull: {
+                    dislikes: user._id
+                }
+            });
+        }
+        if (!comment.likes.includes(user._id)) {
+            comment.likes.push(user._id);
+            yield comment.save();
+        }
+        else {
+            comment = yield mongoose_1.Comment.findOneAndUpdate({ _id: commentId }, {
+                $pull: {
+                    likes: user._id
+                }
+            }, { new: true });
+        }
+        return res.status(200).json({ likes: comment.likes });
+    }
+    catch (err) {
+        return res.json(err);
+    }
+}));
+router.put("/dislike/:commentId/:userId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { userId, commentId } = req.params;
+        let comment = yield mongoose_1.Comment.findById(`${commentId}`);
+        if (!comment) {
+            return res.status(400).json("comment does not exist");
+        }
+        let user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user) {
+            return res.status(400).json("user does not exist");
+        }
+        if (comment.likes.includes(user._id)) {
+            yield mongoose_1.Comment.updateOne({ _id: commentId }, {
+                $pull: {
+                    likes: user._id
+                }
+            });
+        }
+        if (!comment.dislikes.includes(user._id)) {
+            comment.dislikes.push(user._id);
+            yield comment.save();
+        }
+        else {
+            comment = yield mongoose_1.Comment.findOneAndUpdate({ _id: commentId }, {
+                $pull: {
+                    dislikes: user._id
+                }
+            }, { new: true });
+        }
+        return res.status(200).json({ dislikes: comment.dislikes });
+    }
+    catch (err) {
+        return res.json(err);
+    }
+}));
 router.post('/:userId/:postId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, postId } = req.params;
     const { content } = req.body;
