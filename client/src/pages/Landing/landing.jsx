@@ -10,9 +10,16 @@ import { useState } from "react";
 import Logo from "../../../assets/LogoSN.png";
 //iconos
 import { AiFillStar } from "react-icons/ai";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 //elementos html
 const Landing = () => {
+
+  const loggedUser = useSelector(store => store.auth.loggedUser)
+  const navigate = useNavigate()
+
   const [form, setForm] = useState("Sign in");
 
   const handleChangeCheck = () => {
@@ -23,6 +30,14 @@ const Landing = () => {
       setForm("Sign in");
     }
   };
+
+  useEffect(()=>{
+    if(loggedUser._id){
+      navigate('/home')
+    }
+  }, [loggedUser])
+
+
 
   return (
     <div className="landing_container">

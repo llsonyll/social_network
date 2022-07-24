@@ -14,7 +14,7 @@ export const loginAction = (obj) => async (dispatch) => {
 		Swal.fire({
 			icon: 'error',
 			title: 'Ups... Something went wrong',
-			text: 'Email or password was not correct',
+			text: err.response.data,
 			background: '#4c4d4c',
 			color: 'white',
 		})
@@ -33,7 +33,7 @@ export const registerAction = (obj) => async (dispatch) => {
 		Swal.fire({
 			icon: 'error',
 			title: 'Ups... Something went wrong',
-			text: 'There was an error, please try again',
+			text: err.response.data.message,
 			background: '#4c4d4c',
 			color: 'white',
 		})
