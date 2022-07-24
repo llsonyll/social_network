@@ -63,6 +63,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
             .populate({
             path: 'posts',
             select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            options: { sort: { 'createdAt': -1 } },
             populate: { path: 'userId', select: ['username'] },
         })
             .populate('following', 'username')

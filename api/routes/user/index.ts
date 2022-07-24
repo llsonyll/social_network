@@ -69,6 +69,7 @@ router.get(
 				.populate({
 					path: 'posts',
 					select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+					options: {sort: {'createdAt': -1 } },
 					populate: { path: 'userId', select: ['username'] },
 				})
 
