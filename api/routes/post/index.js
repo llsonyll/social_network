@@ -125,7 +125,7 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
             });
         }
         yield (post === null || post === void 0 ? void 0 : post.save());
-        return res.status(200).json({ message: "funciono" });
+        return res.status(200).json(post.dislikes);
     }
     catch (err) {
         return res.status(400).json(err);
@@ -162,7 +162,7 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             });
         }
         yield (post === null || post === void 0 ? void 0 : post.save());
-        return res.status(200).json({ message: "funciono" });
+        return res.status(200).json(post.likes);
     }
     catch (err) {
         return res.status(400).json(err);

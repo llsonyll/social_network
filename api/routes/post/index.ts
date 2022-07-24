@@ -90,7 +90,7 @@ async (req:Request, res:Response) => {
     let user:IUser | null = await User.findById(`${userId}`);
 
     if(!user) {
-        return res.status(400).json("algo salio mal")
+        return res.status(400).json("algo salio mal");
     }
 
     let post: any = await Post.findById(`${postId}`);
@@ -121,7 +121,7 @@ async (req:Request, res:Response) => {
     
     await post?.save();
     
-     return res.status(200).json({message: "funciono"});
+     return res.status(200).json(post.dislikes);
    } catch (err) {
      return res.status(400).json(err);
    }
@@ -136,7 +136,7 @@ async (req:Request, res:Response) => {
     let user:IUser | null = await User.findById(`${userId}`);
 
     if(!user) {
-        return res.status(400).json("algo salio mal")
+        return res.status(400).json("algo salio mal");
     }
 
     let post: any = await Post.findById(`${postId}`);
@@ -167,7 +167,7 @@ async (req:Request, res:Response) => {
     
     await post?.save();
     
-     return res.status(200).json({message: "funciono"});
+     return res.status(200).json(post.likes);
    } catch (err) {
      return res.status(400).json(err);
    }
