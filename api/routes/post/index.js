@@ -125,7 +125,7 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
             });
         }
         yield (post === null || post === void 0 ? void 0 : post.save());
-        return res.status(200).json({ message: "funciono" });
+        return res.status(200).json(post.dislikes);
     }
     catch (err) {
         return res.status(400).json(err);
@@ -153,16 +153,27 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
         }
         if (!post.likes.includes(user._id)) {
             post.likes.push({ _id: userId });
+            yield (post === null || post === void 0 ? void 0 : post.save());
         }
         else {
-            yield mongoose_1.Post.updateOne({ _id: postId }, {
+            post = yield mongoose_1.Post.updateOne({ _id: postId }, {
                 $pull: {
                     likes: id,
                 },
-            });
+            }, { new: true });
         }
-        yield (post === null || post === void 0 ? void 0 : post.save());
-        return res.status(200).json({ message: "funciono" });
+        let userPost = yield mongoose_1.User.findById(`${userId}`)
+            // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
+            .populate({
+            path: 'posts',
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            populate: { path: 'userId', select: ['username'] },
+        })
+            .populate('following', 'username')
+            .populate('followers', 'username')
+            .select('-password');
+        let likes = !post.likes ? [] : post.likes;
+        return res.status(200).json({ likes, userPost });
     }
     catch (err) {
         return res.status(400).json(err);

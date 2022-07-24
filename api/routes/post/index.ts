@@ -90,7 +90,7 @@ async (req:Request, res:Response) => {
     let user:IUser | null = await User.findById(`${userId}`);
 
     if(!user) {
-        return res.status(400).json("algo salio mal")
+        return res.status(400).json("algo salio mal");
     }
 
     let post: any = await Post.findById(`${postId}`);
@@ -111,17 +111,29 @@ async (req:Request, res:Response) => {
      
      if( !post.dislikes.includes(user._id)){
         post.dislikes.push({ _id: userId });
+        await post?.save();
        }else{
-            await Post.updateOne({_id: postId}, {
+            post = await Post.updateOne({_id: postId}, {
                 $pull: {
                     dislikes: id ,
                 },
-             });
+             },{new: true});
         }
-    
-    await post?.save();
-    
-     return res.status(200).json({message: "funciono"});
+
+    let userPost = await User.findById(`${userId}`)
+    // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
+    .populate({
+        path: 'posts',
+        select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+        populate: { path: 'userId', select: ['username'] },
+    })
+    .populate('following', 'username')
+    .populate('followers', 'username')
+    .select('-password')
+      
+     let dislikes = !post.likes? [] : post.likes;
+
+      return res.status(200).json({dislikes, userPost});
    } catch (err) {
      return res.status(400).json(err);
    }
@@ -136,7 +148,7 @@ async (req:Request, res:Response) => {
     let user:IUser | null = await User.findById(`${userId}`);
 
     if(!user) {
-        return res.status(400).json("algo salio mal")
+        return res.status(400).json("algo salio mal");
     }
 
     let post: any = await Post.findById(`${postId}`);
@@ -157,18 +169,30 @@ async (req:Request, res:Response) => {
 
      if( !post.likes.includes(user._id)){
         post.likes.push({ _id: userId });
+        await post?.save();
        }else{
-            await Post.updateOne({_id: postId}, {
+           post = await Post.updateOne({_id: postId}, {
                 $pull: {
                     likes: id ,
                 },
-             });
+             },{new: true});
         }
-    
-    await post?.save();
-    
-     return res.status(200).json({message: "funciono"});
-   } catch (err) {
+     
+     let userPost = await User.findById(`${userId}`)
+     // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
+     .populate({
+         path: 'posts',
+         select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+         populate: { path: 'userId', select: ['username'] },
+     })
+     .populate('following', 'username')
+     .populate('followers', 'username')
+     .select('-password')
+       
+      let likes = !post.likes? [] : post.likes;
+
+       return res.status(200).json({likes, userPost});
+    } catch (err) {
      return res.status(400).json(err);
    }
 });

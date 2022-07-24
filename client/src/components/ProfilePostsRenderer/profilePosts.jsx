@@ -2,9 +2,22 @@ import { FaComment, FaHeart } from 'react-icons/fa'
 import Avatar from '../Avatar'
 import { Link } from 'react-router-dom'
 import { Fragment } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
 
 const ProfilePosts = (props) => {
 	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength } = props
+  
+	const { _id } = useSelector(state => state.auth.loggedUser);
+  const dispatch = useDispatch();
+
+	const handleLike = () => {
+       dispatch(newLikeUserProfile(postNumber,_id));
+	}
+
+	const handleDislike = () => {
+       dispatch(newDislikeUserProfile(postNumber,_id));
+	}
 
 	return (
 		<Fragment key={postNumber}>
@@ -32,7 +45,9 @@ const ProfilePosts = (props) => {
 						{commentsLength}
 					</button>
 
-					<button className='flex items-center gap-1'>
+					<button className='flex items-center gap-1'
+					 onClick = {handleLike}
+					>
 						<FaHeart />
 						{likesLength}
 					</button>
