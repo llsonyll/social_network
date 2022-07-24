@@ -29,27 +29,27 @@ export const createPost = (content, userId) => async (dispatch) => {
     }
 }
 
-export const newlike = (postId,userId) => async (dispatch) => {
+export const newlikePostTitle = (postId,userId) => async (dispatch) => {
     try {
-        let res = await axios.put(`http://localhost:3001/post/likes/${postId}/${userId}`,{},{
+        let res = await axios.put(`http://localhost:3001/post/like/${postId}/${userId}`,{},{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         });
-        dispatch(likesPost(res.data));
+        dispatch(likesPost(res.data.likes));
     } catch (err) {
         console.log(err);
     }
 }
 
-export const newDislikes = (postId,userId) => async (dispatch) => {
+export const newDislikesPostTitle = (postId,userId) => async (dispatch) => {
     try {
         let res = await axios.put(`http://localhost:3001/post/likes/${postId}/${userId}`,{},{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         });
-         dispatch(dislikesPost(res.data));
+        dispatch(likesPost(res.data.dislikes));
     } catch (err) {
         console.log(err)
     }

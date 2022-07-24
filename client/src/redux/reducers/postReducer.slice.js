@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState ={
-    postDetail: {_id: ''},
-    likes: [],
-    dislikes: []
+    postDetail: {_id: '',likes: "", dislikes: ""},
 }
 
 const postReducer = createSlice({
@@ -17,10 +15,10 @@ const postReducer = createSlice({
             state.postDetail = {_id: ''}
         },
         likesPost(state,action){
-           state.likes = action.payload
+           state.postDetail.likes = [...action.payload]
         },
         dislikesPost(state,action){
-           state.dislikes = action.payload
+           state.postDetail.dislikes = [...action.payload]
         },
     }
 })

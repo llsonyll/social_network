@@ -52,6 +52,7 @@ const Home = () => {
                     dislikes={p.dislikes}
                     userId={p.userId._id}
                     username={p.userId.username}
+                    page = {page}
                   />
                 );
               })

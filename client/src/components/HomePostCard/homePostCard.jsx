@@ -2,7 +2,7 @@ import { FaComment, FaHeart } from "react-icons/fa";
 import Avatar from "../Avatar";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { newDislikes, newlike } from "../../redux/actions/postActions";
+import { newLikeHomePost, newDislikeHomePost } from "../../redux/actions/userActions";
 import { useEffect } from "react";
 
 const HomePostCard = (props) => {
@@ -10,20 +10,19 @@ const HomePostCard = (props) => {
 
   const handleCommentPost = () => console.log("PostCard comment");
 
-  let { _id: userId } = useSelector((state) => state.auth.loggedUser);
+  let { _id } = useSelector((state) => state.auth.loggedUser);
+  let posts = useSelector((state) => state.user.homePostsData);
 
-  console.log(userId);
-  //console.log(props.postId);
+  let post = posts?.find( post => post._id === props.postId);
 
   const handleLikesPost = () => {
-    let { postId } = props;
-    dispatch(newlike(postId, userId));
+    dispatch(newLikeHomePost(post._id, _id,props.page));
   };
 
   const handleDislikesPost = () => {
-    let { userId, postId } = props;
-    dispatch(newDislikes(postId, userId));
+    dispatch(newDislikeHomePost(post._id, _id,props.page));
   };
+
 
   function getTimeOfCreation(date) {
     let now = new Date().getTime();
@@ -44,7 +43,7 @@ const HomePostCard = (props) => {
           <Avatar size="xl" />
         </Link>
         <Link to={`post/${props.postId}`} className="flex-1">
-          <div className="">Username</div>
+          <div className="">{props.username}</div>
           <div className="opacity-50">{getTimeOfCreation(props.date)}</div>
 
           <div className="">{props.content}</div>
@@ -64,7 +63,7 @@ const HomePostCard = (props) => {
           onClick={handleLikesPost}
         >
           <FaHeart />
-          {props.likes.length}
+          {props.likes? props.likes.length : 0}
         </button>
       </div>
     </div>
