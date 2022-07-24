@@ -51,6 +51,7 @@ const Home = () => {
                     date={p.createdAt}
                     likes={p.likes}
                     dislikes={p.dislikes}
+                    commentsId={p.commentsId}
                     userId={p.userId._id}
                     username={p.userId.username}
                   />

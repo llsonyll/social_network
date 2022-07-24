@@ -45,7 +45,8 @@ const HomePostCard = (props) => {
           className="flex items-center gap-1 hover:text-gray-300"
           onClick={handleCommentPost}
         >
-          <FaComment />
+          <FaComment /> 
+          {props.commentsId.length}
           {/* {props.dislikes.length} sería comments.length*/} 
         </button>
 
