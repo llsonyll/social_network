@@ -1,4 +1,6 @@
-
+#contenedor_home{
+  padding-right: 20px;
+}
 .container{
   background-color: #2E2E2E; 
   background-size: 100% !important;
@@ -29,8 +31,10 @@
 #post_content div{
 
   width: 100%;
-  padding: 10px;
-  text-align: left;
+  float: right;
+display: flex;
+align-items: center;
+word-break: break-all;
   
 }
 
@@ -68,6 +72,7 @@
   border-radius: 10px;
   transition: .2s all;
   text-align: left;
+  padding: 5px;
   
 }
 

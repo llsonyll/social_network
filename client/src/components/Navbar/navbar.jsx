@@ -21,7 +21,7 @@ const NavBar = ({ openModal }) => {
   };
 
   const [searchInput, setSearchInput] = useState("");
-  const { searches } = useSelector((state) => state.browserReducer);
+  let { searches, error } = useSelector((state) => state.browserReducer);
   const userId = useSelector((state) => state.auth.loggedUser._id)
 
 
@@ -34,6 +34,13 @@ const NavBar = ({ openModal }) => {
       dispatch(browserAction(search));
     }
   };
+
+
+  // useEffect(() => {
+  //   searches = []
+  //   console.log('ERRRRRORRRRRRR')
+  // },[error])
+  // console.log(searches)
 
   return (
     <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50">
@@ -49,7 +56,25 @@ const NavBar = ({ openModal }) => {
             onChange={handleInputValue}
             placeholder="Search a friend"
           />
-          {searchInput.trim().length > 0 && <SearchUsersBox />}
+          <div className='absolute w-full bg-neutral-800 opacity-95 rounded-xl'>
+          {searches.length && searchInput.trim().length > 0 ? 
+          searches?.map(user => {
+            return <SearchUsersBox
+            username= {user.username}
+            key={user._id}
+            id={user._id}
+            />
+          })
+        : 
+         error && searchInput ?
+          <SearchUsersBox 
+        username={error}
+        />
+        : null  
+        
+
+        }
+        </div>
         </div>
         <div className="text-white md:hidden"> menu </div>
       </div>
