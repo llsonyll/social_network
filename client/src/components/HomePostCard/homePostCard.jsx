@@ -59,14 +59,16 @@ const HomePostCard = (props) => {
         </Link>
       </div>
       <div className="actions flex gap-3 justify-end mt-1 md:mt-2 text-lg">
-        <button
-          className="flex items-center gap-1 hover:text-gray-300"
-          onClick={handleCommentPost}
-        >
-          <FaComment /> 
-          {props.commentsId.length}
-          {/* {props.dislikes.length} sería comments.length*/} 
-        </button>
+        <Link to={`post/${props.postId}`} >
+          <button
+            className="flex items-center gap-1 hover:text-gray-300"
+            onClick={handleCommentPost}
+          >
+            <FaComment /> 
+            {props.commentsId.length}
+            {/* {props.dislikes.length} sería comments.length*/} 
+          </button>
+        </Link>
 
         <button
           className="flex items-center gap-1 hover:text-gray-300"
