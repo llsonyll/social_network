@@ -98,17 +98,22 @@ const PostTile = (props) => {
   return (
     <>
       <div className="flex ">
+        <div>
         <Link to={`/home/profile/${post?.userId._id}`}> 
         {post?.userId.profilePicture? <Avatar imgUrl={post.userId.profilePicture} size="xl" /> : <Avatar size="xl" />}
         </Link>
+
+        </div>
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
             <button onClick={() => {history.back()}} className='divStyle' >
               <TiArrowBack />
             </button>
+              <div className="text-white font-medium">
             <Link to={`/home/profile/${post?.userId._id}`}> 
-              <div className="text-white font-medium">{post? post.userId.username : 'Username'}</div>
+                {post? post.userId.username : 'Username'}
             </Link>
+                </div>
             <div className="text-white opacity-50 text-xs">{post? getTimeOfCreation(post.createdAt):"3hr"}</div>
           </div>
           <div className="text-white font-light text-base">
