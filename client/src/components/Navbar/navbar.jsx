@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { browserAction } from "../../redux/actions/browserActions";
 import { logOutUser } from "../../redux/reducers/authReducer.slice";
+import { MdOutlineLogout } from "react-icons/md";
 
 const NavBar = ({ openModal }) => {
   let activeStyle = {
@@ -104,7 +105,8 @@ const NavBar = ({ openModal }) => {
           <FaFacebookMessenger />
           Messages
         </NavLink>
-        <button onClick={handleLogOut}>
+        <button className="flex items-center gap-2" onClick={handleLogOut}>
+          <MdOutlineLogout />
           Log out
         </button>
         <NewPostBtn action={openModal} />
