@@ -20,7 +20,7 @@ router.get('/browser/:username', passport_1.default.authenticate('jwt', { sessio
     try {
         const { username } = req.params;
         //---------------------find User by username ---> return ([{id,username},{}....])---------------------------
-        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, 'i') }, { username: 1, _id: 1 }).limit(4);
+        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, 'i') }, { username: 1, _id: 1, profilePicture: 1 }).limit(4);
         if (!Object.values(users).length) {
             return res.status(400).json({ err: 'User not fount' });
         }
