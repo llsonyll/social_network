@@ -1,47 +1,40 @@
-#contenedor_home{
-  padding-right: 20px;
+#contenedor_home {
+  /* padding-right: 20px; */
 }
-.container{
-  background-color: #2E2E2E; 
+.container {
+  background-color: #2e2e2e;
   background-size: 100% !important;
-  background-repeat:repeat;
+  background-repeat: repeat;
 }
 
-#contenedor_friends{
+#contenedor_friends {
   box-shadow: inset 0px 0px 20px rgb(26, 26, 26);
 }
 
-#contenedor_posts{
+#contenedor_posts {
   width: 100%;
   padding-right: 30px;
   height: auto;
 }
 
-
 /* styles contenedores */
 
-#post_content{
-
+#post_content {
   width: 100%;
   display: flex;
   flex-direction: column;
-  
-  
 }
-#post_content div{
-
+#post_content div {
   width: 100%;
   float: right;
-display: flex;
-align-items: center;
-word-break: break-all;
-  
+  display: flex;
+  align-items: center;
+  word-break: break-all;
 }
 
 /* posts styles */
 
-
-#father__content{
+#father__content {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -49,31 +42,29 @@ word-break: break-all;
   margin: 0;
 }
 
-#Avatar_Username__container{
+#Avatar_Username__container {
   display: flex;
   align-items: center;
   width: 100%;
 }
-#Avatar_Username__container .user_post__info{
+#Avatar_Username__container .user_post__info {
   margin-left: 10px;
 }
-#Avatar_Username__container .user_post__info h2:hover{
-  text-decoration:underline;
+#Avatar_Username__container .user_post__info h2:hover {
+  text-decoration: underline;
   cursor: pointer;
 }
 
-#a_content{
-  
+#a_content {
   display: flex;
   flex-direction: column;
   width: 100%;
   margin: 0;
   padding: 0;
   border-radius: 10px;
-  transition: .2s all;
+  transition: 0.2s all;
   text-align: left;
   padding: 5px;
-  
 }
 
 /* background-size: 100% !important;
