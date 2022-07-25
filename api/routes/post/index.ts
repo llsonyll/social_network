@@ -171,17 +171,18 @@ async (req:Request, res:Response) => {
         post.likes.push({ _id: userId });
         await post?.save();
        }else{
-           post = await Post.updateOne({_id: postId}, {
+           post = await Post.findOneAndUpdate({_id: postId}, {
                 $pull: {
                     likes: id ,
                 },
              },{new: true});
         }
      
-     let userPost = await User.findById(`${userId}`)
+     let userPost = await User.findById(`${post.userId}`)
      // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
      .populate({
          path: 'posts',
+         options: {sort: {'createdAt': -1 } },
          select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
          populate: { path: 'userId', select: ['username'] },
      })
