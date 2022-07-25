@@ -94,7 +94,7 @@ router.post('/:userId/:postId', passport_1.default.authenticate('jwt', { session
         const user = yield mongoose_1.User.findById(`${userId}`);
         let post = yield mongoose_1.Post.findById(`${postId}`)
             .populate('userId', ['username', 'profilePicture'])
-            .populate('likes', 'username')
+            //.populate('likes', 'username')
             .populate('dislikes', 'username');
         if (!user || !post || !content)
             return res.status(404).json({ msg: 'idk' });

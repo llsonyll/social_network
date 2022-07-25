@@ -20,7 +20,7 @@ const PostDetail = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log("Component Mounted", postDetail);
+    //console.log("Component Mounted", postDetail);
     dispatch(getPost(params.id))
     return (() => dispatch(removePostDetail()))
   }, []);

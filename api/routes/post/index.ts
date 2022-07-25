@@ -37,7 +37,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
         let post = await Post.findById(`${postId}`)
         .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
         .populate('userId', ['username', 'profilePicture'])
-        .populate('likes', 'username')
+        //.populate('likes', 'username')
         .populate('dislikes', 'username')
         //If no post found send error, else send the post
         if(!post){
