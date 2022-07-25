@@ -71,7 +71,7 @@ const Home = () => {
 
         {homePosts.length === 20 ? (
           <button className="btn" onClick={handlePage}>
-            VIEW MORE TEST
+            VIEW MORE POSTS &#43;
           </button>
         ) : null}
       </div>
