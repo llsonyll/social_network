@@ -106,6 +106,7 @@ const Profile = () => {
               alt='Profile Picture'>
             </img> */}
                 {user?.profilePicture? <Avatar imgUrl={user.profilePicture} size='xxl'/> :<Avatar size='xxl'/>}
+				<p id="Text">Change Photo</p>
               </div>
               <div className="shadow-box">
                 <div className="user_description">
