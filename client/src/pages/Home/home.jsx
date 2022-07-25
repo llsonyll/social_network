@@ -42,9 +42,9 @@ const Home = () => {
         <div className="text-white font-normal text-xl mb-4 uppercase tracking-wide">
           Following
         </div>
-        {dummyFriendPost.map((tile) => (
+        {/* {dummyFriendPost.map((tile) => (
           <FriendPostTile className="friends" tile={tile} key={tile.postId} />
-        ))}
+        ))} */}
       </div>
       <div className="flex-1 flex flex-col gap-5 h-full">
         {
