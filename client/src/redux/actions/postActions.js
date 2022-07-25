@@ -70,7 +70,6 @@ export const newLikesComment = (commentId,userId) => async (dispatch) => {
             }
         });
         let { _id, likes } = res.data;
-        console.log(res.data);
         dispatch(likesComment({_id,likes}));
     } catch (err) {
         console.log(err)
