@@ -2,7 +2,7 @@ import { addNewPost, addNewPostProfile } from "../reducers/userReducer.slice";
 import {
   addPostDetail,
   likesPost,
-  dislikesPost,
+  // dislikesPost,
   likesComment,
 } from "../reducers/postReducer.slice";
 import { apiConnection } from "../../utils/axios";
@@ -18,16 +18,6 @@ export const getPost = (postId) => async (dispatch) => {
 
 export const createPost = (content, userId, path) => async (dispatch) => {
   try {
-    // let res = await axios.post(
-    //   "http://localhost:3001/post/" + userId,
-    //   { content: content },
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //     },
-    //   }
-    // );
-
     const { data } = await apiConnection.post(`post/${userId}`, { content });
 
     if (path === "/home") {
@@ -53,15 +43,6 @@ export const newlikePostTitle = (postId, userId) => async (dispatch) => {
 
 export const newDislikesPostTitle = (postId, userId) => async (dispatch) => {
   try {
-    // let res = await axios.put(
-    //   `http://localhost:3001/post/likes/${postId}/${userId}`,
-    //   {},
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //     },
-    //   }
-    // );
     const {
       data: { dislikes },
     } = await apiConnection.put(`post/likes/${postId}/${userId}`);
@@ -73,15 +54,6 @@ export const newDislikesPostTitle = (postId, userId) => async (dispatch) => {
 
 export const newLikesComment = (commentId, userId) => async (dispatch) => {
   try {
-    // let res = await axios.put(
-    //   `http://localhost:3001/comment/like/${commentId}/${userId}`,
-    //   {},
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //     },
-    //   }
-    // );
     const {
       data: { _id, likes },
     } = await apiConnection.put(`comment/like/${commentId}/${userId}`);

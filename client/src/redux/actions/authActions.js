@@ -6,7 +6,6 @@ import { apiConnection, setAuthorization } from "../../utils/axios";
 
 export const loginAction = (obj) => async (dispatch) => {
   try {
-    // let res = await axios.post("http://localhost:3001/auth/login", obj);
     const {
       data: { token, username, _id, profilePicture },
     } = await apiConnection.post("auth/login", obj);
@@ -21,7 +20,6 @@ export const loginAction = (obj) => async (dispatch) => {
     );
   } catch (err) {
     console.log(err);
-    //alerta de error
     Swal.fire({
       icon: "error",
       title: "Ups... Something went wrong",
@@ -34,7 +32,6 @@ export const loginAction = (obj) => async (dispatch) => {
 
 export const registerAction = (obj) => async (dispatch) => {
   try {
-    // let res = await axios.post("http://localhost:3001/auth/register", obj);
     const {
       data: { token, username, _id, profilePicture },
     } = await apiConnection.post("auth/register", obj);
@@ -61,15 +58,6 @@ export const registerAction = (obj) => async (dispatch) => {
 
 export const getLoggedUserInfo = () => async (dispatch) => {
   try {
-    // let res = await axios.post(
-    //   "http://localhost:3001/auth",
-    //   {},
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //     },
-    //   }
-    // );
     const token = localStorage.getItem("token");
     setAuthorization(token);
     const {
