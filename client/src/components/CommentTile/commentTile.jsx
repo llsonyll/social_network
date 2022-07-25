@@ -1,6 +1,6 @@
 import Avatar from "../Avatar";
 import { FaHeart } from "react-icons/fa";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const CommentTile = (props) => {
   // const handleReplyComment = () => {
@@ -16,12 +16,14 @@ const CommentTile = (props) => {
     data?.userId ? 
     <div className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
       {/* TODO: Avatar should redirect to user profile */}
-      {/* <Link to="/user/:id"> */}
-      <Avatar size="m" />
-      {/* </Link> */}
+      <Link to={`/home/profile/${data.userId._id}`}>
+        <Avatar size="m" />
+      </Link>
       <div className="content flex-1 text-white pl-2">
         {/* TODO: Username should redirect to user profile */}
-        <div className="font-medium text-base">{data? data.userId?.username :"Username"}</div>
+        <Link to={`/home/profile/${data.userId._id}`}>
+          <div className="font-medium text-base">{data? data.userId?.username :"Username"}</div>
+        </Link>
         <div className="font-light text-sm">
           {data? data.content : `Adipisicing fugiat elit officia ullamco id sit proident occaecat
           consequat tempor consequat ipsum nulla. Dolore aliqua pariatur laboris
