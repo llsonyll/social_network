@@ -64,7 +64,7 @@ router.post(
 				const send: IUser = user as IUser
 				return res
 					.status(200)
-					.json({ token: createToken(user as IUser), username: send.username, _id: send._id })
+					.json({ token: createToken(user as IUser), username: send.username, _id: send._id , profilePicture: send.profilePicture})
 				//res.redirect()
 			}
 			return res.status(400).json('The user does not exists')

@@ -129,7 +129,7 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
             .populate({
             path: 'posts',
             select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
-            populate: { path: 'userId', select: ['username'] },
+            populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
             .populate('following', 'username')
             .populate('followers', 'username')
@@ -177,7 +177,7 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             path: 'posts',
             options: { sort: { 'createdAt': -1 } },
             select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
-            populate: { path: 'userId', select: ['username'] },
+            populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
             .populate('following', 'username')
             .populate('followers', 'username')
