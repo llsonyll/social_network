@@ -3,6 +3,7 @@ import { FaHeart } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { newLikesComment } from "../../redux/actions/postActions";
 // import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const CommentTile = (props) => {
   // const handleReplyComment = () => {
@@ -12,7 +13,7 @@ const CommentTile = (props) => {
 
  const { _id } = useSelector(state => state.auth.loggedUser);
  const dispatch = useDispatch();
-  console.log(data);
+
   const handleLikeComment = () => {
     dispatch(newLikesComment( data._id,_id))
   };
@@ -21,12 +22,14 @@ const CommentTile = (props) => {
     data?.userId ? 
     <div className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
       {/* TODO: Avatar should redirect to user profile */}
-      {/* <Link to="/user/:id"> */}
-      <Avatar size="m" />
-      {/* </Link> */}
+      <Link to={`/home/profile/${data.userId._id}`}>
+      {data.userId.profilePicture? <Avatar imgUrl={data.userId.profilePicture} size="m" />:<Avatar size="m" />}
+      </Link>
       <div className="content flex-1 text-white pl-2">
         {/* TODO: Username should redirect to user profile */}
-        <div className="font-medium text-base">{data? data.userId?.username :"Username"}</div>
+        <Link to={`/home/profile/${data.userId._id}`}>
+          <div className="font-medium text-base">{data? data.userId?.username :"Username"}</div>
+        </Link>
         <div className="font-light text-sm">
           {data? data.content : `Adipisicing fugiat elit officia ullamco id sit proident occaecat
           consequat tempor consequat ipsum nulla. Dolore aliqua pariatur laboris

@@ -26,6 +26,13 @@ const createToken = (user) => {
 const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { email, password, firstname, lastname, username } = req.body;
+        const profileArray = [
+            'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png',
+            'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p2_tj88ek.png',
+            'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p3_dlphru.png',
+            'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p4_zy2yhe.png',
+            'https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p5_i3n2nd.png'
+        ];
         if (!email || !password || !firstname || !lastname || !username) {
             return res.status(400).json({ message: 'Please, send your email and password' });
         }
@@ -38,7 +45,7 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         let salt = yield bcrypt_1.default.genSalt(10);
         let hash = yield bcrypt_1.default.hash(password, salt);
         //create new User
-        let newUser = new mongoose_1.User(Object.assign(Object.assign({}, req.body), { password: hash }));
+        let newUser = new mongoose_1.User(Object.assign(Object.assign({}, req.body), { password: hash, profilePicture: profileArray[Math.floor(Math.random() * 5)] }));
         yield newUser.save();
         //res.status(201).json(newUser);
         next();
@@ -84,7 +91,7 @@ router.post('/login', passport_1.default.authenticate('local', { session: false,
             const send = user;
             return res
                 .status(200)
-                .json({ token: createToken(user), username: send.username, _id: send._id });
+                .json({ token: createToken(user), username: send.username, _id: send._id, profilePicture: send.profilePicture });
             //res.redirect()
         }
         return res.status(400).json('The user does not exists');
@@ -113,8 +120,8 @@ router.post('/', passport_1.default.authenticate('jwt', { session: false, failur
         if (!user) {
             return res.status(400).json('Invalid Token');
         }
-        let { username } = user;
-        return res.status(200).json({ _id: id, username });
+        let { username, profilePicture } = user;
+        return res.status(200).json({ _id: id, username, profilePicture });
     }
     catch (err) {
         return res.status(400).json(err);

@@ -35,8 +35,8 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
         const {postId} = req.params
         //Search a post and select the data we want to send
         let post = await Post.findById(`${postId}`)
-        .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes']}})
-        .populate('userId', 'username')
+        .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+        .populate('userId', ['username', 'profilePicture'])
         .populate('likes', 'username')
         .populate('dislikes', 'username')
         //If no post found send error, else send the post
@@ -214,7 +214,7 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
         user.posts.push(newPost._id);
 
         await user.save();
-        await newPost.populate('userId', 'username')
+        await newPost.populate('userId', ['username', 'profilePicture'])
 
         return res.status(201).json(newPost);
     } catch (error) {

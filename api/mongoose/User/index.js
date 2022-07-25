@@ -9,6 +9,7 @@ exports.userSchema = new mongoose_1.Schema({
     firstname: { type: String, required: true },
     lastname: { type: String, required: true },
     password: { type: String, required: true },
+    profilePicture: { type: String, required: true },
     posts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Post', required: true }],
     following: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true }],
     followers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true }],

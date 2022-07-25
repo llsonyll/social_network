@@ -43,7 +43,7 @@ router.get(
 					.sort({ createdAt: -1 })
 					.skip(page * 20)
 					.limit(20)
-                    .populate('userId', 'username')
+                    .populate('userId', ['username', 'profilePicture'])
 				res.json(posts)
 			}
 			//  else {
@@ -70,7 +70,7 @@ router.get(
 					path: 'posts',
 					select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
 					options: {sort: {'createdAt': -1 } },
-					populate: { path: 'userId', select: ['username'] },
+					populate: { path: 'userId', select: ['username', 'profilePicture'] },
 				})
 
 				.populate('following', 'username')
@@ -95,7 +95,7 @@ router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedir
         }
 
         const user = await User.findByIdAndUpdate(`${userId}`, req.body, {new: true})
-        .populate({path: 'posts',select: ['content', 'likes', 'dislikes', '_id', 'commentsId','createdAt'], populate:{path: 'userId', select: ['username']}})
+        .populate({path: 'posts',select: ['content', 'likes', 'dislikes', '_id', 'commentsId','createdAt'], populate:{path: 'userId', select: ['username', 'profilePicture']}})
         .populate('following', 'username')
         .populate('followers', 'username')
         .select("-password")

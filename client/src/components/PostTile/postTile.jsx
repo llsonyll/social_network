@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import Avatar from "../Avatar";
 import CommentTile from "../CommentTile";
@@ -71,15 +71,17 @@ const PostTile = (props) => {
   return (
     <>
       <div className="flex ">
-        {/* <Link to="/user/:id" >  */}
-        <Avatar size="xl" />
-        {/* </Link> */}
+        <Link to={`/home/profile/${post?.userId._id}`}> 
+        {post?.userId.profilePicture? <Avatar imgUrl={post.userId.profilePicture} size="xl" /> : <Avatar size="xl" />}
+        </Link>
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
             <button onClick={() => {history.back()}} className='divStyle' >
               <TiArrowBack />
             </button>
-            <div className="text-white font-medium">{post? post.userId.username : 'Username'}</div>
+            <Link to={`/home/profile/${post?.userId._id}`}> 
+              <div className="text-white font-medium">{post? post.userId.username : 'Username'}</div>
+            </Link>
             <div className="text-white opacity-50 text-xs">{post? getTimeOfCreation(post.createdAt):"3hr"}</div>
           </div>
           <div className="text-white font-light text-base">
@@ -114,7 +116,7 @@ const PostTile = (props) => {
 
             {showInput && (
               <form className="flex items-center" onSubmit={handleInputSubmit}>
-                <Avatar />
+                {user.profilePicture? <Avatar imgUrl={user.profilePicture}/>:<Avatar />}
                 <input
                   ref={inputRef}
                   value={commentInput}
