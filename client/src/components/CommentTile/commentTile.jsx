@@ -22,14 +22,19 @@ const CommentTile = (props) => {
     data?.userId ? 
     <div className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
       {/* TODO: Avatar should redirect to user profile */}
+      <div>
       <Link to={`/home/profile/${data.userId._id}`}>
       {data.userId.profilePicture? <Avatar imgUrl={data.userId.profilePicture} size="m" />:<Avatar size="m" />}
       </Link>
+
+      </div>
       <div className="content flex-1 text-white pl-2">
         {/* TODO: Username should redirect to user profile */}
+          <div className="font-medium text-base">
         <Link to={`/home/profile/${data.userId._id}`}>
-          <div className="font-medium text-base">{data? data.userId?.username :"Username"}</div>
+            {data? data.userId?.username :"Username"}
         </Link>
+            </div>
         <div className="font-light text-sm">
           {data? data.content : `Adipisicing fugiat elit officia ullamco id sit proident occaecat
           consequat tempor consequat ipsum nulla. Dolore aliqua pariatur laboris

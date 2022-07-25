@@ -2,4 +2,7 @@ import 'dotenv/config'
 import server from './routes/route.js'
 
 
-server.listen(3001, () => console.log("listening on port 3001"))
+const host = process.env.HOST || '0.0.0.0';
+const port: any = process.env.PORT || 3001;
+
+server.listen(port,host, () => console.log(`port ${port} and host ${host}`))

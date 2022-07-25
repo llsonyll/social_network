@@ -124,7 +124,7 @@ async (req:Request, res:Response) => {
     .populate({
         path: 'posts',
         select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
-        populate: { path: 'userId', select: ['username'] },
+        populate: { path: 'userId', select: ['username', 'profilePicture'] },
     })
     .populate('following', 'username')
     .populate('followers', 'username')
@@ -182,7 +182,7 @@ async (req:Request, res:Response) => {
          path: 'posts',
          options: {sort: {'createdAt': -1 } },
          select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
-         populate: { path: 'userId', select: ['username'] },
+         populate: { path: 'userId', select: ['username', 'profilePicture'] },
      })
      .populate('following', 'username')
      .populate('followers', 'username')

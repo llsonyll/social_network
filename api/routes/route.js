@@ -35,6 +35,9 @@ server.use(express_1.default.json());
 server.use((0, morgan_1.default)("dev"));
 (0, auth_1.Auth)(server, mongoose_1.User);
 server.use(passport_1.default.initialize());
+server.get("/", (req, res) => {
+    res.json({ msg: "funciono todo bien" });
+});
 server.use("/post", post_1.default);
 server.use('/user', index_2.default);
 server.use("/auth", index_1.default);

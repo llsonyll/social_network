@@ -63,7 +63,7 @@ router.post('/register', middlewareNewUser, passport_1.default.authenticate('loc
             const send = user;
             return res
                 .status(200)
-                .json({ token: createToken(user), username: send.username, _id: send._id });
+                .json({ token: createToken(user), username: send.username, _id: send._id, profilePicture: send.profilePicture });
             //res.redirect()
         }
         return res.status(400).json('The user does not exists');

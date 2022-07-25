@@ -110,6 +110,7 @@ const Profile = () => {
                 ) : (
                   <Avatar size="xxl" />
                 )}
+                <p id="Text">Change Photo</p>
               </div>
               <div className="shadow-box">
                 <div className="user_description">

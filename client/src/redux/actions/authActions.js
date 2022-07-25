@@ -36,11 +36,17 @@ export const registerAction = (obj) => async (dispatch) => {
   try {
     // let res = await axios.post("http://localhost:3001/auth/register", obj);
     const {
-      data: { token, username, _id },
+      data: { token, username, _id, profilePicture },
     } = await apiConnection.post("auth/register", obj);
     localStorage.setItem("token", token);
     setAuthorization(token);
-    return dispatch(loginUser({ username: username, _id: _id }));
+    return dispatch(
+      loginUser({
+        username: username,
+        _id: _id,
+        profilePicture: profilePicture,
+      })
+    );
   } catch (err) {
     console.log(err);
     Swal.fire({
