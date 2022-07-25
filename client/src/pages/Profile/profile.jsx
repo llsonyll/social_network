@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getUserProfile } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import Avatar from '../../components/Avatar'
+import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
 
 const Profile = () => {
@@ -49,7 +49,7 @@ const Profile = () => {
   //traigo la info del perfil en el q estoy (didMount)
   useEffect(() => {
     handleGetUserProfile();
-	return(()=> dispatch(clearProfileData()))
+    return () => dispatch(clearProfileData());
   }, [params.id]);
 
   function getTimeOfCreation(date) {
@@ -81,7 +81,7 @@ const Profile = () => {
               likesLength={p.likes.length}
               likes={p.likes}
               content={p.content}
-			  profilePicture={p.userId.profilePicture}
+              profilePicture={p.userId.profilePicture}
             />
           </Fragment>
         );
@@ -105,7 +105,11 @@ const Profile = () => {
               src='https://japanpowered.com/media/images//goku.png'
               alt='Profile Picture'>
             </img> */}
-                {user?.profilePicture? <Avatar imgUrl={user.profilePicture} size='xxl'/> :<Avatar size='xxl'/>}
+                {user?.profilePicture ? (
+                  <Avatar imgUrl={user.profilePicture} size="xxl" />
+                ) : (
+                  <Avatar size="xxl" />
+                )}
               </div>
               <div className="shadow-box">
                 <div className="user_description">
