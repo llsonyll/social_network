@@ -56,7 +56,7 @@ const NavBar = ({ openModal }) => {
             onChange={handleInputValue}
             placeholder="Search a friend"
           />
-          <div className='absolute w-full bg-neutral-800 opacity-95 rounded-xl'>
+          <div id='input_navbar__search' className='absolute w-full bg-neutral-800 opacity-95 rounded-xl'>
           {searches.length && searchInput.trim().length > 0 ? 
           searches?.map(user => {
             return <SearchUsersBox
