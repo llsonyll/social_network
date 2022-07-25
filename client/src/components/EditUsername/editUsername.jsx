@@ -6,25 +6,23 @@ import { useDispatch, useSelector } from 'react-redux'
 import { modifyUser } from '../../redux/actions/userActions'
 
 const EditUsername = ({ renderChangeRenderComponents, user }) => {
-
 	const [username, setUsername] = useState('')
-	const loggedUser = useSelector(store => store.auth.loggedUser)
+	const loggedUser = useSelector((store) => store.auth.loggedUser)
 	const dispatch = useDispatch()
-	function handleChange(e){
+	function handleChange(e) {
 		setUsername(e.target.value)
 	}
-
 
 	const handleOnCancel = () => {
 		renderChangeRenderComponents('username')
 	}
 
 	const handleOnSubmit = () => {
-		if(username){
-			dispatch(modifyUser(loggedUser._id, {username: username}))
+		if (username) {
+			dispatch(modifyUser(loggedUser._id, { username: username }))
 			alert('You changed your username!')
 			renderChangeRenderComponents('username')
-		}else{
+		} else {
 			alert('You need to have an username!')
 		}
 	}
@@ -51,13 +49,11 @@ const EditUsername = ({ renderChangeRenderComponents, user }) => {
 							<input
 								id='message'
 								rows='4'
-								onChange={(e) => setInputUsername(e.target.value)}
+								//onChange={(e) => setInputUsername(e.target.value)}
 								className='block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none'
-
 								placeholder={`New Username`}
 								onChange={handleChange}
 								value={username}></input>
-
 
 							<div className=" relative text-center flex items-baseline justify-center after:content-[''] after:ml-0 after:absolute after:right-0 after:left-0 after:-top-2 after:bg-[#424242] after:h-0.5">
 								<button

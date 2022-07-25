@@ -1,4 +1,6 @@
 import { FaComment, FaHeart } from 'react-icons/fa'
+import { IconContext } from 'react-icons'
+import { useState } from 'react'
 import Avatar from '../Avatar'
 import { Link } from 'react-router-dom'
 import { Fragment } from 'react'
@@ -6,17 +8,31 @@ import { useDispatch, useSelector } from 'react-redux'
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
 
 const ProfilePosts = (props) => {
-	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength } = props
-  
-	const { _id } = useSelector(state => state.auth.loggedUser);
-  const dispatch = useDispatch();
+	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likes, likesLength } = props
+	const { _id } = useSelector((state) => state.auth.loggedUser)
+	const dispatch = useDispatch()
 
 	const handleLike = () => {
-       dispatch(newLikeUserProfile(postNumber,_id));
+		dispatch(newLikeUserProfile(postNumber, _id))
 	}
+	/* const handleDislike = () => {
+		dispatch(newDislikeUserProfile(postNumber, _id))
+	} */
 
-	const handleDislike = () => {
-       dispatch(newDislikeUserProfile(postNumber,_id));
+	let renderHeartIcon = () => {
+		if (!likes.includes(_id)) {
+			return <FaHeart />
+		}
+
+		if (likes.includes(_id)) {
+			return (
+				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
+					<div>
+						<FaHeart />
+					</div>
+				</IconContext.Provider>
+			)
+		}
 	}
 
 	return (
@@ -34,15 +50,13 @@ const ProfilePosts = (props) => {
 					</div>
 				</div>
 				<Link to={`/home/post/${postNumber}`}>
-				<div className='user-post-profile__content flex-1 pl-2 md:pl-4'>
-					
+					<div className='user-post-profile__content flex-1 pl-2 md:pl-4'>
 						<div className=''>
 							{content
 								? content
 								: 'PRUEBA est ea anim magna culpa non fugiat reprehenderit. Do anim laboris Lorem pariatur mollit tempor cupidatat aliqua in do. Reprehenderit sit consectetur irure et velit.'}
 						</div>
-					
-				</div>
+					</div>
 				</Link>
 				<div className='actions flex gap-3 justify-end mt-2 md:mt-4 text-lg'>
 					<button className='flex items-center gap-1'>
@@ -50,10 +64,12 @@ const ProfilePosts = (props) => {
 						{commentsLength}
 					</button>
 
-					<button className='flex items-center gap-1'
-					 onClick = {handleLike}
-					>
-						<FaHeart />
+					<button
+						className='flex items-center gap-1'
+						onClick={(e) => {
+							handleLike()
+						}}>
+						{renderHeartIcon()}
 						{likesLength}
 					</button>
 				</div>

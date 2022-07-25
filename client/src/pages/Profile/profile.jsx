@@ -60,17 +60,16 @@ const Profile = () => {
 			return userPosts.map((p) => {
 				return (
 					<Fragment key={p.postNumber}>
-						
-							<ProfilePosts
-								userId={p.userId._id}
-								postNumber={p._id}
-								fullname={`${user.firstname + ' ' + user.lastname}`}
-								timeAgo={getTimeOfCreation(p.createdAt)}
-								commentsLength={p.commentsId.length}
-								likesLength={p.likes.length}
-								content={p.content}
-							/>
-						
+						<ProfilePosts
+							userId={p.userId._id}
+							postNumber={p._id}
+							fullname={`${user.firstname + ' ' + user.lastname}`}
+							timeAgo={getTimeOfCreation(p.createdAt)}
+							commentsLength={p.commentsId.length}
+							likesLength={p.likes.length}
+							likes={p.likes}
+							content={p.content}
+						/>
 					</Fragment>
 				)
 			})
@@ -164,9 +163,7 @@ const Profile = () => {
 					</div>
 				</div>
 				<hr />
-				<div id='Profile-posts__container'>
-				{user._id ? renderer() : null}
-				</div>
+				<div id='Profile-posts__container'>{user._id ? renderer() : null}</div>
 			</div>
 			{firstname === true && (
 				<EditFullname renderChangeRenderComponents={renderChangeRenderComponents} user={user} />
