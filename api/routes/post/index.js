@@ -175,6 +175,7 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
         let userPost = yield mongoose_1.User.findById(`${post.userId}`)
             .populate({
             path: 'posts',
+            options: { sort: { 'createdAt': -1 } },
             select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
             populate: { path: 'userId', select: ['username'] },
         })

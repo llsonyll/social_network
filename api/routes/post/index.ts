@@ -180,6 +180,7 @@ async (req:Request, res:Response) => {
      let userPost = await User.findById(`${ post.userId}`)
      .populate({
          path: 'posts',
+         options: {sort: {'createdAt': -1 } },
          select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
          populate: { path: 'userId', select: ['username'] },
      })
