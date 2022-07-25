@@ -1,6 +1,6 @@
 import "./navbar.css";
 
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
 
 import NewPostBtn from "../NewPostBtn";
@@ -9,6 +9,7 @@ import SearchUsersBox from "../SearchUsersBox/searchUsersBox";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { browserAction } from "../../redux/actions/browserActions";
+import { logOutUser } from "../../redux/reducers/authReducer.slice";
 
 const NavBar = ({ openModal }) => {
   let activeStyle = {
@@ -24,7 +25,7 @@ const NavBar = ({ openModal }) => {
   let { searches, error } = useSelector((state) => state.browserReducer);
   const userId = useSelector((state) => state.auth.loggedUser._id)
 
-
+  let navigate = useNavigate();
   let dispatch = useDispatch();
 
   const handleInputValue = (e) => {
@@ -35,6 +36,10 @@ const NavBar = ({ openModal }) => {
     }
   };
 
+  const handleLogOut = () => {
+    dispatch(logOutUser());
+    navigate('/')
+  }
 
   // useEffect(() => {
   //   searches = []
@@ -99,6 +104,9 @@ const NavBar = ({ openModal }) => {
           <FaFacebookMessenger />
           Messages
         </NavLink>
+        <button onClick={handleLogOut}>
+          Log out
+        </button>
         <NewPostBtn action={openModal} />
       </div>
     </div>
