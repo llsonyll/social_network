@@ -95,7 +95,7 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
         const user = await User.findById(`${userId}`);
         let post = await Post.findById(`${postId}`)
         .populate('userId', ['username', 'profilePicture'])
-        .populate('likes', 'username')
+        //.populate('likes', 'username')
         .populate('dislikes', 'username')
         
         if (!user || !post || !content) return res.status(404).json({msg: 'idk'})
