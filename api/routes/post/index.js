@@ -166,15 +166,16 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             yield (post === null || post === void 0 ? void 0 : post.save());
         }
         else {
-            post = yield mongoose_1.Post.updateOne({ _id: postId }, {
+            post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
                 $pull: {
                     likes: id,
                 },
             }, { new: true });
         }
-        let userPost = yield mongoose_1.User.findById(`${userId}`)
+        let userPost = yield mongoose_1.User.findById(`${post.userId}`)
             .populate({
             path: 'posts',
+            options: { sort: { 'createdAt': -1 } },
             select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
             populate: { path: 'userId', select: ['username'] },
         })

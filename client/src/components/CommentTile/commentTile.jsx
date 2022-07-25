@@ -1,5 +1,8 @@
 import Avatar from "../Avatar";
 import { FaHeart } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { newLikesComment } from "../../redux/actions/postActions";
+// import { Link } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const CommentTile = (props) => {
@@ -7,9 +10,12 @@ const CommentTile = (props) => {
   //   console.log("Reply Comment");
   // };
   const {data} = props
-  console.log(data)
+
+ const { _id } = useSelector(state => state.auth.loggedUser);
+ const dispatch = useDispatch();
+
   const handleLikeComment = () => {
-    console.log("Like Comment");
+    dispatch(newLikesComment( data._id,_id))
   };
 
   return (

@@ -39,7 +39,7 @@ async (req: Request, res: Response) => {
             }
          },{new: true});
       }
-     return res.status(200).json({likes : comment.likes});
+     return res.status(200).json({likes : comment.likes, _id : comment._id});
    } catch (err) {
       return res.json(err);
    }
@@ -80,7 +80,7 @@ async (req: Request, res: Response) => {
          },{new: true});
       }
 
-     return res.status(200).json({dislikes : comment.dislikes});
+     return res.status(200).json({dislikes : comment.dislikes, _id : comment._id});
    } catch (err) {
       return res.json(err);
    }

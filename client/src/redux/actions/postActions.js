@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { addNewPost, addNewPostProfile } from '../reducers/userReducer.slice';
-import { addPostDetail, likesPost, dislikesPost } from '../reducers/postReducer.slice';
+import { addPostDetail, likesPost, dislikesPost, likesComment } from '../reducers/postReducer.slice';
 
 
 export const getPost = (postId) => async (dispatch) => {
@@ -57,6 +57,20 @@ export const newDislikesPostTitle = (postId,userId) => async (dispatch) => {
             }
         });
         dispatch(likesPost(res.data.dislikes));
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+export const newLikesComment = (commentId,userId) => async (dispatch) => {
+    try {
+        let res = await axios.put(`http://localhost:3001/comment/like/${commentId}/${userId}`,{},{
+            headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        let { _id, likes } = res.data;
+        dispatch(likesComment({_id,likes}));
     } catch (err) {
         console.log(err)
     }
