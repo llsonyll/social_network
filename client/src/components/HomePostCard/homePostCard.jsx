@@ -1,4 +1,5 @@
 import { FaComment, FaHeart } from "react-icons/fa";
+import { IconContext } from 'react-icons'
 import Avatar from "../Avatar";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,6 +36,22 @@ const HomePostCard = (props) => {
     if (minutes / 60 > 36) return `${Math.round(minutes / (60 * 24))} days ago`;
     return `${Math.round(minutes / 60)} hours ago`;
   }
+
+
+  let renderHeartIcon = () => {
+		if (!props.likes.includes(_id)) {
+			return <FaHeart />
+		}
+		if (props.likes.includes(_id)) {
+			return (
+				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
+					<div>
+						<FaHeart />
+					</div>
+				</IconContext.Provider>
+			)
+		}
+	}
 
   return (
     <div className="bg-[#252525] w-full rounded-md md:p-4 p-2 flex flex-col text-white">
@@ -74,7 +91,7 @@ const HomePostCard = (props) => {
           className="flex items-center gap-1 hover:text-gray-300"
           onClick={handleLikesPost}
         >
-          <FaHeart />
+          {renderHeartIcon()}
           {props.likes? props.likes.length : 0}
         </button>
       </div>

@@ -1,4 +1,5 @@
 import { FaComment, FaHeart } from 'react-icons/fa'
+import { IconContext } from 'react-icons'
 import Avatar from '../Avatar'
 import { Link } from 'react-router-dom'
 import { Fragment } from 'react'
@@ -6,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
 
 const ProfilePosts = (props) => {
-	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength } = props
+	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes } = props
   
 	const { _id } = useSelector(state => state.auth.loggedUser);
   const dispatch = useDispatch();
@@ -17,6 +18,21 @@ const ProfilePosts = (props) => {
 
 	const handleDislike = () => {
        dispatch(newDislikeUserProfile(postNumber,_id));
+	}
+
+	let renderHeartIcon = () => {
+		if (!likes.includes(_id)) {
+			return <FaHeart />
+		}
+		if (likes.includes(_id)) {
+			return (
+				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
+					<div>
+						<FaHeart />
+					</div>
+				</IconContext.Provider>
+			)
+		}
 	}
 
 	return (
@@ -53,7 +69,7 @@ const ProfilePosts = (props) => {
 					<button className='flex items-center gap-1'
 					 onClick = {handleLike}
 					>
-						<FaHeart />
+						{renderHeartIcon()}
 						{likesLength}
 					</button>
 				</div>

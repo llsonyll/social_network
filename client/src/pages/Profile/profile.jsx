@@ -65,7 +65,7 @@ const Profile = () => {
   }
 
   let user = userData;
-  console.log(user);
+  //console.log(user);
   let userPosts = user.posts;
   let renderer = () => {
     if (userPosts.length > 0) {
@@ -79,6 +79,7 @@ const Profile = () => {
               timeAgo={getTimeOfCreation(p.createdAt)}
               commentsLength={p.commentsId.length}
               likesLength={p.likes.length}
+              likes={p.likes}
               content={p.content}
 			  profilePicture={p.userId.profilePicture}
             />

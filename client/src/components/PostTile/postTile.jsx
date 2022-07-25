@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 import Avatar from "../Avatar";
 import CommentTile from "../CommentTile";
 // import CommentInput from "../CommentInput";
-
 import { FaHeart } from "react-icons/fa";
+import { IconContext } from 'react-icons'
 import { useDispatch, useSelector } from "react-redux";
 import { createComment } from '../../redux/actions/commentActions'
 import { newDislikesPostTitle, newlikePostTitle } from "../../redux/actions/postActions";
@@ -18,11 +17,7 @@ const PostTile = (props) => {
   const [commentInput, setCommentInput] = useState("");
   const inputRef = useRef();
   const user = useSelector(store => store.auth.loggedUser)
-
   const dispatch = useDispatch();
-
-  let {post} = props
-
   function getTimeOfCreation(date){
     let now = new Date().getTime()
     let created = new Date(date).getTime()
@@ -34,6 +29,10 @@ const PostTile = (props) => {
     if (minutes /60 > 36) return `${Math.round(minutes / (60*24))} days ago`
     return `${Math.round(minutes / 60)} hours ago`;
   }
+
+
+
+  const {post} = props
 
   const handleLikePost  = () => {
     dispatch(newlikePostTitle(post._id, user._id));
@@ -65,6 +64,34 @@ const PostTile = (props) => {
   };
 
 
+  
+  
+  
+   
+  const {likes} = useSelector(state => state.post.postDetail)
+ console.log(post?.likes)
+  console.log(user?._id);
+  console.log(likes?.includes(user?._id)); 
+
+
+  let renderHeartIcon = () => {
+    if (!post?.likes.includes(user?._id)) {
+      console.log('Entra blanco');
+      return <FaHeart />
+    }
+    if (post?.likes.includes(user?._id)) {
+
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
+          <div>
+            <FaHeart />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+  }
+  
 
 
 
@@ -104,7 +131,7 @@ const PostTile = (props) => {
                 className="flex items-center gap-1"
                 onClick={handleLikePost}
               >
-                <FaHeart />
+                  {post && renderHeartIcon()}
                 {post? post.likes.length : 12}
               </button>
             </div>
