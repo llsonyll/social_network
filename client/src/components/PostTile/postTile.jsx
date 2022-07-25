@@ -72,7 +72,7 @@ const PostTile = (props) => {
     <>
       <div className="flex ">
         {/* <Link to="/user/:id" >  */}
-        <Avatar size="xl" />
+        {post?.userId.profilePicture? <Avatar imgUrl={post.userId.profilePicture} size="xl" /> : <Avatar size="xl" />}
         {/* </Link> */}
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
@@ -118,7 +118,7 @@ const PostTile = (props) => {
 
             {showInput && (
               <form className="flex items-center" onSubmit={handleInputSubmit}>
-                <Avatar />
+                {user.profilePicture? <Avatar imgUrl={user.profilePicture}/>:<Avatar />}
                 <input
                   ref={inputRef}
                   value={commentInput}

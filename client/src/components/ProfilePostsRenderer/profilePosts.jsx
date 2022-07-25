@@ -24,7 +24,7 @@ const ProfilePosts = (props) => {
 			<div className='profile-posts-component md:p-7 p-3 md:flex  w-70  max-w-screen-lg  text-white'>
 				<div className='user-post__info'>
 					<Link to={`/home/profile/${userId}`}>
-						<Avatar imgUrl='https://japanpowered.com/media/images//goku.png' size='xl' />
+						{props.profilePicture? <Avatar imgUrl={props.profilePicture} size='xl'/> :<Avatar size='xl' />}
 					</Link>
 					<div className='user-post-info__detalle'>
 						<Link to={`/home/profile/${userId}`} className='profile-posts-component-outside-div'>

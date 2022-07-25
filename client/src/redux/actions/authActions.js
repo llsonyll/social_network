@@ -7,7 +7,7 @@ export const loginAction = (obj) => async (dispatch) => {
 		let res = await axios.post('http://localhost:3001/auth/login', obj)
 		res = res.data
 		localStorage.setItem('token', res.token)
-		return dispatch(loginUser({ username: res.username, _id: res._id }))
+		return dispatch(loginUser({ username: res.username, _id: res._id , profilePicture: res.profilePicture}))
 	} catch (err) {
 		console.log(err)
 		//alerta de error
@@ -52,7 +52,7 @@ export const getLoggedUserInfo = () => async (dispatch) => {
 			}
 		)
 		res = res.data
-		return dispatch(loginUser({ username: res.username, _id: res._id }))
+		return dispatch(loginUser({ username: res.username, _id: res._id , profilePicture: res.profilePicture}))
 	} catch (err) {
 		console.log(err)
 	}
