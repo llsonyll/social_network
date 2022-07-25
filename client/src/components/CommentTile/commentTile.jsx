@@ -7,7 +7,7 @@ const CommentTile = (props) => {
   //   console.log("Reply Comment");
   // };
   const {data} = props
-
+  console.log(data)
   const handleLikeComment = () => {
     console.log("Like Comment");
   };
@@ -17,7 +17,7 @@ const CommentTile = (props) => {
     <div className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
       {/* TODO: Avatar should redirect to user profile */}
       {/* <Link to="/user/:id"> */}
-      <Avatar size="m" />
+      {data.userId.profilePicture? <Avatar imgUrl={data.userId.profilePicture} size="m" />:<Avatar size="m" />}
       {/* </Link> */}
       <div className="content flex-1 text-white pl-2">
         {/* TODO: Username should redirect to user profile */}

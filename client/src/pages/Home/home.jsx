@@ -61,7 +61,8 @@ const Home = () => {
                     commentsId={p.commentsId}
                     userId={p.userId._id}
                     username={p.userId.username}
-                    page={page}
+                    page = {page}
+                    profilePicture = {p.userId.profilePicture}
                   />
                 );
               })

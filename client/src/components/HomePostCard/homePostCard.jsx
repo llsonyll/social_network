@@ -41,7 +41,7 @@ const HomePostCard = (props) => {
       <div className="flex  gap-4 md:p-2 rounded-md" id="father__content">
         <div id="Avatar_Username__container">
           <Link to={`profile/${props.userId}`}>
-              <Avatar size="xl" />
+              {props.profilePicture? <Avatar imgUrl={props.profilePicture} size="xl" /> :<Avatar size="xl" />}
           </Link>
           <div className="user_post__info">
             <Link to={`profile/${props.userId}`}>
