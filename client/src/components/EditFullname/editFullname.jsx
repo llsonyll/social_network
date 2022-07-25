@@ -11,7 +11,7 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
     useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
   const handleOnCancel = () => {
-    renderChangeRenderComponents("firstname");
+    renderChangeRenderComponents("fullname");
   };
   //DESDE AQUI SE PONEN LAS ACCIONES
   const [firstname, setFirstname] = useState("");
@@ -21,20 +21,83 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
+    // TODO: esto esta raro como que el Regex se actualiza o q?
+    const nonDigitsRegex1 = /\b[^\d\W]+\b/g;
+    const nonDigitsRegex2 = /\b[^\d\W]+\b/g;
     const firstNameNoSpaces = firstname.trim();
     const lastNameNoSpaces = lastname.trim();
+
     if (firstname.length > 0 && lastname.length === 0) {
-      dispatch(modifyUser(loggedUser._id, { firstname }));
-      alert("You changed your name!");
-      renderChangeRenderComponents("fullname");
+      if (firstname.split(" ").length !== 1) {
+        return alert("Firstname should not have empty spaces");
+      }
+
+      if (firstNameNoSpaces.length > 10) {
+        return alert("Firstname should not have more than 10 characters");
+      }
+
+      if (nonDigitsRegex1.test(firstNameNoSpaces) === false) {
+        return alert("Firstname should not have any digits (1-9)");
+      }
+
+      try {
+        dispatch(modifyUser(loggedUser._id, { firstname }));
+        alert("You changed your name!");
+        renderChangeRenderComponents("fullname");
+      } catch (error) {
+        console.log(error);
+      }
     } else if (firstname.length === 0 && lastname.length > 0) {
-      dispatch(modifyUser(loggedUser._id, { lastname }));
-      alert("You changed your lastName!");
-      renderChangeRenderComponents("fullname");
+      if (lastname.split(" ").length !== 1) {
+        return alert("Lastname should not have empty spaces");
+      }
+
+      if (lastNameNoSpaces.length > 10) {
+        return alert("Lastname should not have more than 10 characters");
+      }
+
+      if (nonDigitsRegex2.test(lastNameNoSpaces) === false) {
+        return alert("Lastname should not have any digits (1-9)");
+      }
+
+      try {
+        dispatch(modifyUser(loggedUser._id, { lastname }));
+        alert("You changed your lastName!");
+        renderChangeRenderComponents("fullname");
+      } catch (error) {
+        console.log(error);
+      }
     } else if (firstname.length > 0 && lastname.length > 0) {
-      dispatch(modifyUser(loggedUser._id, { firstname, lastname }));
-      alert("You changed your full-name!");
-      renderChangeRenderComponents("fullname");
+      if (firstname.split(" ").length !== 1) {
+        return alert("Firstname should not have empty spaces");
+      }
+
+      if (lastname.split(" ").length !== 1) {
+        return alert("Lastname should not have empty spaces");
+      }
+      if (firstNameNoSpaces.length > 10) {
+        return alert("Firstname should not have more than 10 characters");
+      }
+
+      if (lastNameNoSpaces.length > 10) {
+        return alert("Lastname should not have more than 10 characters");
+      }
+
+      if (nonDigitsRegex1.test(firstNameNoSpaces) === false) {
+        return alert("Firstname should not have any digits (1-9)");
+      }
+
+      if (nonDigitsRegex2.test(lastNameNoSpaces) === false) {
+        return alert("Lastname should not have any digits (1-9)");
+      }
+
+      try {
+        dispatch(modifyUser(loggedUser._id, { firstname, lastname }));
+        alert("You changed your full-name!");
+        renderChangeRenderComponents("fullname");
+      } catch (error) {
+        console.log(error);
+      }
     } else if (firstname.length === 0 && lastname.length === 0) {
       alert("Fill any input before submitting");
     }
@@ -85,10 +148,7 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 
               <div className=" relative flex text-center items-baseline justify-center after:content-[''] after:ml-0 after:absolute after:right-0 after:left-0 after:-top-2 after:bg-[#424242] after:h-0.5">
                 <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleOnSubmit(e);
-                  }}
+                  onClick={handleOnSubmit}
                   className="bg-green-600 text-white  mt-5 py-2 px-8 rounded-md shadow-lg text-sm  transition-all hover:scale-105"
                 >
                   Submit

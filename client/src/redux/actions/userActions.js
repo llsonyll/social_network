@@ -109,7 +109,6 @@ export const modifyUser = (id, obj) => async (dispatch) => {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-    console.log(res);
     return dispatch(userProfile(res.data));
   } catch (err) {
     console.log(err);

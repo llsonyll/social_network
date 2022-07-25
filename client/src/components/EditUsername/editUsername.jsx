@@ -7,13 +7,13 @@ import { modifyUser } from "../../redux/actions/userActions";
 
 const EditUsername = ({ renderChangeRenderComponents, user }) => {
   const [username, setUsername] = useState("");
-  // no espacios y 13 caracteres
   const loggedUser = useSelector((store) => store.auth.loggedUser);
-  const userData = useSelector((state) => state.user.userProfileData);
-
-  console.log(userData);
+  const { username: currentUserName } = useSelector(
+    (state) => state.user.userProfileData
+  );
 
   const dispatch = useDispatch();
+
   function handleChange(e) {
     setUsername(e.target.value);
   }
@@ -24,9 +24,21 @@ const EditUsername = ({ renderChangeRenderComponents, user }) => {
 
   const handleOnSubmit = () => {
     if (username) {
-      dispatch(modifyUser(loggedUser._id, { username: username }));
-      alert("You changed your username!");
-      renderChangeRenderComponents("username");
+      if (username.split(" ").length !== 1) {
+        return alert("Username should not have empty spaces");
+      }
+
+      if (username.trim().length > 13) {
+        return alert("Username should not have no more than 13 characters");
+      }
+
+      try {
+        dispatch(modifyUser(loggedUser._id, { username: username }));
+        alert("You changed your username!");
+        renderChangeRenderComponents("username");
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       alert("You need to have an username!");
     }
@@ -40,7 +52,6 @@ const EditUsername = ({ renderChangeRenderComponents, user }) => {
       <div className="relative p-4 w-full max-w-xl h-full md:h-auto">
         <div className="relative rounded-lg shadow bg-[#363636]">
           <div className="text-white text-center pt-10 text-xl">
-            {" "}
             Write a new username and submit it
           </div>
 
@@ -60,7 +71,7 @@ const EditUsername = ({ renderChangeRenderComponents, user }) => {
                 id="message"
                 rows="4"
                 className="block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none"
-                placeholder={`New Username`}
+                placeholder={currentUserName}
                 onChange={handleChange}
                 value={username}
               ></input>
