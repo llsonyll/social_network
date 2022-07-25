@@ -110,10 +110,6 @@ const PostTile = (props) => {
 
           <div className="comments">
             {post? post.commentsId.map(e =>  <CommentTile data={e}/>) : <>
-            <CommentTile />
-            <CommentTile />
-            <CommentTile />
-            <CommentTile />
             </>}
 
             {showInput && (

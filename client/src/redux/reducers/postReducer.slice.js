@@ -20,6 +20,10 @@ const postReducer = createSlice({
         dislikesPost(state,action){
            state.postDetail.dislikes = [...action.payload]
         },
+        likesComment(state,{payload}){
+              let index = state.postDetail.commentsId.findIndex(comment => comment._id === payload._id);
+              state.postDetail.commentsId[index].likes = payload.likes;
+        },
     }
 })
 
@@ -28,7 +32,8 @@ export const {
     addPostDetail,
     removePostDetail,
     likesPost,
-    dislikesPost
+    dislikesPost,
+    likesComment,
 } = postReducer.actions
 
 
