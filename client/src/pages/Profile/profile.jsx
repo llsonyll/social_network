@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { getUserProfile } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from '../../components/Avatar'
+import { clearProfileData } from "../../redux/reducers/userReducer.slice";
 
 const Profile = () => {
   const params = useParams();
@@ -48,6 +49,7 @@ const Profile = () => {
   //traigo la info del perfil en el q estoy (didMount)
   useEffect(() => {
     handleGetUserProfile();
+	return(()=> dispatch(clearProfileData()))
   }, [params.id]);
 
   function getTimeOfCreation(date) {
