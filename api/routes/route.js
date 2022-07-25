@@ -26,7 +26,7 @@ const options = {
         'Authorization'
     ],
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: "*",
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
 };
