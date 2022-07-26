@@ -143,7 +143,7 @@ const Register = () => {
 
   //Register
   function handleRegister(e) {
-    e.eventDefault();
+    e.preventDefault();
     const { fullname, lastname, password, email, username } = input;
     if (!fullname || !lastname || !password || !email || !username) return;
     if (
