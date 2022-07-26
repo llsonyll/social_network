@@ -9,6 +9,7 @@ import { AiFillCheckCircle } from "react-icons/ai";
 //Hooks
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+
 //Redux register Action
 import { registerAction } from "../../redux/actions/authActions";
 

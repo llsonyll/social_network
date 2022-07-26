@@ -74,7 +74,6 @@ const Signin = () => {
     if (rememberMe) {
       const storeInfo = {
         email: input.email,
-        password: input.password,
         remember: rememberMe,
       };
       localStorage.setItem("login", JSON.stringify(storeInfo));
@@ -82,7 +81,7 @@ const Signin = () => {
       localStorage.removeItem("login");
     }
 
-    dispatch(loginAction(input));
+    dispatch(loginAction({ ...input, rememberMe }));
   }
 
   useEffect(() => {
@@ -90,7 +89,6 @@ const Signin = () => {
     if (storeInfo) {
       setInput({
         email: storeInfo.email,
-        password: storeInfo.password,
       });
 
       setRememberMe(storeInfo.remember);
