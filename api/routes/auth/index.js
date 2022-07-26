@@ -1,42 +1,16 @@
 "use strict";
-var __awaiter =
-  (this && this.__awaiter) ||
-  function (thisArg, _arguments, P, generator) {
-    function adopt(value) {
-      return value instanceof P
-        ? value
-        : new P(function (resolve) {
-            resolve(value);
-          });
-    }
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
-      function fulfilled(value) {
-        try {
-          step(generator.next(value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function rejected(value) {
-        try {
-          step(generator["throw"](value));
-        } catch (e) {
-          reject(e);
-        }
-      }
-      function step(result) {
-        result.done
-          ? resolve(result.value)
-          : adopt(result.value).then(fulfilled, rejected);
-      }
-      step((generator = generator.apply(thisArg, _arguments || [])).next());
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-  };
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
@@ -47,74 +21,60 @@ const nodemailer_1 = require("nodemailer");
 let router = express_1.default.Router();
 //---------------function create Token--------------------
 const createToken = (user) => {
-  return jsonwebtoken_1.default.sign(
-    { user: { id: user._id, email: user.email } },
-    `${process.env.SECRET_TEST}`
-  );
+    return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`);
 };
 //---------------middleware new User-----------------------------
-const middlewareNewUser = (req, res, next) =>
-  __awaiter(void 0, void 0, void 0, function* () {
+const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-      let { email, password, firstname, lastname, username } = req.body;
-      const profileArray = [
-        "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png",
-        "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p2_tj88ek.png",
-        "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p3_dlphru.png",
-        "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p4_zy2yhe.png",
-        "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p5_i3n2nd.png",
-      ];
-      if (!email || !password || !firstname || !lastname || !username) {
-        return res
-          .status(400)
-          .json({ message: "Please, send your email and password" });
-      }
-      //search if User already exists
-      let user = yield mongoose_1.User.findOne({ email: email });
-      if (user) {
-        return res.status(400).json({ message: "User already exists" });
-      }
-      //password encryption
-      let salt = yield bcrypt_1.default.genSalt(10);
-      let hash = yield bcrypt_1.default.hash(password, salt);
-      //create new User
-      let newUser = new mongoose_1.User(
-        Object.assign(Object.assign({}, req.body), {
-          password: hash,
-          profilePicture: profileArray[Math.floor(Math.random() * 5)],
-        })
-      );
-      yield newUser.save();
-      //res.status(201).json(newUser);
-      next();
-    } catch (error) {
-      res.json(error);
+        let { email, password, firstname, lastname, username } = req.body;
+        const profileArray = [
+            "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png",
+            "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p2_tj88ek.png",
+            "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p3_dlphru.png",
+            "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p4_zy2yhe.png",
+            "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p5_i3n2nd.png",
+        ];
+        if (!email || !password || !firstname || !lastname || !username) {
+            return res
+                .status(400)
+                .json({ message: "Please, send your email and password" });
+        }
+        //search if User already exists
+        let user = yield mongoose_1.User.findOne({ email: email });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(password, salt);
+        //create new User
+        let newUser = new mongoose_1.User(Object.assign(Object.assign({}, req.body), { password: hash, profilePicture: profileArray[Math.floor(Math.random() * 5)] }));
+        yield newUser.save();
+        //res.status(201).json(newUser);
+        next();
     }
-  });
+    catch (error) {
+        res.json(error);
+    }
+});
 //------------rute register-----------------------------
-router.post(
-  "/register",
-  middlewareNewUser,
-  passport_1.default.authenticate("local", {
+router.post("/register", middlewareNewUser, passport_1.default.authenticate("local", {
     session: false,
     failureRedirect: "/auth/login",
-  }),
-  (req, res) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-      //user return of passport strategy
-      try {
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //user return of passport strategy
+    try {
         let { user } = req;
         if (user) {
-          const send = user;
-          const transporter = (0, nodemailer_1.createTransport)({
-            service: "gmail",
-            auth: {
-              user: "vavatyni@gmail.com",
-              pass: "nlsbenyeedlvxfhb",
-            },
-          });
-
-          const output = `
+            const send = user;
+            const transporter = (0, nodemailer_1.createTransport)({
+                service: "gmail",
+                auth: {
+                    user: "vavatyni@gmail.com",
+                    pass: "nlsbenyeedlvxfhb",
+                },
+            });
+            const output = `
           <p>You have a new message from SN</p>
           <h3>New User</h3>
           <ul>  
@@ -123,124 +83,105 @@ router.post(
           <h3>Message</h3>
           <p>Usuario creado satisfactoriamente, procede a ingresar a nuestra plataforma <a href="https://finaldeploy-tau.vercel.app" target="_blank"> </a></p>
         `;
-          const mailOptions = {
-            from: "Social Network <vavatyni@gmail.com>",
-            to: send.email,
-            subject: "Social Network registration",
-            html: output,
-          };
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log("Email sent: " + info.response);
-            }
-          });
-          return res.status(200).json({
-            token: createToken(user),
-            username: send.username,
-            _id: send._id,
-            profilePicture: send.profilePicture,
-          });
-          //res.redirect()
+            const mailOptions = {
+                from: "Social Network <vavatyni@gmail.com>",
+                to: send.email,
+                subject: "Social Network registration",
+                html: output,
+            };
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.log("Email sent: " + info.response);
+                }
+            });
+            return res.status(200).json({
+                token: createToken(user),
+                username: send.username,
+                _id: send._id,
+                profilePicture: send.profilePicture,
+            });
+            //res.redirect()
         }
         return res.status(400).json("The user does not exists");
-      } catch (error) {
+    }
+    catch (error) {
         res.json(error);
-      }
-    })
-);
+    }
+}));
 //route error login
 router.get("/login", (req, res) => {
-  res.status(400).json("Incorrect email or password.");
+    res.status(400).json("Incorrect email or password.");
 });
 router.get("/loginjwt", (req, res) => {
-  res.status(400).json("Token needed");
+    res.status(400).json("Token needed");
 });
 //-----------------------------login user -----------------------------
 /*
   strategy passport local, verify user in database if error redirect route error login
 */
-router.post(
-  "/login",
-  passport_1.default.authenticate("local", {
+router.post("/login", passport_1.default.authenticate("local", {
     session: false,
     failureRedirect: "/auth/login",
-  }),
-  (req, res) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-      //user return of passport strategy
-      try {
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //user return of passport strategy
+    try {
         let { user } = req;
         if (user) {
-          const send = user;
-          return res.status(200).json({
-            token: createToken(user),
-            username: send.username,
-            _id: send._id,
-            profilePicture: send.profilePicture,
-          });
-          //res.redirect()
+            const send = user;
+            return res.status(200).json({
+                token: createToken(user),
+                username: send.username,
+                _id: send._id,
+                profilePicture: send.profilePicture,
+            });
+            //res.redirect()
         }
         return res.status(400).json("The user does not exists");
-      } catch (error) {
+    }
+    catch (error) {
         res.json(error);
-      }
-    })
-);
+    }
+}));
 //------------------------route data user----------------------------------
-router.post(
-  "/",
-  passport_1.default.authenticate("jwt", {
+router.post("/", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
-  }),
-  (req, res) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-      var _a;
-      try {
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
         //-------------extract Authorization from HTTP headers----------------
-        const authorization =
-          (_a = req.headers.authorization) === null || _a === void 0
-            ? void 0
-            : _a.split(" ");
-        if (
-          !authorization ||
-          authorization.length !== 2 ||
-          authorization[0].toLocaleLowerCase() !== "bearer"
-        ) {
-          return res.status(400).json("no token");
+        const authorization = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ");
+        if (!authorization ||
+            authorization.length !== 2 ||
+            authorization[0].toLocaleLowerCase() !== "bearer") {
+            return res.status(400).json("no token");
         }
         const token = authorization[1];
         //------------------------decode token-----------------------------------
-        let verifyToken = jsonwebtoken_1.default.verify(
-          `${token}`,
-          `${process.env.SECRET_TEST}`
-        );
+        let verifyToken = jsonwebtoken_1.default.verify(`${token}`, `${process.env.SECRET_TEST}`);
         if (!verifyToken || !verifyToken.user) {
-          res.status(401).json("Invalid Token");
+            res.status(401).json("Invalid Token");
         }
         let { id } = verifyToken.user;
         const user = yield mongoose_1.User.findById(`${id}`);
         if (!user) {
-          return res.status(400).json("Invalid Token");
+            return res.status(400).json("Invalid Token");
         }
         let { username, profilePicture } = user;
         return res.status(200).json({ _id: id, username, profilePicture });
-      } catch (err) {
+    }
+    catch (err) {
         return res.status(400).json(err);
-      }
-    })
-);
+    }
+}));
 //-------------------------route test---------------------------------
-router.get(
-  "/test",
-  passport_1.default.authenticate("jwt", {
+router.get("/test", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
-  }),
-  (req, res) => {
+}), (req, res) => {
     res.json({ msg: "Todo funciona a la perfeccion" });
-  }
-);
+});
 exports.default = router;
