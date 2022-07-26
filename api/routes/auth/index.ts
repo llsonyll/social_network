@@ -91,9 +91,9 @@ router.post(
 
         const output = `
           <p>You have a new message from SN</p>
-          <h3>Mail Details</h3>
+          <h3>New User</h3>
           <ul>  
-            <li>Nuevo Registro</li>
+            <li>Register has been completed successfully</li>
           </ul>
           <h3>Message</h3>
           <p>Usuario creado satisfactoriamente, procede a ingresar a nuestra plataforma <a href="https://finaldeploy-tau.vercel.app" target="_blank"> </a></p>
@@ -101,8 +101,8 @@ router.post(
 
         const mailOptions = {
           from: "Social Network <vavatyni@gmail.com>",
-          to: "sony_s07@hotmail.es",
-          subject: "Sending Email using Node.js/NodeMailer with TS",
+          to: send.email,
+          subject: "Social Network registration",
           html: output,
         };
 
