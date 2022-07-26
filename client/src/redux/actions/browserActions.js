@@ -3,8 +3,8 @@ import { apiConnection } from "../../utils/axios";
 
 export const browserAction = (data) => async (dispatch) => {
   try {
-    const { data } = await apiConnection.get(`user/browser/${data}`);
-    return dispatch(browser(data));
+    const { data: resData } = await apiConnection.get(`user/browser/${data}`);
+    return dispatch(browser(resData));
   } catch (err) {
     if (err.response.status === 404 || err.response.status === 400) {
       dispatch(errorBrowser(err.response.data.err));
