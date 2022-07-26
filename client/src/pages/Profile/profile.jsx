@@ -105,12 +105,14 @@ const Profile = () => {
               src='https://japanpowered.com/media/images//goku.png'
               alt='Profile Picture'>
             </img> */}
+
                 {user?.profilePicture ? (
                   <Avatar imgUrl={user.profilePicture} size="xxl" />
                 ) : (
                   <Avatar size="xxl" />
                 )}
                 <p id="Text">Change Photo</p>
+
               </div>
               <div className="shadow-box">
                 <div className="user_description">
@@ -119,36 +121,36 @@ const Profile = () => {
                       <span className="span-info">Full name</span>
                       <p>{`${user.firstname + " " + user.lastname}`}</p>
                     </div>
-                    <div className="button_container">
                       {params.id === userLogged ? (
-                        <button
-                          onClick={() => {
-                            setFirstname(true);
-                          }}
-                          type="button"
-                        >
-                          Edit
-                        </button>
+                        <div className="button_container">
+                            <button
+                              onClick={() => {
+                                setFirstname(true);
+                              }}
+                              type="button"
+                            >
+                              Edit
+                            </button>
+                        </div>
                       ) : null}
-                    </div>
                   </div>
                   <div className="user-username">
                     <div className="info_container">
                       <span className="span-info">Username</span>
                       {"@" + user.username}
                     </div>
-                    <div className="button_container">
                       {params.id === userLogged ? (
-                        <button
-                          onClick={() => {
-                            setUsername(true);
-                          }}
-                          type="button"
-                        >
-                          Edit
-                        </button>
+                      <div className="button_container">
+                          <button
+                            onClick={() => {
+                              setUsername(true);
+                            }}
+                            type="button"
+                          >
+                            Edit
+                          </button>
+                      </div>
                       ) : null}
-                    </div>
                   </div>
 
                   <div className="user-followers">
@@ -169,19 +171,35 @@ const Profile = () => {
                       <span className="span-info">Biography</span>
                       {user.biography ? user.biography : "No bio yet"}
                     </div>
-                    <div className="button_container">
                       {params.id === userLogged ? (
-                        <button
-                          onClick={() => {
-                            setBiography(true);
-                          }}
-                          type="button"
-                        >
-                          Edit
-                        </button>
+                        <div className="button_container">
+                            <button
+                              onClick={() => {
+                                setBiography(true);
+                              }}
+                              type="button"
+                            >
+                              Edit
+                            </button>
+                        </div>
                       ) : null}
-                    </div>
                   </div>
+                        <div className="user-mess">
+                          <div className="info_container">
+                            <span className="span-info">Send Message </span>
+                          </div>
+                          <div className="button_container">
+                              <button
+                                onClick={() => {
+                                  setBiography(true);
+                                }}
+                                type="button"
+                              >
+                                Send Now
+                              </button>
+                          </div>
+                        </div>
+                    
                 </div>
               </div>
             </>
