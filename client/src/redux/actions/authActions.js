@@ -7,14 +7,14 @@ export const loginAction = (obj) => async (dispatch) => {
 		let res = await axios.post('http://localhost:3001/auth/login', obj)
 		res = res.data
 		localStorage.setItem('token', res.token)
-		return dispatch(loginUser({ username: res.username, _id: res._id }))
+		return dispatch(loginUser({ username: res.username, _id: res._id , profilePicture: res.profilePicture}))
 	} catch (err) {
 		console.log(err)
 		//alerta de error
 		Swal.fire({
 			icon: 'error',
 			title: 'Ups... Something went wrong',
-			text: 'Email or password was not correct',
+			text: err.response.data,
 			background: '#4c4d4c',
 			color: 'white',
 		})
@@ -26,14 +26,14 @@ export const registerAction = (obj) => async (dispatch) => {
 		let res = await axios.post('http://localhost:3001/auth/register', obj)
 		res = res.data
 		localStorage.setItem('token', res.token)
-		return dispatch(loginUser({ username: res.username, _id: res._id }))
+		return dispatch(loginUser({ username: res.username, _id: res._id , profilePicture: res.profilePicture}))
 	} catch (err) {
 		console.log(err)
 		//alerta de error
 		Swal.fire({
 			icon: 'error',
 			title: 'Ups... Something went wrong',
-			text: 'There was an error, please try again',
+			text: err.response.data.message,
 			background: '#4c4d4c',
 			color: 'white',
 		})
@@ -52,7 +52,7 @@ export const getLoggedUserInfo = () => async (dispatch) => {
 			}
 		)
 		res = res.data
-		return dispatch(loginUser({ username: res.username, _id: res._id }))
+		return dispatch(loginUser({ username: res.username, _id: res._id , profilePicture: res.profilePicture}))
 	} catch (err) {
 		console.log(err)
 	}

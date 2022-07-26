@@ -1,25 +1,23 @@
 import { useState, useRef, useEffect } from "react";
-// import { Link } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import Avatar from "../Avatar";
 import CommentTile from "../CommentTile";
 // import CommentInput from "../CommentInput";
-
 import { FaHeart } from "react-icons/fa";
+import { IconContext } from 'react-icons'
 import { useDispatch, useSelector } from "react-redux";
 import { createComment } from '../../redux/actions/commentActions'
+import { newDislikesPostTitle, newlikePostTitle } from "../../redux/actions/postActions";
+import { TiArrowBack } from "react-icons/ti";
+import './postTile.css';
 
 
 const PostTile = (props) => {
   const [showInput, setShowInput] = useState(false);
   const [commentInput, setCommentInput] = useState("");
   const inputRef = useRef();
-  const user = useSelector(store => store.user.userProfileData)
-
+  const user = useSelector(store => store.auth.loggedUser)
   const dispatch = useDispatch();
-
-  let {post} = props
-
   function getTimeOfCreation(date){
     let now = new Date().getTime()
     let created = new Date(date).getTime()
@@ -34,8 +32,15 @@ const PostTile = (props) => {
 
 
 
-  const handleLikePost = () => {
-    console.log("Like Post");
+  const {post} = props
+
+  const handleLikePost  = () => {
+    dispatch(newlikePostTitle(post._id, user._id));
+  };
+
+  const handleDislikesPost = () => {
+    let { postId } = props;
+    dispatch(newDislikesPostTitle(postId, _id));
   };
 
   const handleCommentPost = async () => {
@@ -54,23 +59,61 @@ const PostTile = (props) => {
     e.preventDefault();
     console.log(commentInput);
     
-    dispatch(createComment('62d8bb684bc80effb3b8697a', post._id, {content: commentInput}))
+    dispatch(createComment(user._id, post._id, {content: commentInput}))
     setCommentInput("");
   };
 
 
+  
+  
+  
+   
+  const {likes} = useSelector(state => state.post.postDetail)
+ console.log(post?.likes)
+  console.log(user?._id);
+  console.log(likes?.includes(user?._id)); 
+
+
+  let renderHeartIcon = () => {
+    if (!post?.likes.includes(user?._id)) {
+      console.log('Entra blanco');
+      return <FaHeart />
+    }
+    if (post?.likes.includes(user?._id)) {
+
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
+          <div>
+            <FaHeart />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+  }
+  
 
 
 
   return (
     <>
       <div className="flex ">
-        {/* <Link to="/user/:id" >  */}
-        <Avatar size="xl" />
-        {/* </Link> */}
+        <div>
+        <Link to={`/home/profile/${post?.userId._id}`}> 
+        {post?.userId.profilePicture? <Avatar imgUrl={post.userId.profilePicture} size="xl" /> : <Avatar size="xl" />}
+        </Link>
+
+        </div>
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
-            <div className="text-white font-medium">{post? post.userId.username : 'Username'}</div>
+            <button onClick={() => {history.back()}} className='divStyle' >
+              <TiArrowBack />
+            </button>
+              <div className="text-white font-medium">
+            <Link to={`/home/profile/${post?.userId._id}`}> 
+                {post? post.userId.username : 'Username'}
+            </Link>
+                </div>
             <div className="text-white opacity-50 text-xs">{post? getTimeOfCreation(post.createdAt):"3hr"}</div>
           </div>
           <div className="text-white font-light text-base">
@@ -93,7 +136,7 @@ const PostTile = (props) => {
                 className="flex items-center gap-1"
                 onClick={handleLikePost}
               >
-                <FaHeart />
+                  {post && renderHeartIcon()}
                 {post? post.likes.length : 12}
               </button>
             </div>
@@ -101,15 +144,11 @@ const PostTile = (props) => {
 
           <div className="comments">
             {post? post.commentsId.map(e =>  <CommentTile data={e}/>) : <>
-            <CommentTile />
-            <CommentTile />
-            <CommentTile />
-            <CommentTile />
             </>}
 
             {showInput && (
               <form className="flex items-center" onSubmit={handleInputSubmit}>
-                <Avatar />
+                {user.profilePicture? <Avatar imgUrl={user.profilePicture}/>:<Avatar />}
                 <input
                   ref={inputRef}
                   value={commentInput}

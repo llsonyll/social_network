@@ -1,6 +1,6 @@
 import "./navbar.css";
 
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
 
 import NewPostBtn from "../NewPostBtn";
@@ -9,6 +9,8 @@ import SearchUsersBox from "../SearchUsersBox/searchUsersBox";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { browserAction } from "../../redux/actions/browserActions";
+import { logOutUser } from "../../redux/reducers/authReducer.slice";
+import { MdOutlineLogout } from "react-icons/md";
 
 const NavBar = ({ openModal }) => {
   let activeStyle = {
@@ -21,10 +23,10 @@ const NavBar = ({ openModal }) => {
   };
 
   const [searchInput, setSearchInput] = useState("");
-  const { searches } = useSelector((state) => state.browserReducer);
+  let { searches, error } = useSelector((state) => state.browserReducer);
   const userId = useSelector((state) => state.auth.loggedUser._id)
 
-
+  let navigate = useNavigate();
   let dispatch = useDispatch();
 
   const handleInputValue = (e) => {
@@ -34,6 +36,17 @@ const NavBar = ({ openModal }) => {
       dispatch(browserAction(search));
     }
   };
+
+  const handleLogOut = () => {
+    dispatch(logOutUser());
+    navigate('/')
+  }
+
+  // useEffect(() => {
+  //   searches = []
+  //   console.log('ERRRRRORRRRRRR')
+  // },[error])
+  // console.log(searches)
 
   return (
     <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50">
@@ -49,7 +62,25 @@ const NavBar = ({ openModal }) => {
             onChange={handleInputValue}
             placeholder="Search a friend"
           />
-          {searchInput.trim().length > 0 && <SearchUsersBox />}
+          <div id='input_navbar__search' className='absolute w-full bg-neutral-800 opacity-95 rounded-xl'>
+          {searches.length && searchInput.trim().length > 0 ? 
+          searches?.map(user => {
+            return <SearchUsersBox
+            username= {user.username}
+            key={user._id}
+            id={user._id}
+            />
+          })
+        : 
+         error && searchInput ?
+          <SearchUsersBox 
+        username={error}
+        />
+        : null  
+        
+
+        }
+        </div>
         </div>
         <div className="text-white md:hidden"> menu </div>
       </div>
@@ -74,6 +105,10 @@ const NavBar = ({ openModal }) => {
           <FaFacebookMessenger />
           Messages
         </NavLink>
+        <button className="flex items-center gap-2" onClick={handleLogOut}>
+          <MdOutlineLogout />
+          Log out
+        </button>
         <NewPostBtn action={openModal} />
       </div>
     </div>

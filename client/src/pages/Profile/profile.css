@@ -7,7 +7,7 @@
 	max-width: 1000px;
 	margin-top: 85px;
 	width: 75%;
-	min-width: 330px;
+	min-width: 313px;
 	display: grid;
 	grid-template-rows: 100px 1fr;
 
@@ -26,6 +26,35 @@
 	display: flex;
 	justify-content: center;
 	position: relative;
+}
+.profile-container .img-container p{
+	position: absolute;
+	top: -76px;
+	display: block;
+	width: 152px;
+	height: 152px;
+	line-height: 150px;
+	border-radius: 50%;
+	text-align: center;
+	transition: .2s all;
+	color: white;
+	font-weight: 900;
+	opacity: 0;
+	letter-spacing: 1px;
+}
+
+.profile-container .img-container div{
+	position: absolute;
+	top: -80px;
+	filter: drop-shadow(0px 15px 20px rgb(0, 0, 0));
+	transition: .2s all;
+	
+}
+
+.profile-container .img-container  #Text:hover{
+	opacity: 1;
+	cursor: pointer;
+	background-color: #262627b6;
 }
 .profile-img {
 	/* grid-column: 2;
@@ -48,7 +77,7 @@
 	transform: scale(1.2);
 }
 
-.img_profile {
+/* .img_profile {
 	display: flex;
 	width: 150px;
 	height: 150px;
@@ -62,7 +91,7 @@
 	align-items: center;
 	justify-content: center;
 	transition: 0.2s all;
-}
+} */
 .img_profile .info {
 	color: white;
 	text-align: center;
@@ -165,22 +194,53 @@
 }
 
 /* POOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOSTS */
-
-.profile-posts-component {
+#Profile-posts__container{
+    margin-top: 30px;
+	width: 75%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#Profile-posts__container .profile-posts-component {
 	display: flex;
 	/* min-width: 300px; */
-	min-width: 1000px;
+	width: 100%;
 	place-self: center;
-	margin-top: 0px;
+	margin-top: 30px;
 	background-color: #202225;
+	flex-direction: column;
+	border-radius: 5px;
+	min-width: 260px;
+	
 }
-/* @media screen and (max-width: 960px) {
-	.profile-posts-component {
-		min-width: 700px;
-	}
-} */
+#Profile-posts__container .profile-posts-component .user-post__info{
+	display: flex;
+	align-items: center;
+	
+}
+#Profile-posts__container .profile-posts-component .user-post__info .user-post-info__detalle{
+	margin-left: 10px;
+	
+}
 
-.profile-posts-component-outside-div {
-	margin-top: 50px;
-	place-self: center;
+#Profile-posts__container .user-post-profile__content{
+	border-radius: 5px;
+	
+	width: 100%;
+  	float: right;
+	display: flex;
+	align-items: center;
+	word-break: break-all;
+	padding: 10px;
+	margin-top: 5px;
+	transition: .2s all;
 }
+#Profile-posts__container .user-post-profile__content:hover{
+	
+	background-color: rgb(77, 77, 77);
+	cursor: pointer;
+}
+
+
+
+

@@ -48,9 +48,9 @@ router.get('/:postId', passport_1.default.authenticate('jwt', { session: false, 
         const { postId } = req.params;
         //Search a post and select the data we want to send
         let post = yield mongoose_1.Post.findById(`${postId}`)
-            .populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes'] } })
-            .populate('userId', 'username')
-            .populate('likes', 'username')
+            .populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } })
+            .populate('userId', ['username', 'profilePicture'])
+            //.populate('likes', 'username')
             .populate('dislikes', 'username');
         //If no post found send error, else send the post
         if (!post) {
@@ -116,16 +116,26 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
         }
         if (!post.dislikes.includes(user._id)) {
             post.dislikes.push({ _id: userId });
+            yield (post === null || post === void 0 ? void 0 : post.save());
         }
         else {
-            yield mongoose_1.Post.updateOne({ _id: postId }, {
+            post = yield mongoose_1.Post.updateOne({ _id: postId }, {
                 $pull: {
                     dislikes: id,
                 },
-            });
+            }, { new: true });
         }
-        yield (post === null || post === void 0 ? void 0 : post.save());
-        return res.status(200).json({ message: "funciono" });
+        let userPost = yield mongoose_1.User.findById(`${userId}`)
+            .populate({
+            path: 'posts',
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            populate: { path: 'userId', select: ['username', 'profilePicture'] },
+        })
+            .populate('following', 'username')
+            .populate('followers', 'username')
+            .select('-password');
+        let dislikes = !post.likes ? [] : post.likes;
+        return res.status(200).json({ dislikes, userPost });
     }
     catch (err) {
         return res.status(400).json(err);
@@ -153,16 +163,27 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
         }
         if (!post.likes.includes(user._id)) {
             post.likes.push({ _id: userId });
+            yield (post === null || post === void 0 ? void 0 : post.save());
         }
         else {
-            yield mongoose_1.Post.updateOne({ _id: postId }, {
+            post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
                 $pull: {
                     likes: id,
                 },
-            });
+            }, { new: true });
         }
-        yield (post === null || post === void 0 ? void 0 : post.save());
-        return res.status(200).json({ message: "funciono" });
+        let userPost = yield mongoose_1.User.findById(`${post.userId}`)
+            .populate({
+            path: 'posts',
+            options: { sort: { 'createdAt': -1 } },
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            populate: { path: 'userId', select: ['username', 'profilePicture'] },
+        })
+            .populate('following', 'username')
+            .populate('followers', 'username')
+            .select('-password');
+        let likes = !post.likes ? [] : post.likes;
+        return res.status(200).json({ likes, userPost });
     }
     catch (err) {
         return res.status(400).json(err);
@@ -182,7 +203,8 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
         yield newPost.save();
         user.posts.push(newPost._id);
         yield user.save();
-        return res.status(201).json({ msg: 'Post created successfully' });
+        yield newPost.populate('userId', ['username', 'profilePicture']);
+        return res.status(201).json(newPost);
     }
     catch (error) {
         return res.status(400).json(error);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaImage } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { createPost } from "../../redux/actions/postActions";
 import Avatar from "../Avatar";
 
@@ -9,6 +10,7 @@ const NewPost = ({ showModal, setShowModal }) => {
   const [postInput, setPostInput] = useState("");
   const dispatch = useDispatch()
   const loggedUser = useSelector((store) => store.auth.loggedUser)
+  const location = useLocation()
 
   const handleInputPost = (e) => setPostInput(e.target.value);
 
@@ -16,7 +18,7 @@ const NewPost = ({ showModal, setShowModal }) => {
     e.preventDefault();
     console.log(postInput, loggedUser);
     if(postInput){
-      dispatch(createPost(postInput, loggedUser._id))
+      dispatch(createPost(postInput, loggedUser._id, location.pathname))
     }
     setPostInput("");
   };
@@ -48,7 +50,7 @@ const NewPost = ({ showModal, setShowModal }) => {
             </span>
           </button>
           <div className="py-5 px-6 lg:px-8 flex">
-            <Avatar size="l" />
+            {loggedUser.profilePicture? <Avatar imgUrl={loggedUser.profilePicture} size="l" />:<Avatar size="l" />}
             <form className="space-y-8 flex-1 mx-3" onSubmit={handleNewPost}>
               <textarea
                 id="message"

@@ -7,6 +7,7 @@ export interface IUser {
    firstname: string;
    lastname: string;
    password: string;
+   profilePicture: string;
    posts: Types.Array<Types.ObjectId>;
    following: Types.Array<Types.ObjectId>;
    followers: Types.Array<Types.ObjectId>;
@@ -39,7 +40,8 @@ export  interface IComments {
    userId: Types.ObjectId;
    content: string;
    createdAt: Date,
-   likes: Types.Array<Types.ObjectId>
+   likes: Types.Array<Types.ObjectId>,
+   dislikes: Types.Array<Types.ObjectId>
 }
 
 export interface IReview {

@@ -8,7 +8,8 @@ export const browserAction = (data) => async (dispatch) => {
       }})
        return dispatch(browser(searchs.data));
    } catch (err) {
-     err.response.status === 404 && dispatch(errorBrowser(err.response.statusText));
-     console.log(err);
+    if(err.response.status === 404 || err.response.status === 400 ) {
+      dispatch(errorBrowser(err.response.data.err))
+    }
    }
 };

@@ -31,12 +31,20 @@ const Home = () => {
   };
 
   return (
-    <div className="flex-1 flex px-3 pt-3 md:px-11 md:pt-9 gap-8 bg-[#2e2e2e]">
-      <div className="bg-stone-800 hidden md:flex basis-1/5 p-6 flex-col items-center rounded-md mb-3 md:mb-11">
-        <div className="text-white font-normal text-xl mb-4"> Following </div>
-        {dummyFriendPost.map((tile) => (
-          <FriendPostTile tile={tile} key={tile.postId} />
-        ))}
+    <div
+      className="flex-1 flex px-4 md:pl-80 md:pr-5 pt-3 md:pt-9 gap-8 bg-[#2e2e2e] relative "
+      id="contenedor_home"
+    >
+      <div
+        className="fixed left-0 top-16 h-screen w-72 bg-stone-800 hidden md:flex  p-6 flex-col items-center overflow-auto"
+        id="contenedor_friends"
+      >
+        <div className="text-white font-normal text-xl mb-4 uppercase tracking-wide">
+          Following
+        </div>
+        {/* {dummyFriendPost.map((tile) => (
+          <FriendPostTile className="friends" tile={tile} key={tile.postId} />
+        ))} */}
       </div>
       <div className="flex-1 flex flex-col gap-5 h-full">
         {
@@ -50,7 +58,11 @@ const Home = () => {
                     date={p.createdAt}
                     likes={p.likes}
                     dislikes={p.dislikes}
-                    userId={p.userId}
+                    commentsId={p.commentsId}
+                    userId={p.userId._id}
+                    username={p.userId.username}
+                    page = {page}
+                    profilePicture = {p.userId.profilePicture}
                   />
                 );
               })
@@ -59,7 +71,7 @@ const Home = () => {
 
         {homePosts.length === 20 ? (
           <button className="btn" onClick={handlePage}>
-            VIEW MORE TEST
+            VIEW MORE POSTS &#43;
           </button>
         ) : null}
       </div>

@@ -1,5 +1,5 @@
 // Para las rutas en general
-import express from 'express';
+import express,{ Response, Request } from 'express';
 import authRouter from "./auth/index";
 import cors from "cors";
 import { Auth } from '../controllers/auth';
@@ -23,7 +23,7 @@ const options: cors.CorsOptions = {
     'Authorization'
   ],
   credentials: true,
-  origin: "http://localhost:3000",
+  origin: "*",
   methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
   preflightContinue: false,
 };
@@ -35,6 +35,9 @@ server.use(morgan("dev"));
 Auth(server,User);
 server.use(passport.initialize());
 
+server.get("/",(req:Request, res:Response) => {
+  res.json({msg:"funciono todo bien"})
+})
 
 server.use("/post", postRoute);
 server.use('/user', userRoute);
