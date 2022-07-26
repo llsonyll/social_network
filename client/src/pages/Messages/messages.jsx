@@ -1,9 +1,15 @@
+import UserChats from "../../components/userChats/UserChats";
+import UserConversation from "../../components/userConversation/UserConversation";
+
 import "./messages.css";
+
+
 
 const Messages = () => {
   return (
     <div className="messages_container">
-      <h1>hello world</h1>
+      <UserChats/>
+      <UserConversation/>
     </div>
   );
 };

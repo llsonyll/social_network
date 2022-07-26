@@ -1,0 +1,57 @@
+#chats-user__container{
+    display: flex;
+    flex-direction: column;
+    background-color: #212121;
+    height: 500px;
+    overflow-y: scroll;
+    min-width: 340px;
+}
+#chats-user__container .friend-contact{
+    display: flex;
+    width: 100%;
+    color: #FFF;
+    padding: 15px 10px;
+    border-top: 1px solid #393939;
+    transition: .2s all;
+}
+#chats-user__container .friend-contact:hover{
+    background-color: #7070705d;
+    cursor: pointer;
+}
+#chats-user__container .friend-contact .friend-contact__avatar{
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+#chats-user__container .friend-contact .friend-contact__info{
+    display: flex;
+    flex-direction: column;
+}
+#chats-user__container .friend-contact .friend-contact__info p{
+    color: gray;
+    font-size: 14px;
+}
+
+/* estilos del search */
+
+.chats__user-father .search__container{
+    display: flex;
+    outline: 0px solid white;
+    color: white;
+    padding: 10px;
+    align-items: center;
+    border-bottom: .5px solid rgb(56, 56, 56);
+}
+.chats__user-father .search__container input{
+    background-color: transparent;
+    outline: none;
+    margin-left: 10px;
+    width: 100%;
+}
+
+/* no friends */
+
+.no_friends{
+    color:white;
+    margin: 20px auto;
+}
