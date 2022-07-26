@@ -2,8 +2,8 @@ import "./messages.css";
 
 const Messages = () => {
   return (
-    <div>
-      <h1> Messages </h1>
+    <div className="messages_container">
+      <h1>hello world</h1>
     </div>
   );
 };
