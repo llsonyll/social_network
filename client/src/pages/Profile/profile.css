@@ -241,6 +241,15 @@
 	cursor: pointer;
 }
 
+/* Button para enviar mensajes */
+
+.user-mess{
+	align-items: center;
+	flex-direction: column;
+	margin-top: 15px;
+}
+
+
 
 
 
