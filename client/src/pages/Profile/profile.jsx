@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getUserProfile } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import Avatar from '../../components/Avatar'
+import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
 
 const Profile = () => {
@@ -49,7 +49,7 @@ const Profile = () => {
   //traigo la info del perfil en el q estoy (didMount)
   useEffect(() => {
     handleGetUserProfile();
-	return(()=> dispatch(clearProfileData()))
+    return () => dispatch(clearProfileData());
   }, [params.id]);
 
   function getTimeOfCreation(date) {
@@ -81,7 +81,7 @@ const Profile = () => {
               likesLength={p.likes.length}
               likes={p.likes}
               content={p.content}
-			  profilePicture={p.userId.profilePicture}
+              profilePicture={p.userId.profilePicture}
             />
           </Fragment>
         );
@@ -105,10 +105,14 @@ const Profile = () => {
               src='https://japanpowered.com/media/images//goku.png'
               alt='Profile Picture'>
             </img> */}
-                {user?.profilePicture? <Avatar imgUrl={user.profilePicture} size='xxl'/> :<Avatar size='xxl'/>}
+                {user?.profilePicture ? (
+                  <Avatar imgUrl={user.profilePicture} size="xxl" />
+                ) : (
+                  <Avatar size="xxl" />
+                )}
                 {params.id === userLogged ? (
-                  <p id="Text">Change Photo</p>     
-                      ) : null}
+                  <p id="Text">Change Photo</p>
+                ) : null}
               </div>
               <div className="shadow-box">
                 <div className="user_description">
@@ -117,36 +121,36 @@ const Profile = () => {
                       <span className="span-info">Full name</span>
                       <p>{`${user.firstname + " " + user.lastname}`}</p>
                     </div>
-                      {params.id === userLogged ? (
-                        <div className="button_container">
-                            <button
-                              onClick={() => {
-                                setFirstname(true);
-                              }}
-                              type="button"
-                            >
-                              Edit
-                            </button>
-                        </div>
-                      ) : null}
+                    {params.id === userLogged ? (
+                      <div className="button_container">
+                        <button
+                          onClick={() => {
+                            setFirstname(true);
+                          }}
+                          type="button"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
                   <div className="user-username">
                     <div className="info_container">
                       <span className="span-info">Username</span>
                       {"@" + user.username}
                     </div>
-                      {params.id === userLogged ? (
+                    {params.id === userLogged ? (
                       <div className="button_container">
-                          <button
-                            onClick={() => {
-                              setUsername(true);
-                            }}
-                            type="button"
-                          >
-                            Edit
-                          </button>
+                        <button
+                          onClick={() => {
+                            setUsername(true);
+                          }}
+                          type="button"
+                        >
+                          Edit
+                        </button>
                       </div>
-                      ) : null}
+                    ) : null}
                   </div>
 
                   <div className="user-followers">
@@ -167,35 +171,34 @@ const Profile = () => {
                       <span className="span-info">Biography</span>
                       {user.biography ? user.biography : "No bio yet"}
                     </div>
-                      {params.id === userLogged ? (
-                        <div className="button_container">
-                            <button
-                              onClick={() => {
-                                setBiography(true);
-                              }}
-                              type="button"
-                            >
-                              Edit
-                            </button>
-                        </div>
-                      ) : null}
+                    {params.id === userLogged ? (
+                      <div className="button_container">
+                        <button
+                          onClick={() => {
+                            setBiography(true);
+                          }}
+                          type="button"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
-                        <div className="user-mess">
-                          <div className="info_container">
-                            <span className="span-info">Send Message </span>
-                          </div>
-                          <div className="button_container">
-                              <button
-                                onClick={() => {
-                                  setBiography(true);
-                                }}
-                                type="button"
-                              >
-                                Send Now
-                              </button>
-                          </div>
-                        </div>
-                    
+                  <div className="user-mess">
+                    <div className="info_container">
+                      <span className="span-info">Send Message </span>
+                    </div>
+                    <div className="button_container">
+                      <button
+                        onClick={() => {
+                          setBiography(true);
+                        }}
+                        type="button"
+                      >
+                        Send Now
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </>
