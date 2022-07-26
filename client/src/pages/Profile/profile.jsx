@@ -121,8 +121,8 @@ const Profile = () => {
                       <span className="span-info">Full name</span>
                       <p>{`${user.firstname + " " + user.lastname}`}</p>
                     </div>
-                    <div className="button_container">
-                      {params.id === userLogged ? (
+                    {params.id === userLogged ? (
+                      <div className="button_container">
                         <button
                           onClick={() => {
                             setFirstname(true);
@@ -131,16 +131,16 @@ const Profile = () => {
                         >
                           Edit
                         </button>
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
                   </div>
                   <div className="user-username">
                     <div className="info_container">
                       <span className="span-info">Username</span>
                       {"@" + user.username}
                     </div>
-                    <div className="button_container">
-                      {params.id === userLogged ? (
+                    {params.id === userLogged ? (
+                      <div className="button_container">
                         <button
                           onClick={() => {
                             setUsername(true);
@@ -149,8 +149,8 @@ const Profile = () => {
                         >
                           Edit
                         </button>
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="user-followers">
@@ -171,8 +171,8 @@ const Profile = () => {
                       <span className="span-info">Biography</span>
                       {user.biography ? user.biography : "No bio yet"}
                     </div>
-                    <div className="button_container">
-                      {params.id === userLogged ? (
+                    {params.id === userLogged ? (
+                      <div className="button_container">
                         <button
                           onClick={() => {
                             setBiography(true);
@@ -181,7 +181,22 @@ const Profile = () => {
                         >
                           Edit
                         </button>
-                      ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="user-mess">
+                    <div className="info_container">
+                      <span className="span-info">Send Message </span>
+                    </div>
+                    <div className="button_container">
+                      <button
+                        onClick={() => {
+                          setBiography(true);
+                        }}
+                        type="button"
+                      >
+                        Send Now
+                      </button>
                     </div>
                   </div>
                 </div>
