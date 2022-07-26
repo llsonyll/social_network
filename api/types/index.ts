@@ -18,6 +18,8 @@ export interface IUser {
    isConnected?: boolean;
    biography?: string;
    review?: Types.ObjectId;
+   socketId?: string;
+   chats: Types.Array<Types.ObjectId>;
 }
 
 // type content = {
@@ -49,6 +51,19 @@ export interface IReview {
   userId: Types.ObjectId;
   description: string;
   stars: number;    
+}
+
+export interface IChat {
+   _id: Types.ObjectId;
+   users: Types.Array<Types.ObjectId>;
+   messages: Types.Array<Types.ObjectId>
+}
+
+export interface IMessage {
+   _id: Types.ObjectId;
+   from: Types.ObjectId;
+   chatId: Types.ObjectId;
+   content: string;
 }
 
 
