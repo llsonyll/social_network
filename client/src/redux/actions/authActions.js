@@ -11,7 +11,6 @@ export const loginAction = (obj) => async (dispatch) => {
     } = await apiConnection.post("auth/login", obj);
 
     if (obj.rememberMe) {
-      console.log("Remember Me en true", obj.rememberMe);
       localStorage.setItem("token", token);
     }
 

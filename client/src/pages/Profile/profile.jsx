@@ -110,7 +110,9 @@ const Profile = () => {
                 ) : (
                   <Avatar size="xxl" />
                 )}
-                <p id="Text">Change Photo</p>
+                {params.id === userLogged ? (
+                  <p id="Text">Change Photo</p>
+                ) : null}
               </div>
               <div className="shadow-box">
                 <div className="user_description">
