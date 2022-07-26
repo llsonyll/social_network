@@ -19,7 +19,9 @@ exports.userSchema = new mongoose_1.Schema({
     isConnected: Boolean,
     birthday: Date,
     biography: String,
-    review: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' }
+    review: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' },
+    socketId: String,
+    chats: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Chat', required: true }]
 }, {
     versionKey: false
 });
