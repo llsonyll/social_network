@@ -4,7 +4,7 @@
     flex-direction: column;
 
 }
-.userconversation__container div{
+.userconversation__container .input_conversation__container{
     display: flex;
 }
 .userconversation__container div button{
