@@ -96,7 +96,11 @@ router.post('/message/:userId/:chatId', passport_1.default.authenticate('jwt', {
         yield message.save();
         chat.messages.push(message._id);
         yield chat.save();
-        res.json(message);
+        res.json({
+            _id: message._id,
+            from: message.from,
+            content: message.content
+        });
     }
     catch (err) {
         res.status(400).json(err);

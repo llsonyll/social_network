@@ -21,6 +21,9 @@ const chatReducer = createSlice({
         },
         clearChatInfo(state, action){
             state.chatDetails = {}
+        },
+        addMessage(state,action){
+            state.chatDetails.messages = [...state.chatDetails.messages, action.payload]
         }
     }
 })
@@ -29,7 +32,8 @@ export const {
     setChats,
     setChatInfo,
     clearChats,
-    clearChatInfo
+    clearChatInfo,
+    addMessage
 } = chatReducer.actions
 
 export default chatReducer.reducer
