@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoggedUserInfo } from "./redux/actions/authActions";
 import { removeLoggedUser } from "./redux/reducers/authReducer.slice";
+import io from 'socket.io-client';
+const socket = io('http://localhost:3001');
 
 function App() {
   const dispatch = useDispatch();
