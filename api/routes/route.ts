@@ -10,6 +10,7 @@ import reviewRoute from './review';
 import postRoute from './post';
 import commentRoute from './comment';
 import morgan from "morgan";
+import premiumRoute from "./premium";
 
 const server = express();
 
@@ -44,5 +45,6 @@ server.use('/user', userRoute);
 server.use("/auth", authRouter);
 server.use('/review', reviewRoute);
 server.use('/comment', commentRoute);
+server.use('/premium', premiumRoute);
 
 export default server;

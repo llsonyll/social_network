@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Messages from './pages/Messages'
 import Profile from './pages/Profile'
 import PostDetail from './pages/PostDetail'
+import Premium from './pages/Premium'
 import DashBoard from './layout/Dashboard'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
@@ -42,6 +43,7 @@ function App() {
 					<Route path='profile/:id' element={<Profile />} />
 					<Route path='messages' element={<Messages />} />
 					<Route path='post/:id' element={<PostDetail />} />
+					<Route path='premium/:id' element={<Premium />} />
 				</Route>
 				<Route path='/team' element={<Landing />} />
 			</Routes>
