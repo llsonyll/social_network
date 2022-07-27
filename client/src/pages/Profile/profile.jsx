@@ -13,6 +13,7 @@ import { getUserProfile } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
+import {Link} from 'react-router-dom'
 
 const Profile = () => {
   const params = useParams();
@@ -199,14 +200,11 @@ const Profile = () => {
                       <span className="span-info">Send Message </span>
                     </div>
                     <div className="button_container">
-                      <button
-                        onClick={() => {
-                          setBiography(true);
-                        }}
-                        type="button"
-                      >
-                        Send Now
-                      </button>
+                      <Link to={`/home/messages/${params.id}`}>
+                        <button>
+                          Send Now
+                        </button>
+                      </Link>
                     </div>
                   </div>
                         { userLogged !== userData._id ? <div className="user-follow">

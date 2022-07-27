@@ -15,6 +15,7 @@ const review_1 = __importDefault(require("./review"));
 const post_1 = __importDefault(require("./post"));
 const comment_1 = __importDefault(require("./comment"));
 const morgan_1 = __importDefault(require("morgan"));
+const chat_1 = __importDefault(require("./chat"));
 const server = (0, express_1.default)();
 const options = {
     allowedHeaders: [
@@ -43,4 +44,5 @@ server.use('/user', index_2.default);
 server.use("/auth", index_1.default);
 server.use('/review', review_1.default);
 server.use('/comment', comment_1.default);
+server.use('/chat', chat_1.default);
 exports.default = server;

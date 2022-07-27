@@ -1,0 +1,28 @@
+#coversation__container{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow-y: scroll;
+    height: 395px;
+}
+#coversation__container div {
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: white;
+    margin: 10px 0px ;
+    width: max-content;
+    float: right;
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+    max-width: 300px;
+}
+#coversation__container #lanzador {
+   background-color: rgb(97, 100, 97);
+   align-self: flex-start;
+}
+#coversation__container #receptor{
+   background-color: #4e864c;
+   align-self: flex-end;
+}
