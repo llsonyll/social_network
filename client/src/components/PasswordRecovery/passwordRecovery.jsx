@@ -1,13 +1,33 @@
 import { useState, useEffect } from "react";
 import logoSN from "../../../assets/LogoSN.png";
 
-const PasswordRecovery = () => {
+import { restorePassword } from "../../redux/actions/userActions";
+import Swal from "sweetalert2";
+
+const PasswordRecovery = ({ goBack }) => {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const handleInputChange = (e) => setInput(e.target.value);
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("SUBMIT");
+    if (input === "") return;
+    const { message, error } = await restorePassword(input);
+
+    if (!error) {
+      Swal.fire({
+        icon: "success",
+        title: "Completed",
+        text: message,
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Ups... Something went wrong",
+        text: error,
+        background: "#4c4d4c",
+        color: "white",
+      });
+    }
   };
 
   useEffect(() => {
@@ -22,7 +42,7 @@ const PasswordRecovery = () => {
 
   return (
     <form
-      className="bg-[#00000057] md:p-12 p-6 shadow-md rounded flex flex-col m-2"
+      className="bg-[#00000057] pt-6 px-6 md:pb-6 pb-3 shadow-md rounded flex flex-col m-2"
       onSubmit={handleSubmit}
     >
       <img src={logoSN} alt="logoSN" className="w-8 h-5 m-auto" />
@@ -43,8 +63,15 @@ const PasswordRecovery = () => {
         className="bg-green-700 text-white mt-3 py-2 disabled:opacity-50"
         type="submit"
         value="Recuperar"
-        disabled={input === ""}
+        disabled={error !== ""}
       />
+      <button
+        className=" text-white mt-12 disabled:opacity-50 text-sm underline"
+        type="button"
+        onClick={goBack}
+      >
+        Regresar
+      </button>
     </form>
   );
 };
