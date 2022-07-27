@@ -9,29 +9,19 @@ import {AiOutlineSearch} from 'react-icons/ai'
 
 const UserChats = () => {
 
-
+    let loggedUser = useSelector(store => store.auth.loggedUser)
+    let chats = useSelector(store => store.chat.allChats)
     const[searchChat , setSearchChat] = useState('')
 
-    const ArrayPrueba = [
-        {
-            fullname: 'Harold Tenorio',
-            username: 'Haaaar',
-            content: 'gedfjwehdgfweghbwekj',
-            id: 231123
-        } ,
-        {
-            fullname: 'Harold Tenorio',
-            username: 'Haaaar',
-            content: 'gedfjwehdgfweghbwekj',
-            id:12312312
-        } ,
-        {
-            fullname: 'Harold Tenorio',
-            username: 'Haaaar',
-            content: 'gedfjwehdgfweghbwekj',
-            id:42386423
+    let getIndex = (array) => {
+        if(array[0]._id === loggedUser._id){
+            return 1
+        }else{
+            return 0
         }
-    ]
+    }
+
+
   return (
     <div className='chats__user-father'>
         <div className='search__container'>
@@ -40,17 +30,16 @@ const UserChats = () => {
         </div>
         <div id='chats-user__container'>
             {
-                ArrayPrueba.length ? 
-                ArrayPrueba.map((friend) => {
+                chats.length ? 
+                chats.map((chat) => {
                     return(
-                        <Link to={`/home/messages/${friend.id}`}>
+                        <Link to={`/home/messages/${chat.users[getIndex(chat.users)]._id}`}>
                             <div className='friend-contact'>
                                 <div className='friend-contact__avatar'>
-                                    <Avatar/>
+                                    <Avatar imgUrl={chat.users[getIndex(chat.users)].profilePicture}/>
                                 </div>
                                 <div className='friend-contact__info'>
-                                    <span>{friend.fullname}</span>
-                                    <p>{friend.username}</p>
+                                    <span>{chat.users[getIndex(chat.users)].username}</span>
                                 </div>
                             </div>
                         </Link>
