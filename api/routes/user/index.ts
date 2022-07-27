@@ -73,8 +73,8 @@ router.get(
 					populate: { path: 'userId', select: ['username', 'profilePicture'] },
 				})
 
-				.populate('following', 'username')
-				.populate('followers', 'username')
+				//.populate('following', 'username')
+				//.populate('followers', 'username')
 				.select('-password')
 			if (!user) return res.status(404).json({ errorMsg: 'who are you?' })
 			return res.status(201).json(user)

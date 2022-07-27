@@ -66,8 +66,8 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
             options: { sort: { 'createdAt': -1 } },
             populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
-            .populate('following', 'username')
-            .populate('followers', 'username')
+            //.populate('following', 'username')
+            //.populate('followers', 'username')
             .select('-password');
         if (!user)
             return res.status(404).json({ errorMsg: 'who are you?' });
