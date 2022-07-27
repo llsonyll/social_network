@@ -24,7 +24,7 @@ const NavBar = ({ openModal }) => {
 
   const [searchInput, setSearchInput] = useState("");
   let { searches, error } = useSelector((state) => state.browserReducer);
-  const userId = useSelector((state) => state.auth.loggedUser._id)
+  const userId = useSelector((state) => state.auth.loggedUser._id);
 
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -32,15 +32,15 @@ const NavBar = ({ openModal }) => {
   const handleInputValue = (e) => {
     setSearchInput(e.target.value);
     let search = e.target.value.trim();
-    if(search || (!search && searches.length !== 0)){
+    if (search || (!search && searches.length !== 0)) {
       dispatch(browserAction(search));
     }
   };
 
   const handleLogOut = () => {
     dispatch(logOutUser());
-    navigate('/')
-  }
+    navigate("/");
+  };
 
   // useEffect(() => {
   //   searches = []
@@ -62,25 +62,24 @@ const NavBar = ({ openModal }) => {
             onChange={handleInputValue}
             placeholder="Search a friend"
           />
-          <div id='input_navbar__search' className='absolute w-full bg-neutral-800 opacity-95 rounded-xl'>
-          {searches.length && searchInput.trim().length > 0 ? 
-          searches?.map(user => {
-            return <SearchUsersBox
-            username= {user.username}
-            key={user._id}
-            id={user._id}
-            />
-          })
-        : 
-         error && searchInput ?
-          <SearchUsersBox 
-        username={error}
-        />
-        : null  
-        
-
-        }
-        </div>
+          <div
+            id="input_navbar__search"
+            className="absolute w-full bg-neutral-800 opacity-95 rounded-xl"
+          >
+            {searches.length && searchInput.trim().length > 0 ? (
+              searches?.map((user) => {
+                return (
+                  <SearchUsersBox
+                    username={user.username}
+                    key={user._id}
+                    id={user._id}
+                  />
+                );
+              })
+            ) : error && searchInput ? (
+              <SearchUsersBox username={error} />
+            ) : null}
+          </div>
         </div>
         <div className="text-white md:hidden"> menu </div>
       </div>
@@ -105,9 +104,11 @@ const NavBar = ({ openModal }) => {
           <FaFacebookMessenger />
           Messages
         </NavLink>
-        <button className="flex items-center gap-2" onClick={handleLogOut}>
+        <button
+          className="bg-red-600 p-2 rounded font-bold text-lg"
+          onClick={handleLogOut}
+        >
           <MdOutlineLogout />
-          Log out
         </button>
         <NewPostBtn action={openModal} />
       </div>
