@@ -97,4 +97,40 @@ router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         res.status(400).json({ errorMsg: err });
     }
 }));
+router.put('/follow/:userId/:userIdFollowed', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, userIdFollowed } = req.params;
+    try {
+        let user = yield mongoose_1.User.findById(`${userId}`);
+        let userFollowed = yield mongoose_1.User.findById(`${userIdFollowed}`);
+        if (!user || !userFollowed)
+            return res.status(404).json({ errorMsg: "some user doesn't exists" });
+        if (user.email === userFollowed.email)
+            return res.status(404).json({ errorMsg: "no te podes autoseguir capo" });
+        if (userFollowed.isPrivate === false) {
+            if (user.following.includes(userFollowed._id) || userFollowed.followers.includes(user._id)) {
+                yield mongoose_1.User.updateOne({ _id: user._id }, {
+                    $pull: {
+                        following: userFollowed._id,
+                    },
+                }, { new: true });
+                yield mongoose_1.User.updateOne({ _id: userFollowed._id }, {
+                    $pull: {
+                        followers: user._id,
+                    },
+                }, { new: true });
+            }
+            else {
+                user.following.push(userFollowed._id);
+                yield user.save();
+                userFollowed.followers.push(user._id);
+                yield userFollowed.save();
+            }
+        }
+        const followers = yield mongoose_1.User.findById(`${userFollowed._id}`);
+        followers ? res.json(followers === null || followers === void 0 ? void 0 : followers.followers) : res.status(404).json({ errorMsg: "???????" });
+    }
+    catch (err) {
+        return res.status(404).json({ errorMsg: err });
+    }
+}));
 exports.default = router;
