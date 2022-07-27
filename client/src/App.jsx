@@ -10,20 +10,25 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoggedUserInfo } from "./redux/actions/authActions";
 import { removeLoggedUser } from "./redux/reducers/authReducer.slice";
+
+//IMPORTS PARA SOCKET IO
 import io from 'socket.io-client';
-const socket = io('http://localhost:3001');
+import { addMessage } from "./redux/reducers/chatReducer";
+export const socket = io('http://localhost:3001');
 
 function App() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
   let location = useLocation();
   const loggedUser = useSelector((state) => state.auth.loggedUser);
+  
 
   useEffect(() => {
     if (localStorage.getItem("token") && !loggedUser._id) {
       dispatch(getLoggedUserInfo());
     }
   }, []);
+
 
   useEffect(() => {
     // if (!localStorage.getItem("token") && location.pathname !== "/") {
@@ -32,6 +37,25 @@ function App() {
     //   navigate("/");
     // }
   }, [location]);
+
+  //SOCKET useEffect TO REPORT A LOGGED USER
+  useEffect(() => {
+    if(loggedUser._id){
+      socket.emit('logged', loggedUser._id, socket.id)
+    }
+    return (() => socket.off('logged'))
+  }, [loggedUser])
+
+  //SOCKET useEFFECT TO LISTEN MESSAGES
+  useEffect(() => {
+    if(!location.pathname.includes('messages')){
+      console.log('hola?')
+      socket.on('privMessage', (content, _id, chatId) =>{
+          console.log('Escucho mensajes pero no los agrego')  
+      })
+    }
+    return (()=> socket.off('privMessage'))
+  }, [location])
 
 
 

@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getChatInfo, sendMessage } from '../../redux/actions/chatActions'
 import { addMessage, clearChatInfo } from '../../redux/reducers/chatReducer'
+import { socket } from '../../App'
 
 
 const UserConversation = () => {
@@ -31,7 +32,7 @@ const UserConversation = () => {
 
 
     useEffect(()=>{
-      if(loggedUser._id && params.id){
+      if(loggedUser._id && params.id && !chatInfo._id){
         dispatch(getChatInfo(loggedUser._id, params.id))
       }
       return (()=> dispatch(clearChatInfo()))
@@ -39,6 +40,10 @@ const UserConversation = () => {
 
     let handleClick = () =>{
       dispatch(sendMessage(text, loggedUser._id, chatInfo._id))
+      if(chatInfo.users[0]._id !== chatInfo.users[1]._id){
+        socket.emit('privMessage', text, chatInfo.users[getIndex(chatInfo.users)]._id, loggedUser._id, chatInfo._id)
+        socket.off('privMessage')
+      }
     }
 
   return (

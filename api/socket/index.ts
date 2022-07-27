@@ -10,7 +10,7 @@ export interface ServerToClientEvents {
   
 export interface ClientToServerEvents {
     logged: (_id: Types.ObjectId, socketId: string) => void;
-    privMessage: (content:string, _id:Types.ObjectId, chatId:Types.ObjectId) => void;
+    privMessage: (content:string, toId:Types.ObjectId,fromId: Types.ObjectId,  chatId:Types.ObjectId) => void;
 }
   
 export interface InterServerEvents {
@@ -39,11 +39,12 @@ const userHandler = (io: Server<ClientToServerEvents, ServerToClientEvents, Inte
         }
     })
 
-    socket.on('privMessage', async(content, _id, chatId)=> {
+    socket.on('privMessage', async(content, _id, fromId, chatId)=> {
         try{
             let user = await User.findById(_id)
+            console.log('aveeeer')
             if(user){
-                io.to(`${user.socketId}`).emit('privMessage', content, _id, chatId)
+                io.to(`${user.socketId}`).emit('privMessage', content, fromId, chatId)
             }
         }catch(err){
             console.log(err)
