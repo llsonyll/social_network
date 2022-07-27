@@ -89,6 +89,16 @@ const Profile = () => {
     }
   };
 
+  const followRenderer = () =>{
+    if ( userData.followers.includes(userLogged)) {
+      return <Fragment key={Math.random()}>Unfollow</Fragment>
+    }
+    if ( !userData.followers.includes(userLogged)) {
+      return <Fragment key={Math.random()}>Follow</Fragment>
+    }
+  }
+
+
   return (
     <>
       <div className="p-container">
@@ -156,7 +166,7 @@ const Profile = () => {
                   <div className="user-followers">
                     <div className="info_container">
                       <span className="span-info">Followers</span>
-                      {user._id ? user.followers.length : null}
+                      {user.followers ? user.followers.length : null}
                     </div>
                   </div>
                   <div className="user-following">
@@ -199,6 +209,23 @@ const Profile = () => {
                       </button>
                     </div>
                   </div>
+                        { userLogged !== userData._id ? <div className="user-follow">
+                          <div className="info_container">
+                          </div>
+                          <div className={"button_container"}>
+                              <button className="button_container"
+                                onClick={() => {
+                                  //Aqui va el LLAMADO A LAS ACCIONES DE SEGUIR Y DEJAR DE SEGUIR
+                                  //El color del boton tiene que cambiar cuando sea UNFOLLOW, pero lo intenté cambiar y no lo logré... Toca cambiarlo después
+                                  console.log(userLogged);
+                                }}
+                                type="button"
+                              >
+                                 { userData.followers && followRenderer()}
+                              </button>
+                          </div>
+                        </div>
+                        : null}
                 </div>
               </div>
             </>
