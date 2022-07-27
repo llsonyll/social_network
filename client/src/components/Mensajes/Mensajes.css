@@ -1,7 +1,9 @@
 #coversation__container{
     display: flex;
     flex-direction: column;
-    padding: 5px;
+    padding: 10px;
+    overflow-y: scroll;
+    height: 100%;
 }
 #coversation__container div {
     border: none;
@@ -9,6 +11,12 @@
     width: max-content;
     padding: 5px 10px;
     color: white;
+    margin: 10px 0px ;
+    width: 100%;
+    float: right;
+    display: flex;
+    align-items: center;
+    word-break: break-all;
 }
 #coversation__container #lanzador {
    background-color: rgb(97, 100, 97);

@@ -7,18 +7,18 @@
 .userconversation__container .input_conversation__container{
     display: flex;
 }
-.userconversation__container div button{
+.userconversation__container form button{
     background-color: #4e864c;
     color: white;
     padding: 10px 20px;
     font-size: 25px;
     transition: .2s all;
 }
-.userconversation__container div button:hover{
+.userconversation__container form button:hover{
     background-color: #315530;
     cursor: pointer;
 }
-.userconversation__container div button:disabled{
+.userconversation__container form button:disabled{
     background-color: #2a2c2a;
     cursor: pointer;
 }

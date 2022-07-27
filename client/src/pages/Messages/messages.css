@@ -7,7 +7,7 @@
 .messages_container{
     display: grid;
     grid-template-columns: .4fr 1fr;
-    margin-top: 40px;
+    margin-top: 15px;
     width: 85%;
     height: 490px;
     outline: 1px solid gray;

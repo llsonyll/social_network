@@ -37,8 +37,13 @@ const UserConversation = () => {
       return (()=> dispatch(clearChatInfo()))
     },[loggedUser, params])
 
-    let handleClick = () =>{
+    let handleClick = (e) =>{
+      e.preventDefault()
       dispatch(sendMessage(text, loggedUser._id, chatInfo._id))
+     if(text.length > 0){
+        setText('')
+        console.log(text);
+     }
     }
 
   return (
@@ -48,12 +53,12 @@ const UserConversation = () => {
            <span>{chatInfo.users[getIndex(chatInfo.users)].username}</span> 
         </div>
             <Mensajes id={loggedUser._id} messages={chatInfo.messages}/>
-        <div className='input_conversation__container' >
+        <form className='input_conversation__container' onSubmit={handleClick}>
             <input type="text" onChange={(e) => setText( e.target.value ) }/>
-            <button type="button" disabled={text === ''} onClick={handleClick}>
+            <button type="submit" disabled={text === ''} onClick={handleClick}>
                 <AiOutlineSend />
             </button>
-        </div>
+        </form>
     </div>: null
   )
 }
