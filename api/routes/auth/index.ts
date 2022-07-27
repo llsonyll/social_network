@@ -6,6 +6,7 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 
 import { createTransport } from "nodemailer";
+import { mailInfo, sendMail } from "../../utils/nodemailer";
 
 let router = express.Router();
 
@@ -81,38 +82,14 @@ router.post(
       if (user) {
         const send: IUser = user as IUser;
 
-        const transporter = createTransport({
-          service: "gmail",
-          auth: {
-            user: "vavatyni@gmail.com",
-            pass: "nlsbenyeedlvxfhb",
-          },
-        });
-
-        const output = `
-          <p>You have a new message from SN</p>
-          <h3>New User</h3>
-          <ul>  
-            <li>Register has been completed successfully</li>
-          </ul>
-          <h3>Message</h3>
-          <p>Usuario creado satisfactoriamente, procede a ingresar a nuestra plataforma <a href="https://finaldeploy-tau.vercel.app" target="_blank"> </a></p>
-        `;
-
-        const mailOptions = {
-          from: "Social Network <vavatyni@gmail.com>",
-          to: send.email,
-          subject: "Social Network registration",
-          html: output,
+        const mailInfo: mailInfo = {
+          title: "New User Registered",
+          subject: "Registration",
+          message: `<li>Register has been completed successfully</li>`,
         };
 
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("Email sent: " + info.response);
-          }
-        });
+        const { message } = await sendMail(mailInfo, send.email);
+        console.log(message);
 
         return res.status(200).json({
           token: createToken(user as IUser),

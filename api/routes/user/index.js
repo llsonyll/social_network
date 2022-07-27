@@ -15,14 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const passport_1 = __importDefault(require("passport"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const nodemailer_1 = require("../../utils/nodemailer");
 const router = express_1.default.Router();
-router.get('/browser/:username', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/browser/:username", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username } = req.params;
         //---------------------find User by username ---> return ([{id,username},{}....])---------------------------
-        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, 'i') }, { username: 1, _id: 1, profilePicture: 1 }).limit(4);
+        const users = yield mongoose_1.User.find({ username: new RegExp(`^${username}`, "i") }, { username: 1, _id: 1, profilePicture: 1 }).limit(4);
         if (!Object.values(users).length) {
-            return res.status(400).json({ err: 'User not fount' });
+            return res.status(400).json({ err: "User not fount" });
         }
         return res.status(200).json(users);
     }
@@ -30,7 +35,10 @@ router.get('/browser/:username', passport_1.default.authenticate('jwt', { sessio
         res.status(400).json(err);
     }
 }));
-router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/home/:userId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     let page = parseInt(`${req.query.page}`);
     if (!page)
@@ -38,13 +46,13 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
     try {
         const user = yield mongoose_1.User.findById(`${userId}`);
         if (!user)
-            return res.status(404).json({ errorMsg: 'who are you?' });
+            return res.status(404).json({ errorMsg: "who are you?" });
         if (user.following.length === 0) {
             const posts = yield mongoose_1.Post.find({})
                 .sort({ createdAt: -1 })
                 .skip(page * 20)
                 .limit(20)
-                .populate('userId', ['username', 'profilePicture']);
+                .populate("userId", ["username", "profilePicture"]);
             res.json(posts);
         }
         //  else {
@@ -55,39 +63,139 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
         return res.status(404).json({ errorMsg: err });
     }
 }));
-router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:userId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     try {
         const user = yield mongoose_1.User.findById(`${userId}`)
             // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
             .populate({
-            path: 'posts',
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
-            options: { sort: { 'createdAt': -1 } },
-            populate: { path: 'userId', select: ['username', 'profilePicture'] },
+            path: "posts",
+            select: [
+                "content",
+                "createdAt",
+                "likes",
+                "dislikes",
+                "_id",
+                "commentsId",
+            ],
+            options: { sort: { createdAt: -1 } },
+            populate: { path: "userId", select: ["username", "profilePicture"] },
         })
             //.populate('following', 'username')
             //.populate('followers', 'username')
-            .select('-password');
+            .select("-password");
         if (!user)
-            return res.status(404).json({ errorMsg: 'who are you?' });
+            return res.status(404).json({ errorMsg: "who are you?" });
         return res.status(201).json(user);
     }
     catch (err) {
         res.status(404).json({ errorMsg: err });
     }
 }));
-router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Recovery Password
+router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.body;
+        if (!email)
+            return res.status(400).json({ error: "Email not provided" });
+        const [user] = yield mongoose_1.User.find({ email: email });
+        if (!user)
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        const dummyPassword = "abcde12345";
+        const mailMessage = {
+            title: "Password Restored",
+            subject: "Password Restoration",
+            message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
+      <li>New Password: ${dummyPassword}</li>`,
+        };
+        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        console.log(message);
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(dummyPassword, salt);
+        user.password = hash;
+        yield user.save();
+        return res.status(200).json({
+            message: "Successfully user's password restored",
+        });
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
+router.put("/updatePassword", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { oldPassword, newPassword, userId } = req.body;
+        if (!oldPassword || !newPassword)
+            return res.status(400).json({ error: "Passwords should be provided" });
+        const user = yield mongoose_1.User.findById(userId);
+        if (!user)
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        const match = yield bcrypt_1.default.compare(oldPassword, user.password);
+        if (!match)
+            return res.status(400).json({
+                error: "Validation error on password you provided as current password",
+            });
+        const mailMessage = {
+            title: "Password Changed",
+            subject: "Password Update",
+            message: `<li>Your password has been changed successfully</li>`,
+        };
+        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(newPassword, salt);
+        user.password = hash;
+        yield user.save();
+        return res.status(200).json({
+            message: "User's password updated successfully",
+        });
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
+router.put("/:userId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
         const { username, firstname, lastname, biography } = req.body;
-        if (!username && !firstname && !lastname && (!biography && biography !== '')) {
-            return res.status(400).json({ errprMsg: 'Please send data' });
+        if (!username &&
+            !firstname &&
+            !lastname &&
+            !biography &&
+            biography !== "") {
+            return res.status(400).json({ errprMsg: "Please send data" });
         }
-        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
-            .populate({ path: 'posts', select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt'], populate: { path: 'userId', select: ['username', 'profilePicture'] } })
-            .populate('following', 'username')
-            .populate('followers', 'username')
+        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, {
+            new: true,
+        })
+            .populate({
+            path: "posts",
+            select: [
+                "content",
+                "likes",
+                "dislikes",
+                "_id",
+                "commentsId",
+                "createdAt",
+            ],
+            populate: { path: "userId", select: ["username", "profilePicture"] },
+        })
+            .populate("following", "username")
+            .populate("followers", "username")
             .select("-password");
         if (!user)
             return res.status(404).json({ errorMsg: "who are you?" });
@@ -97,7 +205,10 @@ router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         res.status(400).json({ errorMsg: err });
     }
 }));
-router.put('/follow/:userId/:userIdFollowed', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, userIdFollowed } = req.params;
     try {
         let user = yield mongoose_1.User.findById(`${userId}`);
@@ -105,9 +216,12 @@ router.put('/follow/:userId/:userIdFollowed', passport_1.default.authenticate('j
         if (!user || !userFollowed)
             return res.status(404).json({ errorMsg: "some user doesn't exists" });
         if (user.email === userFollowed.email)
-            return res.status(404).json({ errorMsg: "no te podes autoseguir capo" });
+            return res
+                .status(404)
+                .json({ errorMsg: "no te podes autoseguir capo" });
         if (userFollowed.isPrivate === false) {
-            if (user.following.includes(userFollowed._id) || userFollowed.followers.includes(user._id)) {
+            if (user.following.includes(userFollowed._id) ||
+                userFollowed.followers.includes(user._id)) {
                 yield mongoose_1.User.updateOne({ _id: user._id }, {
                     $pull: {
                         following: userFollowed._id,
@@ -127,7 +241,9 @@ router.put('/follow/:userId/:userIdFollowed', passport_1.default.authenticate('j
             }
         }
         const followers = yield mongoose_1.User.findById(`${userFollowed._id}`);
-        followers ? res.json(followers === null || followers === void 0 ? void 0 : followers.followers) : res.status(404).json({ errorMsg: "???????" });
+        followers
+            ? res.json(followers === null || followers === void 0 ? void 0 : followers.followers)
+            : res.status(404).json({ errorMsg: "???????" });
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });
