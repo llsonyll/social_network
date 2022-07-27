@@ -10,6 +10,7 @@ import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getUserProfile } from "../../redux/actions/userActions";
+import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
@@ -89,6 +90,8 @@ const Profile = () => {
       });
     }
   };
+
+
 
   const followRenderer = () =>{
     if ( userData.followers.includes(userLogged)) {
@@ -213,9 +216,7 @@ const Profile = () => {
                           <div className={"button_container"}>
                               <button className="button_container"
                                 onClick={() => {
-                                  //Aqui va el LLAMADO A LAS ACCIONES DE SEGUIR Y DEJAR DE SEGUIR
-                                  //El color del boton tiene que cambiar cuando sea UNFOLLOW, pero lo intenté cambiar y no lo logré... Toca cambiarlo después
-                                  console.log(userLogged);
+                                  dispatch(followOrUnfollowUser(userLogged, userData._id))
                                 }}
                                 type="button"
                               >

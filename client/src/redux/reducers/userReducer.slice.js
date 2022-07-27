@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 
 const initialState = {
     userProfileData: {},
@@ -29,10 +30,13 @@ const userReducer = createSlice({
     },
     clearProfileData(state, action){
       state.userProfileData = {}
+    },
+    followOrUnfollowSomeone(state, action){
+     
     }
   },
 });
 
-export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData } = userReducer.actions;
+export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData, followOrUnfollowSomeone } = userReducer.actions;
 
 export default userReducer.reducer;

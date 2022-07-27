@@ -1,4 +1,5 @@
 import { userProfile, homePosts } from "../reducers/userReducer.slice";
+import { followOrUnfollowSomeone } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
 
 export const getUserProfile = (id) => async (dispatch) => {
@@ -70,4 +71,16 @@ export const modifyUser = (id, obj) => async (dispatch) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+export const followOrUnfollowUser = (idUsuario, idDelSeguido) => async (dispatch) => {
+  //recibe Id del usuario y luego id del usuario a seguir por params 
+ 
+    try {
+      const { data } = await apiConnection.put(`user/follow/${idUsuario}/${idDelSeguido}`);
+      return dispatch(followOrUnfollowSomeone(data));
+    } catch (err) {
+      console.log(err);
+    }
+  
 };
