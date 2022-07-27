@@ -7,9 +7,13 @@ import "./messages.css";
 
 const Messages = () => {
   return (
-    <div className="messages_container">
-      <UserChats/>
-      <UserConversation/>
+    <div className="messages__father">
+      <div className="messages_container">
+      
+          <UserChats/>
+          <UserConversation/>
+        
+      </div>
     </div>
   );
 };

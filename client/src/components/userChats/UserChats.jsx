@@ -40,7 +40,7 @@ const UserChats = () => {
         </div>
         <div id='chats-user__container'>
             {
-                ArrayPrueba.length ? 
+                ArrayPrueba ? 
                 ArrayPrueba.map((friend) => {
                     return(
                         <Link to={`/home/messages/${friend.id}`}>
@@ -57,6 +57,7 @@ const UserChats = () => {
                     )
                 }) :  <span className='no_friends'>No tienes conversaciones:(</span>
             } 
+            
         </div>
     </div>
   )
