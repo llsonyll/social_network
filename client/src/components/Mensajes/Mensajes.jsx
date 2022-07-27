@@ -1,4 +1,6 @@
 import React from 'react'
+import { useEffect } from 'react'
+import { useRef } from 'react'
 import './Mensajes.css'
 
 const arrayPrueba = [
@@ -25,10 +27,21 @@ const arrayPrueba = [
 ]
 
 
-const Mensajes = (props) => {
-
+ const Mensajes = (props) => {
+    
     let {id, messages} = props
-
+    
+    
+    
+    let messRef = useRef(null)
+    useEffect(() => {
+        if (messRef  !== null && messages.length > 0) {
+            messRef.current.scrollIntoView({ block: 'end', behavior: 'smooth', inline: "nearest" });
+        }
+        
+    }, [messages])
+    
+    console.log(messRef);
 
   return (
     <div id='coversation__container'>
@@ -38,9 +51,10 @@ const Mensajes = (props) => {
                     return(
                         mensajes.from === id 
                         ?  
-                        <div id='receptor'>{mensajes.content}</div> 
+                        <div id='receptor' ref={messRef}>{mensajes.content}</div>
+                        
                         : 
-                        <div id='lanzador'>{mensajes.content}</div>
+                        <div id='lanzador' ref={messRef}>{mensajes.content}</div>
                     )
                 })
             : <span>Manda el primer mensajeeee</span>
@@ -49,5 +63,4 @@ const Mensajes = (props) => {
     </div>
   )
 }
-
 export default Mensajes
