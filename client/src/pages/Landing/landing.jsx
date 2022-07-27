@@ -52,7 +52,6 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Componente de Sign in / Register  */}
       <div className="form">
         <div className="buttons_container">
           <button

@@ -111,7 +111,7 @@ router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, 
             title: "Password Restored",
             subject: "Password Restoration",
             message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
-      <li>New Password: ${dummyPassword}</li>`,
+      <li>New Password: <strong>${dummyPassword}</strong></li>`,
         };
         const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
         console.log(message);

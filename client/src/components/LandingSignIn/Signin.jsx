@@ -84,6 +84,10 @@ const Signin = () => {
     dispatch(loginAction({ ...input, rememberMe }));
   }
 
+  const handleForgetPassword = () => {
+    console.log("forgetForm");
+  };
+
   useEffect(() => {
     const storeInfo = JSON.parse(localStorage.getItem("login"));
     if (storeInfo) {
@@ -137,7 +141,13 @@ const Signin = () => {
             />
             <span> Remember me </span>
           </div>
-          <Link to="/">Forgot your password?</Link>
+          <button
+            type="button"
+            className="opacity-75 hover:opacity-100 hover:font-semibold"
+            onClick={handleForgetPassword}
+          >
+            Forgot your password?
+          </button>
         </div>
         <input
           className="on disabled:opacity-75 mt-3"

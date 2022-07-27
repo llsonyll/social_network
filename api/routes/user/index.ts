@@ -125,7 +125,7 @@ router.post("/restorePassword", async (req: Request, res: Response) => {
       title: "Password Restored",
       subject: "Password Restoration",
       message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
-      <li>New Password: ${dummyPassword}</li>`,
+      <li>New Password: <strong>${dummyPassword}</strong></li>`,
     };
 
     const { message } = await sendMail(mailMessage, user.email);
