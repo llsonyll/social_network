@@ -109,5 +109,43 @@ router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedir
     }
 })
 
+router.put('/follow/:userId/:userIdFollowed', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
+	const {userId, userIdFollowed} = req.params
+
+
+	try{
+			let user : any = await User.findById(`${userId}`)
+		
+			let userFollowed : any = await User.findById(`${userIdFollowed}`)
+			if(!user || !userFollowed) return res.status(404).json({errorMsg: "some user doesn't exists"})
+			if(user.email === userFollowed.email) return res.status(404).json({errorMsg: "no te podes autoseguir capo"})
+
+			if(userFollowed.isPrivate === false) {
+				if(user.following.includes(userFollowed._id) || userFollowed.followers.includes(user._id)) {
+					 await User.updateOne({_id: user._id}, {
+						$pull: {
+							following: userFollowed._id ,
+						},
+					}, {new: true})
+					 await User.updateOne({_id: userFollowed._id}, {
+						$pull: {
+							followers: user._id ,
+						},
+					}, {new: true})
+				} else {
+					user.following.push(userFollowed._id)
+					await user.save()
+					userFollowed.followers.push(user._id)
+					await userFollowed.save()
+
+				}
+			} 
+			const followers = await User.findById(`${userFollowed._id}`)
+			followers ? res.json(followers?.followers) : res.status(404).json({errorMsg: "???????"})
+	} catch(err) {
+		return res.status(404).json({errorMsg: err})
+	}
+	
+})
 
 export default router;
