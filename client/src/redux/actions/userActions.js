@@ -46,7 +46,7 @@ export const newLikeUserProfile = (postId, userId) => async (dispatch) => {
   try {
     const {
       data: { userPost },
-    } = await authAPI.put(`post/like/${postId}/${userId}`);
+    } = await apiConnection.put(`post/like/${postId}/${userId}`);
     dispatch(userProfile(userPost));
   } catch (err) {
     console.log(err);

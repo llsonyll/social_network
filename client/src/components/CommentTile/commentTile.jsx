@@ -1,5 +1,6 @@
 import Avatar from "../Avatar";
 import { FaHeart } from "react-icons/fa";
+import { IconContext } from "react-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { newLikesComment } from "../../redux/actions/postActions";
 // import { Link } from "react-router-dom";
@@ -17,6 +18,22 @@ const CommentTile = (props) => {
   const handleLikeComment = () => {
     dispatch(newLikesComment( data._id,_id))
   };
+
+
+  let renderHeartIcon = () => {
+		if (!data.likes.includes(_id)) {
+			return <FaHeart />
+		}
+		if (data.likes.includes(_id)) {
+			return (
+				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
+					<div>
+						<FaHeart />
+					</div>
+				</IconContext.Provider>
+			)
+		}
+	}
 
   return (
     data?.userId ? 
@@ -49,7 +66,7 @@ const CommentTile = (props) => {
             onClick={handleLikeComment}
             className="flex gap-1 items-center hover:text-gray-300"
           >
-            <FaHeart /> {data? data.likes.length : 12}
+            {renderHeartIcon()} {data? data.likes.length : 12}
           </button>
         </div>
       </div>
