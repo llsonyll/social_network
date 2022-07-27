@@ -25,21 +25,25 @@ const arrayPrueba = [
 ]
 
 
-const Mensajes = () => {
+const Mensajes = (props) => {
+
+    let {id, messages} = props
+
+
   return (
     <div id='coversation__container'>
         {
-            arrayPrueba.length ?
-                arrayPrueba.map((mensajes) => {
+            messages.length ?
+                messages.map((mensajes) => {
                     return(
-                        mensajes.id === 'Lanzador' 
+                        mensajes.from === id 
                         ?  
-                        <div id='lanzador'>{mensajes.content}</div> 
+                        <div id='receptor'>{mensajes.content}</div> 
                         : 
-                        <div id='receptor'>{mensajes.content}</div>
+                        <div id='lanzador'>{mensajes.content}</div>
                     )
                 })
-            : <span>Man seleciona un cantacto y manda un mensaje</span>
+            : <span>Manda el primer mensajeeee</span>
 
         }
     </div>

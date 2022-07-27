@@ -47,7 +47,7 @@ const UserConversation = () => {
             <Avatar imgUrl={chatInfo.users[getIndex(chatInfo.users)].profilePicture}/>
            <span>{chatInfo.users[getIndex(chatInfo.users)].username}</span> 
         </div>
-            <Mensajes/>
+            <Mensajes id={loggedUser._id} messages={chatInfo.messages}/>
         <div className='input_conversation__container' >
             <input type="text" onChange={(e) => setText( e.target.value ) }/>
             <button type="button" disabled={text === ''} onClick={handleClick}>
