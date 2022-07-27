@@ -46,6 +46,7 @@ const UserChats = () => {
                     )
                 }) :  <span className='no_friends'>No tienes conversaciones:(</span>
             } 
+            
         </div>
     </div>
   )
