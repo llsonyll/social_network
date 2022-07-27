@@ -4,6 +4,7 @@ import browserReducer from "./reducers/browserReducers.slice";
 import reviewReducer from "./reducers/reviewReducer";
 import postReducerSlice from './reducers/postReducer.slice';
 import userReducerSlice from "./reducers/userReducer.slice";
+import chatReducer from "./reducers/chatReducer";
 
 const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
     browserReducer,
     review: reviewReducer,
 	  post: postReducerSlice,
-    user: userReducerSlice
+    user: userReducerSlice,
+    chat: chatReducer
   },
 });
 
