@@ -35,7 +35,7 @@ export const getChatInfo = (userId, otherUserId) => async(dispatch) =>{
 
 export const sendMessage = (content, userId, chatId) => async(dispatch) => {
     try{
-        let res = await axios.post(`http://localhost:3001/chat/message/${userId}/${chatId}`, content ,{
+        let res = await axios.post(`http://localhost:3001/chat/message/${userId}/${chatId}`, {content: content} ,{
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
