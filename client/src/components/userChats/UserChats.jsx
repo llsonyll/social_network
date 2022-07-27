@@ -36,7 +36,7 @@ const UserChats = () => {
                         <Link to={`/home/messages/${chat.users[getIndex(chat.users)]._id}`}>
                             <div className='friend-contact'>
                                 <div className='friend-contact__avatar'>
-                                    <Avatar imgUrl={chat.users[getIndex(chat.users)].profilePicture}/>
+                                    <Avatar  size= 'm'imgUrl={chat.users[getIndex(chat.users)].profilePicture}/>
                                 </div>
                                 <div className='friend-contact__info'>
                                     <span>{chat.users[getIndex(chat.users)].username}</span>

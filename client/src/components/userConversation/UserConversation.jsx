@@ -40,22 +40,20 @@ const UserConversation = () => {
     let handleClick = (e) =>{
       e.preventDefault()
       dispatch(sendMessage(text, loggedUser._id, chatInfo._id))
-     if(text.length > 0){
+    
         setText('')
-        console.log(text);
-     }
     }
 
   return (
     chatInfo._id? <div className='userconversation__container'>
         <div className='header_conversation'>
-            <Avatar imgUrl={chatInfo.users[getIndex(chatInfo.users)].profilePicture}/>
+            <Avatar size='m' imgUrl={chatInfo.users[getIndex(chatInfo.users)].profilePicture}/>
            <span>{chatInfo.users[getIndex(chatInfo.users)].username}</span> 
         </div>
             <Mensajes id={loggedUser._id} messages={chatInfo.messages}/>
         <form className='input_conversation__container' onSubmit={handleClick}>
-            <input type="text" onChange={(e) => setText( e.target.value ) }/>
-            <button type="submit" disabled={text === ''} onClick={handleClick}>
+            <input value={text} type="text" onChange={(e) => setText( e.target.value ) }/>
+            <button type="submit" disabled={text === ''}>
                 <AiOutlineSend />
             </button>
         </form>

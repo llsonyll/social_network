@@ -1,5 +1,7 @@
 .chats__user-father{
-    height: 100%;
+
+    display: grid;
+    grid-auto-rows: .1fr 1fr;
 }
 
 #chats-user__container{
