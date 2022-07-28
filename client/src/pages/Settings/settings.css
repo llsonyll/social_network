@@ -1,0 +1,178 @@
+/* CONTENEDOR PRINCIPAL */
+.settings-container{
+    display: grid;
+    grid-template-columns: 1fr 70% 1fr;
+    grid-template-rows: 1fr;
+}
+/* CONTENEDOR DE SETTINGS */
+.settings{
+    grid-column: 2/3;
+    grid-row: 1/3;
+    display: grid;
+    grid-template-columns: 25% 55% 20%;
+    grid-template-rows: 40px 90px 40px 30px 30px 30px 40px 40px 40px 40px 200px 200px 40px 35px 35px 40px 100px 40px 100px;
+    background-color: #222222;
+    color: rgb(255, 255, 255);
+}
+/*  TEXTOS GENERALES */
+
+.boldtext{
+    font-weight: bolder;
+    font-size: larger;
+    color: aliceblue;
+
+}
+
+
+
+.g-settings{
+    grid-column: 2/3;
+    grid-row: 2/3;
+    color: aliceblue;
+}
+.changepass{
+    grid-column: 1/2;
+    grid-row: 3/4;
+}
+.oldpass{
+    grid-column: 1/2;
+    grid-row: 4/5;
+}   
+.oldpassinput{
+    grid-column: 2/3;
+    grid-row: 4/5;
+    background-color: #222222;
+    border-color: aliceblue;
+    border-width: 1px;
+    
+} 
+.newpass{
+    grid-column: 1/2;
+    grid-row: 5/6;
+}
+.newpassinput{
+    grid-column: 2/3;
+    grid-row: 5/6;
+    background-color: #222222;
+    border-color: aliceblue;
+    border-width: 1px;
+}
+.confirmpass{
+    grid-column: 1/2;
+    grid-row: 6/7;
+}
+.confirmpassinput{
+    grid-column: 2/3;
+    grid-row: 6/7;
+    background-color: #222222;
+    border-color: aliceblue;
+    border-width: 1px;
+}
+.premiumacc{
+    grid-column: 1/2;
+    grid-row: 7/8;
+}
+.premiumtext{
+    grid-column: 1/3;
+    grid-row: 8/9;
+}
+.privateacc{
+    grid-column: 1/2;
+    grid-row: 9/10;
+}
+.privatetext{
+    grid-column: 1/3;
+    grid-row: 10/11;
+}
+
+
+/* BOOOOOOOOTOOOOOOOOOOOOOOOOOOONEEEEEEEEEEEESSSSSSSSSSSS */
+.greenbutton {
+	background-color: #4e864c;
+	border-radius: 5px;
+	padding: 5px 15px;
+	transition: 0.3s all;
+}
+.greenbutton:hover {
+    background-color: #4e864c;
+    cursor: pointer;
+}
+.greenbutton:active {
+    background-color: #30552f;
+    cursor: pointer;
+}
+.changepassbutton{
+    grid-column: 3/4;
+    grid-row: 6/7;
+}
+.buypremiumbutton{
+    grid-column: 3/4;
+    grid-row: 8/9;
+}
+.makeprivate{
+    grid-column: 3/4;
+    grid-row: 10/11;
+}
+.reviewbutton{
+    grid-column: 3/4;
+    grid-row: 15/16;
+}
+.deleteaccount{
+    grid-column: 2/3;
+    grid-row: 18/19;
+}
+.redbutton{
+    background-color: #9b2c35;
+    border-radius: 5px;
+    padding: 5px 15px;
+    transition: 0.3s all;
+}
+.redbutton:active {
+    background-color: #621c22;
+    cursor: pointer;
+}
+.editreviewbutton{
+    grid-column: 3/4;
+    grid-row: 16/17;
+}
+.deletereviewbutton{
+    grid-column: 3/4;
+    grid-row: 17/18;
+}
+
+
+.review{
+    grid-column: 1/2;
+    grid-row: 13/14;
+}
+.currentreviewtext{
+    grid-column: 1/2;
+    grid-row: 14/15;
+}
+.currentreview{
+    grid-column: 2/3;
+    grid-row: 14/15;
+}
+.newreview{
+    grid-column: 1/2;
+    grid-row: 15/16;
+}
+.newreviewinput{
+    grid-column: 2/3;
+    grid-row: 15/16;
+    background-color: #222222;
+    border-color: aliceblue;
+    border-width: 1px;
+}
+.stars{
+    grid-column: 1/2;
+    grid-row: 16/17;
+}
+
+.selectstars{
+    grid-column: 2/3;
+    grid-row: 16/17;
+    background-color: #222222;
+    border-color: aliceblue;
+    border-width: 1px;
+}
