@@ -1,10 +1,13 @@
+import { Token } from './../../mongoose/index';
 import passport, { use } from "passport";
 import passportLocal from 'passport-local';
 import jwtStrategy from 'passport-jwt';
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import express from 'express';
 import {IUser} from '../../types'
+import { finished } from "nodemailer/lib/xoauth2";
 
 //Auth configuration function
 export function Auth(app: express.Application, userCollection: mongoose.Model<IUser>){
@@ -29,15 +32,22 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
 
         //Extracts the token
         {
-            secretOrKey: `${process.env.SECRET_TEST}`,
+            secretOrKey: `${process.env.SECRET_REFRESH}`,
             jwtFromRequest: jwtStrategy.ExtractJwt.fromAuthHeaderAsBearerToken()
         },
         //Tryes to read the user from the token, or auth fails 
-        async (token, done) =>{
+        async (refreshtoken, done) =>{
             try{
-                done(null, token.user)
+                let token: any = await Token.findOne({email: refreshtoken.email});
+                
+                if(!token || refreshtoken.userTokenId !== token._id.toString())
+                {return done(null,false)};
+             
+                token = jwt.verify(token.token,`${process.env.SECRET_TEST}`);
+                
+                return done(null, token.user);
             }catch(err){
-                done(err)
+                return done(err);
             }
         }
     ))

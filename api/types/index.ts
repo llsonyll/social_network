@@ -66,7 +66,11 @@ export interface IMessage {
    content: string;
 }
 
-
+export interface IToken{
+   _id: Types.ObjectId;
+   email: string;
+   token: string;
+}
 
 
 

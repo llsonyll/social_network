@@ -21,7 +21,16 @@ const nodemailer_1 = require("nodemailer");
 let router = express_1.default.Router();
 //---------------function create Token--------------------
 const createToken = (user) => {
-    return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`);
+    return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`, {
+        expiresIn: 60 * 60 * 15
+    });
+};
+//---------------function create Token--------------------
+const refreshToken = (user, _idToken) => {
+    //solo guarda email
+    return jsonwebtoken_1.default.sign({ email: user.email, userTokenId: _idToken }, `${process.env.SECRET_REFRESH}`, {
+        expiresIn: 60 * 60 * 60 * 24
+    });
 };
 //---------------middleware new User-----------------------------
 const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -57,6 +66,59 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         res.json(error);
     }
 });
+router.get("/logOuterr", (req, res) => {
+    res.status(400).json("fallo logOut");
+});
+//----------------------log up -----------------------------------------------
+router.put("/logOut", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/logOuterr",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { user } = req;
+        if (!user) {
+            return res.status(400).json("user required");
+        }
+        yield mongoose_1.Token.deleteOne({ email: user.email });
+        return res.json({});
+    }
+    catch (err) {
+        res.json(err);
+    }
+}));
+//---------------------------refresh Token---------------------------------------------
+router.post("/refresh", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const authorization = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ");
+        if (!authorization ||
+            authorization.length !== 2 ||
+            authorization[0].toLocaleLowerCase() !== "bearer") {
+            return res.status(400).json("no token");
+        }
+        let refreshToken = authorization[1];
+        refreshToken = jsonwebtoken_1.default.verify(refreshToken, `${process.env.SECRET_REFRESH}`);
+        let tokenUser = yield mongoose_1.Token.findOne({ email: refreshToken.email });
+        if (!tokenUser) {
+            return res.status(400).json("token not exist");
+        }
+        ;
+        let user = yield mongoose_1.User.findOne({ email: refreshToken.email });
+        if (!user) {
+            return res.status(400).json("user not register");
+        }
+        ;
+        return res.status(200).json({
+            token: refreshToken(user),
+            username: user.username,
+            _id: user._id,
+            profilePicture: user.profilePicture,
+        });
+    }
+    catch (err) {
+        return res.json(err);
+    }
+}));
 //------------rute register-----------------------------
 router.post("/register", middlewareNewUser, passport_1.default.authenticate("local", {
     session: false,
@@ -97,8 +159,15 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
                     console.log("Email sent: " + info.response);
                 }
             });
+            //--------------elimina susuario----------------------------
+            yield mongoose_1.Token.deleteOne({ email: send.email });
+            let token = new mongoose_1.Token({
+                email: send.email,
+                token: createToken(user)
+            });
+            yield token.save();
             return res.status(200).json({
-                token: createToken(user),
+                token: refreshToken(user, token._id),
                 username: send.username,
                 _id: send._id,
                 profilePicture: send.profilePicture,
@@ -131,8 +200,16 @@ router.post("/login", passport_1.default.authenticate("local", {
         let { user } = req;
         if (user) {
             const send = user;
+            //--------------elimina susuario----------------------------
+            yield mongoose_1.Token.deleteOne({ email: send.email });
+            let token = new mongoose_1.Token({
+                email: send.email,
+                token: createToken(user)
+            });
+            yield token.save();
+            let refreshtoken = refreshToken(user, token._id);
             return res.status(200).json({
-                token: createToken(user),
+                token: refreshtoken,
                 username: send.username,
                 _id: send._id,
                 profilePicture: send.profilePicture,
@@ -150,10 +227,10 @@ router.post("/", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _b;
     try {
         //-------------extract Authorization from HTTP headers----------------
-        const authorization = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ");
+        const authorization = (_b = req.headers.authorization) === null || _b === void 0 ? void 0 : _b.split(" ");
         if (!authorization ||
             authorization.length !== 2 ||
             authorization[0].toLocaleLowerCase() !== "bearer") {

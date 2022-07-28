@@ -9,8 +9,9 @@ import SearchUsersBox from "../SearchUsersBox/searchUsersBox";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { browserAction } from "../../redux/actions/browserActions";
-import { logOutUser } from "../../redux/reducers/authReducer.slice";
+//import { logOutUser } from "../../redux/reducers/authReducer.slice";
 import { MdOutlineLogout } from "react-icons/md";
+import { logOut } from "../../redux/actions/authActions";
 
 const NavBar = ({ openModal }) => {
   let activeStyle = {
@@ -38,15 +39,12 @@ const NavBar = ({ openModal }) => {
   };
 
   const handleLogOut = () => {
-    dispatch(logOutUser());
-    navigate("/");
+    dispatch(logOut());
+    //----para que no se rompa el logOut :)
+    setTimeout(()=>{
+      navigate("/");
+    },1000);
   };
-
-  // useEffect(() => {
-  //   searches = []
-  //   console.log('ERRRRRORRRRRRR')
-  // },[error])
-  // console.log(searches)
 
   return (
     <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50">

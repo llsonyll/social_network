@@ -1,4 +1,4 @@
-import { loginUser } from "../reducers/authReducer.slice";
+import { loginUser, logOutUser } from "../reducers/authReducer.slice";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -9,10 +9,10 @@ export const loginAction = (obj) => async (dispatch) => {
     const {
       data: { token, username, _id, profilePicture },
     } = await apiConnection.post("auth/login", obj);
-
-    if (obj.rememberMe) {
+    console.log(token);
+   //if (obj.rememberMe) {
       localStorage.setItem("token", token);
-    }
+   //}
 
     setAuthorization(token);
     return dispatch(
@@ -74,6 +74,15 @@ export const getLoggedUserInfo = () => async (dispatch) => {
         profilePicture: profilePicture,
       })
     );
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const logOut = () => async (dispatch) => {
+  try {
+    await apiConnection.put("/auth/logOut");
+    dispatch(logOutUser());
   } catch (err) {
     console.log(err);
   }

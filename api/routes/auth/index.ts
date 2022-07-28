@@ -1,9 +1,9 @@
 import express, { Response, Request, NextFunction } from "express";
 import { IUser } from "./../../types/index";
-import { User } from "../../mongoose";
+import { User, Token } from "../../mongoose";
 import bcrypt from "bcrypt";
 import passport from "passport";
-import jwt from "jsonwebtoken";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 
 import { createTransport } from "nodemailer";
 
@@ -13,9 +13,24 @@ let router = express.Router();
 const createToken = (user: IUser) => {
   return jwt.sign(
     { user: { id: user._id, email: user.email } },
-    `${process.env.SECRET_TEST}`
+    `${process.env.SECRET_TEST}`,
+    {
+      expiresIn: 60 * 60 * 15
+    }
   );
 };
+
+//---------------function create Token--------------------
+const refreshToken = ( user: IUser, _idToken:any ) => {
+ //solo guarda email
+  return jwt.sign(
+     { email: user.email, userTokenId: _idToken},
+    `${process.env.SECRET_REFRESH}`,{
+      expiresIn: 60 * 60 * 60 * 24 
+    }
+  );
+};
+
 
 //---------------middleware new User-----------------------------
 const middlewareNewUser = async (
@@ -65,6 +80,64 @@ const middlewareNewUser = async (
   }
 };
 
+router.get("/logOuterr",(req:Request,res:Response)=>{
+    res.status(400).json("fallo logOut");
+});
+
+//----------------------log up -----------------------------------------------
+router.put("/logOut",
+passport.authenticate("jwt", {
+  session: false,
+  failureRedirect: "/auth/logOuterr",
+}),
+async(req:Request,res:Response) => {
+    try {
+      let {user}: any = req;
+      if(!user){return res.status(400).json("user required")}
+      await Token.deleteOne({email: user.email});
+      return res.json({})
+    } catch (err) {
+      res.json(err);
+    }
+});
+
+//---------------------------refresh Token---------------------------------------------
+router.post("/refresh",async(req:Request, res:Response) => {
+   try {
+    const authorization: string[] | undefined =
+    req.headers.authorization?.split(" ");
+
+  if (
+    !authorization ||
+    authorization.length !== 2 ||
+    authorization[0].toLocaleLowerCase() !== "bearer"
+  ) {
+    return res.status(400).json("no token");
+  }
+
+  let refreshToken: any = authorization[1];
+    
+  refreshToken = jwt.verify(refreshToken,`${process.env.SECRET_REFRESH}`);
+
+  let tokenUser = await Token.findOne({email: refreshToken.email});
+
+  if(!tokenUser){return res.status(400).json("token not exist")};
+
+  let user = await User.findOne({email: refreshToken.email});
+   
+  if(!user){return res.status(400).json("user not register")};
+  
+    return res.status(200).json({
+      token: refreshToken(user as IUser),
+      username: user.username,
+      _id: user._id,
+      profilePicture: user.profilePicture,
+  });  
+   } catch (err) {
+      return res.json(err);
+   }
+});
+
 //------------rute register-----------------------------
 router.post(
   "/register",
@@ -113,9 +186,18 @@ router.post(
             console.log("Email sent: " + info.response);
           }
         });
+        //--------------elimina susuario----------------------------
+        await Token.deleteOne({email: send.email});
 
-        return res.status(200).json({
-          token: createToken(user as IUser),
+        let token = new Token({
+            email: send.email,
+            token: createToken(user as IUser)
+           })
+        
+         await token.save();
+      
+         return res.status(200).json({
+          token: refreshToken(user as IUser,token._id),
           username: send.username,
           _id: send._id,
           profilePicture: send.profilePicture,
@@ -155,8 +237,20 @@ router.post(
       if (user) {
         const send: IUser = user as IUser;
 
+        //--------------elimina susuario----------------------------
+        await Token.deleteOne({email: send.email});
+
+        let token = new Token({
+            email: send.email,
+            token: createToken(user as IUser)
+           })
+        
+         await token.save();
+
+         let refreshtoken = refreshToken(user as IUser,token._id)
+
         return res.status(200).json({
-          token: createToken(user as IUser),
+          token: refreshtoken,
           username: send.username,
           _id: send._id,
           profilePicture: send.profilePicture,

@@ -13,10 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Auth = void 0;
+const index_1 = require("./../../mongoose/index");
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = __importDefault(require("passport-local"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 //Auth configuration function
 function Auth(app, userCollection) {
     //Local strategy for authentication
@@ -39,16 +41,22 @@ function Auth(app, userCollection) {
     passport_1.default.use('jwt', new passport_jwt_1.default.Strategy(
     //Extracts the token
     {
-        secretOrKey: `${process.env.SECRET_TEST}`,
+        secretOrKey: `${process.env.SECRET_REFRESH}`,
         jwtFromRequest: passport_jwt_1.default.ExtractJwt.fromAuthHeaderAsBearerToken()
     }, 
     //Tryes to read the user from the token, or auth fails 
-    (token, done) => __awaiter(this, void 0, void 0, function* () {
+    (refreshtoken, done) => __awaiter(this, void 0, void 0, function* () {
         try {
-            done(null, token.user);
+            let token = yield index_1.Token.findOne({ email: refreshtoken.email });
+            if (!token || refreshtoken.userTokenId !== token._id.toString()) {
+                return done(null, false);
+            }
+            ;
+            token = jsonwebtoken_1.default.verify(token.token, `${process.env.SECRET_TEST}`);
+            return done(null, token.user);
         }
         catch (err) {
-            done(err);
+            return done(err);
         }
     })));
 }

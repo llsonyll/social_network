@@ -1,10 +1,11 @@
 import mongoose, {model} from "mongoose";
-import { IChat, IComments, IMessage, IPost, IReview, IUser } from "../types";
+import { IChat, IComments, IMessage, IPost, IReview, IUser, IToken } from "../types";
 import { chatSchema } from "./Chat";
 import { commentsSchema } from "./Comment";
 import { messageSchema } from "./Message";
 import { postSchema } from "./Post";
 import { reviewSchema } from "./Review";
+import { tokenSchema } from "./token";
 import { userSchema } from "./User";
 
 mongoose.connect(`${process.env.MONGO_URI}`) 
@@ -17,3 +18,4 @@ export let Post = model<IPost>('Post', postSchema)
 export let Review = model<IReview>('Review', reviewSchema)
 export let Chat = model<IChat>('Chat', chatSchema)
 export let Message = model<IMessage>('Message', messageSchema)
+export let Token = model<IToken>('Token',tokenSchema)
