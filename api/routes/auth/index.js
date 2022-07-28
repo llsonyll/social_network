@@ -17,7 +17,7 @@ const mongoose_1 = require("../../mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const passport_1 = __importDefault(require("passport"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const nodemailer_1 = require("nodemailer");
+const nodemailer_1 = require("../../utils/nodemailer");
 let router = express_1.default.Router();
 //---------------function create Token--------------------
 const createToken = (user) => {
@@ -67,36 +67,13 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
         let { user } = req;
         if (user) {
             const send = user;
-            const transporter = (0, nodemailer_1.createTransport)({
-                service: "gmail",
-                auth: {
-                    user: "vavatyni@gmail.com",
-                    pass: "nlsbenyeedlvxfhb",
-                },
-            });
-            const output = `
-          <p>You have a new message from SN</p>
-          <h3>New User</h3>
-          <ul>  
-            <li>Register has been completed successfully</li>
-          </ul>
-          <h3>Message</h3>
-          <p>Usuario creado satisfactoriamente, procede a ingresar a nuestra plataforma <a href="https://finaldeploy-tau.vercel.app" target="_blank"> </a></p>
-        `;
-            const mailOptions = {
-                from: "Social Network <vavatyni@gmail.com>",
-                to: send.email,
-                subject: "Social Network registration",
-                html: output,
+            const mailInfo = {
+                title: "New User Registered",
+                subject: "Registration",
+                message: `<li>Register has been completed successfully</li>`,
             };
-            transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                    console.log(error);
-                }
-                else {
-                    console.log("Email sent: " + info.response);
-                }
-            });
+            const { message } = yield (0, nodemailer_1.sendMail)(mailInfo, send.email);
+            console.log(message);
             return res.status(200).json({
                 token: createToken(user),
                 username: send.username,
