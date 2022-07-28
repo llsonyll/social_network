@@ -48,5 +48,5 @@ server.use('/review', review_1.default);
 server.use('/comment', comment_1.default);
 server.use('/chat', chat_1.default);
 server.use('/premium', premium_1.default);
-server.use('./report', report_1.default);
+server.use('/report', report_1.default);
 exports.default = server;

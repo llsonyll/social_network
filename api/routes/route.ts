@@ -49,6 +49,6 @@ server.use('/review', reviewRoute);
 server.use('/comment', commentRoute);
 server.use('/chat', chatRoute);
 server.use('/premium', premiumRoute);
-server.use('./report', reportRoute);
+server.use('/report', reportRoute);
 
 export default server;
