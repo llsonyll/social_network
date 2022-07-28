@@ -84,7 +84,21 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
 router.put('/private/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
-        const user = yield mongoose_1.User.findById(`${userId}`);
+        const user = yield mongoose_1.User.findById(`${userId}`)
+            .populate({
+            path: "posts",
+            select: [
+                "content",
+                "createdAt",
+                "likes",
+                "dislikes",
+                "_id",
+                "commentsId",
+            ],
+            options: { sort: { createdAt: -1 } },
+            populate: { path: "userId", select: ["username", "profilePicture"] },
+        })
+            .select("-password");
         if (!user)
             return res.status(404).json({ msg: 'User not found' });
         if (user.isPrivate)
@@ -92,7 +106,7 @@ router.put('/private/:userId', passport_1.default.authenticate('jwt', { session:
         else
             user.isPrivate = true;
         yield user.save();
-        return res.json({ msg: 'Privacity change successfully' });
+        return res.json(user);
     }
     catch (error) {
         return res.status(400).json(error);

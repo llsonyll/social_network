@@ -78,15 +78,30 @@ async (req: Request, res: Response) => {
     try {
         const { userId } = req.params;
 
-        const user = await User.findById(`${userId}`);
+        const user = await User.findById(`${userId}`)
+        .populate({
+            path: "posts",
+            select: [
+              "content",
+              "createdAt",
+              "likes",
+              "dislikes",
+              "_id",
+              "commentsId",
+            ],
+            options: { sort: { createdAt: -1 } },
+            populate: { path: "userId", select: ["username", "profilePicture"] },
+        })
+        .select("-password");
+        
         if (!user) return res.status(404).json({msg: 'User not found'});
 
         if (user.isPrivate) user.isPrivate = false;
         else user.isPrivate = true;
         
-        await user.save();
+        await user.save()
 
-        return res.json({msg: 'Privacity change successfully'});
+        return res.json(user);
     } catch (error) {
         return res.status(400).json(error)
     }
