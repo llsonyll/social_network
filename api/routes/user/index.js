@@ -62,7 +62,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
             // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
             .populate({
             path: 'posts',
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
             options: { sort: { 'createdAt': -1 } },
             populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
@@ -85,9 +85,14 @@ router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, 
             return res.status(400).json({ errprMsg: 'Please send data' });
         }
         const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
-            .populate({ path: 'posts', select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt'], populate: { path: 'userId', select: ['username', 'profilePicture'] } })
-            .populate('following', 'username')
-            .populate('followers', 'username')
+            .populate({
+            path: 'posts',
+            select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt', 'multimedia'],
+            options: { sort: { 'createdAt': -1 } },
+            populate: { path: 'userId', select: ['username', 'profilePicture'] }
+        })
+            // .populate('following', 'username')
+            // .populate('followers', 'username')
             .select("-password");
         if (!user)
             return res.status(404).json({ errorMsg: "who are you?" });
