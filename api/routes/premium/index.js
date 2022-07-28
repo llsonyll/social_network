@@ -72,12 +72,6 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
                 plan
             });
             yield transaction.save();
-            // if (user.isPremium) {
-            // 	const date = new Date();
-            // 	if (date > user.expirationDate) {
-            // 		user.isPremium = false;
-            // 	}
-            // }        AGREGAR ESTO EN LA RUTA QUE MANDA LOS DATOS DEL USUARIO AL FRONT
             return res.status(201).json({ msg: "Successfull payment" });
         }
     }

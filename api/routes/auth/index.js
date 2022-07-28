@@ -131,6 +131,20 @@ router.post("/login", passport_1.default.authenticate("local", {
         let { user } = req;
         if (user) {
             const send = user;
+            if (send.isPremium) {
+                const date = new Date();
+                if (send.expirationDate) {
+                    if (date > send.expirationDate) {
+                        const newUser = yield mongoose_1.User.findById(send._id);
+                        if (newUser) {
+                            newUser.isPremium = false;
+                            newUser.expirationDate = undefined;
+                            newUser.plan = undefined;
+                            yield newUser.save();
+                        }
+                    }
+                }
+            }
             return res.status(200).json({
                 token: createToken(user),
                 username: send.username,
@@ -171,6 +185,17 @@ router.post("/", passport_1.default.authenticate("jwt", {
             return res.status(400).json("Invalid Token");
         }
         let { username, profilePicture } = user;
+        if (user.isPremium) {
+            const date = new Date();
+            if (user.expirationDate) {
+                if (date > user.expirationDate) {
+                    user.isPremium = false;
+                    user.expirationDate = undefined;
+                    user.plan = undefined;
+                    yield user.save();
+                }
+            }
+        }
         return res.status(200).json({ _id: id, username, profilePicture });
     }
     catch (err) {
