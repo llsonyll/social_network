@@ -1,7 +1,6 @@
 import passport from "passport";
 import express, { Request, Response } from "express";
 import { Comment, Post, User } from "../../mongoose";
-import { IComments } from "../../types";
 
 const router = express.Router();
 
@@ -120,5 +119,61 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
     }
 });
 
+router.put('/:userId/:postId/:commentId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
+async (req: Request, res: Response) => {
+   try {
+      const { userId, postId, commentId } = req.params;
+      const { content } = req.body;
+
+      if (!content) return res.status(400).json({msg: 'Must have content'});
+
+      const comment = await Comment.findById(`${commentId}`);
+      if (!comment) return res.status(404).json({msg: 'Comment doesn\'t exist'});
+      if (`${comment.userId}` !== userId) return res.status(404).json({msg: 'You can\'t edit other users comments'});
+      if (`${comment.postId}` !== postId) return res.status(404).json({msg: 'Comment doesn\'t belong to this post'});
+      
+      comment.content = content;
+
+      await comment.save()
+
+      const post = await Post.findById(`${postId}`)
+      .populate('userId', ['username', 'profilePicture'])
+      .populate('dislikes', 'username')
+      .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+
+      return res.status(201).json(post)
+   } catch (error) {
+      return res.status(400).json(error)
+   }
+})
+
+router.delete('/:userId/:postId/:commentId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
+async (req: Request, res: Response) => {
+   try {
+      const { userId, postId, commentId } = req.params;
+
+      const comment = await Comment.findById(`${commentId}`);
+      if (!comment) return res.status(404).json({msg: 'Comment not found'});
+      if (`${comment.userId}` !== userId) return res.status(400).json({msg: 'You can only delete your own comments'});
+      if (`${comment.postId}` !== postId) return res.status(400).json({msg: 'Post not found'});
+
+      const post = await Post.findOneAndUpdate({_id: comment.postId}, {
+         $pull: {commentsId: comment._id}
+      }, {new: true});
+
+      await post?.save();
+      
+      await Comment.deleteOne({_id: comment._id});
+
+      const newPost = await Post.findById(comment.postId)
+      .populate('userId', ['username', 'profilePicture'])
+      .populate('dislikes', 'username')
+      .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+
+      if (newPost) return res.status(201).json(newPost);
+   } catch (error) {
+      return res.status(400).json(error)
+   }
+})
 
 export default router;
