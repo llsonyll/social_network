@@ -113,21 +113,29 @@ router.post('/:userId/:postId', passport_1.default.authenticate('jwt', { session
         return res.status(400).json(error);
     }
 }));
-// router.put('/:userId/:postId/:commentId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
-// async (req: Request, res: Response) => {
-//    try {
-//       const { userId, postId, commentId } = req.params;
-//       const { content } = req.body;
-//       if (!content) return res.status(400).json({msg: 'Must have content'});
-//       const comment = await Comment.findById(`${commentId}`);
-//       if (!comment) return res.status(404).json({msg: 'Comment doesn\'t exist'});
-//       if (`${comment.userId}` !== userId) return res.status(404).json({msg: 'You can\'t edit other users comments'});
-//       if (`${comment.postId}` !== postId) return res.status(404).json({msg: 'Comment doesn\'t belong to this post'});
-//       comment.content = content;
-//       await comment.save();
-//       return res.status(201).json()
-//    } catch (error) {
-//       return res.status(400).json(error)
-//    }
-// })    FALTA VERIFICAR QUE FUNCIONE BIEN
+router.put('/:userId/:postId/:commentId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId, postId, commentId } = req.params;
+        const { content } = req.body;
+        if (!content)
+            return res.status(400).json({ msg: 'Must have content' });
+        const comment = yield mongoose_1.Comment.findById(`${commentId}`);
+        if (!comment)
+            return res.status(404).json({ msg: 'Comment doesn\'t exist' });
+        if (`${comment.userId}` !== userId)
+            return res.status(404).json({ msg: 'You can\'t edit other users comments' });
+        if (`${comment.postId}` !== postId)
+            return res.status(404).json({ msg: 'Comment doesn\'t belong to this post' });
+        comment.content = content;
+        yield comment.save();
+        const post = yield mongoose_1.Post.findById(`${postId}`)
+            .populate('userId', ['username', 'profilePicture'])
+            .populate('dislikes', 'username')
+            .populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } });
+        return res.status(201).json(post);
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+}));
 exports.default = router;
