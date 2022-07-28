@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
 import PostDetail from "./pages/PostDetail";
+import Premium from './pages/Premium';
 import DashBoard from "./layout/Dashboard";
 import Settings from "./pages/Settings";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
@@ -71,6 +72,7 @@ function App() {
 						<Route path=":id" element={<Messages />} />
 						</Route>	
 					<Route path='post/:id' element={<PostDetail />} />
+          <Route path='premium/:id' element={<Premium />} />
 				</Route>
 				<Route path='/settings' element={<Settings />} />
 			</Routes>

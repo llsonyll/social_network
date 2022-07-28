@@ -23,7 +23,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 exports.Report = exports.Message = exports.Chat = exports.Review = exports.Post = exports.Comment = exports.User = void 0;
+=======
+exports.Payment = exports.Message = exports.Chat = exports.Review = exports.Post = exports.Comment = exports.User = void 0;
+>>>>>>> 2fcb21dd5d44411e5ad1701e8832ff3f2544f089
 const mongoose_1 = __importStar(require("mongoose"));
 const Chat_1 = require("./Chat");
 const Comment_1 = require("./Comment");
@@ -31,7 +35,11 @@ const Message_1 = require("./Message");
 const Post_1 = require("./Post");
 const Review_1 = require("./Review");
 const User_1 = require("./User");
+<<<<<<< HEAD
 const Report_1 = require("./Report");
+=======
+const Payment_1 = require("./Payment");
+>>>>>>> 2fcb21dd5d44411e5ad1701e8832ff3f2544f089
 mongoose_1.default.connect(`${process.env.MONGO_URI}`);
 exports.User = (0, mongoose_1.model)('User', User_1.userSchema);
 exports.Comment = (0, mongoose_1.model)('Comment', Comment_1.commentsSchema);
@@ -39,4 +47,8 @@ exports.Post = (0, mongoose_1.model)('Post', Post_1.postSchema);
 exports.Review = (0, mongoose_1.model)('Review', Review_1.reviewSchema);
 exports.Chat = (0, mongoose_1.model)('Chat', Chat_1.chatSchema);
 exports.Message = (0, mongoose_1.model)('Message', Message_1.messageSchema);
+<<<<<<< HEAD
 exports.Report = (0, mongoose_1.model)('Report', Report_1.reportSchema);
+=======
+exports.Payment = (0, mongoose_1.model)('Payment', Payment_1.paymentSchema);
+>>>>>>> 2fcb21dd5d44411e5ad1701e8832ff3f2544f089
