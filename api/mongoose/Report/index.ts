@@ -9,5 +9,9 @@ export let reportSchema = new Schema<IReport>({
     userReportedId: { type: Schema.Types.ObjectId, ref: 'User'},
     reason: {type: String, required: true},
 },{
+    timestamps: {
+        createdAt: true,
+        updatedAt: false
+    },
 	versionKey: false
 })

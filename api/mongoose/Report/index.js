@@ -10,5 +10,9 @@ exports.reportSchema = new mongoose_1.Schema({
     userReportedId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User' },
     reason: { type: String, required: true },
 }, {
+    timestamps: {
+        createdAt: true,
+        updatedAt: false
+    },
     versionKey: false
 });
