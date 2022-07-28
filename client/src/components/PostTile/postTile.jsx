@@ -124,6 +124,7 @@ const PostTile = (props) => {
             anim ut laborum laborum dolore. Officia nisi reprehenderit excepteur
             nisi. Esse tempor occaecat occaecat ex quis.`}
           </div>
+          {post? post.multimedia? <img src={post.multimedia} alt=''/> :null :null}
           <div className="actions flex gap-3 items-center justify-end my-2 text-white ">
             <button
               onClick={handleCommentPost}

@@ -73,6 +73,7 @@ const HomePostCard = (props) => {
             {props.content}
             </div>
           </div>
+          {props.multimedia? <img src={props.multimedia} alt=''/>: null }
         </Link>
       </div>
       <div className="actions flex gap-3 justify-end mt-1 md:mt-2 text-lg">

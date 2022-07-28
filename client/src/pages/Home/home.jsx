@@ -55,6 +55,7 @@ const Home = () => {
                     key={p._id}
                     postId={p._id}
                     content={p.content}
+                    multimedia={p.multimedia}
                     date={p.createdAt}
                     likes={p.likes}
                     dislikes={p.dislikes}

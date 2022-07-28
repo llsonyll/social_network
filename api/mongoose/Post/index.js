@@ -31,7 +31,8 @@ exports.postSchema = new mongoose_1.Schema({
             ref: 'User',
         },
     ],
-    content: { type: String, required: true }
+    content: { type: String },
+    multimedia: String
 }, {
     timestamps: {
         createdAt: true,
