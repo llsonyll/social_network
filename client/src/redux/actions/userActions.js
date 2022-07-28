@@ -1,4 +1,5 @@
 import { userProfile, homePosts } from "../reducers/userReducer.slice";
+import { toggleFollowUser } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
 
 export const getUserProfile = (id) => async (dispatch) => {
@@ -45,7 +46,7 @@ export const newLikeUserProfile = (postId, userId) => async (dispatch) => {
   try {
     const {
       data: { userPost },
-    } = await authAPI.put(`post/like/${postId}/${userId}`);
+    } = await apiConnection.put(`post/like/${postId}/${userId}`);
     dispatch(userProfile(userPost));
   } catch (err) {
     console.log(err);
@@ -94,3 +95,14 @@ export const restorePassword = async (email) => {
 //     console.log(err);
 //   }
 // }
+
+export const followOrUnfollowUser = (userId, followUserId) => async (dispatch) => {
+  //recibe Id del usuario y luego id del usuario a seguir por params
+  try {
+    // devuelve la lista de usuarios que sigen al perfil del seguido 
+    const { data } = await apiConnection.put(`user/follow/${userId}/${followUserId}`);
+    return dispatch(toggleFollowUser(data));
+  } catch (err) {
+    console.log(err);
+  }
+};

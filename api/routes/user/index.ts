@@ -3,8 +3,8 @@ import { Comment, Post, User } from "../../mongoose";
 import passport from "passport";
 import bcrypt from "bcrypt";
 
-import { createTransport } from "nodemailer";
 import { mailInfo, sendMail } from "../../utils/nodemailer";
+import { IUser } from "../../types";
 
 const router = express.Router();
 
@@ -43,8 +43,7 @@ router.get(
   }),
   async (req: Request, res: Response) => {
     const { userId } = req.params;
-    let page = parseInt(`${req.query.page}`);
-
+    let page = parseInt(req.query.page as string);
     if (!page) page = 0;
 
     try {
@@ -58,12 +57,14 @@ router.get(
           .limit(20)
           .populate("userId", ["username", "profilePicture"]);
         res.json(posts);
+      } else {
+        const posts = await Post.find({})
+          .sort({ createdAt: -1 })
+          .skip(page * 20)
+          .limit(20)
+          .populate("userId", ["username", "profilePicture"]);
+        res.json(posts);
       }
-      //  else {
-
-      //si el usuario sigue a otros usuarios
-
-      // }
     } catch (err) {
       return res.status(404).json({ errorMsg: err });
     }
@@ -256,50 +257,44 @@ router.put(
     const { userId, userIdFollowed } = req.params;
 
     try {
-      let user: any = await User.findById(`${userId}`);
-
-      let userFollowed: any = await User.findById(`${userIdFollowed}`);
+      const user: any = await User.findById(`${userId}`); // usuario
+      const userFollowed: any = await User.findById(`${userIdFollowed}`); // usuario seguido
       if (!user || !userFollowed)
-        return res.status(404).json({ errorMsg: "some user doesn't exists" });
+        return res.status(404).json({ error: "some user doesn't exists" });
       if (user.email === userFollowed.email)
-        return res
-          .status(404)
-          .json({ errorMsg: "no te podes autoseguir capo" });
+        return res.status(404).json({ error: "No te podes autoseguir capo" });
 
-      if (userFollowed.isPrivate === false) {
-        if (
-          user.following.includes(userFollowed._id) ||
-          userFollowed.followers.includes(user._id)
-        ) {
-          await User.updateOne(
-            { _id: user._id },
-            {
-              $pull: {
-                following: userFollowed._id,
-              },
+      if (
+        user.following.includes(userFollowed._id) ||
+        userFollowed.followers.includes(user._id)
+      ) {
+        await User.updateOne(
+          { _id: user._id },
+          {
+            $pull: {
+              following: userFollowed._id,
             },
-            { new: true }
-          );
-          await User.updateOne(
-            { _id: userFollowed._id },
-            {
-              $pull: {
-                followers: user._id,
-              },
+          },
+          { new: true }
+        );
+        await User.updateOne(
+          { _id: userFollowed._id },
+          {
+            $pull: {
+              followers: user._id,
             },
-            { new: true }
-          );
-        } else {
-          user.following.push(userFollowed._id);
-          await user.save();
-          userFollowed.followers.push(user._id);
-          await userFollowed.save();
-        }
+          },
+          { new: true }
+        );
+      } else {
+        user.following.push(userFollowed._id);
+        await user.save();
+        userFollowed.followers.push(user._id);
+        await userFollowed.save();
       }
-      const followers = await User.findById(`${userFollowed._id}`);
-      followers
-        ? res.json(followers?.followers)
-        : res.status(404).json({ errorMsg: "???????" });
+
+      const userFollowedUpdated: any = await User.findById(userFollowed._id);
+      return res.status(200).json(userFollowedUpdated.followers);
     } catch (err) {
       return res.status(404).json({ errorMsg: err });
     }

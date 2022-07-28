@@ -40,7 +40,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
     failureRedirect: "/auth/loginjwt",
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
-    let page = parseInt(`${req.query.page}`);
+    let page = parseInt(req.query.page);
     if (!page)
         page = 0;
     try {
@@ -55,9 +55,14 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
                 .populate("userId", ["username", "profilePicture"]);
             res.json(posts);
         }
-        //  else {
-        //si el usuario sigue a otros usuarios
-        // }
+        else {
+            const posts = yield mongoose_1.Post.find({})
+                .sort({ createdAt: -1 })
+                .skip(page * 20)
+                .limit(20)
+                .populate("userId", ["username", "profilePicture"]);
+            res.json(posts);
+        }
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });
@@ -211,39 +216,33 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId, userIdFollowed } = req.params;
     try {
-        let user = yield mongoose_1.User.findById(`${userId}`);
-        let userFollowed = yield mongoose_1.User.findById(`${userIdFollowed}`);
+        const user = yield mongoose_1.User.findById(`${userId}`); // usuario
+        const userFollowed = yield mongoose_1.User.findById(`${userIdFollowed}`); // usuario seguido
         if (!user || !userFollowed)
-            return res.status(404).json({ errorMsg: "some user doesn't exists" });
+            return res.status(404).json({ error: "some user doesn't exists" });
         if (user.email === userFollowed.email)
-            return res
-                .status(404)
-                .json({ errorMsg: "no te podes autoseguir capo" });
-        if (userFollowed.isPrivate === false) {
-            if (user.following.includes(userFollowed._id) ||
-                userFollowed.followers.includes(user._id)) {
-                yield mongoose_1.User.updateOne({ _id: user._id }, {
-                    $pull: {
-                        following: userFollowed._id,
-                    },
-                }, { new: true });
-                yield mongoose_1.User.updateOne({ _id: userFollowed._id }, {
-                    $pull: {
-                        followers: user._id,
-                    },
-                }, { new: true });
-            }
-            else {
-                user.following.push(userFollowed._id);
-                yield user.save();
-                userFollowed.followers.push(user._id);
-                yield userFollowed.save();
-            }
+            return res.status(404).json({ error: "No te podes autoseguir capo" });
+        if (user.following.includes(userFollowed._id) ||
+            userFollowed.followers.includes(user._id)) {
+            yield mongoose_1.User.updateOne({ _id: user._id }, {
+                $pull: {
+                    following: userFollowed._id,
+                },
+            }, { new: true });
+            yield mongoose_1.User.updateOne({ _id: userFollowed._id }, {
+                $pull: {
+                    followers: user._id,
+                },
+            }, { new: true });
         }
-        const followers = yield mongoose_1.User.findById(`${userFollowed._id}`);
-        followers
-            ? res.json(followers === null || followers === void 0 ? void 0 : followers.followers)
-            : res.status(404).json({ errorMsg: "???????" });
+        else {
+            user.following.push(userFollowed._id);
+            yield user.save();
+            userFollowed.followers.push(user._id);
+            yield userFollowed.save();
+        }
+        const userFollowedUpdated = yield mongoose_1.User.findById(userFollowed._id);
+        return res.status(200).json(userFollowedUpdated.followers);
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });
