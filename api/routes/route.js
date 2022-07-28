@@ -10,6 +10,7 @@ const cors_1 = __importDefault(require("cors"));
 const auth_1 = require("../controllers/auth");
 const mongoose_1 = require("../mongoose");
 const passport_1 = __importDefault(require("passport"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const index_2 = __importDefault(require("./user/index"));
 const review_1 = __importDefault(require("./review"));
 const post_1 = __importDefault(require("./post"));
@@ -32,6 +33,7 @@ const options = {
 };
 server.use((0, cors_1.default)(options));
 server.use(express_1.default.json());
+server.use((0, cookie_parser_1.default)());
 server.use((0, morgan_1.default)("dev"));
 (0, auth_1.Auth)(server, mongoose_1.User);
 server.use(passport_1.default.initialize());

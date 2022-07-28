@@ -9,15 +9,7 @@ let router = express.Router()
 
 //---------------function create Token--------------------
 const createToken = (user:IUser)=>{
-	return jwt.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`,{
-      expiresIn : 60
-    });
-}
-
-const createRefreshToken = (email: string)=>{
-  return jwt.sign({email: email},`${process.env.SECRET_TEST}`,{
-    expiresIn : 60 * 5
-  });
+	return jwt.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`);
 }
 
 //---------------middleware new User-----------------------------
@@ -57,37 +49,6 @@ const middlewareNewUser = async (req: Request, res: Response, next: NextFunction
 		res.json(error)
 	}
 }
-
-//-----------------------------retorna new token ---------------------------------
-router.post("/token",passport.authenticate("jwt",{session: false, failureRedirect: "/auth/loginjwt"}) ,
-async(req:Request,res:Response)=>{
-   try {
-       let email = req.body.email;
-       let refreshToken = req.headers.authorization;
-       refreshToken = refreshToken?.split(" ")[1];
-       
-       let decryptEmail: any = req.user;
-               
-       console.log(decryptEmail);
-    
-       if( decryptEmail.email && email === decryptEmail.email ){
-          let user: any = User.findOne({email: email});
-         if(!user){
-           return res.status(400).json("user does not exist");
-         }
-          
-           let newToken = createToken(user as IUser);
-           let newRefreshToken = createRefreshToken(email); 
-           
-           //await jwt.destroy(refreshToken);
-
-          return res.status(200).json({token: newToken, refreshToken: newRefreshToken });
-       }
-      return res.status(401).json("error refresh token");
-   } catch (err) {
-     return res.status(400).json(err)
-   }
-})
 
 //------------rute register----------------------------- 
 router.post(
@@ -133,10 +94,9 @@ router.post(
 			let { user } = req
 			if (user) {
 				const send: IUser = user as IUser;
-				let refreshToken = createRefreshToken(send.email);
 				return res
 					.status(200)
-					.json({ token: createToken(user as IUser), username: send.username, _id: send._id , profilePicture: send.profilePicture})
+					.json({ token: createToken(user as IUser), username: send.username, _id: send._id, profilePicture: send.profilePicture})
 				//res.redirect()
 			}
 			return res.status(400).json('The user does not exists')
@@ -145,6 +105,36 @@ router.post(
 		}
 	}
 )
+
+//--------------------------------------login google-------------------------------------
+router.get("/loginGoogle",passport.authenticate('google',{session: false,failureRedirect: "/auth/loginjwt" }),
+async(req:Request,res:Response)=>{
+    try {
+			const user: any = req.user;
+
+				const send: IUser = user as IUser;
+
+				res.cookie("token",createToken(user as IUser));
+		    return res.redirect("http://localhost:3000/home");
+		} catch (err) {
+			 res.status(400).json({err:"todo salio mal"});
+		}
+});
+
+//---------------------------facebook---------------------------------
+router.get("/loginFacebook",passport.authenticate('git',{scope:['email'],session: false,failureRedirect: "/auth/loginjwt" }),
+async(req:Request,res:Response)=>{
+    try {
+			const user: any = req.user;
+
+				const send: IUser = user as IUser;
+
+				res.cookie("token",createToken(user as IUser));
+		    return res.redirect("http://localhost:3000/home");
+		} catch (err) {
+			 res.status(400).json({err:"todo salio mal"});
+		}
+});
 
 //------------------------route data user----------------------------------
 router.post(

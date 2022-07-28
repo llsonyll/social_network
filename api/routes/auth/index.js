@@ -20,14 +20,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 let router = express_1.default.Router();
 //---------------function create Token--------------------
 const createToken = (user) => {
-    return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`, {
-        expiresIn: 60
-    });
-};
-const createRefreshToken = (email) => {
-    return jsonwebtoken_1.default.sign({ email: email }, `${process.env.SECRET_TEST}`, {
-        expiresIn: 60 * 5
-    });
+    return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`);
 };
 //---------------middleware new User-----------------------------
 const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,30 +54,6 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         res.json(error);
     }
 });
-//-----------------------------retorna new token ---------------------------------
-router.post("/token", passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let email = req.body.email;
-        let refreshToken = req.headers.authorization;
-        refreshToken = refreshToken === null || refreshToken === void 0 ? void 0 : refreshToken.split(" ")[1];
-        let decryptEmail = req.user;
-        console.log(decryptEmail);
-        if (decryptEmail.email && email === decryptEmail.email) {
-            let user = mongoose_1.User.findOne({ email: email });
-            if (!user) {
-                return res.status(400).json("user does not exist");
-            }
-            let newToken = createToken(user);
-            let newRefreshToken = createRefreshToken(email);
-            //await jwt.destroy(refreshToken);
-            return res.status(200).json({ token: newToken, refreshToken: newRefreshToken });
-        }
-        return res.status(401).json("error refresh token");
-    }
-    catch (err) {
-        return res.status(400).json(err);
-    }
-}));
 //------------rute register----------------------------- 
 router.post("/register", middlewareNewUser, passport_1.default.authenticate("local", { session: false, failureRedirect: '/auth/login' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //user return of passport strategy
@@ -93,18 +62,12 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
         //------------crea  token y refreshtoken----------------------------------
         if (user) {
             const send = user;
-<<<<<<< HEAD
-            const token = createToken(user);
-            let refreshToken = createRefreshToken(send.email);
-            return res.status(200).json({ token: createToken(user), username: send.username, _id: send._id, refreshToken });
-=======
             return res
                 .status(200)
                 .json({ token: createToken(user), username: send.username, _id: send._id, profilePicture: send.profilePicture });
->>>>>>> b1ce1cf8235b2ff3c1a9a6fb3b45b2bc68e67cac
             //res.redirect()
         }
-        return res.status(400).json("The user does not exists");
+        return res.status(400).json('The user does not exists');
     }
     catch (error) {
         res.json(error);
@@ -136,6 +99,30 @@ router.post('/login', passport_1.default.authenticate('local', { session: false,
     }
     catch (error) {
         res.json(error);
+    }
+}));
+//--------------------------------------login google-------------------------------------
+router.get("/loginGoogle", passport_1.default.authenticate('google', { session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        const send = user;
+        res.cookie("token", createToken(user));
+        return res.redirect("http://localhost:3000/home");
+    }
+    catch (err) {
+        res.status(400).json({ err: "todo salio mal" });
+    }
+}));
+//---------------------------facebook---------------------------------
+router.get("/loginFacebook", passport_1.default.authenticate('git', { scope: ['email'], session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        const send = user;
+        res.cookie("token", createToken(user));
+        return res.redirect("http://localhost:3000/home");
+    }
+    catch (err) {
+        res.status(400).json({ err: "todo salio mal" });
     }
 }));
 //------------------------route data user----------------------------------
