@@ -65,16 +65,16 @@ function App() {
 			<Routes>
 				<Route path='/' element={<Landing />} />
 				<Route path='/home' element={<DashBoard />}>
+				  <Route path='settings' element={<Settings />} />
 					<Route index element={<Home />} />
 					<Route path='profile/:id' element={<Profile />} />
-				    <Route path='premium' element={<Premium/>} />
+				    <Route path='premium/:id' element={<Premium/>} />
 						<Route path="messages">
               <Route index element={<Messages />} />
               <Route path=":id" element={<Messages />} />
 						</Route>	
 					<Route path='post/:id' element={<PostDetail />} />
 				</Route>
-				<Route path='/settings' element={<Settings />} />
 			</Routes>
 	)
 }

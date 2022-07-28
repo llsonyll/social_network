@@ -17,7 +17,8 @@ function settings() {
 
     const _id = useSelector(state => state.auth.loggedUser._id)
     const userData = useSelector((state) => state.user.userProfileData);
-    
+
+
    // const arrOfReviews = useSelector(state => state.review.allreviewes)
     const dispatch = useDispatch()
 
@@ -71,7 +72,7 @@ function settings() {
             <div className='privateacc boldtext'>Make account private</div>
             <div className='privatetext'>With premium you'll get access to make your profile private and to see the dislikes in your posts.</div>
             <button className='changepassbutton greenbutton'>Change password</button>
-            <Link to='/home/premium' className='buypremiumbutton'>
+            <Link to={`/home/premium/${_id}`} className='buypremiumbutton'>
                 <button className='buypremiumbutton greenbutton'>Buy premium</button>
             </Link>
             <button className='makeprivate greenbutton'>Make private</button>

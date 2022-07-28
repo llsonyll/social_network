@@ -25,7 +25,6 @@ const Home = () => {
     setHasMore(homePosts.length % 20)
     console.log(hasMore);
   }, [homePosts])
-  console.log(hasMore);
   const handlePage = () => {
     page === 0 ? (page = 1) : null;
     if (homePosts.length === page * 20) {
@@ -53,7 +52,7 @@ const Home = () => {
           <FriendPostTile className="friends" tile={tile} key={tile.postId} />
         ))} */}
       </div>
-      <InfiniteScroll dataLength={homePosts.length} hasMore={hasMore === 0} next={handlePage} loader={<LoadingSpinner/>}>
+      <InfiniteScroll dataLength={homePosts.length} hasMore={true} next={handlePage} loader={<LoadingSpinner/>}>
           <div className="flex-1 flex flex-col gap-5 h-full">
             {
               homePosts.length > 0
