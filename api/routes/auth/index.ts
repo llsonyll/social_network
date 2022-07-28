@@ -155,6 +155,22 @@ router.post(
       if (user) {
         const send: IUser = user as IUser;
 
+        if (send.isPremium) {
+          const date = new Date();
+          if (send.expirationDate) {
+            if (date > send.expirationDate) {
+              const newUser = await User.findById(send._id)
+              if (newUser) {
+                newUser.isPremium = false;
+                newUser.expirationDate = undefined;
+                newUser.plan = undefined;
+  
+                await newUser.save()
+              }
+            }
+          }
+        }
+
         return res.status(200).json({
           token: createToken(user as IUser),
           username: send.username,
@@ -205,13 +221,26 @@ router.post(
 
       let { id } = verifyToken.user;
 
-      const user: IUser | null = await User.findById(`${id}`);
+      const user: any = await User.findById(`${id}`);
 
       if (!user) {
         return res.status(400).json("Invalid Token");
       }
 
       let { username, profilePicture } = user;
+
+      if (user.isPremium) {
+        const date = new Date();
+        if (user.expirationDate) {
+          if (date > user.expirationDate) {
+            user.isPremium = false;
+            user.expirationDate = undefined;
+            user.plan = undefined;
+
+            await user.save()
+          }
+        }
+      }
 
       return res.status(200).json({ _id: id, username, profilePicture });
     } catch (err) {

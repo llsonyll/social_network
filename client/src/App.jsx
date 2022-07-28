@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
 import PostDetail from "./pages/PostDetail";
+// import Premium from './pages/Premium';
 import DashBoard from "./layout/Dashboard";
 import Settings from "./pages/Settings";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
@@ -11,8 +12,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoggedUserInfo } from "./redux/actions/authActions";
 import { removeLoggedUser } from "./redux/reducers/authReducer.slice";
-import Premium from "./pages/Premium/Premium";
-
+import PremiumComponent from "./pages/Premium/PremiumComponent";
 //IMPORTS PARA SOCKET IO
 import io from 'socket.io-client';
 import { addMessage } from "./redux/reducers/chatReducer";
@@ -68,7 +68,7 @@ function App() {
 				  <Route path='settings' element={<Settings />} />
 					<Route index element={<Home />} />
 					<Route path='profile/:id' element={<Profile />} />
-				    <Route path='premium/:id' element={<Premium/>} />
+				    <Route path='premium/:id' element={<PremiumComponent/>} />
 						<Route path="messages">
               <Route index element={<Messages />} />
               <Route path=":id" element={<Messages />} />
