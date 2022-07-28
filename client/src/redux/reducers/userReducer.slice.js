@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 
 const initialState = {
-    userProfileData: {},
-    homePostsData: [],
+  userProfileData: {},
+  homePostsData: [],
 };
 
 const userReducer = createSlice({
@@ -12,27 +13,31 @@ const userReducer = createSlice({
     userProfile(state, action) {
       state.userProfileData = action.payload;
     },
-    homePosts(state,action){
-      if(!state.homePostsData.length || state.homePostsData[0]._id !== action.payload[0]._id){
-       state.homePostsData = state.homePostsData.concat(action.payload);
-    }else{
-      state.homePostsData = action.payload;
-    }},
-    addNewPost(state, action){
+    homePosts(state, action) {
+      if (!state.homePostsData.length || state.homePostsData[0]._id !== action.payload[0]._id) {
+        state.homePostsData = state.homePostsData.concat(action.payload);
+      } else {
+        state.homePostsData = action.payload;
+      }
+    },
+    addNewPost(state, action) {
       state.homePostsData = [action.payload, ...state.homePostsData]
     },
-    addNewPostProfile(state, action){
-      if(state.homePostsData.length){
+    addNewPostProfile(state, action) {
+      if (state.homePostsData.length) {
         state.homePostsData = [action.payload, ...state.homePostsData]
       }
       state.userProfileData.posts = [action.payload, ...state.userProfileData.posts]
     },
-    clearProfileData(state, action){
+    clearProfileData(state, action) {
       state.userProfileData = {}
+    },
+    toggleFollowUser(state, action) {
+      state.userProfileData.followers = action.payload;
     }
   },
 });
 
-export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData } = userReducer.actions;
+export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData, toggleFollowUser } = userReducer.actions;
 
 export default userReducer.reducer;
