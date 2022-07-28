@@ -1,7 +1,7 @@
 #coversation__container{
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 0px 10px;
     overflow-y: scroll;
     height: 395px;
 }
@@ -25,4 +25,10 @@
 #coversation__container #receptor{
    background-color: #4e864c;
    align-self: flex-end;
+}
+#coversation__container #receptor:last-child{
+   margin-bottom: 0px;
+}
+#coversation__container #lanzador:last-child{
+  margin-bottom: 0px;
 }

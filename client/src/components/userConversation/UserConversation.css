@@ -5,6 +5,7 @@
 }
 .userconversation__container .input_conversation__container{
     display: flex;
+    margin-top: 10px;
 }
 .userconversation__container form button{
     background-color: #4e864c;
