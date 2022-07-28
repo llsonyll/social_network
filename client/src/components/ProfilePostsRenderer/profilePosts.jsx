@@ -13,7 +13,7 @@ const ProfilePosts = (props) => {
   const dispatch = useDispatch();
 
 	const handleLike = () => {
-       dispatch(newLikeUserProfile(postNumber,_id));
+       dispatch(newLikeUserProfile(postNumber, _id));
 	}
 
 	const handleDislike = () => {

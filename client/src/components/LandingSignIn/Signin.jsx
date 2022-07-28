@@ -1,18 +1,20 @@
-import React, { useEffect } from 'react'
+import React from "react";
 import cookie from "js-cookie";
-//iconos
-import {BsGoogle} from 'react-icons/bs'
-import {AiFillFacebook} from 'react-icons/ai'
-import {AiOutlineTwitter} from 'react-icons/ai'
 
-//componentes 
-import {Link} from 'react-router-dom'
+// Icons
+import { BsGoogle } from "react-icons/bs";
+import { AiFillFacebook } from "react-icons/ai";
+//import { AiOutlineTwitter } from "react-icons/ai";
 
-//Hooks
-import { useState } from 'react'
-//Dispatch
-import {useDispatch} from 'react-redux'
-import { loginAction } from '../../redux/actions/authActions'
+// Components
+import { Link } from "react-router-dom";
+
+// Hooks
+import { useState, useEffect } from "react";
+
+// Dispatch
+import { useDispatch } from "react-redux";
+import { loginAction } from "../../redux/actions/authActions";
 
 
 if(cookie.get("token")){
@@ -22,70 +24,143 @@ if(cookie.get("token")){
 };
 
 const Signin = () => {
-	const [input , setInput] = useState({
-		email: '',
-		password :''
-	})
+  const [input, setInput] = useState({
+    email: "",
+    password: "",
+  });
 
-	let errores = {}
+  const [errors, setErrors] = useState({});
 
-  // llamo al dispatch	
-	let dispatch = useDispatch()
+  const [rememberMe, setRememberMe] = useState(false);
+  const handleRememberMeChange = (e) => setRememberMe(e.target.checked);
 
-  // validacion de email
-	if (input.email === '') {
-		errores.email = 'Email is required'
-	}
-	else if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(input.email)) {
-		errores.email = 'Email no valited'
-	}
-	//validacion de Password
-	if (input.password === '') {
-		errores.password = 'Password is required'
-	} else if(!/^.{6,25}$/i.test(input.password)) {
-		errores.password = 'The password must be at least 6 characters'
-	}
+  let dispatch = useDispatch();
 
-	//Login
-	  function handleLogin(){
-		 dispatch(loginAction(input))
-	 }
+  // Validación de email
+  useEffect(() => {
+    if (input.email === "") {
+      setErrors((prev) => ({
+        ...prev,
+        email: "Email is required",
+      }));
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(input.email)) {
+      setErrors((prev) => ({
+        ...prev,
+        email: "Email no valid",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        email: "",
+      }));
+    }
+  }, [input.email]);
+
+  // Validación de Password
+  useEffect(() => {
+    if (input.password === "") {
+      setErrors((prev) => ({
+        ...prev,
+        password: "Password is required",
+      }));
+    } else if (!/^.{6,25}$/i.test(input.password)) {
+      setErrors((prev) => ({
+        ...prev,
+        password: "The password must be at least 6 characters",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        password: "",
+      }));
+    }
+  }, [input.password]);
+
+  function handleLogin(e) {
+    e.preventDefault();
+    if (!input.email && !input.password) return;
+    if (rememberMe) {
+      const storeInfo = {
+        email: input.email,
+        remember: rememberMe,
+      };
+      localStorage.setItem("login", JSON.stringify(storeInfo));
+    } else {
+      localStorage.removeItem("login");
+    }
+
+    dispatch(loginAction({ ...input, rememberMe }));
+  }
+
+  useEffect(() => {
+    const storeInfo = JSON.parse(localStorage.getItem("login"));
+    if (storeInfo) {
+      setInput({
+        email: storeInfo.email,
+      });
+
+      setRememberMe(storeInfo.remember);
+    }
+  }, []);
 
   return (
-        <>
-				<div className='input_container'>
-				
-					<div className='email_container'>
-						<label >Email</label>
-						<input autoComplete='off' type='text' name='email'  placeholder='Email' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
-						{
-						errores.email ?  <p className='err_sign'>{errores.email}</p> : null
-						}
-					</div>
-					<div className='password_container'>
-						<label >Password</label>
-						<input  autoComplete='off' type='password' name='password'  placeholder='Password' onChange={(e) => {setInput({...input , [e.target.name] : e.target.value})}}/>
-						{
-						errores.password ?  <p className='err_sign'>{errores.password}</p> : null
-						}
-					</div>
-					<div className='checkbox_container'>
-						<div className='remember_container'>
-							<input type="checkbox"  /> 
-							<span>Remember me</span>
-						</div>
-						<Link to='/'>Forgot your password?</Link>
-					</div>
-					<button className='on' type='button' disabled={errores.email||errores.password} onClick={handleLogin}>
-						Sign in
-					</button>
-					<div className='orcontinue'>
-						<div className='line'></div>
-						<div className='text_line'>Or continue with</div>
-						<div className='line'></div>
-					</div>
-					<div className='social_buttons'>
-					  <a href='http://localhost:3001/auth/loginGoogle'>
+    <form onSubmit={handleLogin}>
+      <div className="input_container">
+        <div className="email_container">
+          <label>Email</label>
+          <input
+            autoComplete="off"
+            type="text"
+            name="email"
+            placeholder="Email"
+            value={input.email}
+            onChange={(e) => {
+              setInput({ ...input, [e.target.name]: e.target.value });
+            }}
+          />
+          {errors.email ? <p className="err_sign">{errors.email}</p> : null}
+        </div>
+        <div className="password_container">
+          <label>Password</label>
+          <input
+            autoComplete="off"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={input.password}
+            onChange={(e) => {
+              setInput({ ...input, [e.target.name]: e.target.value });
+            }}
+          />
+          {errors.password ? (
+            <p className="err_sign">{errors.password}</p>
+          ) : null}
+        </div>
+        <div className="checkbox_container mt-5">
+          <div className="remember_container">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={handleRememberMeChange}
+            />
+            <span> Remember me </span>
+          </div>
+          <Link to="/">Forgot your password?</Link>
+        </div>
+        <input
+          className="on disabled:opacity-75 mt-3"
+          type="submit"
+          disabled={errors.email || errors.password}
+          value="Enviar"
+        />
+
+        <div className="orcontinue">
+          <div className="line"></div>
+          <div className="text_line">Or continue with</div>
+          <div className="line"></div>
+        </div>
+        <div className="social_buttons">
+        <a href='http://localhost:3001/auth/loginGoogle'>
 						  <BsGoogle/>
 					  </a>
 						<a href='http://localhost:3001/auth/loginFacebook'>
@@ -94,10 +169,10 @@ const Signin = () => {
 						{/* <a href='http://localhost:3001/auth/loginGithub'>
 							<AiOutlineTwitter/>
 						</a> */}
-					</div>
-			</div>
-		</>
-  )
-}
+        </div>
+      </div>
+    </form>
+  );
+};
 
-export default Signin
+export default Signin;

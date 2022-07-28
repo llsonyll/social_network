@@ -16,9 +16,8 @@ import { useEffect } from "react";
 
 //elementos html
 const Landing = () => {
-
-  const loggedUser = useSelector(store => store.auth.loggedUser)
-  const navigate = useNavigate()
+  const loggedUser = useSelector((store) => store.auth.loggedUser);
+  const navigate = useNavigate();
 
   const [form, setForm] = useState("Sign in");
 
@@ -31,52 +30,54 @@ const Landing = () => {
     }
   };
 
-  useEffect(()=>{
-    if(loggedUser._id){
-      navigate('/home')
+  useEffect(() => {
+    if (loggedUser._id) {
+      navigate("/home");
     }
-  }, [loggedUser])
-
-
+  }, [loggedUser]);
 
   return (
     <div className="landing_container">
       <div className="wrap_toggle">
-        <input
-          id="toggle"
-          type="checkbox"
-          name=""
-          onClick={handleChangeCheck}
-        />
-        <label  className="switch" htmlFor="toggle"></label>
+        <input id="toggle" type="checkbox" onClick={handleChangeCheck} />
+        <label className="switch" htmlFor="toggle"></label>
         <div className="text_toggle">
-          <p>Sign in</p>
+          <p className={form === "Sign in" ? "text-white" : "text-gray-500"}>
+            Sign in
+          </p>
           <img src={Logo} alt="" />
-          <p
-            className={
-              form === "Register" ? "event_check_encender" : "register_text"
-            }
-          >
+          <p className={form === "Sign in" ? "text-gray-500" : "text-white"}>
             Sign up
           </p>
         </div>
       </div>
-      {/* Componente de Sign in */}
-      <form action="">
+
+      {/* Componente de Sign in / Register  */}
+      <div className="form">
         <div className="buttons_container">
-          <button type="button" onClick={() => setForm("Sign in")}>
+          <button
+            className={form === "Sign in" ? "bg-[#416b3f]" : "bg-[#363636]"}
+            type="button"
+            onClick={() => setForm("Sign in")}
+          >
             Sign in
           </button>
-          <button type="button" onClick={() => setForm("Register")}>
+          <button
+            className={form === "Sign in" ? "bg-[#363636]" : "bg-[#416b3f]"}
+            type="button"
+            onClick={() => setForm("Register")}
+          >
             Sign up
           </button>
         </div>
         <div className="logo">
           <img src={Logo} alt="Social Network Logo" />
-          <h1> <i>Social Network</i></h1>
+          <h1>
+            <i>Social Network</i>
+          </h1>
         </div>
         {form === "Sign in" ? <Signin /> : <Register />}
-      </form>
+      </div>
 
       <div className="sn_review">
         <div className="star">
@@ -91,7 +92,6 @@ const Landing = () => {
           </p>
         </div>
       </div>
-      
     </div>
   );
 };

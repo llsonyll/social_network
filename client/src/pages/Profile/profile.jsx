@@ -10,9 +10,11 @@ import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getUserProfile } from "../../redux/actions/userActions";
+import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import Avatar from '../../components/Avatar'
+import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const params = useParams();
@@ -21,7 +23,10 @@ const Profile = () => {
   const [biography, setBiography] = useState(false);
   const [loading, setLoading] = useState(true);
   const [image, setImage] = useState(false);
-  const userLogged = useSelector((state) => state.auth.loggedUser._id);
+  const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
+  const usersFollowing = useSelector(
+    (state) => state.user.userProfileData.followers
+  );
   const userData = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
 
@@ -49,7 +54,7 @@ const Profile = () => {
   //traigo la info del perfil en el q estoy (didMount)
   useEffect(() => {
     handleGetUserProfile();
-	return(()=> dispatch(clearProfileData()))
+    return () => dispatch(clearProfileData());
   }, [params.id]);
 
   function getTimeOfCreation(date) {
@@ -67,6 +72,7 @@ const Profile = () => {
   let user = userData;
   //console.log(user);
   let userPosts = user.posts;
+
   let renderer = () => {
     if (userPosts.length > 0) {
       return userPosts.map((p) => {
@@ -81,12 +87,20 @@ const Profile = () => {
               likesLength={p.likes.length}
               likes={p.likes}
               content={p.content}
-			  profilePicture={p.userId.profilePicture}
+              profilePicture={p.userId.profilePicture}
             />
           </Fragment>
         );
       });
     }
+  };
+
+  const followRenderer = () => {
+    return usersFollowing.includes(userLoggedId) ? (
+      <Fragment key={Math.random()}>Unfollow</Fragment>
+    ) : (
+      <Fragment key={Math.random()}>Follow</Fragment>
+    );
   };
 
   return (
@@ -105,8 +119,14 @@ const Profile = () => {
               src='https://japanpowered.com/media/images//goku.png'
               alt='Profile Picture'>
             </img> */}
-                {user?.profilePicture? <Avatar imgUrl={user.profilePicture} size='xxl'/> :<Avatar size='xxl'/>}
-				<p id="Text">Change Photo</p>
+                {user?.profilePicture ? (
+                  <Avatar imgUrl={user.profilePicture} size="xxl" />
+                ) : (
+                  <Avatar size="xxl" />
+                )}
+                {params.id === userLoggedId ? (
+                  <p id="Text">Change Photo</p>
+                ) : null}
               </div>
               <div className="shadow-box">
                 <div className="user_description">
@@ -115,8 +135,8 @@ const Profile = () => {
                       <span className="span-info">Full name</span>
                       <p>{`${user.firstname + " " + user.lastname}`}</p>
                     </div>
-                    <div className="button_container">
-                      {params.id === userLogged ? (
+                    {params.id === userLoggedId ? (
+                      <div className="button_container">
                         <button
                           onClick={() => {
                             setFirstname(true);
@@ -125,16 +145,16 @@ const Profile = () => {
                         >
                           Edit
                         </button>
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
                   </div>
                   <div className="user-username">
                     <div className="info_container">
                       <span className="span-info">Username</span>
                       {"@" + user.username}
                     </div>
-                    <div className="button_container">
-                      {params.id === userLogged ? (
+                    {params.id === userLoggedId ? (
+                      <div className="button_container">
                         <button
                           onClick={() => {
                             setUsername(true);
@@ -143,14 +163,14 @@ const Profile = () => {
                         >
                           Edit
                         </button>
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="user-followers">
                     <div className="info_container">
                       <span className="span-info">Followers</span>
-                      {user._id ? user.followers.length : null}
+                      {user.followers ? user.followers.length : null}
                     </div>
                   </div>
                   <div className="user-following">
@@ -165,8 +185,8 @@ const Profile = () => {
                       <span className="span-info">Biography</span>
                       {user.biography ? user.biography : "No bio yet"}
                     </div>
-                    <div className="button_container">
-                      {params.id === userLogged ? (
+                    {params.id === userLoggedId ? (
+                      <div className="button_container">
                         <button
                           onClick={() => {
                             setBiography(true);
@@ -175,9 +195,37 @@ const Profile = () => {
                         >
                           Edit
                         </button>
-                      ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="user-mess">
+                    <div className="info_container">
+                      <span className="span-info">Send Message </span>
+                    </div>
+                    <div className="button_container">
+                      <Link to={`/home/messages/${params.id}`}>
+                        <button>Send Now</button>
+                      </Link>
                     </div>
                   </div>
+                  {userLoggedId !== userData._id ? (
+                    <div className="user-follow">
+                      <div className="info_container"></div>
+                      <div className="button_container">
+                        <button
+                          className="button_container"
+                          onClick={() => {
+                            dispatch(
+                              followOrUnfollowUser(userLoggedId, userData._id)
+                            );
+                          }}
+                          type="button"
+                        >
+                          {userData.followers && followRenderer()}
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </>
