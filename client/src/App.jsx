@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoggedUserInfo } from "./redux/actions/authActions";
 import { removeLoggedUser } from "./redux/reducers/authReducer.slice";
+import Premium from "./pages/Premium/Premium";
 
 //IMPORTS PARA SOCKET IO
 import io from 'socket.io-client';
@@ -65,9 +66,10 @@ function App() {
 				<Route path='/home' element={<DashBoard />}>
 					<Route index element={<Home />} />
 					<Route path='profile/:id' element={<Profile />} />
+				    <Route path='premium' element={<Premium/>} />
 						<Route path="messages">
-						<Route index element={<Messages />} />
-						<Route path=":id" element={<Messages />} />
+              <Route index element={<Messages />} />
+              <Route path=":id" element={<Messages />} />
 						</Route>	
 					<Route path='post/:id' element={<PostDetail />} />
 				</Route>

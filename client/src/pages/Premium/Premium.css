@@ -1,0 +1,65 @@
+.premium_container{
+    display: flex;
+    width: 100%;
+}
+.premium_container .payments_container{
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    
+    width: 40%;
+    align-items: center;
+}
+.premium_container .payments_container .plan{
+    background-color: #262626;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 60px;
+    align-items: center;
+    margin: 5px 10px ;
+    border-radius: 10px;
+    width: 70%;
+    min-width: 170px;
+    transition: .2s all;
+}
+.premium_container .payments_container .plan:hover{
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.644);
+}
+.premium_container .payments_container .plan h1{
+    font-size: 50px;
+    border-bottom: 1px solid #4E864C;
+}
+.premium_container .payments_container .plan span{
+    font-size: 20px;
+    color: gray;
+    margin-bottom: 2px;
+}
+.premium_container .payments_container .plan button{
+    background-color: #4E864C;
+    color: white;
+    padding: 5px 20px;
+    border-radius: 5px;
+}
+
+
+/* plan ecogido */
+.pay_container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.plan-escogido{
+    height: 450px;
+    background-color: #262626;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 60px;
+    align-items: center;
+    margin: 5px 10px ;
+    border-radius: 10px;
+    width: 80%;
+    min-width: 170px;
+}
