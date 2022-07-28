@@ -5,6 +5,7 @@ import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
 import PostDetail from "./pages/PostDetail";
 import DashBoard from "./layout/Dashboard";
+import Settings from "./pages/Settings";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -71,7 +72,7 @@ function App() {
 						</Route>	
 					<Route path='post/:id' element={<PostDetail />} />
 				</Route>
-				<Route path='/team' element={<Landing />} />
+				<Route path='/settings' element={<Settings />} />
 			</Routes>
 	)
 }
