@@ -19,10 +19,18 @@ const stripe_1 = __importDefault(require("stripe"));
 const stripe = new stripe_1.default('sk_test_51LPwrkFSz33wG2Vonf5yG4W2lDY1xk3pQk08tmCKG3mXzNsxSBWvnvGnDGPZgb2daRoqzS4k55dMC6iJVK3OccF600zQOQvySl', { apiVersion: '2020-08-27' });
 const router = express_1.default.Router();
 router.post('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
     try {
-        let { id, amount } = req.body;
+        let { id, amount, plan } = req.body; // AGREGAR PLAN EN FRONT
         const { userId } = req.params;
+        if (!plan || !amount || !id)
+            return res.status(400).json({ msg: 'Missing data' });
         amount *= 100;
+        let user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            return res.status(404).json({ msg: 'User not found' });
+        if (user.isPremium)
+            return res.json({ msg: 'You\'re already premium' });
         const payment = yield stripe.paymentIntents.create({
             amount,
             payment_method: id,
@@ -30,18 +38,53 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
             confirm: true
         });
         if (payment.status === 'succeeded') {
-            const user = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, { isPremium: true }, { new: true });
-            if (!user)
-                return res.status(404).json({ msg: 'User not found' });
-            console.log(user);
+            function sumarDias(fecha, dias, plan) {
+                if (plan === 'weekly') {
+                    fecha.setDate(fecha.getDate() + dias);
+                    return fecha;
+                }
+                if (plan === 'monthly') {
+                    fecha.setMonth(fecha.getMonth() + dias);
+                    return fecha;
+                }
+                if (plan === 'yearly') {
+                    fecha.setFullYear(fecha.getFullYear() + dias);
+                    return fecha;
+                }
+            }
+            const date = new Date();
+            if (plan === 'weekly')
+                var expirationDate = sumarDias(date, 7, plan);
+            if (plan === 'monthly')
+                var expirationDate = sumarDias(date, 1, plan);
+            if (plan === 'yearly')
+                var expirationDate = sumarDias(date, 1, plan);
+            user.isPremium = true;
+            user.expirationDate = expirationDate;
+            user.plan = plan;
+            (_a = user.paymentsId) === null || _a === void 0 ? void 0 : _a.push(payment.id);
             yield user.save();
             console.log(user);
-            return res.json({ msg: "Successfull payment" });
+            // const transaction = new Payment({
+            //     paymentId: payment.id,
+            //     userId: user._id,
+            //     amount,
+            //     paymentDate: new Date(),
+            //     plan
+            // });
+            // await transaction.save();    POR ALGUNA RAZON NO FUNCIONA. PREGUNTAR A ALGUIEN QUE SEPA DE MONGOOSE
+            // if (user.isPremium) {
+            // 	const date = new Date();
+            // 	if (date > user.expirationDate) {
+            // 		user.isPremium = false;
+            // 	}
+            // }        AGREGAR ESTO EN LA RUTA QUE MANDA LOS DATOS DEL USUARIO AL FRONT
+            return res.status(201).json({ msg: "Successfull payment" });
         }
     }
     catch (error) {
-        error.raw.message
-            ? res.status(400).json(error.raw.message)
+        ((_b = error.raw) === null || _b === void 0 ? void 0 : _b.message)
+            ? res.status(400).json((_c = error.raw) === null || _c === void 0 ? void 0 : _c.message)
             : res.status(400).json({ msg: "Subscription fails" });
     }
 }));

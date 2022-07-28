@@ -26,7 +26,7 @@ const CheckoutForm = () => {
         if (!error) {
             console.log(paymentMethod)
             const { id } = paymentMethod;
-            dispatch(premiumSubscription(params.id, {id, amount: 2.99}));
+            dispatch(premiumSubscription(params.id, {id, amount: 2.99, plan: 'weekly'}));
             return elements.getElement(CardElement).clear();
         }
     }
