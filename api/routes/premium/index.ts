@@ -54,16 +54,15 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
             user.plan = plan;
             user.paymentsId?.push(payment.id);
             await user.save();
-            console.log(user)
 
-            // const transaction = new Payment({
-            //     paymentId: payment.id,
-            //     userId: user._id,
-            //     amount,
-            //     paymentDate: new Date(),
-            //     plan
-            // });
-            // await transaction.save();    POR ALGUNA RAZON NO FUNCIONA. PREGUNTAR A ALGUIEN QUE SEPA DE MONGOOSE
+            const transaction = new Payment({
+                paymentId: payment.id,
+                userId: user._id,
+                amount,
+                paymentDate: new Date(),
+                plan
+            });
+            await transaction.save();
 
 			// if (user.isPremium) {
 			// 	const date = new Date();
@@ -77,7 +76,7 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
     } catch (error: any) {
         error.raw?.message 
         ? res.status(400).json(error.raw?.message)
-        : res.status(400).json({msg: "Subscription fails"});
+        : res.status(400).json({msg: 'Payment fails'});
     }
 });
 

@@ -64,15 +64,14 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
             user.plan = plan;
             (_a = user.paymentsId) === null || _a === void 0 ? void 0 : _a.push(payment.id);
             yield user.save();
-            console.log(user);
-            // const transaction = new Payment({
-            //     paymentId: payment.id,
-            //     userId: user._id,
-            //     amount,
-            //     paymentDate: new Date(),
-            //     plan
-            // });
-            // await transaction.save();    POR ALGUNA RAZON NO FUNCIONA. PREGUNTAR A ALGUIEN QUE SEPA DE MONGOOSE
+            const transaction = new mongoose_1.Payment({
+                paymentId: payment.id,
+                userId: user._id,
+                amount,
+                paymentDate: new Date(),
+                plan
+            });
+            yield transaction.save();
             // if (user.isPremium) {
             // 	const date = new Date();
             // 	if (date > user.expirationDate) {
@@ -85,7 +84,7 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
     catch (error) {
         ((_b = error.raw) === null || _b === void 0 ? void 0 : _b.message)
             ? res.status(400).json((_c = error.raw) === null || _c === void 0 ? void 0 : _c.message)
-            : res.status(400).json({ msg: "Subscription fails" });
+            : res.status(400).json({ msg: 'Payment fails' });
     }
 }));
 exports.default = router;

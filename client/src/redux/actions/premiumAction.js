@@ -8,6 +8,6 @@ export const premiumSubscription = (userId, info) => async (dispatch) => {
         const response = await apiConnection.post(`/premium/${userId}`, info);
         return console.log(response?.data);
     } catch (error) {
-        console.log(error.response?.data);
+        console.log(error);
     }
 };
