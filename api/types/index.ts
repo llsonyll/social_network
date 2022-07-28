@@ -20,11 +20,10 @@ export interface IUser {
    review?: Types.ObjectId;
    socketId?: string;
    chats: Types.Array<Types.ObjectId>;
+   paymentsId?: string[];
+   plan?: 'weekly' | 'monthly' | 'yearly';
+   expirationDate?: Date;
 }
-
-// type content = {
-   
-// } 
 
 export interface IPost{
    _id: Types.ObjectId;
@@ -67,6 +66,11 @@ export interface IMessage {
 }
 
 
-
-
-
+export interface IPayment {
+   _id: Types.ObjectId;
+   paymentId: string;
+   userId: Types.ObjectId;
+   amount: number;
+   plan: 'weekly' | 'monthly' | 'yearly';
+   paymentDate: Date
+}
