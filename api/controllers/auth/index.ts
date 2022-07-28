@@ -104,13 +104,6 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
         //Tryes to read the user from the token, or auth fails 
         async (token, done) =>{
             try{
-                let expiredToken = new Date(token.exp * 1000);
-                if(expiredToken < new Date()){
-                  return done(null,false);
-                }
-                if(!token.user){
-                    return done(null, token)
-                }
                 done(null, token.user)
             }catch(err){
                 done(err)
