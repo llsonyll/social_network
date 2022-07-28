@@ -73,4 +73,23 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
     }
 });
 
+router.put('/private/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
+async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params;
+
+        const user = await User.findById(`${userId}`);
+        if (!user) return res.status(404).json({msg: 'User not found'});
+
+        if (user.isPrivate) user.isPrivate = false;
+        else user.isPrivate = true;
+        
+        await user.save();
+
+        return res.json({msg: 'Privacity change successfully'});
+    } catch (error) {
+        return res.status(400).json(error)
+    }
+})
+
 export default router;
