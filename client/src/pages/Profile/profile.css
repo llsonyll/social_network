@@ -241,6 +241,18 @@
 	cursor: pointer;
 }
 
+/* Button para enviar mensajes */
 
+.user-mess{
+	align-items: center;
+	flex-direction: column;
+	margin-top: 15px;
+}
+
+/* Button para seguir o dejar de seguir */
+.user-follow{
+	align-items: flex-start;
+	margin-top: 15px;
+}
 
 

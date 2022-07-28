@@ -19,7 +19,9 @@ export let userSchema = new Schema<IUser>({
     isConnected: Boolean,
     birthday: Date,
     biography: String,
-    review: {type: Schema.Types.ObjectId, ref: 'Review'}
+    review: {type: Schema.Types.ObjectId, ref: 'Review'},
+    socketId: String,
+    chats: [{type: Schema.Types.ObjectId, ref: 'Chat', required: true}]
 }, {
 	versionKey: false
 })

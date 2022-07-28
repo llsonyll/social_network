@@ -1,0 +1,14 @@
+.messages__father{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.messages_container{
+    display: grid;
+    grid-template-columns: .4fr 1fr;
+    margin-top: 15px;
+    width: 85%;
+    height: 500px;
+    outline: 1px solid gray;
+}
