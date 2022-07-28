@@ -65,6 +65,14 @@ export interface IMessage {
    content: string;
 }
 
+export interface IReport {
+   _id: Types.ObjectId;
+   userId: Types.ObjectId;
+   postReportedId?: Types.ObjectId;
+   commentReportedId?: Types.ObjectId;
+   userReportedId?: Types.ObjectId;
+   reason: string;
+}
 
 export interface IPayment {
    _id: Types.ObjectId;
