@@ -1,4 +1,5 @@
 import "./landing.css";
+import PasswordRecovery from "../../components/PasswordRecovery";
 import { useState } from "react";
 import {useDispatch, useSelector } from 'react-redux'
 import { getAllReviewes } from '../../redux/actions/reviewAction'
@@ -12,6 +13,8 @@ import Logo from "../../../assets/LogoSN.png";
 import Register from "../../components/LandingRegister";
 import Signin from "../../components/LandingSignIn";
 //elementos html
+
+
 const Landing = () => {
   const dispatch = useDispatch()
   const loggedUser = useSelector((store) => store.auth.loggedUser);
@@ -25,6 +28,13 @@ const Landing = () => {
   useEffect(() => {
       dispatch(getAllReviewes())
   }, [])
+
+ useEffect(() => {
+    if (loggedUser._id) {
+      navigate("/home");
+    }
+  }, [loggedUser]);
+  
 
   const handleChangeCheck = () => {
     if (form === "Sign in") {
@@ -64,19 +74,27 @@ const Landing = () => {
 
   return (
     <div className="landing_container">
-      <div className="wrap_toggle">
-        <input id="toggle" type="checkbox" onClick={handleChangeCheck} />
-        <label className="switch" htmlFor="toggle"></label>
-        <div className="text_toggle">
-          <p className={form === "Sign in" ? "text-white" : "text-gray-500"}>
-            Sign in
-          </p>
-          <img src={Logo} alt="" />
-          <p className={form === "Sign in" ? "text-gray-500" : "text-white"}>
-            Sign up
-          </p>
-        </div>
-      </div>
+      {form === "recovery" ? (
+        <PasswordRecovery goBack={() => setForm("Sign in")} />
+      ) : (
+        <>
+          <div className="wrap_toggle">
+            <input id="toggle" type="checkbox" onClick={handleChangeCheck} />
+            <label className="switch" htmlFor="toggle"></label>
+            <div className="text_toggle">
+              <p
+                className={form === "Sign in" ? "text-white" : "text-gray-500"}
+              >
+                Sign in
+              </p>
+              <img src={Logo} alt="" />
+              <p
+                className={form === "Sign in" ? "text-gray-500" : "text-white"}
+              >
+                Sign up
+              </p>
+            </div>
+          </div>
 
       {/* Componente de Sign in / Register  */}
       <div className="form">
@@ -102,9 +120,10 @@ const Landing = () => {
             <i>Social Network</i>
           </h1>
         </div>
-        {form === "Sign in" ? <Signin /> : <Register />}
+        {form === "Sign in" ? <Signin setForm={setForm}/> : <Register />}
       </div>
             { arrOfReviews.length > 0 ?  showReviews() :null }
+
     </div>
   );
 };

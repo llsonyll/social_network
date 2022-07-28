@@ -1,4 +1,5 @@
 import { userProfile, homePosts } from "../reducers/userReducer.slice";
+import { toggleFollowUser } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
 
 export const getUserProfile = (id) => async (dispatch) => {
@@ -45,7 +46,7 @@ export const newLikeUserProfile = (postId, userId) => async (dispatch) => {
   try {
     const {
       data: { userPost },
-    } = await authAPI.put(`post/like/${postId}/${userId}`);
+    } = await apiConnection.put(`post/like/${postId}/${userId}`);
     dispatch(userProfile(userPost));
   } catch (err) {
     console.log(err);
@@ -62,11 +63,45 @@ export const newDislikeUserProfile = (postId, userId) => async (dispatch) => {
     console.log(err);
   }
 };
+
 export const modifyUser = (id, obj) => async (dispatch) => {
   //recibe Id por params, y el obj va a ser la propiedad a modificar
   try {
     const { data } = await apiConnection.put(`user/${id}`, obj);
     return dispatch(userProfile(data));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const restorePassword = async (email) => {
+  try {
+    const { data } = await apiConnection.post(`user/restorePassword`, { email: email });
+    console.log(data);
+    return data;
+  } catch (err) {
+    return { error: err.response.data.error ?? 'Email provided does not belong to any registered user' }
+  }
+};
+
+// export const changePassword = (current, newPassword, userId) => async (dispatch) => {
+//   try {
+//     const { message, error } = await apiConnection.put(`user/updatePassword`, {
+//       oldPassword: current,
+//       newPassword: newPassword,
+//       userId: userId,
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+
+export const followOrUnfollowUser = (userId, followUserId) => async (dispatch) => {
+  //recibe Id del usuario y luego id del usuario a seguir por params
+  try {
+    // devuelve la lista de usuarios que sigen al perfil del seguido 
+    const { data } = await apiConnection.put(`user/follow/${userId}/${followUserId}`);
+    return dispatch(toggleFollowUser(data));
   } catch (err) {
     console.log(err);
   }

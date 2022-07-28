@@ -21,7 +21,10 @@ export let userSchema = new Schema<IUser>({
     biography: String,
     review: {type: Schema.Types.ObjectId, ref: 'Review'},
     socketId: String,
-    chats: [{type: Schema.Types.ObjectId, ref: 'Chat', required: true}]
+    chats: [{type: Schema.Types.ObjectId, ref: 'Chat', required: true}],
+    paymentsId: [{type: String, ref: 'Payment'}],
+    plan: {type: String, enum: ['weekly', 'monthly', 'yearly']},
+    expirationDate: Date
 }, {
 	versionKey: false
 })
