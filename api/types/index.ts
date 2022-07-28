@@ -74,12 +74,3 @@ export interface IPayment {
    plan: 'weekly' | 'monthly' | 'yearly';
    paymentDate: Date
 }
-
-export interface IReport {
-   _id: Types.ObjectId;
-   userId: Types.ObjectId;
-   postReportedId?: Types.ObjectId;
-   commentReportedId?: Types.ObjectId;
-   userReportedId?: Types.ObjectId;
-   reason: string;
-}
