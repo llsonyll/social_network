@@ -33,6 +33,78 @@ router.get("/browser/:username", passport_1.default.authenticate("jwt", {
         res.status(400).json(err);
     }
 }));
+router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    let page = parseInt(`${req.query.page}`);
+    if (!page)
+        page = 0;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            return res.status(404).json({ errorMsg: 'who are you?' });
+        if (user.following.length === 0) {
+            const posts = yield mongoose_1.Post.find({})
+                .sort({ createdAt: -1 })
+                .skip(page * 20)
+                .limit(20)
+                .populate('userId', ['username', 'profilePicture']);
+            res.json(posts);
+        }
+        //  else {
+        //si el usuario sigue a otros usuarios
+        // }
+    }
+    catch (err) {
+        return res.status(404).json({ errorMsg: err });
+    }
+}));
+router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`)
+            // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
+            .populate({
+            path: 'posts',
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
+            options: { sort: { 'createdAt': -1 } },
+            populate: { path: 'userId', select: ['username', 'profilePicture'] },
+        })
+            //.populate('following', 'username')
+            //.populate('followers', 'username')
+            .select('-password');
+        if (!user)
+            return res.status(404).json({ errorMsg: 'who are you?' });
+        return res.status(201).json(user);
+    }
+    catch (err) {
+        res.status(404).json({ errorMsg: err });
+    }
+}));
+router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const { username, firstname, lastname, biography } = req.body;
+        if (!username && !firstname && !lastname && (!biography && biography !== '')) {
+            return res.status(400).json({ errprMsg: 'Please send data' });
+        }
+        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
+            .populate({
+            path: 'posts',
+            select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt', 'multimedia'],
+            options: { sort: { 'createdAt': -1 } },
+            populate: { path: 'userId', select: ['username', 'profilePicture'] }
+        })
+            // .populate('following', 'username')
+            // .populate('followers', 'username')
+            .select("-password");
+        if (!user)
+            return res.status(404).json({ errorMsg: "who are you?" });
+        return res.status(200).json(user);
+    }
+    catch (err) {
+        res.status(400).json(err);
+    }
+}));
 router.get("/home/:userId", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
@@ -75,12 +147,6 @@ router.get("/:userId", passport_1.default.authenticate("jwt", {
         const user = yield mongoose_1.User.findById(`${userId}`)
             // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
             .populate({
-<<<<<<< HEAD
-            path: 'posts',
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
-            options: { sort: { 'createdAt': -1 } },
-            populate: { path: 'userId', select: ['username', 'profilePicture'] },
-=======
             path: "posts",
             select: [
                 "content",
@@ -92,7 +158,6 @@ router.get("/:userId", passport_1.default.authenticate("jwt", {
             ],
             options: { sort: { createdAt: -1 } },
             populate: { path: "userId", select: ["username", "profilePicture"] },
->>>>>>> 96ac18214f8758f16bd18a298fb758aa3640fa85
         })
             //.populate('following', 'username')
             //.populate('followers', 'username')
@@ -119,17 +184,6 @@ router.put("/:userId", passport_1.default.authenticate("jwt", {
             biography !== "") {
             return res.status(400).json({ errprMsg: "Please send data" });
         }
-<<<<<<< HEAD
-        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
-            .populate({
-            path: 'posts',
-            select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt', 'multimedia'],
-            options: { sort: { 'createdAt': -1 } },
-            populate: { path: 'userId', select: ['username', 'profilePicture'] }
-        })
-            // .populate('following', 'username')
-            // .populate('followers', 'username')
-=======
         const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, {
             new: true,
         })
@@ -147,7 +201,6 @@ router.put("/:userId", passport_1.default.authenticate("jwt", {
         })
             .populate("following", "username")
             .populate("followers", "username")
->>>>>>> 96ac18214f8758f16bd18a298fb758aa3640fa85
             .select("-password");
         if (!user)
             return res.status(404).json({ errorMsg: "who are you?" });

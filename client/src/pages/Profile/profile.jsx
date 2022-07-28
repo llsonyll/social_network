@@ -15,6 +15,8 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
+import axios from "axios";
 
 const Profile = () => {
   const params = useParams();
@@ -29,6 +31,8 @@ const Profile = () => {
   );
   const userData = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
+  const [changeProfilePicture, setChangeProfilePicture] = useState('')
+  const hiddenImageInput = useRef()
 
   const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
     if (nameOfTheComponentToRender === "fullname") {
@@ -56,6 +60,29 @@ const Profile = () => {
     handleGetUserProfile();
     return () => dispatch(clearProfileData());
   }, [params.id]);
+
+  //COMIENZO DE FUNCION DE SUBIDAS DE FOTO DE PERFIL
+  const uploadPicture = async(file) =>{
+    let formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'h0tqwdio')
+    let res = await axios.post('https://api.cloudinary.com/v1_1/pischetz/image/upload', formData)
+    return res.data.secure_url
+  }
+
+
+
+  const handleChangePicture = () =>{
+    hiddenImageInput.current.click()
+  }
+
+  const handleChange = async (event) =>{
+    const fileUploaded = event.target.files[0]
+    let picture = await uploadPicture(fileUploaded)
+    console.log(picture)
+    setChangeProfilePicture(picture)
+  }
+
 
   function getTimeOfCreation(date) {
     let now = new Date().getTime();
@@ -88,6 +115,7 @@ const Profile = () => {
               likes={p.likes}
               content={p.content}
               profilePicture={p.userId.profilePicture}
+              multimedia={p.multimedia}
             />
           </Fragment>
         );
@@ -120,12 +148,16 @@ const Profile = () => {
               alt='Profile Picture'>
             </img> */}
                 {user?.profilePicture ? (
-                  <Avatar imgUrl={user.profilePicture} size="xxl" />
+                  <>
+                  <Avatar imgUrl={changeProfilePicture? changeProfilePicture: user.profilePicture} size="xxl" />
+                  <input type={'file'} ref={hiddenImageInput} onChange={handleChange} accept="image/*" style={{display:"none"}}/>
+                  {changeProfilePicture? <button className="z-40" type="button">Save</button> : null}
+                  </>
                 ) : (
                   <Avatar size="xxl" />
                 )}
                 {params.id === userLoggedId ? (
-                  <p id="Text">Change Photo</p>
+                  <p id="Text" onClick={handleChangePicture}>Change Photo</p>
                 ) : null}
               </div>
               <div className="shadow-box">

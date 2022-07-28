@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
 
 const ProfilePosts = (props) => {
-	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes } = props
+	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes, multimedia } = props
   
 	const { _id } = useSelector(state => state.auth.loggedUser);
   const dispatch = useDispatch();
@@ -55,9 +55,12 @@ const ProfilePosts = (props) => {
 						<div className=''>
 							{content
 								? content
-								: 'PRUEBA est ea anim magna culpa non fugiat reprehenderit. Do anim laboris Lorem pariatur mollit tempor cupidatat aliqua in do. Reprehenderit sit consectetur irure et velit.'}
+								: null}
 						</div>
-					
+						
+				</div>
+				<div>
+								{multimedia? <img src={multimedia} alt=''/> : null}
 				</div>
 				</Link>
 				<div className='actions flex gap-3 justify-end mt-2 md:mt-4 text-lg'>

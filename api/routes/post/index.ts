@@ -123,7 +123,7 @@ async (req:Request, res:Response) => {
     let userPost = await User.findById(`${userId}`)
     .populate({
         path: 'posts',
-        select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+        select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
         populate: { path: 'userId', select: ['username', 'profilePicture'] },
     })
     .populate('following', 'username')
@@ -181,7 +181,7 @@ async (req:Request, res:Response) => {
      .populate({
          path: 'posts',
          options: {sort: {'createdAt': -1 } },
-         select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+         select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
          populate: { path: 'userId', select: ['username', 'profilePicture'] },
      })
      .populate('following', 'username')

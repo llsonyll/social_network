@@ -128,7 +128,7 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
         let userPost = yield mongoose_1.User.findById(`${userId}`)
             .populate({
             path: 'posts',
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
             populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
             .populate('following', 'username')
@@ -176,7 +176,7 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             .populate({
             path: 'posts',
             options: { sort: { 'createdAt': -1 } },
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
             populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
             .populate('following', 'username')
