@@ -17,7 +17,7 @@ const mongoose_1 = require("../../mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const passport_1 = __importDefault(require("passport"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const nodemailer_1 = require("nodemailer");
+const nodemailer_1 = require("../../utils/nodemailer");
 let router = express_1.default.Router();
 //---------------function create Token--------------------
 const createToken = (user) => {
@@ -123,27 +123,10 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
         let { user } = req;
         if (user) {
             const send = user;
-            const transporter = (0, nodemailer_1.createTransport)({
-                service: "gmail",
-                auth: {
-                    user: "vavatyni@gmail.com",
-                    pass: "nlsbenyeedlvxfhb",
-                },
-            });
-            const output = `
-          <p>You have a new message from SN</p>
-          <h3>New User</h3>
-          <ul>  
-            <li>Register has been completed successfully</li>
-          </ul>
-          <h3>Message</h3>
-          <p>Usuario creado satisfactoriamente, procede a ingresar a nuestra plataforma <a href="https://finaldeploy-tau.vercel.app" target="_blank"> </a></p>
-        `;
-            const mailOptions = {
-                from: "Social Network <vavatyni@gmail.com>",
-                to: send.email,
-                subject: "Social Network registration",
-                html: output,
+            const mailInfo = {
+                title: "New User Registered",
+                subject: "Registration",
+                message: `<li>Register has been completed successfully</li>`,
             };
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
@@ -160,6 +143,8 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
                 token: createToken(user),
             });
             yield token.save();
+            const { message } = yield (0, nodemailer_1.sendMail)(mailInfo, send.email);
+            console.log(message);
             return res.status(200).json({
                 token: refreshToken(user, token._id.toString()),
                 username: send.username,
@@ -198,6 +183,23 @@ router.post("/login", passport_1.default.authenticate("local", {
             yield mongoose_1.Token.deleteOne({ email: send.email });
             let token = new mongoose_1.Token({
                 email: send.email,
+                token: createToken(user),
+            });
+            if (send.isPremium) {
+                const date = new Date();
+                if (send.expirationDate) {
+                    if (date > send.expirationDate) {
+                        const newUser = yield mongoose_1.User.findById(send._id);
+                        if (newUser) {
+                            newUser.isPremium = false;
+                            newUser.expirationDate = undefined;
+                            newUser.plan = undefined;
+                            yield newUser.save();
+                        }
+                    }
+                }
+            }
+            return res.status(200).json({
                 token: createToken(user),
             });
             yield token.save();
@@ -243,6 +245,17 @@ router.post("/", passport_1.default.authenticate("jwt", {
             return res.status(400).json("Invalid Token");
         }
         let { username, profilePicture, _id } = user;
+        if (user.isPremium) {
+            const date = new Date();
+            if (user.expirationDate) {
+                if (date > user.expirationDate) {
+                    user.isPremium = false;
+                    user.expirationDate = undefined;
+                    user.plan = undefined;
+                    yield user.save();
+                }
+            }
+        }
         return res
             .status(200)
             .json({ _id: _id.toString(), username, profilePicture });

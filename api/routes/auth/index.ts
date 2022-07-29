@@ -6,6 +6,7 @@ import passport from "passport";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 
 import { createTransport } from "nodemailer";
+import { mailInfo, sendMail } from "../../utils/nodemailer";
 
 let router = express.Router();
 
@@ -160,38 +161,22 @@ router.post(
       if (user) {
         const send: IUser = user as IUser;
 
-        const transporter = createTransport({
-          service: "gmail",
-          auth: {
-            user: "vavatyni@gmail.com",
-            pass: "nlsbenyeedlvxfhb",
-          },
-        });
-
-        const output = `
-          <p>You have a new message from SN</p>
-          <h3>New User</h3>
-          <ul>  
-            <li>Register has been completed successfully</li>
-          </ul>
-          <h3>Message</h3>
-          <p>Usuario creado satisfactoriamente, procede a ingresar a nuestra plataforma <a href="https://finaldeploy-tau.vercel.app" target="_blank"> </a></p>
-        `;
-
-        const mailOptions = {
-          from: "Social Network <vavatyni@gmail.com>",
-          to: send.email,
-          subject: "Social Network registration",
-          html: output,
+        const mailInfo: mailInfo = {
+          title: "New User Registered",
+          subject: "Registration",
+          message: `<li>Register has been completed successfully</li>`,
         };
+        
+        const { message } = await sendMail(mailInfo, send.email);
+        console.log(message);
 
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("Email sent: " + info.response);
-          }
-        });
+        // transporter.sendMail(mailOptions, function (error, info) {
+        //   if (error) {
+        //     console.log(error);
+        //   } else {
+        //     console.log("Email sent: " + info.response);
+        //   }
+        // });
         //--------------elimina susuario----------------------------
         await Token.deleteOne({ email: send.email });
 
@@ -246,10 +231,27 @@ router.post(
         //--------------elimina susuario----------------------------
         await Token.deleteOne({ email: send.email });
 
+       
         let token = new Token({
           email: send.email,
           token: createToken(user as IUser),
         });
+
+        if (send.isPremium) {
+          const date = new Date();
+          if (send.expirationDate) {
+            if (date > send.expirationDate) {
+              const newUser = await User.findById(send._id)
+              if (newUser) {
+                newUser.isPremium = false;
+                newUser.expirationDate = undefined;
+                newUser.plan = undefined;
+  
+                await newUser.save()
+              }
+            }
+          }
+        }
 
         await token.save();
 
@@ -305,13 +307,27 @@ router.post(
 
       let { email } = verifyToken;
 
-      const user: IUser | null = await User.findOne({ email: `${email}` });
+      const user: any= await User.findOne({ email: `${email}` });
 
       if (!user) {
         return res.status(400).json("Invalid Token");
       }
 
       let { username, profilePicture, _id } = user;
+
+      
+      if (user.isPremium) {
+        const date = new Date();
+        if (user.expirationDate) {
+          if (date > user.expirationDate) {
+            user.isPremium = false;
+            user.expirationDate = undefined;
+            user.plan = undefined;
+
+            await user.save()
+          }
+        }
+      }
 
       return res
         .status(200)

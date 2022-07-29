@@ -21,7 +21,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const axios_1 = __importDefault(require("axios"));
 const redirect = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
-    let res = yield axios_1.default.post("http://localhost:3001/auth/refresh", { refreshToken });
+    let res = yield axios_1.default.post(`${process.env.URL}/auth/refresh`, { refreshToken });
     return res.data;
 });
 //Auth configuration function

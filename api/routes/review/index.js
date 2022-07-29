@@ -42,7 +42,8 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
 }));
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userReviews = yield mongoose_1.Review.find({});
+        const userReviews = yield mongoose_1.Review.find({})
+            .populate('userId', ['firstname', 'lastname']);
         if (!userReviews.length)
             return res.json([]);
         return res.json(userReviews);
