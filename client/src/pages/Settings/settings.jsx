@@ -1,12 +1,14 @@
 import React,{useEffect} from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import './settings.css'
 import {useDispatch, useSelector} from 'react-redux'
 import { useState } from 'react'
 import {createNewReview, getAllReviewes, deleteReview, modifyReview} from '../../redux/actions/reviewAction'
+import { privacityChange } from '../../redux/actions/premiumAction'
 
 function settings() {
     const dispatch = useDispatch()
+    const navigate = useNavigate();
 
     const [review, setReview] = useState('')
     const [stars, setStars] = useState(5)
@@ -96,6 +98,11 @@ function settings() {
     }
     }
 
+    const handlePrivate = (e) => {
+        e.preventDefault();
+        dispatch(privacityChange(_id));
+        navigate(`/home/profile/${_id}`);
+    }
 
   return (
     <div className='settings-container'>
@@ -118,7 +125,7 @@ function settings() {
             <Link to={`/home/premium/${_id}`} className='buypremiumbutton'>
                 <button className='buypremiumbutton greenbutton'>Buy premium</button>
             </Link>
-            <button className='makeprivate greenbutton'>Make private</button>
+            <button className='makeprivate greenbutton' onClick={handlePrivate}>Make private</button>
             <div className='review boldtext' >Review the app</div>
             <div className='currentreviewtext'>Current review</div>
             {reviewRenderer()}
