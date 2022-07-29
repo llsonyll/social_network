@@ -36,6 +36,29 @@ const userHandler = (io, socket) => {
             console.log(err);
         }
     }));
+    socket.on('call', (_id, fromId) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            let user = yield mongoose_1.User.findById(_id);
+            if (user) {
+                io.to(`${user.socketId}`).emit('call', fromId);
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }));
+    socket.on('closeCall', (_id) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            let user = yield mongoose_1.User.findById(_id);
+            if (user) {
+                console.log('acallegoTranqui');
+                io.to(`${user.socketId}`).emit('closeCall');
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }));
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             let user = yield mongoose_1.User.findOne({ socketId: socket.id });
