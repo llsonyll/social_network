@@ -21,7 +21,10 @@ exports.userSchema = new mongoose_1.Schema({
     biography: String,
     review: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' },
     socketId: String,
-    chats: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Chat', required: true }]
+    chats: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Chat', required: true }],
+    paymentsId: [{ type: String, ref: 'Payment' }],
+    plan: { type: String, enum: ['weekly', 'monthly', 'yearly'] },
+    expirationDate: Date
 }, {
     versionKey: false
 });

@@ -21,7 +21,13 @@ import axios from "axios";
 import {AiFillCloseCircle} from 'react-icons/ai'
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
+//iconos
+import {AiFillSetting} from 'react-icons/ai'
+
+
 const Profile = () => {
+
+  
   const params = useParams();
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);

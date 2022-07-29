@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const passport_1 = __importDefault(require("passport"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const nodemailer_1 = require("../../utils/nodemailer");
 const router = express_1.default.Router();
 router.get("/browser/:username", passport_1.default.authenticate("jwt", {
     session: false,
@@ -168,6 +170,76 @@ router.get("/:userId", passport_1.default.authenticate("jwt", {
     }
     catch (err) {
         res.status(404).json({ errorMsg: err });
+    }
+}));
+// Recovery Password
+router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.body;
+        if (!email)
+            return res.status(400).json({ error: "Email not provided" });
+        const [user] = yield mongoose_1.User.find({ email: email });
+        if (!user)
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        const dummyPassword = "abcde12345";
+        const mailMessage = {
+            title: "Password Restored",
+            subject: "Password Restoration",
+            message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
+      <li>New Password: <strong>${dummyPassword}</strong></li>`,
+        };
+        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        console.log(message);
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(dummyPassword, salt);
+        user.password = hash;
+        yield user.save();
+        return res.status(200).json({
+            message: "Successfully user's password restored",
+        });
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
+router.put("/updatePassword", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { oldPassword, newPassword, userId } = req.body;
+        if (!oldPassword || !newPassword)
+            return res.status(400).json({ error: "Passwords should be provided" });
+        const user = yield mongoose_1.User.findById(userId);
+        if (!user)
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        const match = yield bcrypt_1.default.compare(oldPassword, user.password);
+        if (!match)
+            return res.status(400).json({
+                error: "Validation error on password you provided as current password",
+            });
+        const mailMessage = {
+            title: "Password Changed",
+            subject: "Password Update",
+            message: `<li>Your password has been changed successfully</li>`,
+        };
+        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(newPassword, salt);
+        user.password = hash;
+        yield user.save();
+        return res.status(200).json({
+            message: "User's password updated successfully",
+        });
+    }
+    catch (err) {
+        return res.status(400).json(err);
     }
 }));
 router.put("/:userId", passport_1.default.authenticate("jwt", {

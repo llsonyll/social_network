@@ -32,7 +32,6 @@ const arrayPrueba = [
     let {id, messages} = props
     
     
-    
     let messRef = useRef(null)
     useEffect(() => {
         if (messRef  !== null && messages.length > 0) {
