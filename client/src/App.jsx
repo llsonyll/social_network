@@ -68,40 +68,50 @@ function App() {
 	}
   },[loggedUser])
 
-
+  //'PRIMARY' USE EFFECT, LOGS THE USER IN AND CONTROL CALL AND ANSWER
   useEffect(() => {
     if(actualyLogged){
+		//CREATES A PEER AND GIVES THE USERID AS PEERID
 		peer = new Peer(actualyLogged)
+		//FUNCTION TO ACCESS TO CAMERA
 		const getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 		peer.on('open', function (id) { console.log( 'I got My peer ID:' + id, peer) })
+		//EMITS AN LOGGED ACTION
       	socket.emit('logged', actualyLogged, socket.id)
+		//DETECTS WHEN SOMEONE CALLS YOU
 		socket.on('call',(_id) => {
+					//DISPLAYS THE VIDEOCALL
 					setOnCall(true)
+					//GET CAMERA AND MIC DATA
 					getUserMedia(
 					{ video: true, audio: true }, function(stream){
+					//EXECUTE THE CALL
 					call = peer.call(_id, stream);
+					//DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
 					call.on('close', () => {
-						console.log('aca deberia apagar mi cam')
 						setOnCall(false)
 					})
+					//ON ANSWER SHOWS BOTH VIDEOS
 					call.on("stream", function(remoteStream){
 						setMyVideo(stream)
 						setOtherVideo(remoteStream)
-						// Show stream in some <video> element.
 					});
 				},
 				(err) => {
 					console.error("Failed to get local stream", err);
 				},)
 		})
+		//ANSWER THE CALL FUNCTION
 		peer.on("call", (calling) => {
+			//DISPLAYS
 			setOnCall(true)
-			console.log(onCall);
 			call = calling
+			//GET CAMERA AND MIC
 			getUserMedia(
 				{ video: true, audio: true },
 				(stream) => {
-					calling.answer(stream); // Answer the call with an A/V stream.
+					//ANSWERS CALL AND SHOWS BOTH MEDIAS
+					calling.answer(stream); 
 					setMyVideo(stream)
 					calling.on('close', () => {
 						setOnCall(false)
@@ -134,7 +144,7 @@ function App() {
     return (()=> socket.off('privMessage'))
   }, [location])
 
-
+  //SHOWS THE INCOMING VIDEO
   	useEffect(() => {
 		if(otherVideo){
 			remoteVideoRef.current.srcObject = otherVideo
@@ -142,6 +152,7 @@ function App() {
 		}
 	},[otherVideo])
 
+	//SHOWS LOCAL VIDEO AND LISTENS TO ENDING CALLS
 	useEffect(()=>{
 		if(myVideo){
 			localVideoRef.current.srcObject = myVideo
@@ -157,18 +168,20 @@ function App() {
 		return(() => socket.off('closeCall'))
 	},[myVideo])
 
+	//TURN OFF CAMERA AND MIC AND EMIT THE CLOSE CHAT ACTION
 	const handleCloseChat = () => {
-		// myVideo.getVideoTracks().forEach(track => track.enabled = !track.enabled)
 		myVideo.getVideoTracks().forEach(track => track.stop())
 		myVideo.getAudioTracks().forEach(track => track.stop())
 		socket.emit('closeCall', call.peer)
 		call.close()
 	}
 
+	//STOP-PLAY CAMERA 
 	const handleStopCamera = () => {
 		myVideo.getVideoTracks().forEach(track => track.enabled = !track.enabled)
 	}
 
+	//STOP-PLAY MIC
 	function handleMuteMic() {
 		myVideo.getAudioTracks().forEach(track => track.enabled = !track.enabled)
 	}
