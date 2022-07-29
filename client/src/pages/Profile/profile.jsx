@@ -16,7 +16,13 @@ import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
 import { Link } from "react-router-dom";
 
+//iconos
+import {AiFillSetting} from 'react-icons/ai'
+
+
 const Profile = () => {
+
+  
   const params = useParams();
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);
@@ -127,6 +133,14 @@ const Profile = () => {
                 {params.id === userLoggedId ? (
                   <p id="Text">Change Photo</p>
                 ) : null}
+
+              {params.id === userLoggedId && (
+                  <Link to='/home/settings'>
+                    <button>
+                      <AiFillSetting/>       
+                    </button>
+                  </Link>          
+                  ) }
               </div>
               <div className="shadow-box">
                 <div className="user_description">
