@@ -57,7 +57,7 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         res.json(error);
     }
 });
-//------------rute register-----------------------------
+//------------rute register----------------------------- 
 router.post("/register", middlewareNewUser, passport_1.default.authenticate("local", {
     session: false,
     failureRedirect: "/auth/login",
@@ -134,6 +134,30 @@ router.post("/login", passport_1.default.authenticate("local", {
     }
     catch (error) {
         res.json(error);
+    }
+}));
+//--------------------------------------login google-------------------------------------
+router.get("/loginGoogle", passport_1.default.authenticate('google', { session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        const send = user;
+        res.cookie("token", createToken(user));
+        return res.redirect("http://localhost:3000/home");
+    }
+    catch (err) {
+        res.status(400).json({ err: "todo salio mal" });
+    }
+}));
+//---------------------------facebook---------------------------------
+router.get("/loginFacebook", passport_1.default.authenticate('git', { scope: ['email'], session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        const send = user;
+        res.cookie("token", createToken(user));
+        return res.redirect("http://localhost:3000/home");
+    }
+    catch (err) {
+        res.status(400).json({ err: "todo salio mal" });
     }
 }));
 //------------------------route data user----------------------------------

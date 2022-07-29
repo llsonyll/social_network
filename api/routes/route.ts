@@ -5,6 +5,7 @@ import cors from "cors";
 import { Auth } from '../controllers/auth';
 import { User } from '../mongoose';
 import passport  from 'passport';
+import cookie from 'cookie-parser';
 import userRoute from './user/index';
 import reviewRoute from './review';
 import postRoute from './post';
@@ -34,6 +35,7 @@ const options: cors.CorsOptions = {
 server.use(cors(options));
 
 server.use(express.json());
+server.use(cookie())
 server.use(morgan("dev"));
 Auth(server,User);
 server.use(passport.initialize());

@@ -283,17 +283,18 @@ input[type="password"]::placeholder {
   justify-content: space-around;
   color: white;
 }
-.landing_container .input_container .social_buttons button {
-  display: block;
-  padding: 10px 13%;
-  margin: 0px 5px;
-  font-size: 23px;
-  background-color: rgba(255, 255, 255, 0.144);
-  transition: all 0.3s;
+.landing_container .input_container .social_buttons a{ 
+	display: block;
+	padding: 10px 13%;
+	margin: 0px 5px;
+	font-size: 23px;
+	border-radius: 6px;
+	background-color: rgba(255, 255, 255, 0.144);
+	transition: all .3s;
 }
-.landing_container .input_container .social_buttons button:hover {
-  transform: scale(0.98);
-  background-color: #2e2e2e98;
+.landing_container .input_container .social_buttons a:hover { 
+	transform: scale(.98);
+	background-color: #2e2e2e98;
 }
 
 /* review styles */
