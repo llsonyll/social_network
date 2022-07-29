@@ -86,3 +86,15 @@ background-repeat:repeat;
 .btn:active {
  background-color: #3f6b3d;
 }
+
+
+/* estilos scroll infinito */
+.infinite-scroll-component__outerdiv{
+  width: 100%;
+}
+
+.loading_spiner{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
