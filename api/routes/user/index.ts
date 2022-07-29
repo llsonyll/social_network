@@ -7,7 +7,7 @@ import { mailInfo, sendMail } from "../../utils/nodemailer";
 import { IUser } from "../../types";
 
 const router = express.Router();
-
+// GET "/browser/:username"
 router.get(
   "/browser/:username",
   passport.authenticate("jwt", {
@@ -34,8 +34,8 @@ router.get(
 		}
 	}
 )
-
-router.get(
+// GET '/home/:userId' - esta rompe la home
+/* router.get(
 	'/home/:userId',
 	passport.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }),
 	async (req: Request, res: Response) => {
@@ -65,8 +65,8 @@ router.get(
 			return res.status(404).json({ errorMsg: err })
 		}
 	}
-)
-
+) */
+// GET '/:userId'
 router.get(
 	'/:userId',
 	passport.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }),
@@ -93,7 +93,7 @@ router.get(
 		}
 	}
 )
-
+// PUT "/updatePassword"
 router.put(
   "/updatePassword",
   passport.authenticate("jwt", {
@@ -144,7 +144,7 @@ router.put(
     }
   }
 );
-
+// PUT '/:userId'
 router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     try{
         const {userId} = req.params
@@ -174,7 +174,7 @@ router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedir
     }
   }
 );
-
+// GET '/home/:userId'
 router.get(
   "/home/:userId",
   passport.authenticate("jwt", {
@@ -210,8 +210,8 @@ router.get(
     }
   }
 );
-
-router.get(
+// GET '/:userId' - esta repetida, pero esta no tiene multimedia
+/* router.get(
   "/:userId",
   passport.authenticate("jwt", {
     session: false,
@@ -246,9 +246,8 @@ router.get(
       res.status(404).json({ errorMsg: err });
     }
   }
-);
-
-// Recovery Password
+); */
+// POST "/restorePassword"
 router.post("/restorePassword", async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
@@ -286,9 +285,7 @@ router.post("/restorePassword", async (req: Request, res: Response) => {
     return res.status(400).json(err);
   }
 });
-
-
-
+// PUT '/:userId'
 /* 
 COMENTO ESTA PORQUE FRAN DIJO QUE PUEDE SER QUE ESTA SEA EL PROBLEMA, PORQUE ESTÁ DESACTUALIZADA, PERO NO LA BORRO POR SI SE ROMPE ALGO
 router.put(
@@ -340,7 +337,7 @@ router.put(
     }
   }
 ); */
-
+// PUT "/follow/:userId/:userIdFollowed"
 router.put(
   "/follow/:userId/:userIdFollowed",
   passport.authenticate("jwt", {
