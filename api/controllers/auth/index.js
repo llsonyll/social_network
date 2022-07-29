@@ -41,7 +41,7 @@ function Auth(app, userCollection) {
     passport_1.default.use(new passport_google_oauth20_1.default.Strategy({
         clientID: `${process.env.GOOGLE_CLIENT_ID}`,
         clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-        callbackURL: `${process.env.URL}/auth/loginGoogle`,
+        callbackURL: `${process.env.URL}auth/loginGoogle`,
         scope: ["email", "profile"],
     }, (accessToken, RefreshToken, profile, done) => __awaiter(this, void 0, void 0, function* () {
         try {

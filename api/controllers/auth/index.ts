@@ -29,7 +29,7 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
      passport.use(new GoogleStrategy.Strategy({
         clientID: `${process.env.GOOGLE_CLIENT_ID}`,
         clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-        callbackURL: `${process.env.URL}/auth/loginGoogle`,
+        callbackURL: `${process.env.URL}auth/loginGoogle`,
         scope:["email","profile"],
       },async(accessToken,RefreshToken,profile,done)=>{
          try {
