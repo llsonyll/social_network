@@ -8,7 +8,7 @@ export const createComment = (userId, postId, info) => async (dispatch) => {
       info
     );
 
-    // return dispatch(addPostDetail(data));
+    return dispatch(addPostDetail(data));
   } catch (error) {
     console.log(error);
   }
@@ -21,7 +21,7 @@ export const editComment = (userId, postId, commentId, info) => async (dispatch)
       info
     );
 
-    // return dispatch(addPostDetail(data));
+    return dispatch(addPostDetail(data));
   } catch (error) {
     console.log(error);
   }
@@ -34,7 +34,7 @@ export const deleteComment = (userId, postId, commentId, info) => async (dispatc
       info
     );
 
-    // return dispatch(addPostDetail(data));
+    return dispatch(addPostDetail(data));
   } catch (error) {
     console.log(error);
   }

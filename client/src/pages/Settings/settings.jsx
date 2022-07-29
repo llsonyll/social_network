@@ -5,11 +5,11 @@ import {useDispatch, useSelector} from 'react-redux'
 import { useState } from 'react'
 import {createNewReview, getAllReviewes, deleteReview, modifyReview} from '../../redux/actions/reviewAction'
 import {changePassword, getUserProfile} from '../../redux/actions/userActions'
-
+import { privacityChange } from '../../redux/actions/premiumAction'
 
 function settings() {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const [review, setReview] = useState('')
     const [stars, setStars] = useState(5)
@@ -117,6 +117,11 @@ function settings() {
 
    
 
+    const handlePrivate = (e) => {
+        e.preventDefault();
+        dispatch(privacityChange(_id));
+        navigate(`/home/profile/${_id}`);
+    }
 
   return (
     <div className='settings-container'>
