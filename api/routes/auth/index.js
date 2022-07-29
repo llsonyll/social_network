@@ -142,7 +142,7 @@ router.get("/loginGoogle", passport_1.default.authenticate('google', { session: 
         const user = req.user;
         const send = user;
         res.cookie("token", createToken(user));
-        return res.redirect("http://localhost:3000/home");
+        return res.redirect(`${process.env.URL_FRONT}`);
     }
     catch (err) {
         res.status(400).json({ err: "todo salio mal" });
@@ -154,7 +154,7 @@ router.get("/loginFacebook", passport_1.default.authenticate('git', { scope: ['e
         const user = req.user;
         const send = user;
         res.cookie("token", createToken(user));
-        return res.redirect("http://localhost:3000/home");
+        return res.redirect(`${process.env.URL_FRONT}`);
     }
     catch (err) {
         res.status(400).json({ err: "todo salio mal" });

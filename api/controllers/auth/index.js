@@ -19,7 +19,6 @@ const passport_jwt_1 = __importDefault(require("passport-jwt"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const passport_google_oauth20_1 = __importDefault(require("passport-google-oauth20"));
 const passport_facebook_1 = __importDefault(require("passport-facebook"));
-const URLCALLBACK = process.env.URLCALLBACK || 'http://localhost:3001';
 //Auth configuration function
 function Auth(app, userCollection) {
     //Local strategy for authentication
@@ -42,7 +41,7 @@ function Auth(app, userCollection) {
     passport_1.default.use(new passport_google_oauth20_1.default.Strategy({
         clientID: `${process.env.GOOGLE_CLIENT_ID}`,
         clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-        callbackURL: `${URLCALLBACK}/auth/loginGoogle`,
+        callbackURL: `${process.env.URL}/auth/loginGoogle`,
         scope: ["email", "profile"],
     }, (accessToken, RefreshToken, profile, done) => __awaiter(this, void 0, void 0, function* () {
         try {
@@ -74,15 +73,13 @@ function Auth(app, userCollection) {
     passport_1.default.use("facebook", new passport_facebook_1.default.Strategy({
         clientID: `${process.env.FACEBOOK_APP_ID}`,
         clientSecret: `${process.env.FACEBOOK_APP_SECRET}`,
-        callbackURL: `${process.env.FACEBOOK_CALLBACK}`,
+        callbackURL: `${process.env.URL}/auth/loginFacebook`,
         profileFields: ['email', 'id', "name", 'displayName', 'photos'],
     }, (accessToken, RefreshToken, profile, done) => __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log(profile);
             let { _json } = profile;
             let user = yield userCollection.findOne({ email: `${_json.email}` });
             let { url } = _json.picture.data;
-            console.log(url);
             if (!user) {
                 let salt = yield bcrypt_1.default.genSalt(10);
                 let hash = yield bcrypt_1.default.hash(`${profile.id}`, salt);
@@ -115,13 +112,6 @@ function Auth(app, userCollection) {
     //Tryes to read the user from the token, or auth fails 
     (token, done) => __awaiter(this, void 0, void 0, function* () {
         try {
-            let expiredToken = new Date(token.exp * 1000);
-            if (expiredToken < new Date()) {
-                return done(null, false);
-            }
-            if (!token.user) {
-                return done(null, token);
-            }
             done(null, token.user);
         }
         catch (err) {

@@ -172,7 +172,7 @@ async(req:Request,res:Response)=>{
 				const send: IUser = user as IUser;
 
 				res.cookie("token",createToken(user as IUser));
-		    return res.redirect(`${process.env.URL_FRONT}/home`);
+		    return res.redirect(`${process.env.URL_FRONT}`);
 		} catch (err) {
 			 res.status(400).json({err:"todo salio mal"});
 		}
@@ -187,7 +187,7 @@ async(req:Request,res:Response)=>{
 				const send: IUser = user as IUser;
 
 				res.cookie("token",createToken(user as IUser));
-		    return res.redirect(`${process.env.URL_FRONT}/home`);
+		    return res.redirect(`${process.env.URL_FRONT}`);
 		} catch (err) {
 			 res.status(400).json({err:"todo salio mal"});
 		}
