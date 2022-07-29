@@ -108,7 +108,20 @@ router.get(
   }
 );
 
-// Recovery Password
+router.put("/:userId",async(req:Request,res:Response)=>{
+     try {
+      let userId = req.params.userId;
+      
+      let userDeleted = await User.findOneAndDelete({_id: `${userId}`});
+
+      if(!userDeleted){return res.status(400).json("rror deleting user")}
+      
+      return res.status(200).json(userDeleted);
+     } catch (err) {
+        res.json(err);
+     }
+});
+
 router.post("/restorePassword", async (req: Request, res: Response) => {
   try {
     const { email } = req.body;

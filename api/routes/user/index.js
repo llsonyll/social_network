@@ -68,6 +68,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
         return res.status(404).json({ errorMsg: err });
     }
 }));
+//user id
 router.get("/:userId", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
@@ -98,6 +99,19 @@ router.get("/:userId", passport_1.default.authenticate("jwt", {
     }
     catch (err) {
         res.status(404).json({ errorMsg: err });
+    }
+}));
+router.put("/:userId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userId = req.params.userId;
+        let userDeleted = yield mongoose_1.User.findOneAndDelete({ _id: `${userId}` });
+        if (!userDeleted) {
+            return res.status(400).json("rror deleting user");
+        }
+        return res.status(200).json(userDeleted);
+    }
+    catch (err) {
+        res.json(err);
     }
 }));
 // Recovery Password
