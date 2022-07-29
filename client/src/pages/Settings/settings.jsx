@@ -24,12 +24,12 @@ function settings() {
 
     
 
-    const _id = useSelector(state => state.auth.loggedUser._id)
-    const userData = useSelector((state) => state.user.userProfileData);
+    // const _id = useSelector(state => state.auth.loggedUser._id)
+    // const userData = useSelector((state) => state.user.userProfileData);
 
 
    // const arrOfReviews = useSelector(state => state.review.allreviewes)
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
 
     const handleSendReview =(e) => {
