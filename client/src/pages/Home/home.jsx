@@ -12,19 +12,25 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import LoadingSpinner from "../../components/LoadingSpinner";
 
 const Home = () => {
-  let homePosts = useSelector((state) => state.user.homePostsData);
+  let {homePostsData , control} = useSelector((state) => state.user);
+  const homePosts = homePostsData;
   const userId = useSelector((state) => state.auth.loggedUser._id);
   const dispatch = useDispatch();
   let page = 0;
+  let pages = '';
 
-  const [hasMore, setHasMore] = useState(0)
   useEffect(() => {
     userId ? dispatch(getHomePosts(userId, parseInt(page))) : null;
+
   }, [userId]);
+  
+
   useEffect(() => {
-    setHasMore(homePosts.length % 20)
-    console.log(hasMore);
+
+    pages = homePosts[homePosts.length - 1] 
+
   }, [homePosts])
+  
   const handlePage = () => {
     page === 0 ? (page = 1) : null;
     if (homePosts.length === page * 20) {
@@ -32,8 +38,8 @@ const Home = () => {
       // console.log("hay q traer mas posts")
       dispatch(getHomePosts(userId, parseInt(page)));
       page++;
+      console.log(control);
     }
-    
 
   };
   return (
@@ -52,7 +58,7 @@ const Home = () => {
           <FriendPostTile className="friends" tile={tile} key={tile.postId} />
         ))} */}
       </div>
-      <InfiniteScroll dataLength={homePosts.length} hasMore={true} next={handlePage} loader={<LoadingSpinner/>}>
+      <InfiniteScroll dataLength={homePosts.length} hasMore={control} next={handlePage} loader={<LoadingSpinner/>}>
           <div className="flex-1 flex flex-col gap-5 h-full">
             {
               homePosts.length > 0
