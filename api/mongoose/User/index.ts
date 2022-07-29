@@ -13,6 +13,7 @@ export let userSchema = new Schema<IUser>({
     posts: [{type: Schema.Types.ObjectId, ref: 'Post', required:true}],
     following: [{type: Schema.Types.ObjectId, ref: 'User', required:true}],
     followers: [{type: Schema.Types.ObjectId, ref: 'User', required: true}],
+    followRequest: [{type: Schema.Types.ObjectId, ref: 'User', required: true}],
     isAdmin: {type:Boolean, default:false, required:true},
     isPremium: {type:Boolean, default:false, required:true},
     isPrivate: {type: Boolean, default:false, required:true},

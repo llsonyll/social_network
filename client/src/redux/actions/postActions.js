@@ -18,7 +18,7 @@ export const getPost = (postId) => async (dispatch) => {
 
 export const createPost = (content, userId, path) => async (dispatch) => {
   try {
-    const { data } = await apiConnection.post(`post/${userId}`, { content });
+    const { data } = await apiConnection.post(`post/${userId}`,  content );
 
     if (path === "/home") {
       return dispatch(addNewPost(data));

@@ -39,7 +39,8 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
 router.get('/', async (req: Request, res: Response) => {
 
     try{
-        const userReviews = await Review.find({});
+        const userReviews = await Review.find({})
+        .populate('userId', ['firstname', 'lastname'])
 
         if(!userReviews.length) return res.json([]);
 

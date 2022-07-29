@@ -11,6 +11,7 @@ export interface IUser {
    posts: Types.Array<Types.ObjectId>;
    following: Types.Array<Types.ObjectId>;
    followers: Types.Array<Types.ObjectId>;
+   followRequest?: Types.Array<Types.ObjectId>;
    isAdmin: boolean;
    isPrivate: boolean;
    isPremium: boolean;
@@ -28,11 +29,12 @@ export interface IUser {
 export interface IPost{
    _id: Types.ObjectId;
    userId: Types.ObjectId;
-   content: string;
+   content?: string;
    commentsId: Types.Array<Types.ObjectId>;
    likes: Types.Array<Types.ObjectId>;
    dislikes: Types.Array<Types.ObjectId>;
-   createdAt: Date
+   createdAt: Date;
+   multimedia?: string;
 }
 
 export  interface IComments {
@@ -65,6 +67,14 @@ export interface IMessage {
    content: string;
 }
 
+export interface IReport {
+   _id: Types.ObjectId;
+   userId: Types.ObjectId;
+   postReportedId?: Types.ObjectId;
+   commentReportedId?: Types.ObjectId;
+   userReportedId?: Types.ObjectId;
+   reason: string;
+}
 
 export interface IPayment {
    _id: Types.ObjectId;
