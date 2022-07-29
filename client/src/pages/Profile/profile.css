@@ -256,7 +256,6 @@
 	margin-top: 15px;
 }
 
-<<<<<<< HEAD
 
 /* button change photo */
 
@@ -287,10 +286,9 @@
 }
 .button_changephoto_cancel:hover{ 
 	color: rgb(134, 60, 60);
-	
-=======
+}
 /* /settings icono */
-.img-container button{
+/* .img-container button{
 	position: absolute;
 	color: #8e8e8e;
 	top: 5px;
@@ -301,5 +299,4 @@
 .img-container button:hover{
 	transform: scale(1.2);
 	color: #666666;
->>>>>>> 1fe346f6efc6ecb0fbad5fb57eb4d619878e90c1
-}
+} */

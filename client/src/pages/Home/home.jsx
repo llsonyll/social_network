@@ -58,38 +58,6 @@ const Home = () => {
           <FriendPostTile className="friends" tile={tile} key={tile.postId} />
         ))} */}
       </div>
-<<<<<<< HEAD
-      <div className="flex-1 flex flex-col gap-5 h-full">
-        {
-          homePosts.length > 0
-            ? homePosts.map((p) => {
-                return (
-                  <HomePostCard
-                    key={p._id}
-                    postId={p._id}
-                    content={p.content}
-                    multimedia={p.multimedia}
-                    date={p.createdAt}
-                    likes={p.likes}
-                    dislikes={p.dislikes}
-                    commentsId={p.commentsId}
-                    userId={p.userId._id}
-                    username={p.userId.username}
-                    page = {page}
-                    profilePicture = {p.userId.profilePicture}
-                  />
-                );
-              })
-            : null //que devuelva mensaje o componente de que no hay posts
-        }
-
-        {homePosts.length === 20 ? (
-          <button className="btn" onClick={handlePage}>
-            VIEW MORE POSTS &#43;
-          </button>
-        ) : null}
-      </div>
-=======
       <InfiniteScroll dataLength={homePosts.length} hasMore={control} next={handlePage} loader={<LoadingSpinner/>}>
           <div className="flex-1 flex flex-col gap-5 h-full">
             {
@@ -102,6 +70,7 @@ const Home = () => {
                         content={p.content}
                         date={p.createdAt}
                         likes={p.likes}
+                        multimedia={p.multimedia}
                         dislikes={p.dislikes}
                         commentsId={p.commentsId}
                         userId={p.userId._id}
@@ -115,7 +84,6 @@ const Home = () => {
             }
           </div>
       </InfiniteScroll>
->>>>>>> 1fe346f6efc6ecb0fbad5fb57eb4d619878e90c1
     </div>
   );
 };
