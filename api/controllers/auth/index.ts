@@ -11,7 +11,8 @@ import axios from "axios";
 import { finished } from "nodemailer/lib/xoauth2";
 
 const redirect = async(refreshToken: any)=>{
-    let res = await axios.post("http://localhost:3001/auth/refresh",{refreshToken});
+    let res = await axios.post(`${process.env.URL}/auth/refresh`,{refreshToken});
+    return res.data;
 };
 
 //Auth configuration function
@@ -59,11 +60,11 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
             }catch(err:any){
                 if(err.message === 'jwt expired'){
                     await redirect(refreshtoken);
-
+                     
                     let token: any = await Token.findOne({email: refreshtoken.email});
-
+                      
                     token = jwt.verify(token.token,`${process.env.SECRET_TEST}`);
-
+                    
                     return done(null, token.user);
                 }else{
                     return done(null,false);

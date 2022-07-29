@@ -33,8 +33,8 @@ const options = {
     preflightContinue: false,
 };
 server.use((0, cors_1.default)(options));
-server.use((0, cookie_parser_1.default)());
 server.use(express_1.default.json());
+server.use((0, cookie_parser_1.default)());
 server.use((0, morgan_1.default)("dev"));
 (0, auth_1.Auth)(server, mongoose_1.User);
 server.use(passport_1.default.initialize());

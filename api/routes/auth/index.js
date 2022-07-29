@@ -22,19 +22,14 @@ let router = express_1.default.Router();
 //---------------function create Token--------------------
 const createToken = (user) => {
     return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`, {
-        expiresIn: 60 * 1,
+        expiresIn: 60 * 15,
     });
 };
 //---------------function create Token--------------------
 const refreshToken = (user, _idToken) => {
     //solo guarda email
     return jsonwebtoken_1.default.sign({ email: user.email, userTokenId: _idToken }, `${process.env.SECRET_REFRESH}`, {
-        expiresIn: 60 * 22 //"1d",
-    });
-};
-const cookie = (res) => {
-    res.cookie("token", "holamundo", {
-        httpOnly: true,
+        expiresIn: "1d",
     });
 };
 //---------------middleware new User-----------------------------
@@ -106,14 +101,13 @@ router.post("/refresh", (req, res) => __awaiter(void 0, void 0, void 0, function
         //---------------le resta 20 minutos a la actua ------------------------------
         let difference = new Date().getTime();
         difference = new Date(difference - 60 * 20000);
+        //---------------------cada 24 horas ------------------------------------------
+        let cookie = " ";
         if (new Date(currentRefreshToken.exp * 1000) > difference) {
-            // return res.("token", `hola`,{
-            //    httpOnly: true
-            // });
-            cookie(res);
+            cookie = refreshToken(user, tokenUser._id.toString());
         }
         ;
-        return res.status(200).json({ tokenUser });
+        return res.status(200).json();
     }
     catch (err) {
         return res.json(err);

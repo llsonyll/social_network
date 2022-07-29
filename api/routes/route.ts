@@ -32,8 +32,8 @@ const options: cors.CorsOptions = {
 
 server.use(cors(options));
 
-server.use(cookie());
 server.use(express.json());
+server.use(cookie());
 server.use(morgan("dev"));
 Auth(server,User);
 server.use(passport.initialize());
