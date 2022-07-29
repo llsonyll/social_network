@@ -288,7 +288,7 @@
 	color: rgb(134, 60, 60);
 }
 /* /settings icono */
-/* .img-container button{
+.img-container .settingButton{
 	position: absolute;
 	color: #8e8e8e;
 	top: 5px;
@@ -296,7 +296,7 @@
 	font-size: 25px;
 	transition: .2s all;
 }
-.img-container button:hover{
+.img-container .settingButton:hover{
 	transform: scale(1.2);
 	color: #666666;
-} */
+}
