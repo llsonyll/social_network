@@ -104,6 +104,8 @@ const Profile = () => {
   const followRenderer = () => {
     return usersFollowing.includes(userLoggedId) ? (
       <Fragment key={Math.random()}>Unfollow</Fragment>
+    ) : user.followRequest.includes(userLoggedId) ? (
+      <Fragment key={Math.random()}>Pending</Fragment>
     ) : (
       <Fragment key={Math.random()}>Follow</Fragment>
     );

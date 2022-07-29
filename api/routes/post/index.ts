@@ -128,6 +128,7 @@ async (req:Request, res:Response) => {
     })
     .populate('following', 'username')
     .populate('followers', 'username')
+    .populate('followRequest', 'username')
     .select('-password')
       
      let dislikes = !post.likes? [] : post.likes;
@@ -186,6 +187,7 @@ async (req:Request, res:Response) => {
      })
      .populate('following', 'username')
      .populate('followers', 'username')
+     .populate('followRequest', 'username')
      .select('-password')
        
       let likes = !post.likes? [] : post.likes;

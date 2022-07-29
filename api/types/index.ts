@@ -11,6 +11,7 @@ export interface IUser {
    posts: Types.Array<Types.ObjectId>;
    following: Types.Array<Types.ObjectId>;
    followers: Types.Array<Types.ObjectId>;
+   followRequest?: Types.Array<Types.ObjectId>;
    isAdmin: boolean;
    isPrivate: boolean;
    isPremium: boolean;
