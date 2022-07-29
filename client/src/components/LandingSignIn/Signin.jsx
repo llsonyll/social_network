@@ -1,10 +1,9 @@
 import React from "react";
-import cookie from "js-cookie";
 
 // Icons
 import { BsGoogle } from "react-icons/bs";
 import { AiFillFacebook } from "react-icons/ai";
-//import { AiOutlineTwitter } from "react-icons/ai";
+import { AiOutlineTwitter } from "react-icons/ai";
 
 // Components
 import { Link } from "react-router-dom";
@@ -16,14 +15,6 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loginAction } from "../../redux/actions/authActions";
 
-
-if(cookie.get("token")){
-	console.log(cookie.get("token"));
-	localStorage.setItem("token",cookie.get("token"))
-	cookie.remove("token");
-};
-
-//const Signin = () => {
 const Signin = ({ setForm }) => {
   const [input, setInput] = useState({
     email: "",
@@ -168,15 +159,15 @@ const Signin = ({ setForm }) => {
           <div className="line"></div>
         </div>
         <div className="social_buttons">
-        <a href='http://localhost:3001/auth/loginGoogle'>
-						  <BsGoogle/>
-					  </a>
-						<a href='http://localhost:3001/auth/loginFacebook'>
-							<AiFillFacebook/>
-						</a>
-						{/* <a href='http://localhost:3001/auth/loginGithub'>
-							<AiOutlineTwitter/>
-						</a> */}
+          <button>
+            <BsGoogle />
+          </button>
+          <button>
+            <AiFillFacebook />
+          </button>
+          <button>
+            <AiOutlineTwitter />
+          </button>
         </div>
       </div>
     </form>

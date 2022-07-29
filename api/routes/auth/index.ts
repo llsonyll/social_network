@@ -66,7 +66,7 @@ const middlewareNewUser = async (
   }
 };
 
-//------------rute register----------------------------- 
+//------------rute register-----------------------------
 router.post(
   "/register",
   middlewareNewUser,

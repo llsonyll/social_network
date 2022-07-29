@@ -57,7 +57,7 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         res.json(error);
     }
 });
-//------------rute register----------------------------- 
+//------------rute register-----------------------------
 router.post("/register", middlewareNewUser, passport_1.default.authenticate("local", {
     session: false,
     failureRedirect: "/auth/login",
