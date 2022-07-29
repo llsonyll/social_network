@@ -128,7 +128,7 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
         let userPost = yield mongoose_1.User.findById(`${userId}`)
             .populate({
             path: 'posts',
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
             populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
             .populate('following', 'username')
@@ -177,7 +177,7 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             .populate({
             path: 'posts',
             options: { sort: { 'createdAt': -1 } },
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
             populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
             .populate('following', 'username')
@@ -193,13 +193,16 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
 }));
 router.post('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
-    const { content } = req.body;
+    const { content, multimedia } = req.body;
     try {
         const user = yield mongoose_1.User.findById(`${userId}`);
-        if (!user || !content)
-            return res.status(404).json({ msg: 'idk' });
+        if (!user)
+            return res.status(404).json({ msg: 'No user found' });
+        if (!content && !multimedia)
+            return res.status(404).json({ msg: 'Please send something' });
         const newPost = new mongoose_1.Post({
             content,
+            multimedia,
             userId: user._id
         });
         yield newPost.save();

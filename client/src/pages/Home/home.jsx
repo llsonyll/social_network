@@ -70,6 +70,7 @@ const Home = () => {
                         content={p.content}
                         date={p.createdAt}
                         likes={p.likes}
+                        multimedia={p.multimedia}
                         dislikes={p.dislikes}
                         commentsId={p.commentsId}
                         userId={p.userId._id}
