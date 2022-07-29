@@ -255,4 +255,16 @@
 	margin-top: 15px;
 }
 
-
+/* /settings icono */
+.img-container button{
+	position: absolute;
+	color: #8e8e8e;
+	top: 5px;
+	right: 5px;
+	font-size: 25px;
+	transition: .2s all;
+}
+.img-container button:hover{
+	transform: scale(1.2);
+	color: #666666;
+}
