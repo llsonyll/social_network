@@ -9,12 +9,17 @@ import ProfilePosts from "../../components/ProfilePostsRenderer";
 import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { getUserProfile } from "../../redux/actions/userActions";
+import { getUserProfile, modifyUser } from "../../redux/actions/userActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
+import axios from "axios";
+
+import {AiFillCloseCircle} from 'react-icons/ai'
+import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
 //iconos
 import {AiFillSetting} from 'react-icons/ai'
@@ -35,6 +40,8 @@ const Profile = () => {
   );
   const userData = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
+  const [changeProfilePicture, setChangeProfilePicture] = useState('')
+  const hiddenImageInput = useRef()
 
   const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
     if (nameOfTheComponentToRender === "fullname") {
@@ -62,6 +69,37 @@ const Profile = () => {
     handleGetUserProfile();
     return () => dispatch(clearProfileData());
   }, [params.id]);
+
+  //COMIENZO DE FUNCION DE SUBIDAS DE FOTO DE PERFIL
+  const uploadPicture = async(file) =>{
+    let formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'h0tqwdio')
+    let res = await axios.post('https://api.cloudinary.com/v1_1/pischetz/image/upload', formData)
+    return res.data.secure_url
+  }
+
+  const handleChangePicture = () =>{
+    hiddenImageInput.current.click()
+  }
+
+  const handleChange = async (event) =>{
+    const fileUploaded = event.target.files[0]
+    let picture = await uploadPicture(fileUploaded)
+    console.log(picture)
+    setChangeProfilePicture(picture)
+  }
+
+  const cancelChangePicture = () => {
+    setChangeProfilePicture('')
+  }
+
+  const handleSavePicture = () => {
+    dispatch(modifyUser(userLoggedId, {profilePicture: changeProfilePicture}))
+    dispatch(getLoggedUserInfo())
+    setChangeProfilePicture('')
+  }
+
 
   function getTimeOfCreation(date) {
     let now = new Date().getTime();
@@ -94,6 +132,7 @@ const Profile = () => {
               likes={p.likes}
               content={p.content}
               profilePicture={p.userId.profilePicture}
+              multimedia={p.multimedia}
             />
           </Fragment>
         );
@@ -127,22 +166,44 @@ const Profile = () => {
               src='https://japanpowered.com/media/images//goku.png'
               alt='Profile Picture'>
             </img> */}
-                {user?.profilePicture ? (
-                  <Avatar imgUrl={user.profilePicture} size="xxl" />
-                ) : (
-                  <Avatar size="xxl" />
-                )}
-                {params.id === userLoggedId ? (
-                  <p id="Text">Change Photo</p>
-                ) : null}
-
-              {params.id === userLoggedId && (
-                  <Link to='/home/settings'>
-                    <button>
+                <div className="imgChange_container">
+                    {user?.profilePicture ? (
+                      <>
+                      <Avatar imgUrl={changeProfilePicture? changeProfilePicture: user.profilePicture} size="xxl" />
+                      <input type={'file'} ref={hiddenImageInput} onChange={handleChange} accept="image/*" style={{display:"none"}}/>
+                      {changeProfilePicture 
+                      ? 
+                      <button className=" button_changephoto" 
+                      onClick={handleSavePicture}
+                      type="button">
+                        Save &#10004;
+                      </button>
+                      : 
+                      null}
+                      {changeProfilePicture 
+                      ? 
+                      <button className=" button_changephoto_cancel" 
+                      type="button"
+                      onClick={cancelChangePicture}>
+                      <AiFillCloseCircle/>
+                      </button>
+                      : 
+                      null}
+                      </>
+                    ) : (
+                      <Avatar size="xxl" />
+                    )}
+                    {params.id === userLoggedId ? (
+                      <p id="Text" onClick={handleChangePicture}>Change Photo</p>
+                    ) : null}
+                </div>
+                    {params.id === userLoggedId && (
+                    <Link to='/home/settings'>
+                    <button className="settingButton">
                       <AiFillSetting/>       
                     </button>
-                  </Link>          
-                  ) }
+                    </Link>          
+                    ) }
               </div>
               <div className="shadow-box">
                 <div className="user_description">

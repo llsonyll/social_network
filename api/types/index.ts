@@ -29,11 +29,12 @@ export interface IUser {
 export interface IPost{
    _id: Types.ObjectId;
    userId: Types.ObjectId;
-   content: string;
+   content?: string;
    commentsId: Types.Array<Types.ObjectId>;
    likes: Types.Array<Types.ObjectId>;
    dislikes: Types.Array<Types.ObjectId>;
-   createdAt: Date
+   createdAt: Date;
+   multimedia?: string;
 }
 
 export  interface IComments {

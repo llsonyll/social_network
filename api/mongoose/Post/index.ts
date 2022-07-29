@@ -30,7 +30,8 @@ export let postSchema = new Schema<IPost>({
 			ref: 'User',
 		},
 	],
-	content: {type: String, required: true}
+	content: {type: String},
+	multimedia: String
 }, {
 	timestamps: {
 		createdAt: true,
