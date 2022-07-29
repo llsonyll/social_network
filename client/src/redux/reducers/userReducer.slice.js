@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 const initialState = {
   userProfileData: {},
   homePostsData: [],
+  control: true
 };
 
 const userReducer = createSlice({
@@ -18,6 +19,9 @@ const userReducer = createSlice({
         state.homePostsData = state.homePostsData.concat(action.payload);
       } else {
         state.homePostsData = action.payload;
+      }
+      if (action.payload.length === 0) {
+        state.control = false
       }
     },
     addNewPost(state, action) {
