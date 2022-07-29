@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoggedUserInfo } from "./redux/actions/authActions";
 import { removeLoggedUser } from "./redux/reducers/authReducer.slice";
-
+import Draggable from 'react-draggable'
 //IMPORTS PARA SOCKET IO
 import io from 'socket.io-client';
 import { addMessage } from "./redux/reducers/chatReducer";
@@ -25,7 +25,9 @@ import { useRef } from "react";
 import { createElement } from "react";
 import { useState } from "react";
 
-
+//iconos
+import {FiPhoneMissed} from 'react-icons/fi'
+import {AiOutlineAudioMuted} from 'react-icons/ai'
 function App() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -35,7 +37,7 @@ function App() {
   const localVideoRef = useRef()
   const [myVideo, setMyVideo] = useState()
   const [otherVideo, setOtherVideo] = useState()
-
+	const [onCall, setOnCall] = useState(false)
   const handleCanPlayRemote = () => {
     remoteVideoRef.current.play();
   }
@@ -71,7 +73,8 @@ function App() {
 		console.log(peer)
       	socket.emit('logged', loggedUser._id, socket.id)
 		socket.on('call',(_id) => {
-			
+					setOnCall(true)
+					console.log(onCall);
 					getUserMedia(
 					{ video: true, audio: true }, function(stream){
 					console.log(stream)
@@ -88,6 +91,8 @@ function App() {
 				},)
 		})
 		peer.on("call", (call) => {
+				setOnCall(true)
+				console.log(onCall);
 			console.log(peer.id)
 			console.log('algo')
 			getUserMedia(
@@ -143,10 +148,25 @@ function App() {
 
 	return (
 			<>
-			<div>
-				<video ref={remoteVideoRef} autoPlay muted/>
-				<video ref={localVideoRef}  autoPlay muted/>
-			</div>
+			
+			{
+				onCall ?
+			<Draggable bounds='parent'>
+				<div id="video_container">
+					<div className="user_videos_container">
+					<video ref={remoteVideoRef} autoPlay muted/>
+					<video ref={localVideoRef}  autoPlay muted/>
+
+					</div>
+					<div className="buttons_video_container">
+						<button> <FiPhoneMissed/> </button>
+						<button><AiOutlineAudioMuted/>  </button>
+					</div>
+				</div>
+			</Draggable> : null
+
+			}	
+			
 			<Routes>
 				<Route path='/' element={<Landing />} />
 				<Route path='/home' element={<DashBoard />}>

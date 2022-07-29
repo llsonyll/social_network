@@ -1,3 +1,59 @@
 body {
   background-color: #2e2e2e;
 }
+
+#video_container{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  border: 1px solid #4e864c;
+  bottom: 30px;
+  left: 200px;
+  background-color: rgba(0, 0, 0, 0.63);
+  border-radius: 5px;
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
+  cursor: move;
+  padding: 10px;
+  overflow: hidden;
+}
+.user_videos_container{
+  width: auto;
+  display: flex;
+  justify-content: center;
+}
+ .buttons_video_container{
+  width: 100%;
+  text-align: center;
+  
+}
+
+.buttons_video_container button {
+  margin: 0px 10px;
+  border-radius: 5px;
+  padding: 5px 20px;
+  transition: .3s all;
+}
+
+.buttons_video_container button:hover {
+  color: white;
+  background-color: #727272;
+}
+.buttons_video_container button:nth-child(1){
+    background-color: rgb(185, 74, 74);
+}
+
+
+.buttons_video_container button:nth-child(2){
+background-color: #4e864c;
+  
+}
+
+video{
+  width: 50%;
+  margin: 10px;
+  z-index: 1;
+
+}
