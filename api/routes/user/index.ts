@@ -95,9 +95,9 @@ router.get(
 router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     try{
         const {userId} = req.params
-        const {username, firstname, lastname, biography } = req.body
+        const {username, firstname, lastname, biography, profilePicture } = req.body
         
-        if(!username && !firstname && !lastname && (!biography && biography !== '')){
+        if(!username && !firstname && !lastname && (!biography && biography !== '') && !profilePicture){
             return res.status(400).json({errprMsg: 'Please send data'})
         }
 

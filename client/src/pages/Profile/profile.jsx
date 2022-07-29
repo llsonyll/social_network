@@ -9,7 +9,7 @@ import ProfilePosts from "../../components/ProfilePostsRenderer";
 import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { getUserProfile } from "../../redux/actions/userActions";
+import { getUserProfile, modifyUser } from "../../redux/actions/userActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
@@ -19,6 +19,7 @@ import { useRef } from "react";
 import axios from "axios";
 
 import {AiFillCloseCircle} from 'react-icons/ai'
+import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
 const Profile = () => {
   const params = useParams();
@@ -72,8 +73,6 @@ const Profile = () => {
     return res.data.secure_url
   }
 
-
-
   const handleChangePicture = () =>{
     hiddenImageInput.current.click()
   }
@@ -83,6 +82,16 @@ const Profile = () => {
     let picture = await uploadPicture(fileUploaded)
     console.log(picture)
     setChangeProfilePicture(picture)
+  }
+
+  const cancelChangePicture = () => {
+    setChangeProfilePicture('')
+  }
+
+  const handleSavePicture = () => {
+    dispatch(modifyUser(userLoggedId, {profilePicture: changeProfilePicture}))
+    dispatch(getLoggedUserInfo())
+    setChangeProfilePicture('')
   }
 
 
@@ -157,6 +166,7 @@ const Profile = () => {
                       {changeProfilePicture 
                       ? 
                       <button className=" button_changephoto" 
+                      onClick={handleSavePicture}
                       type="button">
                         Save &#10004;
                       </button>
@@ -165,7 +175,8 @@ const Profile = () => {
                       {changeProfilePicture 
                       ? 
                       <button className=" button_changephoto_cancel" 
-                      type="button">
+                      type="button"
+                      onClick={cancelChangePicture}>
                       <AiFillCloseCircle/>
                       </button>
                       : 
