@@ -22,21 +22,20 @@ router.get(
       const users = await User.find(
         { username: new RegExp(`^${username}`, "i") },
         { username: 1, _id: 1, profilePicture: 1 }
-        ).limit(4);
-        
-        if (!Object.values(users).length) {
+      ).limit(4);
+
+      if (!Object.values(users).length) {
         return res.status(400).json({ err: "User not fount" });
       }
 
 			return res.status(200).json(users)
 		} catch (err) {
-      res.status(400).json(err)
+			res.status(400).json(err)
 		}
 	}
-  )
+)
 
-  
-  router.get(
+router.get(
 	'/home/:userId',
 	passport.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }),
 	async (req: Request, res: Response) => {
@@ -94,56 +93,7 @@ router.get(
 		}
 	}
 )
-router.put(
-  "/updatePassword",
-  passport.authenticate("jwt", {
-    session: false,
-    failureRedirect: "/auth/loginjwt",
-  }),
-  async (req: Request, res: Response) => {
-    try {
-      const { oldPassword, newPassword, userId } = req.body;
-      if (!oldPassword || !newPassword)
-        return res.status(400).json({ error: "Passwords should be provided" });
 
-      const user = await User.findById(userId);
-
-      if (!user)
-        return res.status(400).json({
-          error: "Email provided does not belong to any registered user",
-        });
-
-      const match = await bcrypt.compare(oldPassword, user.password);
-
-      if (!match)
-        return res.status(400).json({
-          error:
-            "Validation error on password you provided as current password",
-        });
-
-      const mailMessage: mailInfo = {
-        title: "Password Changed",
-        subject: "Password Update",
-        message: `<li>Your password has been changed successfully</li>`,
-      };
-
-      const { message } = await sendMail(mailMessage, user.email);
-
-      //password encryption
-      let salt = await bcrypt.genSalt(10);
-      let hash = await bcrypt.hash(newPassword, salt);
-
-      user.password = hash;
-      await user.save();
-
-      return res.status(200).json({
-        message: "User's password updated successfully",
-      });
-    } catch (err) {
-      return res.status(400).json(err);
-    }
-  }
-);
 
 router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     try{
@@ -287,6 +237,56 @@ router.post("/restorePassword", async (req: Request, res: Response) => {
   }
 });
 
+router.put(
+  "/updatePassword",
+  passport.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+  }),
+  async (req: Request, res: Response) => {
+    try {
+      const { oldPassword, newPassword, userId } = req.body;
+      if (!oldPassword || !newPassword)
+        return res.status(400).json({ error: "Passwords should be provided" });
+
+      const user = await User.findById(userId);
+
+      if (!user)
+        return res.status(400).json({
+          error: "Email provided does not belong to any registered user",
+        });
+
+      const match = await bcrypt.compare(oldPassword, user.password);
+
+      if (!match)
+        return res.status(400).json({
+          error:
+            "Validation error on password you provided as current password",
+        });
+
+      const mailMessage: mailInfo = {
+        title: "Password Changed",
+        subject: "Password Update",
+        message: `<li>Your password has been changed successfully</li>`,
+      };
+
+      const { message } = await sendMail(mailMessage, user.email);
+
+      //password encryption
+      let salt = await bcrypt.genSalt(10);
+      let hash = await bcrypt.hash(newPassword, salt);
+
+      user.password = hash;
+      await user.save();
+
+      return res.status(200).json({
+        message: "User's password updated successfully",
+      });
+    } catch (err) {
+      return res.status(400).json(err);
+    }
+  }
+);
 
 router.put(
   "/:userId",
@@ -298,20 +298,20 @@ router.put(
     try {
       const { userId } = req.params;
       const { username, firstname, lastname, biography } = req.body;
-      
+
       if (
         !username &&
         !firstname &&
         !lastname &&
         !biography &&
         biography !== ""
-        ) {
-          return res.status(400).json({ errprMsg: "Please send data" });
-        }
-        
-        const user = await User.findByIdAndUpdate(`${userId}`, req.body, {
-          new: true,
-        })
+      ) {
+        return res.status(400).json({ errprMsg: "Please send data" });
+      }
+
+      const user = await User.findByIdAndUpdate(`${userId}`, req.body, {
+        new: true,
+      })
         .populate({
           path: "posts",
           select: [
@@ -409,4 +409,3 @@ router.put(
 );
 
 export default router;
-
