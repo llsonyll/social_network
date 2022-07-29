@@ -78,6 +78,7 @@ const Landing = () => {
         <PasswordRecovery goBack={() => setForm("Sign in")} />
       ) : (
         <>
+        
           <div className="wrap_toggle">
             <input id="toggle" type="checkbox" onClick={handleChangeCheck} />
             <label className="switch" htmlFor="toggle"></label>
@@ -96,7 +97,7 @@ const Landing = () => {
             </div>
           </div>
 
-      {/* Componente de Sign in / Register  */}
+    
       <div className="form">
         <div className="buttons_container">
           <button
@@ -123,9 +124,10 @@ const Landing = () => {
         {form === "Sign in" ? <Signin setForm={setForm}/> : <Register />}
       </div>
             { arrOfReviews.length > 0 ?  showReviews() :null }
-
-    </div>
-  );
-};
+            </>
+  )}
+  </div>
+  )
+}
 
 export default Landing;
