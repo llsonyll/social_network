@@ -4,8 +4,9 @@ import jwtStrategy from 'passport-jwt';
 import bcrypt from 'bcrypt';
 import mongoose from "mongoose";
 import express from 'express';
-import {IUser} from '../../types'
-
+import {IUser} from '../../types';
+import  GoogleStrategy from "passport-google-oauth20";
+import FacebookStrategy from "passport-facebook"; 
 //Auth configuration function
 export function Auth(app: express.Application, userCollection: mongoose.Model<IUser>){
 
@@ -23,6 +24,70 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
             })
         }
     ))
+
+     //google strategy
+     passport.use(new GoogleStrategy.Strategy({
+        clientID: `${process.env.GOOGLE_CLIENT_ID}`,
+        clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+        callbackURL: `${process.env.URL}/auth/loginGoogle`,
+        scope:["email","profile"],
+      },async(accessToken,RefreshToken,profile,done)=>{
+         try {
+            let{  _json }  = profile;
+            let user: any = await userCollection.findOne({email: `${_json.email}`});    
+            if(!user){
+               let salt = await bcrypt.genSalt(10);
+               let hash = await bcrypt.hash(`${profile.id}`, salt);     
+            let newUser: any  = new userCollection({
+                lastname: _json.family_name,
+                firstname: _json.given_name,
+                username: _json.given_name,
+                email: _json.email,
+                password: hash,
+                profilePicture: _json.picture
+            });
+            await newUser.save();
+            return done(null,newUser);
+            }else{
+               return done(null,user);     
+            }
+         } catch (err) {
+            return done(null,false);
+        }
+    }));
+
+    //facebook strategy
+    passport.use("facebook",new FacebookStrategy.Strategy({
+        clientID: `${process.env.FACEBOOK_APP_ID}`,
+        clientSecret: `${process.env.FACEBOOK_APP_SECRET}`,
+        callbackURL: `${process.env.URL}/auth/loginFacebook`,
+        profileFields: ['email','id', "name",'displayName', 'photos'],
+      },async(accessToken,RefreshToken,profile,done)=>{
+        try {
+           let{  _json }  = profile;
+           let user: any = await userCollection.findOne({email: `${_json.email}`});  
+           let {url} = _json.picture.data;
+
+           if(!user){
+              let salt = await bcrypt.genSalt(10);
+              let hash = await bcrypt.hash(`${profile.id}`, salt);     
+           let newUser: any  = new userCollection({
+               lastname: _json.last_name,
+               firstname: _json.first_name,
+               username: _json.first_name,
+               email: _json.email,
+               password: hash,
+               profilePicture: url,
+           });
+           await newUser.save();
+           return done(null,newUser);
+           }else{
+              return done(null,user);     
+           }
+        } catch (err) {
+           return done(null,false);
+       }
+   }));
 
     //JasonWebToken strategy for auth
     passport.use('jwt', new jwtStrategy.Strategy(
