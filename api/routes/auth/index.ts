@@ -179,7 +179,7 @@ async(req:Request,res:Response)=>{
 				const send: IUser = user as IUser;
 
 				res.cookie("token",createToken(user as IUser));
-		    return res.redirect("http://localhost:3000/home");
+		    return res.redirect(`${process.env.URL_FRONT}/home`);
 		} catch (err) {
 			 res.status(400).json({err:"todo salio mal"});
 		}
@@ -194,7 +194,7 @@ async(req:Request,res:Response)=>{
 				const send: IUser = user as IUser;
 
 				res.cookie("token",createToken(user as IUser));
-		    return res.redirect("http://localhost:3000/home");
+		    return res.redirect(`${process.env.URL_FRONT}/home`);
 		} catch (err) {
 			 res.status(400).json({err:"todo salio mal"});
 		}

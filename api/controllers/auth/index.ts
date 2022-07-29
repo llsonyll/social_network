@@ -8,8 +8,6 @@ import {IUser} from '../../types'
 import  GoogleStrategy from "passport-google-oauth20";
 import FacebookStrategy from "passport-facebook"; 
  
-const URLCALLBACK = process.env.URLCALLBACK || 'http://localhost:3001'
-
 //Auth configuration function
 export function Auth(app: express.Application, userCollection: mongoose.Model<IUser>){
 
@@ -32,7 +30,7 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
     passport.use(new GoogleStrategy.Strategy({
         clientID: `${process.env.GOOGLE_CLIENT_ID}`,
         clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
-        callbackURL: `${URLCALLBACK}/auth/loginGoogle`,
+        callbackURL: `${process.env.URL}/auth/loginGoogle`,
         scope:["email","profile"],
       },async(accessToken,RefreshToken,profile,done)=>{
          try {
@@ -63,15 +61,14 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
     passport.use("facebook",new FacebookStrategy.Strategy({
         clientID: `${process.env.FACEBOOK_APP_ID}`,
         clientSecret: `${process.env.FACEBOOK_APP_SECRET}`,
-        callbackURL: `${process.env.FACEBOOK_CALLBACK}`,
+        callbackURL: `${process.env.URL}/auth/loginFacebook`,
         profileFields: ['email','id', "name",'displayName', 'photos'],
       },async(accessToken,RefreshToken,profile,done)=>{
         try {
-            console.log(profile);
            let{  _json }  = profile;
            let user: any = await userCollection.findOne({email: `${_json.email}`});  
            let {url} = _json.picture.data;
-           console.log(url);  
+
            if(!user){
               let salt = await bcrypt.genSalt(10);
               let hash = await bcrypt.hash(`${profile.id}`, salt);     
