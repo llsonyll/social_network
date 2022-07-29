@@ -133,6 +133,7 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
         })
             .populate('following', 'username')
             .populate('followers', 'username')
+            .populate('followRequest', 'username')
             .select('-password');
         let dislikes = !post.likes ? [] : post.likes;
         return res.status(200).json({ dislikes, userPost });
@@ -181,6 +182,7 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
         })
             .populate('following', 'username')
             .populate('followers', 'username')
+            .populate('followRequest', 'username')
             .select('-password');
         let likes = !post.likes ? [] : post.likes;
         return res.status(200).json({ likes, userPost });
