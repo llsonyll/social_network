@@ -7,12 +7,14 @@ export interface ServerToClientEvents {
     noArg: () => void;
     privMessage: (content: String, _id:Types.ObjectId, chatId:Types.ObjectId) => void;
     call: (_id:Types.ObjectId) => void
+    closeCall: () => void;
   }
   
 export interface ClientToServerEvents {
     logged: (_id: Types.ObjectId, socketId: string) => void;
     privMessage: (content:string, toId:Types.ObjectId,fromId: Types.ObjectId,  chatId:Types.ObjectId) => void;
     call: (toId:Types.ObjectId, fromId: Types.ObjectId ) => void;
+    closeCall: (_id: Types.ObjectId) => void
 }
   
 export interface InterServerEvents {
@@ -56,9 +58,20 @@ const userHandler = (io: Server<ClientToServerEvents, ServerToClientEvents, Inte
     socket.on('call', async(_id, fromId) => {
         try{
             let user = await User.findById(_id)
-            console.log('llega la call')
             if(user){
                 io.to(`${user.socketId}`).emit('call', fromId)
+            }
+        }catch(err){
+            console.log(err)
+        }
+    })
+    
+    socket.on('closeCall', async (_id) => {
+        try{
+            let user = await User.findById(_id)
+            if(user){
+                console.log('acallegoTranqui')
+                io.to(`${user.socketId}`).emit('closeCall')
             }
         }catch(err){
             console.log(err)

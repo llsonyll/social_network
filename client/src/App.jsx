@@ -30,7 +30,7 @@ import { useState } from "react";
 
 //iconos
 import {FiPhoneMissed} from 'react-icons/fi'
-import {AiOutlineAudioMuted} from 'react-icons/ai'
+import {AiOutlineAudioMuted, AiOutlineVideoCamera} from 'react-icons/ai'
 function App() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -74,22 +74,18 @@ function App() {
 		peer = new Peer(actualyLogged)
 		const getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 		peer.on('open', function (id) { console.log( 'I got My peer ID:' + id, peer) })
-		console.log(peer)
       	socket.emit('logged', actualyLogged, socket.id)
 		socket.on('call',(_id) => {
 					setOnCall(true)
 					getUserMedia(
 					{ video: true, audio: true }, function(stream){
 					call = peer.call(_id, stream);
-					console.log(call)
-					setMyVideo(stream)
 					call.on('close', () => {
-						console.log('me cerraron unu 2')
-						setMyVideo('')
+						console.log('aca deberia apagar mi cam')
 						setOnCall(false)
-						call.close()
 					})
 					call.on("stream", function(remoteStream){
+						setMyVideo(stream)
 						setOtherVideo(remoteStream)
 						// Show stream in some <video> element.
 					});
@@ -108,9 +104,7 @@ function App() {
 					calling.answer(stream); // Answer the call with an A/V stream.
 					setMyVideo(stream)
 					calling.on('close', () => {
-						setMyVideo('')
 						setOnCall(false)
-						calling.close()
 					})
 					calling.on("stream", (remoteStream) => {
 						setOtherVideo(remoteStream)
@@ -152,19 +146,27 @@ function App() {
 		if(myVideo){
 			localVideoRef.current.srcObject = myVideo
 			localVideoRef.current.onloadedmetadata = function(e) {localVideoRef.current.play()}
+			socket.on('closeCall', () => {
+				console.log('aaaa?')
+				console.log(myVideo, otherVideo)
+				myVideo.getVideoTracks().forEach(track => track.stop())
+				myVideo.getAudioTracks().forEach(track => track.stop())
+				call.close()
+			})
 		}
-		console.log('holaaaa')
+		return(() => socket.off('closeCall'))
 	},[myVideo])
 
 	const handleCloseChat = () => {
 		// myVideo.getVideoTracks().forEach(track => track.enabled = !track.enabled)
 		myVideo.getVideoTracks().forEach(track => track.stop())
 		myVideo.getAudioTracks().forEach(track => track.stop())
+		socket.emit('closeCall', call.peer)
+		call.close()
 	}
 
 	const handleStopCamera = () => {
 		myVideo.getVideoTracks().forEach(track => track.enabled = !track.enabled)
-
 	}
 
 	function handleMuteMic() {
@@ -185,6 +187,7 @@ function App() {
 					</div>
 					<div className="buttons_video_container">
 						<button onClick={handleCloseChat}> <FiPhoneMissed/> </button>
+						<button onClick={handleStopCamera}> <AiOutlineVideoCamera/></button>
 						<button onClick={handleMuteMic}><AiOutlineAudioMuted />  </button>
 					</div>
 				</div>

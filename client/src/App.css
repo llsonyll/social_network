@@ -48,7 +48,10 @@ body {
 
 .buttons_video_container button:nth-child(2){
 background-color: #4e864c;
-  
+}
+
+.buttons_video_container button:nth-child(3){
+  background-color: #4e864c;
 }
 
 video{

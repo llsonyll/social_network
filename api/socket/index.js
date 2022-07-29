@@ -39,9 +39,20 @@ const userHandler = (io, socket) => {
     socket.on('call', (_id, fromId) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             let user = yield mongoose_1.User.findById(_id);
-            console.log('llega la call');
             if (user) {
                 io.to(`${user.socketId}`).emit('call', fromId);
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }));
+    socket.on('closeCall', (_id) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            let user = yield mongoose_1.User.findById(_id);
+            if (user) {
+                console.log('acallegoTranqui');
+                io.to(`${user.socketId}`).emit('closeCall');
             }
         }
         catch (err) {
