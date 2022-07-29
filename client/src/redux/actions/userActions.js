@@ -84,17 +84,17 @@ export const restorePassword = async (email) => {
   }
 };
 
-// export const changePassword = (current, newPassword, userId) => async (dispatch) => {
-//   try {
-//     const { message, error } = await apiConnection.put(`user/updatePassword`, {
-//       oldPassword: current,
-//       newPassword: newPassword,
-//       userId: userId,
-//     });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
+export const changePassword = (current, newPassword, userId) => async (dispatch) => {
+  try {
+    const { message, error } = await apiConnection.put(`user/updatePassword`, {
+      oldPassword: current,
+      newPassword: newPassword,
+      userId: userId,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 export const followOrUnfollowUser = (userId, followUserId) => async (dispatch) => {
   //recibe Id del usuario y luego id del usuario a seguir por params
