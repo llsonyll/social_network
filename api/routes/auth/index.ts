@@ -66,7 +66,7 @@ const middlewareNewUser = async (
   }
 };
 
-//------------rute register----------------------------- 
+//------------rute register-----------------------------
 router.post(
   "/register",
   middlewareNewUser,
@@ -162,36 +162,6 @@ router.post(
     }
   }
 );
-
-//--------------------------------------login google-------------------------------------
-router.get("/loginGoogle",passport.authenticate('google',{session: false,failureRedirect: "/auth/loginjwt" }),
-async(req:Request,res:Response)=>{
-    try {
-			const user: any = req.user;
-
-				const send: IUser = user as IUser;
-
-				res.cookie("token",createToken(user as IUser));
-		    return res.redirect(`${process.env.URL_FRONT}/home`);
-		} catch (err) {
-			 res.status(400).json({err:"todo salio mal"});
-		}
-});
-
-//---------------------------facebook---------------------------------
-router.get("/loginFacebook",passport.authenticate('git',{scope:['email'],session: false,failureRedirect: "/auth/loginjwt" }),
-async(req:Request,res:Response)=>{
-    try {
-			const user: any = req.user;
-
-				const send: IUser = user as IUser;
-
-				res.cookie("token",createToken(user as IUser));
-		    return res.redirect(`${process.env.URL_FRONT}/home`);
-		} catch (err) {
-			 res.status(400).json({err:"todo salio mal"});
-		}
-});
 
 //------------------------route data user----------------------------------
 router.post(
