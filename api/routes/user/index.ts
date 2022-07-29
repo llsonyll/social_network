@@ -236,6 +236,7 @@ router.put(
         })
         .populate("following", "username")
         .populate("followers", "username")
+        .populate('followRequest', 'username')
         .select("-password");
 
       if (!user) return res.status(404).json({ errorMsg: "who are you?" });
@@ -286,6 +287,22 @@ router.put(
           },
           { new: true }
         );
+      } else if (userFollowed.isPrivate) {
+        if (userFollowed.followRequest.includes(user._id)) {
+          await User.updateOne(
+            { _id: userFollowed._id },
+            {
+              $pull: {
+                followRequest: user._id
+              }
+            },
+            { new: true }
+          )
+        } else {
+          userFollowed.followRequest.push(user._id);
+        }
+
+        await userFollowed.save()
       } else {
         user.following.push(userFollowed._id);
         await user.save();
