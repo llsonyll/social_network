@@ -18,6 +18,8 @@ import { Link } from "react-router-dom";
 import { useRef } from "react";
 import axios from "axios";
 
+import {AiFillCloseCircle} from 'react-icons/ai'
+
 const Profile = () => {
   const params = useParams();
   const [firstname, setFirstname] = useState(false);
@@ -147,18 +149,36 @@ const Profile = () => {
               src='https://japanpowered.com/media/images//goku.png'
               alt='Profile Picture'>
             </img> */}
-                {user?.profilePicture ? (
-                  <>
-                  <Avatar imgUrl={changeProfilePicture? changeProfilePicture: user.profilePicture} size="xxl" />
-                  <input type={'file'} ref={hiddenImageInput} onChange={handleChange} accept="image/*" style={{display:"none"}}/>
-                  {changeProfilePicture? <button className="z-40" type="button">Save</button> : null}
-                  </>
-                ) : (
-                  <Avatar size="xxl" />
-                )}
-                {params.id === userLoggedId ? (
-                  <p id="Text" onClick={handleChangePicture}>Change Photo</p>
-                ) : null}
+                <div className="imgChange_container">
+                    {user?.profilePicture ? (
+                      <>
+                      <Avatar imgUrl={changeProfilePicture? changeProfilePicture: user.profilePicture} size="xxl" />
+                      <input type={'file'} ref={hiddenImageInput} onChange={handleChange} accept="image/*" style={{display:"none"}}/>
+                      {changeProfilePicture 
+                      ? 
+                      <button className=" button_changephoto" 
+                      type="button">
+                        Save &#10004;
+                      </button>
+                      : 
+                      null}
+                      {changeProfilePicture 
+                      ? 
+                      <button className=" button_changephoto_cancel" 
+                      type="button">
+                      <AiFillCloseCircle/>
+                      </button>
+                      : 
+                      null}
+                      </>
+                    ) : (
+                      <Avatar size="xxl" />
+                    )}
+                    {params.id === userLoggedId ? (
+                      <p id="Text" onClick={handleChangePicture}>Change Photo</p>
+                    ) : null}
+                    
+                </div>
               </div>
               <div className="shadow-box">
                 <div className="user_description">
