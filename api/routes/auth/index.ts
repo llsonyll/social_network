@@ -15,22 +15,28 @@ const createToken = (user: IUser) => {
     { user: { id: user._id, email: user.email } },
     `${process.env.SECRET_TEST}`,
     {
-      expiresIn: 60 * 60 * 15
+      expiresIn: 60 * 1 ,
     }
   );
 };
 
 //---------------function create Token--------------------
-const refreshToken = ( user: IUser, _idToken:any ) => {
- //solo guarda email
+const refreshToken = (user: IUser, _idToken: string) => {
+  //solo guarda email
   return jwt.sign(
-     { email: user.email, userTokenId: _idToken},
-    `${process.env.SECRET_REFRESH}`,{
-      expiresIn: 60 * 60 * 60 * 24 
+    { email: user.email, userTokenId: _idToken },
+    `${process.env.SECRET_REFRESH}`,
+    {
+      expiresIn: 60 * 22//"1d",
     }
   );
 };
 
+const cookie = (res:Response) => {
+    res.cookie("token","holamundo",{
+      httpOnly:true,
+    })
+};
 
 //---------------middleware new User-----------------------------
 const middlewareNewUser = async (
@@ -80,62 +86,67 @@ const middlewareNewUser = async (
   }
 };
 
-router.get("/logOuterr",(req:Request,res:Response)=>{
-    res.status(400).json("fallo logOut");
+router.get("/logOuterr", (req: Request, res: Response) => {
+  res.status(400).json("fallo logOut");
 });
 
 //----------------------log up -----------------------------------------------
-router.put("/logOut",
-passport.authenticate("jwt", {
-  session: false,
-  failureRedirect: "/auth/logOuterr",
-}),
-async(req:Request,res:Response) => {
+router.put(
+  "/logOut",
+  passport.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/logOuterr",
+  }),
+  async (req: Request, res: Response) => {
     try {
-      let {user}: any = req;
-      if(!user){return res.status(400).json("user required")}
-      await Token.deleteOne({email: user.email});
-      return res.json({})
+      let { user }: any = req;
+      if (!user) {
+        return res.status(400).json("user required");
+      }
+      await Token.deleteOne({ email: user.email });
+      return res.json({});
     } catch (err) {
       res.json(err);
     }
-});
-
-//---------------------------refresh Token---------------------------------------------
-router.post("/refresh",async(req:Request, res:Response) => {
-   try {
-    const authorization: string[] | undefined =
-    req.headers.authorization?.split(" ");
-
-  if (
-    !authorization ||
-    authorization.length !== 2 ||
-    authorization[0].toLocaleLowerCase() !== "bearer"
-  ) {
-    return res.status(400).json("no token");
   }
-
-  let refreshToken: any = authorization[1];
-    
-  refreshToken = jwt.verify(refreshToken,`${process.env.SECRET_REFRESH}`);
-
-  let tokenUser = await Token.findOne({email: refreshToken.email});
-
-  if(!tokenUser){return res.status(400).json("token not exist")};
-
-  let user = await User.findOne({email: refreshToken.email});
-   
-  if(!user){return res.status(400).json("user not register")};
+  );
   
-    return res.status(200).json({
-      token: refreshToken(user as IUser),
-      username: user.username,
-      _id: user._id,
-      profilePicture: user.profilePicture,
-  });  
-   } catch (err) {
-      return res.json(err);
-   }
+//---------------------------refresh Token---------------------------------------------
+router.post("/refresh", async (req: Request, res: Response) => {
+  try {
+  
+    let currentRefreshToken = req.body.refreshToken;
+
+    let user = await User.findOne({ email: currentRefreshToken.email });
+
+    if (!user) {
+      return res.status(400).json("user not register");
+    }
+
+    let tokenUser = await Token.findOneAndUpdate(
+      { email: currentRefreshToken.email },
+      { token: createToken(user as IUser) },
+      {new: true}
+    ); //actualiza user
+    
+    if (!tokenUser) {
+      return res.status(400).json("token not exist");
+    }
+    
+    //---------------le resta 20 minutos a la actua ------------------------------
+    let difference: any = new Date().getTime();
+    difference = new Date(difference - 60 * 20000);
+    
+    if(new Date(currentRefreshToken.exp*1000) > difference) {
+      // return res.("token", `hola`,{
+      //    httpOnly: true
+      // });
+      cookie(res);
+    };
+    return res.status(200).json({tokenUser});
+  } catch (err) {
+    return res.json(err);
+  }
 });
 
 //------------rute register-----------------------------
@@ -187,17 +198,17 @@ router.post(
           }
         });
         //--------------elimina susuario----------------------------
-        await Token.deleteOne({email: send.email});
+        await Token.deleteOne({ email: send.email });
 
         let token = new Token({
-            email: send.email,
-            token: createToken(user as IUser)
-           })
-        
-         await token.save();
-      
-         return res.status(200).json({
-          token: refreshToken(user as IUser,token._id),
+          email: send.email,
+          token: createToken(user as IUser),
+        });
+
+        await token.save();
+
+        return res.status(200).json({
+          token: refreshToken(user as IUser, token._id.toString()),
           username: send.username,
           _id: send._id,
           profilePicture: send.profilePicture,
@@ -238,17 +249,17 @@ router.post(
         const send: IUser = user as IUser;
 
         //--------------elimina susuario----------------------------
-        await Token.deleteOne({email: send.email});
+        await Token.deleteOne({ email: send.email });
 
         let token = new Token({
-            email: send.email,
-            token: createToken(user as IUser)
-           })
-        
-         await token.save();
+          email: send.email,
+          token: createToken(user as IUser),
+        });
 
-         let refreshtoken = refreshToken(user as IUser,token._id)
+        await token.save();
 
+        let refreshtoken = refreshToken(user as IUser, token._id.toString());
+        console.log(token._id);
         return res.status(200).json({
           token: refreshtoken,
           username: send.username,
@@ -290,24 +301,26 @@ router.post(
       //------------------------decode token-----------------------------------
       let verifyToken: any = jwt.verify(
         `${token}`,
-        `${process.env.SECRET_TEST}`
+        `${process.env.SECRET_REFRESH}`
       );
 
-      if (!verifyToken || !verifyToken.user) {
+      if (!verifyToken || !verifyToken.email) {
         res.status(401).json("Invalid Token");
       }
 
-      let { id } = verifyToken.user;
+      let { email } = verifyToken;
 
-      const user: IUser | null = await User.findById(`${id}`);
+      const user: IUser | null = await User.findOne({ email: `${email}` });
 
       if (!user) {
         return res.status(400).json("Invalid Token");
       }
 
-      let { username, profilePicture } = user;
+      let { username, profilePicture, _id } = user;
 
-      return res.status(200).json({ _id: id, username, profilePicture });
+      return res
+        .status(200)
+        .json({ _id: _id.toString(), username, profilePicture });
     } catch (err) {
       return res.status(400).json(err);
     }

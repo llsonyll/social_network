@@ -10,7 +10,8 @@ import reviewRoute from './review';
 import postRoute from './post';
 import commentRoute from './comment';
 import morgan from "morgan";
-import chatRoute from './chat'
+import chatRoute from './chat';
+import cookie from "cookie-parser";
 
 const server = express();
 
@@ -31,6 +32,7 @@ const options: cors.CorsOptions = {
 
 server.use(cors(options));
 
+server.use(cookie());
 server.use(express.json());
 server.use(morgan("dev"));
 Auth(server,User);

@@ -19,6 +19,10 @@ const passport_local_1 = __importDefault(require("passport-local"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const axios_1 = __importDefault(require("axios"));
+const redirect = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
+    let res = yield axios_1.default.post("http://localhost:3001/auth/refresh", { refreshToken });
+});
 //Auth configuration function
 function Auth(app, userCollection) {
     //Local strategy for authentication
@@ -47,8 +51,13 @@ function Auth(app, userCollection) {
     //Tryes to read the user from the token, or auth fails 
     (refreshtoken, done) => __awaiter(this, void 0, void 0, function* () {
         try {
+            let expiredRefreshT = new Date(refreshtoken.exp * 1000);
+            if (expiredRefreshT < new Date()) {
+                throw new Error("logueate de nuevo!!!");
+            }
+            ;
             let token = yield index_1.Token.findOne({ email: refreshtoken.email });
-            if (!token || refreshtoken.userTokenId !== token._id.toString()) {
+            if (!token || !(refreshtoken.userTokenId === token._id.toString())) {
                 return done(null, false);
             }
             ;
@@ -56,7 +65,15 @@ function Auth(app, userCollection) {
             return done(null, token.user);
         }
         catch (err) {
-            return done(err);
+            if (err.message === 'jwt expired') {
+                yield redirect(refreshtoken);
+                let token = yield index_1.Token.findOne({ email: refreshtoken.email });
+                token = jsonwebtoken_1.default.verify(token.token, `${process.env.SECRET_TEST}`);
+                return done(null, token.user);
+            }
+            else {
+                return done(null, false);
+            }
         }
     })));
 }

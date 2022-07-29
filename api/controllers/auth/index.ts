@@ -6,15 +6,20 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import express from 'express';
-import {IUser} from '../../types'
+import {IUser} from '../../types';
+import axios from "axios";
 import { finished } from "nodemailer/lib/xoauth2";
+
+const redirect = async(refreshToken: any)=>{
+    let res = await axios.post("http://localhost:3001/auth/refresh",{refreshToken});
+};
 
 //Auth configuration function
 export function Auth(app: express.Application, userCollection: mongoose.Model<IUser>){
-
+    
     //Local strategy for authentication
     passport.use('local', new passportLocal.Strategy({usernameField: 'email'},
-        function(email,password, done){
+    function(email,password, done){
             //Try to find an user with that email
             userCollection.findOne({email: email}, (err:Error, user:IUser) => {
                 console.log(`user ${email} tried to log in`)
@@ -25,7 +30,7 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
                 else return done(null, user)
             })
         }
-    ))
+        ))
 
     //JasonWebToken strategy for auth
     passport.use('jwt', new jwtStrategy.Strategy(
@@ -38,16 +43,31 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
         //Tryes to read the user from the token, or auth fails 
         async (refreshtoken, done) =>{
             try{
+                
+                let expiredRefreshT = new Date(refreshtoken.exp * 1000);
+                
+                if(expiredRefreshT < new Date()){throw new Error("logueate de nuevo!!!")};
+               
                 let token: any = await Token.findOne({email: refreshtoken.email});
-                
-                if(!token || refreshtoken.userTokenId !== token._id.toString())
+
+                if(!token || !(refreshtoken.userTokenId === token._id.toString()))
                 {return done(null,false)};
-             
+
                 token = jwt.verify(token.token,`${process.env.SECRET_TEST}`);
-                
-                return done(null, token.user);
-            }catch(err){
-                return done(err);
+
+               return done(null, token.user);
+            }catch(err:any){
+                if(err.message === 'jwt expired'){
+                    await redirect(refreshtoken);
+
+                    let token: any = await Token.findOne({email: refreshtoken.email});
+
+                    token = jwt.verify(token.token,`${process.env.SECRET_TEST}`);
+
+                    return done(null, token.user);
+                }else{
+                    return done(null,false);
+                }
             }
         }
     ))

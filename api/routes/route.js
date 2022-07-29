@@ -16,6 +16,7 @@ const post_1 = __importDefault(require("./post"));
 const comment_1 = __importDefault(require("./comment"));
 const morgan_1 = __importDefault(require("morgan"));
 const chat_1 = __importDefault(require("./chat"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const server = (0, express_1.default)();
 const options = {
     allowedHeaders: [
@@ -32,6 +33,7 @@ const options = {
     preflightContinue: false,
 };
 server.use((0, cors_1.default)(options));
+server.use((0, cookie_parser_1.default)());
 server.use(express_1.default.json());
 server.use((0, morgan_1.default)("dev"));
 (0, auth_1.Auth)(server, mongoose_1.User);

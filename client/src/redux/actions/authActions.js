@@ -9,7 +9,7 @@ export const loginAction = (obj) => async (dispatch) => {
     const {
       data: { token, username, _id, profilePicture },
     } = await apiConnection.post("auth/login", obj);
-    console.log(token);
+  
    //if (obj.rememberMe) {
       localStorage.setItem("token", token);
    //}
@@ -65,8 +65,9 @@ export const getLoggedUserInfo = () => async (dispatch) => {
     const token = localStorage.getItem("token");
     setAuthorization(token);
     const {
-      data: { username, _id, profilePicture },
+      data: { username, _id, profilePicture, time },
     } = await apiConnection.post("auth");
+ 
     return dispatch(
       loginUser({
         username: username,
