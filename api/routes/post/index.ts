@@ -123,11 +123,12 @@ async (req:Request, res:Response) => {
     let userPost = await User.findById(`${userId}`)
     .populate({
         path: 'posts',
-        select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+        select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
         populate: { path: 'userId', select: ['username', 'profilePicture'] },
     })
     .populate('following', 'username')
     .populate('followers', 'username')
+    .populate('followRequest', 'username')
     .select('-password')
       
      let dislikes = !post.likes? [] : post.likes;
@@ -181,11 +182,12 @@ async (req:Request, res:Response) => {
      .populate({
          path: 'posts',
          options: {sort: {'createdAt': -1 } },
-         select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId'],
+         select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
          populate: { path: 'userId', select: ['username', 'profilePicture'] },
      })
      .populate('following', 'username')
      .populate('followers', 'username')
+     .populate('followRequest', 'username')
      .select('-password')
        
       let likes = !post.likes? [] : post.likes;
@@ -198,15 +200,17 @@ async (req:Request, res:Response) => {
 
 router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     const { userId } = req.params;
-    const { content } = req.body;
+    const { content, multimedia } = req.body;
     
     try {
         const user = await User.findById(`${userId}`)
     
-        if (!user || !content) return res.status(404).json({msg: 'idk'})
+        if (!user) return res.status(404).json({msg: 'No user found'})
+        if(!content && !multimedia) return res.status(404).json({msg: 'Please send something'})
 
         const newPost = new Post({
             content,
+            multimedia,
             userId: user._id
         });
 

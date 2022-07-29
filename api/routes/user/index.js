@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const passport_1 = __importDefault(require("passport"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const nodemailer_1 = require("../../utils/nodemailer");
 const router = express_1.default.Router();
 router.get("/browser/:username", passport_1.default.authenticate("jwt", {
     session: false,
@@ -28,6 +30,78 @@ router.get("/browser/:username", passport_1.default.authenticate("jwt", {
             return res.status(400).json({ err: "User not fount" });
         }
         return res.status(200).json(users);
+    }
+    catch (err) {
+        res.status(400).json(err);
+    }
+}));
+router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    let page = parseInt(`${req.query.page}`);
+    if (!page)
+        page = 0;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            return res.status(404).json({ errorMsg: 'who are you?' });
+        if (user.following.length === 0) {
+            const posts = yield mongoose_1.Post.find({})
+                .sort({ createdAt: -1 })
+                .skip(page * 20)
+                .limit(20)
+                .populate('userId', ['username', 'profilePicture']);
+            res.json(posts);
+        }
+        //  else {
+        //si el usuario sigue a otros usuarios
+        // }
+    }
+    catch (err) {
+        return res.status(404).json({ errorMsg: err });
+    }
+}));
+router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`)
+            // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
+            .populate({
+            path: 'posts',
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
+            options: { sort: { 'createdAt': -1 } },
+            populate: { path: 'userId', select: ['username', 'profilePicture'] },
+        })
+            //.populate('following', 'username')
+            //.populate('followers', 'username')
+            .select('-password');
+        if (!user)
+            return res.status(404).json({ errorMsg: 'who are you?' });
+        return res.status(201).json(user);
+    }
+    catch (err) {
+        res.status(404).json({ errorMsg: err });
+    }
+}));
+router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const { username, firstname, lastname, biography, profilePicture } = req.body;
+        if (!username && !firstname && !lastname && (!biography && biography !== '') && !profilePicture) {
+            return res.status(400).json({ errprMsg: 'Please send data' });
+        }
+        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
+            .populate({
+            path: 'posts',
+            select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt', 'multimedia'],
+            options: { sort: { 'createdAt': -1 } },
+            populate: { path: 'userId', select: ['username', 'profilePicture'] }
+        })
+            // .populate('following', 'username')
+            // .populate('followers', 'username')
+            .select("-password");
+        if (!user)
+            return res.status(404).json({ errorMsg: "who are you?" });
+        return res.status(200).json(user);
     }
     catch (err) {
         res.status(400).json(err);
@@ -98,6 +172,76 @@ router.get("/:userId", passport_1.default.authenticate("jwt", {
         res.status(404).json({ errorMsg: err });
     }
 }));
+// Recovery Password
+router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.body;
+        if (!email)
+            return res.status(400).json({ error: "Email not provided" });
+        const [user] = yield mongoose_1.User.find({ email: email });
+        if (!user)
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        const dummyPassword = "abcde12345";
+        const mailMessage = {
+            title: "Password Restored",
+            subject: "Password Restoration",
+            message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
+      <li>New Password: <strong>${dummyPassword}</strong></li>`,
+        };
+        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        console.log(message);
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(dummyPassword, salt);
+        user.password = hash;
+        yield user.save();
+        return res.status(200).json({
+            message: "Successfully user's password restored",
+        });
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
+router.put("/updatePassword", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { oldPassword, newPassword, userId } = req.body;
+        if (!oldPassword || !newPassword)
+            return res.status(400).json({ error: "Passwords should be provided" });
+        const user = yield mongoose_1.User.findById(userId);
+        if (!user)
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        const match = yield bcrypt_1.default.compare(oldPassword, user.password);
+        if (!match)
+            return res.status(400).json({
+                error: "Validation error on password you provided as current password",
+            });
+        const mailMessage = {
+            title: "Password Changed",
+            subject: "Password Update",
+            message: `<li>Your password has been changed successfully</li>`,
+        };
+        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(newPassword, salt);
+        user.password = hash;
+        yield user.save();
+        return res.status(200).json({
+            message: "User's password updated successfully",
+        });
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
 router.put("/:userId", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
@@ -129,6 +273,7 @@ router.put("/:userId", passport_1.default.authenticate("jwt", {
         })
             .populate("following", "username")
             .populate("followers", "username")
+            .populate('followRequest', 'username')
             .select("-password");
         if (!user)
             return res.status(404).json({ errorMsg: "who are you?" });
@@ -162,6 +307,19 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
                     followers: user._id,
                 },
             }, { new: true });
+        }
+        else if (userFollowed.isPrivate) {
+            if (userFollowed.followRequest.includes(user._id)) {
+                yield mongoose_1.User.updateOne({ _id: userFollowed._id }, {
+                    $pull: {
+                        followRequest: user._id
+                    }
+                }, { new: true });
+            }
+            else {
+                userFollowed.followRequest.push(user._id);
+            }
+            yield userFollowed.save();
         }
         else {
             user.following.push(userFollowed._id);

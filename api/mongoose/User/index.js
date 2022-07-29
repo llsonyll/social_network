@@ -13,6 +13,7 @@ exports.userSchema = new mongoose_1.Schema({
     posts: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Post', required: true }],
     following: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true }],
     followers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true }],
+    followRequest: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true }],
     isAdmin: { type: Boolean, default: false, required: true },
     isPremium: { type: Boolean, default: false, required: true },
     isPrivate: { type: Boolean, default: false, required: true },
@@ -21,7 +22,10 @@ exports.userSchema = new mongoose_1.Schema({
     biography: String,
     review: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Review' },
     socketId: String,
-    chats: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Chat', required: true }]
+    chats: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Chat', required: true }],
+    paymentsId: [{ type: String, ref: 'Payment' }],
+    plan: { type: String, enum: ['weekly', 'monthly', 'yearly'] },
+    expirationDate: Date
 }, {
     versionKey: false
 });

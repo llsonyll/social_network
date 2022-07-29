@@ -1,16 +1,12 @@
 import axios from "axios"
+import { apiConnection } from "../../utils/axios"
 import { addMessage, setChatInfo, setChats } from "../reducers/chatReducer"
 
 
 
 export const getChats = (userId) => async(dispatch) => {
     try{
-        let res = await axios.get(`http://localhost:3001/chat/${userId}`, {
-            headers:{
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        console.log(res.data)
+        let res = await apiConnection.get(`chat/${userId}`)
 
         return dispatch(setChats(res.data.chats))
 
@@ -21,11 +17,7 @@ export const getChats = (userId) => async(dispatch) => {
 
 export const getChatInfo = (userId, otherUserId) => async(dispatch) =>{
     try{
-        let res = await axios.get(`http://localhost:3001/chat/${userId}/${otherUserId}`,{
-            headers:{
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
+        let res = await apiConnection.get(`chat/${userId}/${otherUserId}`)
         console.log(res.data)
         return dispatch(setChatInfo(res.data))
     }catch(err){
@@ -35,11 +27,7 @@ export const getChatInfo = (userId, otherUserId) => async(dispatch) =>{
 
 export const sendMessage = (content, userId, chatId) => async(dispatch) => {
     try{
-        let res = await axios.post(`http://localhost:3001/chat/message/${userId}/${chatId}`, {content: content} ,{
-            headers:{
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
+        let res = await apiConnection.post(`chat/message/${userId}/${chatId}`, {content: content})
 
         console.log(res.data)
         return dispatch(addMessage(res.data))

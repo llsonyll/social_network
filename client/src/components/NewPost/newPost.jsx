@@ -1,3 +1,5 @@
+import axios from "axios";
+import { useRef } from "react";
 import { useState } from "react";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { FaImage } from "react-icons/fa";
@@ -8,27 +10,56 @@ import Avatar from "../Avatar";
 
 const NewPost = ({ showModal, setShowModal }) => {
   const [postInput, setPostInput] = useState("");
+  const [postMedia, setPostMedia] = useState("")
   const dispatch = useDispatch()
   const loggedUser = useSelector((store) => store.auth.loggedUser)
   const location = useLocation()
+  const hiddenFileInput = useRef()
 
   const handleInputPost = (e) => setPostInput(e.target.value);
 
   const handleNewPost = (e) => {
     e.preventDefault();
     console.log(postInput, loggedUser);
-    if(postInput){
-      dispatch(createPost(postInput, loggedUser._id, location.pathname))
+    if(postInput || postMedia){
+      dispatch(createPost({content:postInput,multimedia:postMedia }, loggedUser._id, location.pathname))
     }
     setPostInput("");
+    setPostMedia('')
   };
 
-  const handleInputImage = () => console.log("Input Image");
+  //MANEJO DE IMAGENES SUBIDAS
+  const uploadPicture = async(file) =>{
+    let formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'h0tqwdio')
+    let res = await axios.post('https://api.cloudinary.com/v1_1/pischetz/image/upload', formData)
+    return res.data.secure_url
+  }
+
+
+  const handleChange = async (event) =>{
+    const fileUploaded = event.target.files[0]
+    let picture = await uploadPicture(fileUploaded)
+    setPostMedia(picture)
+  }
+
+  const handleInputImage = () => {
+    hiddenFileInput.current.click();
+  };
+
+
 
   const handlePublishPost = () => {
     console.log("Publish Post");
     setShowModal(false);
   };
+
+  const handleClose = () =>{
+    setPostInput("");
+    setPostMedia('')
+    setShowModal(false)
+  }
 
   return (
     <div
@@ -43,7 +74,7 @@ const NewPost = ({ showModal, setShowModal }) => {
             type="button"
             className="absolute top-2 right-1 text-gray-400 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center hover:bg-gray-800 "
             data-modal-toggle="popup-modal"
-            onClick={() => setShowModal(false)}
+            onClick={handleClose}
           >
             <span className="text-2xl">
               <AiFillCloseSquare />
@@ -60,17 +91,35 @@ const NewPost = ({ showModal, setShowModal }) => {
                 onChange={handleInputPost}
                 value={postInput}
               ></textarea>
+              {/* SI HAY FOTO LA MUESTRA */}
+              {postMedia? (
+                <div>
+                  <img src={postMedia}/>
+                  <button
+                    type="button"
+                    className="text-gray-400 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center hover:bg-gray-800 "
+                    data-modal-toggle="popup-modal"
+                    onClick={() => setPostMedia('')}
+                  >
+                    <span className="text-2xl">
+                      <AiFillCloseSquare />
+                    </span>
+                  </button>
+                </div>):null}
               {/* TODO: quitarlo del form para evitar el submit del mismo */}
               <div className=" relative flex items-baseline justify-between after:content-[''] after:ml-0 after:absolute after:right-0 after:left-0 after:-top-2 after:bg-[#424242] after:h-0.5">
                 <button
                   className="text-white text-2xl hover:opacity-50"
                   onClick={handleInputImage}
+                  type='button'
                 >
                   <FaImage />
                 </button>
+                <input type={'file'} ref={hiddenFileInput} onChange={handleChange} accept="image/*" style={{display:"none"}  }/>
                 <button
                   className="bg-green-600 text-white py-1 px-7 rounded-md shadow-lg text-sm"
                   onClick={handlePublishPost}
+                  type='submit'
                 >
                   Publicar
                 </button>

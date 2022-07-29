@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loginAction } from "../../redux/actions/authActions";
 
-const Signin = () => {
+const Signin = ({ setForm }) => {
   const [input, setInput] = useState({
     email: "",
     password: "",
@@ -88,6 +88,7 @@ const Signin = () => {
     const storeInfo = JSON.parse(localStorage.getItem("login"));
     if (storeInfo) {
       setInput({
+        ...input,
         email: storeInfo.email,
       });
 
@@ -137,7 +138,13 @@ const Signin = () => {
             />
             <span> Remember me </span>
           </div>
-          <Link to="/">Forgot your password?</Link>
+          <button
+            type="button"
+            className="opacity-75 hover:opacity-100 hover:font-semibold"
+            onClick={() => setForm("recovery")}
+          >
+            Forgot your password?
+          </button>
         </div>
         <input
           className="on disabled:opacity-75 mt-3"
