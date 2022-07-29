@@ -194,7 +194,13 @@ const Profile = () => {
                     {params.id === userLoggedId ? (
                       <p id="Text" onClick={handleChangePicture}>Change Photo</p>
                     ) : null}
-                    
+                    {params.id === userLoggedId && (
+                    <Link to='/home/settings'>
+                    <button>
+                      <AiFillSetting/>       
+                    </button>
+                    </Link>          
+                    ) }
                 </div>
               </div>
               <div className="shadow-box">
