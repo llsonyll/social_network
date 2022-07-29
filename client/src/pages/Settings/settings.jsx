@@ -4,7 +4,8 @@ import './settings.css'
 import {useDispatch, useSelector} from 'react-redux'
 import { useState } from 'react'
 import {createNewReview, getAllReviewes, deleteReview, modifyReview} from '../../redux/actions/reviewAction'
-import {changePassword, getUserProfile, modifyUser} from '../../redux/actions/userActions'
+import {changePassword, getUserProfile} from '../../redux/actions/userActions'
+
 
 function settings() {
     const dispatch = useDispatch()
@@ -114,25 +115,8 @@ function settings() {
         }
     }
 
-    let handleMakePrivate = (e) => {
-        e.preventDefault() 
-        if (userData.isPremium === true && userData.isPrivate === false) {
-            //dispatch() 
-            //console.log('se envio make private action')
-            alert('Your profile is private now!!!') 
-            navigate(`/home/profile/${_id}`, { replace: true })
-        }
-        if (userData.isPremium === true && userData.isPrivate === true) {
-            //dispatch() 
-            //console.log('se envio make private action')
-            alert('Your profile is public now!!!') 
-            navigate(`/home/profile/${_id}`, { replace: true })
-        }
-        if (userData.isPremium === false) {
-            alert('You are not premium yet')
-            navigate(`/home/premium/${_id}`, { replace: true })
-        }
-    }
+   
+
 
   return (
     <div className='settings-container'>
@@ -158,7 +142,7 @@ function settings() {
             <Link to={`/home/premium/${_id}`} className='buypremiumbutton'>
                 <button className='buypremiumbutton greenbutton'>Buy premium</button>
             </Link>
-            <button className='makeprivate greenbutton' onClick={e => handleMakePrivate(e)}>{userData.isPrivate === false ? 'Make private' :'Make public'} </button>
+            <button className='makeprivate greenbutton' onClick={handlePrivate}>Make private</button>
             <div className='review boldtext' >Review the app</div>
             <div className='currentreviewtext'>Current review</div>
             {reviewRenderer()}
