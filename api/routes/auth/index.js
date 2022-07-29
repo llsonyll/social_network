@@ -149,7 +149,7 @@ router.get("/loginGoogle", passport_1.default.authenticate('google', { session: 
     }
 }));
 //---------------------------facebook---------------------------------
-router.get("/loginFacebook", passport_1.default.authenticate('git', { scope: ['email'], session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/loginFacebook", passport_1.default.authenticate('facebook', { scope: ['email'], session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
         const send = user;

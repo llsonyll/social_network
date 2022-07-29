@@ -179,7 +179,7 @@ async(req:Request,res:Response)=>{
 });
 
 //---------------------------facebook---------------------------------
-router.get("/loginFacebook",passport.authenticate('git',{scope:['email'],session: false,failureRedirect: "/auth/loginjwt" }),
+router.get("/loginFacebook",passport.authenticate('facebook',{scope:['email'],session: false,failureRedirect: "/auth/loginjwt" }),
 async(req:Request,res:Response)=>{
     try {
 			const user: any = req.user;
