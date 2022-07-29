@@ -12,7 +12,18 @@ export const browserAction = (data) => async (dispatch) => {
       const firstFive = resData.slice(0, 5);
       localStorage.setItem('recentSearch', JSON.stringify(firstFive));
     } else {
-      localStorage.setItem('recentSearch', JSON.stringify(resData));
+      const currentRecents = localStorage.getItem('recentSearch');
+      const parsedCurrent = JSON.parse(currentRecents);
+      if (currentRecents && parsedCurrent) {
+        const resNews = resData.filter(usr => {
+          const alreadyExist = parsedCurrent.find(current => current._id === usr._id)
+          return !alreadyExist;
+        })
+        const currentAndNew = [...parsedCurrent, ...resNews];
+        localStorage.setItem('recentSearch', JSON.stringify(currentAndNew.slice(-5)));
+      } else {
+        localStorage.setItem('recentSearch', JSON.stringify(resData));
+      }
     }
 
     return dispatch(browser(resData));

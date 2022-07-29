@@ -26,17 +26,24 @@ const NavBar = ({ openModal }) => {
   };
 
   const [searchInput, setSearchInput] = useState("");
+  const [searched, setSearched] = useState(false);
   const { searches } = useSelector((state) => state.browserReducer);
   const userId = useSelector((state) => state.auth.loggedUser._id);
 
   let navigate = useNavigate();
   let dispatch = useDispatch();
 
+  const handleSearchAction = async (text) => {
+    setSearched(false);
+    await dispatch(browserAction(text));
+    setSearched(true);
+  };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     let search = searchInput.trim();
     if (search || (!search && searches.length !== 0)) {
-      dispatch(browserAction(search));
+      handleSearchAction(search);
     }
   };
 
@@ -45,8 +52,14 @@ const NavBar = ({ openModal }) => {
     navigate("/");
   };
 
+  const handleSelectRecent = (recentName) => {
+    setSearchInput(recentName);
+    handleSearchAction(recentName);
+  };
+
   useEffect(() => {
     if (searchInput.length === 0) {
+      setSearched(false);
       dispatch(browserCleanUp());
     }
   }, [searchInput]);
@@ -67,7 +80,12 @@ const NavBar = ({ openModal }) => {
               placeholder="Search a friend"
             />
           </form>
-          <SearchResults input={searchInput} setInput={setSearchInput} />
+          <SearchResults
+            input={searchInput}
+            selectRecent={handleSelectRecent}
+            searched={searched}
+            setSearched={setSearched}
+          />
         </div>
         <div className="text-white md:hidden"> menu </div>
       </div>
