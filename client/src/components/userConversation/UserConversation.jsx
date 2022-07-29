@@ -6,7 +6,7 @@ import './UserConversation.css'
 import Mensajes from '../Mensajes/Mensajes'
 
 //iconos
-import {AiOutlineSend} from 'react-icons/ai'
+import {AiOutlineSend, AiOutlinePhone} from 'react-icons/ai'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getChatInfo, sendMessage } from '../../redux/actions/chatActions'
@@ -49,11 +49,17 @@ const UserConversation = () => {
       setText('')
     }
 
+    const handleCall = () =>{
+      socket.emit('call', chatInfo.users[getIndex(chatInfo.users)]._id, loggedUser._id) 
+      socket.off('call')
+    }
+
   return (
     chatInfo._id? <div className='userconversation__container'>
         <div className='header_conversation'>
             <Avatar size='m' imgUrl={chatInfo.users[getIndex(chatInfo.users)].profilePicture}/>
-           <span>{chatInfo.users[getIndex(chatInfo.users)].username}</span> 
+           <span>{chatInfo.users[getIndex(chatInfo.users)].username}</span>
+           <button type='button' onClick={handleCall} > <AiOutlinePhone /> </button> 
         </div>
             <Mensajes id={loggedUser._id} messages={chatInfo.messages}/>
         <form className='input_conversation__container' onSubmit={handleClick}>
