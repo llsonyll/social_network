@@ -88,6 +88,7 @@ const Signin = ({ setForm }) => {
     const storeInfo = JSON.parse(localStorage.getItem("login"));
     if (storeInfo) {
       setInput({
+        ...input,
         email: storeInfo.email,
       });
 
