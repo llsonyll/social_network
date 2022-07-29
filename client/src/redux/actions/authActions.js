@@ -10,9 +10,7 @@ export const loginAction = (obj) => async (dispatch) => {
       data: { token, username, _id, profilePicture },
     } = await apiConnection.post("auth/login", obj);
   
-   //if (obj.rememberMe) {
       localStorage.setItem("token", token);
-   //}
 
     setAuthorization(token);
     return dispatch(
