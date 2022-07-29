@@ -114,31 +114,41 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
                 },
             });
         }
-        if (!post.dislikes.includes(user._id)) {
-            post.dislikes.push({ _id: userId });
-            yield (post === null || post === void 0 ? void 0 : post.save());
-        }
-        else {
-            post = yield mongoose_1.Post.updateOne({ _id: postId }, {
-                $pull: {
-                    dislikes: id,
-                },
+        let dislikes = yield mongoose_1.Post.findOne({ "dislikes._id": id });
+        console.log(dislikes);
+        if (!dislikes) {
+            post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
+                $push: {
+                    dislikes: { _id: id, username: user.username }
+                }
             }, { new: true });
         }
-        let userPost = yield mongoose_1.User.findById(`${userId}`)
-            .populate({
-            path: 'posts',
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
-            populate: { path: 'userId', select: ['username', 'profilePicture'] },
-        })
-            .populate('following', 'username')
-            .populate('followers', 'username')
-            .populate('followRequest', 'username')
-            .select('-password');
-        let dislikes = !post.likes ? [] : post.likes;
-        return res.status(200).json({ dislikes, userPost });
+        else {
+            console.log("entre");
+            post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
+                $pull: {
+                    dislikes: { _id: id }
+                }
+            }, { new: true });
+        }
+        // let userPost = await User.findById(`${userId}`)
+        // .populate({
+        //     path: 'posts',
+        //     select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
+        //     populate: { path: 'userId', select: ['username', 'profilePicture'] },
+        // })
+        // .populate('following', 'username')
+        // .populate('followers', 'username')
+        // .populate('followRequest', 'username')
+        // .select('-password')
+        if (!post) {
+            return res.status(400).json("not found dislikes");
+        }
+        //console.log(post);
+        res.status(200).json(post.dislikes);
     }
     catch (err) {
+        console.log(err);
         return res.status(400).json(err);
     }
 }));
