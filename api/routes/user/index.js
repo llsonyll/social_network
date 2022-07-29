@@ -82,6 +82,43 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         res.status(404).json({ errorMsg: err });
     }
 }));
+router.put("/updatePassword", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { oldPassword, newPassword, userId } = req.body;
+        if (!oldPassword || !newPassword)
+            return res.status(400).json({ error: "Passwords should be provided" });
+        const user = yield mongoose_1.User.findById(userId);
+        if (!user)
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        const match = yield bcrypt_1.default.compare(oldPassword, user.password);
+        if (!match)
+            return res.status(400).json({
+                error: "Validation error on password you provided as current password",
+            });
+        const mailMessage = {
+            title: "Password Changed",
+            subject: "Password Update",
+            message: `<li>Your password has been changed successfully</li>`,
+        };
+        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(newPassword, salt);
+        user.password = hash;
+        yield user.save();
+        return res.status(200).json({
+            message: "User's password updated successfully",
+        });
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
 router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
@@ -205,84 +242,57 @@ router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, 
         return res.status(400).json(err);
     }
 }));
-router.put("/updatePassword", passport_1.default.authenticate("jwt", {
+/*
+COMENTO ESTA PORQUE FRAN DIJO QUE PUEDE SER QUE ESTA SEA EL PROBLEMA, PORQUE ESTÁ DESACTUALIZADA, PERO NO LA BORRO POR SI SE ROMPE ALGO
+router.put(
+  "/:userId",
+  passport.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
-}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+  }),
+  async (req: Request, res: Response) => {
     try {
-        const { oldPassword, newPassword, userId } = req.body;
-        if (!oldPassword || !newPassword)
-            return res.status(400).json({ error: "Passwords should be provided" });
-        const user = yield mongoose_1.User.findById(userId);
-        if (!user)
-            return res.status(400).json({
-                error: "Email provided does not belong to any registered user",
-            });
-        const match = yield bcrypt_1.default.compare(oldPassword, user.password);
-        if (!match)
-            return res.status(400).json({
-                error: "Validation error on password you provided as current password",
-            });
-        const mailMessage = {
-            title: "Password Changed",
-            subject: "Password Update",
-            message: `<li>Your password has been changed successfully</li>`,
-        };
-        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
-        //password encryption
-        let salt = yield bcrypt_1.default.genSalt(10);
-        let hash = yield bcrypt_1.default.hash(newPassword, salt);
-        user.password = hash;
-        yield user.save();
-        return res.status(200).json({
-            message: "User's password updated successfully",
-        });
-    }
-    catch (err) {
-        return res.status(400).json(err);
-    }
-}));
-router.put("/:userId", passport_1.default.authenticate("jwt", {
-    session: false,
-    failureRedirect: "/auth/loginjwt",
-}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { userId } = req.params;
-        const { username, firstname, lastname, biography } = req.body;
-        if (!username &&
-            !firstname &&
-            !lastname &&
-            !biography &&
-            biography !== "") {
-            return res.status(400).json({ errprMsg: "Please send data" });
-        }
-        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, {
-            new: true,
+      const { userId } = req.params;
+      const { username, firstname, lastname, biography } = req.body;
+
+      if (
+        !username &&
+        !firstname &&
+        !lastname &&
+        !biography &&
+        biography !== ""
+      ) {
+        return res.status(400).json({ errprMsg: "Please send data" });
+      }
+
+      const user = await User.findByIdAndUpdate(`${userId}`, req.body, {
+        new: true,
+      })
+        .populate({
+          path: "posts",
+          select: [
+            "content",
+            "likes",
+            "dislikes",
+            "_id",
+            "commentsId",
+            "createdAt",
+          ],
+          populate: { path: "userId", select: ["username", "profilePicture"] },
         })
-            .populate({
-            path: "posts",
-            select: [
-                "content",
-                "likes",
-                "dislikes",
-                "_id",
-                "commentsId",
-                "createdAt",
-            ],
-            populate: { path: "userId", select: ["username", "profilePicture"] },
-        })
-            .populate("following", "username")
-            .populate("followers", "username")
-            .populate('followRequest', 'username')
-            .select("-password");
-        if (!user)
-            return res.status(404).json({ errorMsg: "who are you?" });
-        return res.json(user);
+        .populate("following", "username")
+        .populate("followers", "username")
+        .populate('followRequest', 'username')
+        .select("-password");
+
+      if (!user) return res.status(404).json({ errorMsg: "who are you?" });
+
+      return res.json(user);
+    } catch (err) {
+      res.status(400).json({ errorMsg: err });
     }
-    catch (err) {
-        res.status(400).json({ errorMsg: err });
-    }
-}));
+  }
+); */
 router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
