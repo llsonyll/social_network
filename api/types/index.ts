@@ -37,7 +37,7 @@ export interface IPost{
    userId: Types.ObjectId;
    content?: string;
    commentsId: Types.Array<Types.ObjectId>;
-   likes: Types.Array<Types.ObjectId>;
+   likes: Types.Array<ILikesAndDislikes>;
    dislikes: Types.Array<ILikesAndDislikes>;
    createdAt: Date;
    multimedia?: string;

@@ -21,10 +21,10 @@ export let postSchema = new Schema<IPost>({
 		},
 	],
 	likes: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'User',
-		}
+		 new Schema<ILikesAndDislikes>({
+			  _id: {type: Schema.Types.ObjectId, require:true},
+				username: {type: String}
+		 })
 	],
 	dislikes: [
 		  new Schema<ILikesAndDislikes>({
