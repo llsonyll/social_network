@@ -156,34 +156,50 @@ router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, 
     }
 }));
 // GET '/home/:userId'
-router.get("/home/:userId", passport_1.default.authenticate("jwt", {
-    session: false,
-    failureRedirect: "/auth/loginjwt",
-}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
-    let page = parseInt(req.query.page);
+    let page = parseInt(`${req.query.page}`);
+    let control = req.query.control;
+    !control ? control = "true" : null;
     if (!page)
         page = 0;
     try {
         const user = yield mongoose_1.User.findById(`${userId}`);
         if (!user)
-            return res.status(404).json({ errorMsg: "who are you?" });
+            return res.status(404).json({ errorMsg: 'who are you?' });
+        const date = new Date().getTime();
+        let result = [];
+        if (user.following.length > 0) {
+            if (control === "true") {
+                result = yield mongoose_1.Post.find({
+                    userId: { $in: user.following }, 
+                    // userId: user._id,
+                    createdAt: { $gte: new Date(date - 259200000) }
+                }) //menos 3 dias                
+                    .sort({ createdAt: -1 })
+                    .skip(page * 10)
+                    .limit(10)
+                    .populate('userId', ['username', 'profilePicture']);
+            }
+            else {
+                result = yield mongoose_1.Post.find({
+                    createdAt: { $gte: new Date(date - 259200000) },
+                    userId: { $nin: user.following }
+                })
+                    .sort({ createdAt: -1 })
+                    .skip(page * 10)
+                    .limit(10)
+                    .populate('userId', ['username', 'profilePicture']);
+            }
+        }
         if (user.following.length === 0) {
-            const posts = yield mongoose_1.Post.find({})
+            result = yield mongoose_1.Post.find({ createdAt: { $gte: new Date(date - 259200000) } })
                 .sort({ createdAt: -1 })
-                .skip(page * 20)
-                .limit(20)
-                .populate("userId", ["username", "profilePicture"]);
-            res.json(posts);
+                .skip(page * 10)
+                .limit(10)
+                .populate('userId', ['username', 'profilePicture']);
         }
-        else {
-            const posts = yield mongoose_1.Post.find({})
-                .sort({ createdAt: -1 })
-                .skip(page * 20)
-                .limit(20)
-                .populate("userId", ["username", "profilePicture"]);
-            res.json(posts);
-        }
+        res.json(result);
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });

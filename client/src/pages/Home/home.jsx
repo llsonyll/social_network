@@ -13,35 +13,46 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 
 const Home = () => {
   let {homePostsData , control} = useSelector((state) => state.user);
-  const homePosts = homePostsData;
   const userId = useSelector((state) => state.auth.loggedUser._id);
   const dispatch = useDispatch();
-  let page = 0;
-  let pages = '';
+  const [page, setPage] = useState(0)
+  const [pageFalse, setPageFalse] = useState(0)
+  const [controlScroll ,setControlScroll ]= useState(true)
+  const homePosts = homePostsData;
+  const getControl = control
 
   useEffect(() => {
-    userId ? dispatch(getHomePosts(userId, parseInt(page))) : null;
+    userId ? dispatch(getHomePosts(userId, parseInt(page), "true")) : null;
 
   }, [userId]);
   
 
   useEffect(() => {
+    if(getControl === "true") {
+    dispatch(getHomePosts(userId, parseInt(page), "true"));
+    console.log("se despacho la accion",page)
+    } else if(getControl === "false"){
 
-    pages = homePosts[homePosts.length - 1] 
+        console.log("GETCONTROL ES FALSE", )
 
-  }, [homePosts])
+        dispatch(getHomePosts(userId, parseInt(pageFalse), "false"));
+        setPageFalse(pageFalse+1)
+    }
+    if(getControl === "") setControlScroll(false)
+  }, [page, getControl])
   
   const handlePage = () => {
-    page === 0 ? (page = 1) : null;
-    if (homePosts.length === page * 20) {
-      //si la cantidad de post es igual a pagina + 20
-      // console.log("hay q traer mas posts")
-      dispatch(getHomePosts(userId, parseInt(page)));
-      page++;
-      console.log(control);
+    page === 0 ? setPage(1) : null;
+    if(getControl === ""){
+      setControlScroll(false)
+      console.log('TIENE QUE PASAR A FALSE LOCOOOOOOOOO')
     }
-
-  };
+    if (homePosts.length === page * 10 || homePosts.length === (page * 10) + 10 || getControl === "false")  {
+      //si la cantidad de post es igual a pagina + 20
+      console.log("hay q traer mas posts")
+      getControl === "true" ? setPage(page+1) : setPage(page-1)
+    }
+  } 
   return (
     <div
       className="flex-1 flex px-4 md:pl-80 md:pr-5 pt-3 md:pt-9 gap-8 bg-[#2e2e2e] relative "
@@ -58,7 +69,7 @@ const Home = () => {
           <FriendPostTile className="friends" tile={tile} key={tile.postId} />
         ))} */}
       </div>
-      <InfiniteScroll dataLength={homePosts.length} hasMore={control} next={handlePage} loader={<LoadingSpinner/>}>
+      <InfiniteScroll dataLength={homePosts.length} hasMore={controlScroll} next={handlePage} loader={<LoadingSpinner/>}>
           <div className="flex-1 flex flex-col gap-5 h-full">
             {
               homePosts.length > 0
