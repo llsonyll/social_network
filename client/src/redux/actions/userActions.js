@@ -11,10 +11,10 @@ export const getUserProfile = (id) => async (dispatch) => {
   }
 };
 
-export const getHomePosts = (id, page) => async (dispatch) => {
+export const getHomePosts = (id, page, control) => async (dispatch) => {
   //id del usuario por params y numero de pag por query. trae de a 20 posts
   try {
-    const { data } = await apiConnection.get(`user/home/${id}?page=${page}`);
+    const { data } = await apiConnection.get(`user/home/${id}?page=${page}&control=${control}`);
     return dispatch(homePosts(data));
   } catch (err) {
     console.log(err);
