@@ -14,16 +14,24 @@ router.put('/:userId/:postId', passport.authenticate('jwt', {session:false, fail
             return res.status(400).json('Necesita tener contenido')
         }
         let post = await Post.findById(`${postId}`)
+        .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+        //.populate('likes', 'username')
+        .populate('dislikes', 'username')
         //Checks if post exists and if the post was made by the user
         if(!post){
             res.status(400).json("Post doesn't exist")
-        }else if(`${post.userId}` !== userId){
+        }else if(`${post.userId}` !== userId){ // ALGO PASAAA
+            console.log(`${post.userId}`)
+            console.log(userId)
             res.status(400).json("Only modify your own posts")
         }else{
             //Change content and save
             post.content = content
             await post.save()
-            res.status(200).json('Comment modified')
+
+            post = await post.populate('userId', ['username', 'profilePicture'])
+            
+            res.status(200).json(post)
         }
     }catch(err){
         res.status(400).json('Something went wrong')
@@ -74,7 +82,8 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
         let comments = post.commentsId
         await Comment.deleteMany({_id: {$in: comments}})
         //Remove post and send response
-        post.remove()
+        await post.remove();
+        
         res.json('Eliminated from the world')
     }catch(err){
         res.status(400).json('something went wrong')
