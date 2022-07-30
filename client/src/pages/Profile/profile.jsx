@@ -130,6 +130,7 @@ const Profile = () => {
               commentsLength={p.commentsId.length}
               likesLength={p.likes.length}
               likes={p.likes}
+              dislikes={p.dislikes}
               content={p.content}
               profilePicture={p.userId.profilePicture}
               multimedia={p.multimedia}
