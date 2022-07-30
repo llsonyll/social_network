@@ -15,7 +15,8 @@ const postReducer = createSlice({
             state.postDetail = {_id: ''}
         },
         likesPost(state,action){
-           state.postDetail.likes = action.payload
+            state.postDetail.dislikes = action.payload.dislikes
+            state.postDetail.likes = action.payload.likes
         },
         dislikesPost(state,action){
            state.postDetail.dislikes = action.payload.dislikes

@@ -75,12 +75,10 @@ const PostTile = (props) => {
 
 
   let renderHeartIcon = () => {
-    if (!likes.includes(user?._id)) {
+    if (!likes.find( like => like._id === user?._id)) {
       console.log('Entra blanco');
       return <FaHeart />
-    }
-    if (likes.includes(user?._id)) {
-
+    }else{
       console.log('Entra rojo');
       return (
         <IconContext.Provider value={{ color: '#EA544A', className: 'global-heart-class-name' }}>
@@ -154,7 +152,7 @@ const PostTile = (props) => {
                 onClick={handleLikePost}
               >
                   {post && renderHeartIcon()}
-                {post? post.likes.length : 12}
+                {likes && likes.length }
               </button>
             </div>
             <div className="flex items-center gap-1 hover:text-gray-300">

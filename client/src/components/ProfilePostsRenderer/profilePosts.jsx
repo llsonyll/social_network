@@ -18,14 +18,16 @@ const ProfilePosts = (props) => {
 	}
 
 	const handleDislike = () => {
-       dispatch(newDislikeUserProfile(postNumber,_id));
+		dispatch(newDislikeUserProfile(postNumber,_id));
 	}
-
+	
+	const posts = useSelector(state => state.user.userProfileData.posts);
+	let index = posts.findIndex(post => post._id === postNumber);
+	
 	let renderHeartIcon = () => {
-		if (!likes.includes(_id)) {
+		if (!posts[index].likes.find( like => like._id === _id)) {
 			return <FaHeart />
-		}
-		if (likes.includes(_id)) {
+		}else{
 			return (
 				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
 					<div>
@@ -36,8 +38,6 @@ const ProfilePosts = (props) => {
 		}
 	}
 
-  const posts = useSelector(state => state.user.userProfileData.posts);
-	let index = posts.findIndex(post => post._id === postNumber);
 
 	let renderHeartBrokenIcon = () => {
     if (!posts[index].dislikes.find( dislike => dislike._id === _id)) {
@@ -92,8 +92,8 @@ const ProfilePosts = (props) => {
 					<button className='flex items-center gap-1'
 					 onClick = {handleLike}
 					>
-						{renderHeartIcon()}
-						{likesLength}
+						{posts && renderHeartIcon()}
+						{posts && posts[index].likes.length }
 					</button>
 					<button
                 className="flex items-center gap-1"
