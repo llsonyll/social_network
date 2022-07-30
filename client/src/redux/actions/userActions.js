@@ -40,7 +40,7 @@ export const newDislikeHomePost =(postId, userId) => async (dispatch) => {
       const { data: { dislikes, likes } } = await apiConnection.put(`post/dislike/${postId}/${userId}`);
 
       dispatch(dislikesPost({ dislikes, likes, postId }));
-    } catch (err) {
+    } catch (err) {    
       console.log(err);
     }
   };
