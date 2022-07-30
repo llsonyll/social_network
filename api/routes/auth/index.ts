@@ -220,7 +220,6 @@ router.post(
           }
         }
       }
-
       return res.status(200).json({ _id: id, username, profilePicture, isDeleted  });
     } catch (err) {
       return res.status(400).json(err);
