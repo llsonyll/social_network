@@ -1,4 +1,6 @@
-import { AiFillCloseSquare } from "react-icons/ai";
+import { AiFillCloseSquare, AiFillStar } from "react-icons/ai";
+import InputText from "../InputText";
+import ActionButton from "../ActionButton";
 
 const AdminBoard = ({ showAdmin, setShowAdmin }) => {
   const handleSearch = (e) => {
@@ -37,7 +39,72 @@ const AdminBoard = ({ showAdmin, setShowAdmin }) => {
               className="bg-green-700 text-white md:px-5 px-3 py-2 rounded-md cursor-pointer"
             />
           </form>
-          <div className="results"></div>
+          <div className="results text-white md:my-6 my-3">
+            <div className="user_info px-9 flex flex-col gap-2">
+              <InputText value="Firstname" />
+              <InputText value="Lastname" />
+              <InputText value="Username" />
+              <div className="info_row flex gap-4">
+                <div className="basis-1/4 font-light"> Password </div>
+                <div className="basis-3/4 flex justify-end">
+                  <ActionButton
+                    label="Restaurar"
+                    action={() => {}}
+                    bg="bg-blue-500"
+                  />
+                </div>
+              </div>
+              <InputText value="Email" />
+              <InputText value="Biography" />
+              <div className="info_row flex gap-4">
+                <div className="basis-1/4 font-light"> isAdmin </div>
+                <div className="basis-3/4 flex gap-4">
+                  <input type="checkbox" /> Yes
+                  <input type="checkbox" /> No
+                </div>
+              </div>
+              <div className="info_row flex gap-4">
+                <div className="basis-1/4 font-light"> isPremium </div>
+                <div className="basis-3/4 flex gap-4">
+                  <input type="checkbox" /> Yes
+                  <input type="checkbox" /> No
+                </div>
+              </div>
+              <div className="info_row flex gap-4">
+                <div className="basis-1/4 font-light"> isPrivate </div>
+                <div className="basis-3/4 flex gap-4">
+                  <input type="checkbox" /> Yes
+                  <input type="checkbox" /> No
+                </div>
+              </div>
+              <div className="info_row flex gap-4">
+                <div className="basis-1/4 font-light"> Review </div>
+                <div className="basis-3/4 flex gap-2 items-center">
+                  <div className="flex items-center">
+                    <div className="font-semibold">5</div>
+                    <AiFillStar />
+                  </div>
+                  <input
+                    type="text"
+                    disabled
+                    className="focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col md:my-4 my-2 gap-2">
+                <button
+                  className="bg-green-700 cursor-pointer py-1 font-semibold rounded-sm disabled:opacity-50"
+                  disabled
+                >
+                  Guardar
+                </button>
+                <button className="bg-red-500 cursor-pointer py-1 font-semibold rounded-sm">
+                  Suspender
+                </button>
+              </div>
+            </div>
+          </div>
         </>
       </div>
     </div>
