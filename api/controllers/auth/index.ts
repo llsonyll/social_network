@@ -7,6 +7,15 @@ import express from 'express';
 import {IUser} from '../../types';
 import  GoogleStrategy from "passport-google-oauth20";
 import FacebookStrategy from "passport-facebook"; 
+
+const profileArray = [
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p2_tj88ek.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p3_dlphru.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p4_zy2yhe.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p5_i3n2nd.png",
+  ];
+
 //Auth configuration function
 export function Auth(app: express.Application, userCollection: mongoose.Model<IUser>){
 
@@ -44,7 +53,7 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
                 username: _json.given_name,
                 email: _json.email,
                 password: hash,
-                profilePicture: _json.picture
+                profilePicture: profileArray[Math.floor(Math.random() * 5)]
             });
             await newUser.save();
             return done(null,newUser);
@@ -60,13 +69,12 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
     passport.use("facebook",new FacebookStrategy.Strategy({
         clientID: `${process.env.FACEBOOK_APP_ID}`,
         clientSecret: `${process.env.FACEBOOK_APP_SECRET}`,
-        callbackURL: `${process.env.URL}/auth/loginFacebook`,
+        callbackURL: `${process.env.URL}auth/loginFacebook`,
         profileFields: ['email','id', "name",'displayName', 'photos'],
       },async(accessToken,RefreshToken,profile,done)=>{
         try {
            let{  _json }  = profile;
            let user: any = await userCollection.findOne({email: `${_json.email}`});  
-           let {url} = _json.picture.data;
 
            if(!user){
               let salt = await bcrypt.genSalt(10);
@@ -77,7 +85,7 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
                username: _json.first_name,
                email: _json.email,
                password: hash,
-               profilePicture: url,
+               profilePicture: profileArray[Math.floor(Math.random() * 5)],
            });
            await newUser.save();
            return done(null,newUser);

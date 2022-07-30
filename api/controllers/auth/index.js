@@ -19,6 +19,13 @@ const passport_jwt_1 = __importDefault(require("passport-jwt"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const passport_google_oauth20_1 = __importDefault(require("passport-google-oauth20"));
 const passport_facebook_1 = __importDefault(require("passport-facebook"));
+const profileArray = [
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p2_tj88ek.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p3_dlphru.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p4_zy2yhe.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p5_i3n2nd.png",
+];
 //Auth configuration function
 function Auth(app, userCollection) {
     //Local strategy for authentication
@@ -56,7 +63,7 @@ function Auth(app, userCollection) {
                     username: _json.given_name,
                     email: _json.email,
                     password: hash,
-                    profilePicture: _json.picture
+                    profilePicture: profileArray[Math.floor(Math.random() * 5)]
                 });
                 yield newUser.save();
                 return done(null, newUser);
@@ -73,13 +80,12 @@ function Auth(app, userCollection) {
     passport_1.default.use("facebook", new passport_facebook_1.default.Strategy({
         clientID: `${process.env.FACEBOOK_APP_ID}`,
         clientSecret: `${process.env.FACEBOOK_APP_SECRET}`,
-        callbackURL: `${process.env.URL}/auth/loginFacebook`,
+        callbackURL: `${process.env.URL}auth/loginFacebook`,
         profileFields: ['email', 'id', "name", 'displayName', 'photos'],
     }, (accessToken, RefreshToken, profile, done) => __awaiter(this, void 0, void 0, function* () {
         try {
             let { _json } = profile;
             let user = yield userCollection.findOne({ email: `${_json.email}` });
-            let { url } = _json.picture.data;
             if (!user) {
                 let salt = yield bcrypt_1.default.genSalt(10);
                 let hash = yield bcrypt_1.default.hash(`${profile.id}`, salt);
@@ -89,7 +95,7 @@ function Auth(app, userCollection) {
                     username: _json.first_name,
                     email: _json.email,
                     password: hash,
-                    profilePicture: url,
+                    profilePicture: profileArray[Math.floor(Math.random() * 5)],
                 });
                 yield newUser.save();
                 return done(null, newUser);
