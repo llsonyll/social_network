@@ -39,6 +39,12 @@ const userReducer = createSlice({
     toggleFollowUser(state, action) {
       state.userProfileData.followers = action.payload;
     },
+
+    dislikesPost(state,{payload}){
+       let index = state.homePostsData.findIndex(post => post._id === payload.postId )
+       state.homePostsData[index].dislikes = payload.dislikes;
+       state.homePostsData[index].likes = payload.likes;
+    },
     toggleUSERFollowing(state, action) {
       state.userFollowings = action.payload;
     },
@@ -46,8 +52,7 @@ const userReducer = createSlice({
       state.userProfileData.followRequest = action.payload.followRequest;
       state.userProfileData.followers = action.payload.followers;
     }
-  },
-});
+}});
 
 export const {
   userProfile,
@@ -57,7 +62,8 @@ export const {
   clearProfileData,
   toggleFollowUser,
   toggleResponseFollow,
-  toggleUSERFollowing
+  dislikesPost,
+  toggleUSERFollowing,
 } = userReducer.actions;
 
 export default userReducer.reducer;
