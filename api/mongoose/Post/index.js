@@ -23,13 +23,13 @@ exports.postSchema = new mongoose_1.Schema({
         {
             type: mongoose_1.Schema.Types.ObjectId,
             ref: 'User',
-        },
+        }
     ],
     dislikes: [
-        {
-            type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'User',
-        },
+        new mongoose_1.Schema({
+            _id: { type: mongoose_1.Schema.Types.ObjectId, required: true },
+            username: { type: String }
+        })
     ],
     content: { type: String },
     multimedia: String
