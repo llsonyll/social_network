@@ -126,7 +126,7 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
 
         await post.save();
 
-        post = await post.populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+        post = await post.populate({path: 'commentsId',select: ['content', 'likes', "dislikes"], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
 
         return res.status(201).json(post);
     } catch (error) {
@@ -154,7 +154,7 @@ async (req: Request, res: Response) => {
       const post = await Post.findById(`${postId}`)
       .populate('userId', ['username', 'profilePicture'])
       .populate('dislikes', 'username')
-      .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+      .populate({path: 'commentsId',select: ['content', 'likes', "dislikes"], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
 
       return res.status(201).json(post)
    } catch (error) {
@@ -183,7 +183,7 @@ async (req: Request, res: Response) => {
       const newPost = await Post.findById(comment.postId)
       .populate('userId', ['username', 'profilePicture'])
       .populate('dislikes', 'username')
-      .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+      .populate({path: 'commentsId',select: ['content', 'likes', "dislikes"], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
 
       if (newPost) return res.status(201).json(newPost);
    } catch (error) {

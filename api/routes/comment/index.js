@@ -116,7 +116,7 @@ router.post('/:userId/:postId', passport_1.default.authenticate('jwt', { session
         yield newComment.save();
         post.commentsId.push(newComment._id);
         yield post.save();
-        post = yield post.populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } });
+        post = yield post.populate({ path: 'commentsId', select: ['content', 'likes', "dislikes"], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } });
         return res.status(201).json(post);
     }
     catch (error) {
@@ -141,7 +141,7 @@ router.put('/:userId/:postId/:commentId', passport_1.default.authenticate('jwt',
         const post = yield mongoose_1.Post.findById(`${postId}`)
             .populate('userId', ['username', 'profilePicture'])
             .populate('dislikes', 'username')
-            .populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } });
+            .populate({ path: 'commentsId', select: ['content', 'likes', "dislikes"], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } });
         return res.status(201).json(post);
     }
     catch (error) {
@@ -166,7 +166,7 @@ router.delete('/:userId/:postId/:commentId', passport_1.default.authenticate('jw
         const newPost = yield mongoose_1.Post.findById(comment.postId)
             .populate('userId', ['username', 'profilePicture'])
             .populate('dislikes', 'username')
-            .populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } });
+            .populate({ path: 'commentsId', select: ['content', 'likes', "dislikes"], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } });
         if (newPost)
             return res.status(201).json(newPost);
     }
