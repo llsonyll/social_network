@@ -4,7 +4,7 @@ import './settings.css'
 import {useDispatch, useSelector} from 'react-redux'
 import { useState } from 'react'
 import {createNewReview, getAllReviewes, deleteReview, modifyReview} from '../../redux/actions/reviewAction'
-import { changePassword, getUserProfile} from '../../redux/actions/userActions'
+import { changePassword, getUserProfile, deleteUser} from '../../redux/actions/userActions'
 import { privacityChange } from '../../redux/actions/premiumAction'
 
 function settings() {
@@ -136,7 +136,12 @@ function settings() {
     }
 
 
-
+let handleDeleteUser = (e) =>{
+    e.preventDefault()
+    dispatch(deleteUser(_id))
+    alert('You successfully deleted your account, see you next time <3')
+    navigate(`/`)
+}
 
   return (
     <div className='settings-container'>
@@ -193,7 +198,7 @@ function settings() {
             >Delete current review</button>
             :
             null}
-            <button className='deleteaccount redbutton'>Delete account forever</button>
+            <button className='deleteaccount redbutton' onClick={handleDeleteUser}>Delete account forever</button>
 
         </div>
     </div>

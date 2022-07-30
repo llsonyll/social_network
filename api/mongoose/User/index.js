@@ -25,7 +25,8 @@ exports.userSchema = new mongoose_1.Schema({
     chats: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'Chat', required: true }],
     paymentsId: [{ type: String, ref: 'Payment' }],
     plan: { type: String, enum: ['weekly', 'monthly', 'yearly'] },
-    expirationDate: Date
+    expirationDate: Date,
+    isDeleted: { type: Boolean, default: false, required: true }
 }, {
     versionKey: false
 });
