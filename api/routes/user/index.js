@@ -364,7 +364,7 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
         return res.status(404).json({ errorMsg: err });
     }
 }));
-
+//ruta para borrar la cuenta de un usuario
 router.put("/deleted/:userId", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
@@ -384,7 +384,8 @@ router.put("/deleted/:userId", passport_1.default.authenticate("jwt", {
     }
     catch (err) {
         res.json(err);
-
+    }
+}));
 // -------------- PUT /acceptFollow/:userId/:userRequestingId --- Aceptar solicitud de seguimiento ------------------
 router.put('/acceptFollow/:userId/:userRequestingId', passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt",
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -432,7 +433,6 @@ router.put('/cancelFollow/:userId/:userRequestingId', passport_1.default.authent
     }
     catch (error) {
         return res.status(400).json(error);
-
     }
 }));
 exports.default = router;
