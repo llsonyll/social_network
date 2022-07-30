@@ -71,7 +71,7 @@ export const getLoggedUserInfo = () => async (dispatch) => {
       loginUser({
         username: username,
         _id: _id,
-        profilePicture: profilePicture,
+        profilePicture: profilePicture
       })
     );
   } catch (err) {

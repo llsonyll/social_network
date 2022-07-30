@@ -7,22 +7,31 @@ import FriendPostTile from "../../components/FriendPostTile";
 import HomePostCard from "../../components/HomePostCard";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getHomePosts } from "../../redux/actions/userActions";
+import { getHomePosts, getUserFollowings } from "../../redux/actions/userActions";
 import InfiniteScroll from 'react-infinite-scroll-component'
 import LoadingSpinner from "../../components/LoadingSpinner";
 
+
 const Home = () => {
+  // let {following} = useSelector(state => state..loggedUser)
+  
   let {homePostsData , control} = useSelector((state) => state.user);
+  let {userFollowings} = useSelector((state) => state.user);
+  
   const homePosts = homePostsData;
   const userId = useSelector((state) => state.auth.loggedUser._id);
   const dispatch = useDispatch();
   let page = 0;
   let pages = '';
-
+  
   useEffect(() => {
     userId ? dispatch(getHomePosts(userId, parseInt(page))) : null;
-
+    
   }, [userId]);
+  
+  useEffect(() => {
+    dispatch(getUserFollowings(userId))
+  }, [])
   
 
   useEffect(() => {
@@ -54,9 +63,12 @@ const Home = () => {
         <div className="text-white font-normal text-xl mb-4 uppercase tracking-wide">
           Following
         </div>
-        {/* {dummyFriendPost.map((tile) => (
-          <FriendPostTile className="friends" tile={tile} key={tile.postId} />
-        ))} */}
+        {
+        userFollowings ?
+        userFollowings.map((friend) => (
+          <FriendPostTile className="friends" img={friend.profilePicture} username={friend.username} key={friend._id} userId={friend._id}/>
+        )) : <p>...</p>
+        }
       </div>
       <InfiniteScroll dataLength={homePosts.length} hasMore={control} next={handlePage} loader={<LoadingSpinner/>}>
           <div className="flex-1 flex flex-col gap-5 h-full">

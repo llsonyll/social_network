@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   userProfileData: {},
   homePostsData: [],
-  control: true
+  control: true,
+  userFollowings : []
 };
 
 const userReducer = createSlice({
@@ -38,10 +39,14 @@ const userReducer = createSlice({
     toggleFollowUser(state, action) {
       state.userProfileData.followers = action.payload;
     },
+
     dislikesPost(state,{payload}){
        let index = state.homePostsData.findIndex(post => post._id === payload.postId )
        state.homePostsData[index].dislikes = payload.dislikes;
        state.homePostsData[index].likes = payload.likes;
+    },
+    toggleUSERFollowing(state, action) {
+      state.userFollowings = action.payload;
     },
     toggleResponseFollow(state, action) {
       state.userProfileData.followRequest = action.payload.followRequest;
@@ -57,7 +62,8 @@ export const {
   clearProfileData,
   toggleFollowUser,
   toggleResponseFollow,
-  dislikesPost
+  dislikesPost,
+  toggleUSERFollowing,
 } = userReducer.actions;
 
 export default userReducer.reducer;
