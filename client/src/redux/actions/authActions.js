@@ -65,13 +65,14 @@ export const getLoggedUserInfo = () => async (dispatch) => {
     const token = localStorage.getItem("token");
     setAuthorization(token);
     const {
-      data: { username, _id, profilePicture },
+      data: { username, _id, profilePicture , following},
     } = await apiConnection.post("auth");
     return dispatch(
       loginUser({
         username: username,
         _id: _id,
         profilePicture: profilePicture,
+        following: following
       })
     );
   } catch (err) {

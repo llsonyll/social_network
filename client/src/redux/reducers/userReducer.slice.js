@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 const initialState = {
   userProfileData: {},
   homePostsData: [],
-  control: true
+  control: true,
+  userFollowings : []
 };
 
 const userReducer = createSlice({
@@ -38,10 +39,13 @@ const userReducer = createSlice({
     },
     toggleFollowUser(state, action) {
       state.userProfileData.followers = action.payload;
+    },
+    toggleUSERFollowing(state, action) {
+      state.userFollowings = action.payload;
     }
   },
 });
 
-export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData, toggleFollowUser } = userReducer.actions;
+export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData, toggleFollowUser,toggleUSERFollowing } = userReducer.actions;
 
 export default userReducer.reducer;

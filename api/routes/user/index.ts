@@ -210,6 +210,25 @@ router.get(
     }
   }
 );
+
+router.get('/following/:userId', passport.authenticate("jwt", {
+  session: false,
+  failureRedirect: "/auth/loginjwt",
+}),
+async (req: Request, res: Response) => {
+  try {
+      let userId = req.params.userId;
+      let user: any = await User.findById(`${userId}`).populate('following' , ['username' , 'profilePicture']);
+      console.log(user.following);
+      
+      if(!user){ return res.status(400).json('not following')}
+
+      res.status(200).json(user.following);
+  } catch (err) {
+    res.status(400).json(err)
+  }
+
+})
 // GET '/:userId' - esta repetida, pero esta no tiene multimedia
 /* router.get(
   "/:userId",
