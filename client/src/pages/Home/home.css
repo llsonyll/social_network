@@ -10,6 +10,18 @@
 #contenedor_friends {
   box-shadow: inset 0px 0px 20px rgb(26, 26, 26);
 }
+#contenedor_friends .linkfriend_message{
+  display: flex;
+}
+#contenedor_friends .mess_friend_section {
+  color: gray;
+  font-size: 25px;
+  text-align: center;
+  transition: .2s all;
+}
+#contenedor_friends .mess_friend_section:hover {
+  color: #4e864c;
+}
 
 #contenedor_posts {
   width: 100%;
