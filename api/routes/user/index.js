@@ -18,6 +18,7 @@ const passport_1 = __importDefault(require("passport"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const nodemailer_1 = require("../../utils/nodemailer");
 const router = express_1.default.Router();
+// GET "/browser/:username"
 router.get("/browser/:username", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
@@ -35,31 +36,39 @@ router.get("/browser/:username", passport_1.default.authenticate("jwt", {
         res.status(400).json(err);
     }
 }));
-router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params;
-    let page = parseInt(`${req.query.page}`);
-    if (!page)
-        page = 0;
-    try {
-        const user = yield mongoose_1.User.findById(`${userId}`);
-        if (!user)
-            return res.status(404).json({ errorMsg: 'who are you?' });
-        if (user.following.length === 0) {
-            const posts = yield mongoose_1.Post.find({})
-                .sort({ createdAt: -1 })
-                .skip(page * 20)
-                .limit(20)
-                .populate('userId', ['username', 'profilePicture']);
-            res.json(posts);
+// GET '/home/:userId' - esta rompe la home
+/* router.get(
+    '/home/:userId',
+    passport.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }),
+    async (req: Request, res: Response) => {
+        const { userId } = req.params
+        let page = parseInt(`${req.query.page}`)
+
+// 		if (!page) page = 0
+
+// 		try {
+// 			const user = await User.findById(`${userId}`)
+// 			if (!user) return res.status(404).json({ errorMsg: 'who are you?' })
+
+// 			if (user.following.length === 0) {
+// 				const posts = await Post.find({})
+// 					.sort({ createdAt: -1 })
+// 					.skip(page * 20)
+// 					.limit(20)
+//                     .populate('userId', ['username', 'profilePicture'])
+// 				res.json(posts)
+// 			}
+// 			//  else {
+
+// 			//si el usuario sigue a otros usuarios
+
+            // }
+        } catch (err) {
+            return res.status(404).json({ errorMsg: err })
         }
-        //  else {
-        //si el usuario sigue a otros usuarios
-        // }
     }
-    catch (err) {
-        return res.status(404).json({ errorMsg: err });
-    }
-}));
+) */
+// GET '/:userId'
 router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     try {
@@ -71,8 +80,9 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
             options: { sort: { 'createdAt': -1 } },
             populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
-            //.populate('following', 'username')
-            //.populate('followers', 'username')
+            // .populate('followRequest', 'username')
+            // .populate('following', 'username')
+            // .populate('followers', 'username')
             .select('-password');
         if (!user)
             return res.status(404).json({ errorMsg: 'who are you?' });
@@ -82,129 +92,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         res.status(404).json({ errorMsg: err });
     }
 }));
-router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { userId } = req.params;
-        const { username, firstname, lastname, biography, profilePicture } = req.body;
-        if (!username && !firstname && !lastname && (!biography && biography !== '') && !profilePicture) {
-            return res.status(400).json({ errprMsg: 'Please send data' });
-        }
-        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
-            .populate({
-            path: 'posts',
-            select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt', 'multimedia'],
-            options: { sort: { 'createdAt': -1 } },
-            populate: { path: 'userId', select: ['username', 'profilePicture'] }
-        })
-            // .populate('following', 'username')
-            // .populate('followers', 'username')
-            .select("-password");
-        if (!user)
-            return res.status(404).json({ errorMsg: "who are you?" });
-        return res.status(200).json(user);
-    }
-    catch (err) {
-        res.status(400).json(err);
-    }
-}));
-router.get("/home/:userId", passport_1.default.authenticate("jwt", {
-    session: false,
-    failureRedirect: "/auth/loginjwt",
-}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params;
-    let page = parseInt(req.query.page);
-    if (!page)
-        page = 0;
-    try {
-        const user = yield mongoose_1.User.findById(`${userId}`);
-        if (!user)
-            return res.status(404).json({ errorMsg: "who are you?" });
-        if (user.following.length === 0) {
-            const posts = yield mongoose_1.Post.find({})
-                .sort({ createdAt: -1 })
-                .skip(page * 20)
-                .limit(20)
-                .populate("userId", ["username", "profilePicture"]);
-            res.json(posts);
-        }
-        else {
-            const posts = yield mongoose_1.Post.find({})
-                .sort({ createdAt: -1 })
-                .skip(page * 20)
-                .limit(20)
-                .populate("userId", ["username", "profilePicture"]);
-            res.json(posts);
-        }
-    }
-    catch (err) {
-        return res.status(404).json({ errorMsg: err });
-    }
-}));
-router.get("/:userId", passport_1.default.authenticate("jwt", {
-    session: false,
-    failureRedirect: "/auth/loginjwt",
-}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params;
-    try {
-        const user = yield mongoose_1.User.findById(`${userId}`)
-            // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
-            .populate({
-            path: "posts",
-            select: [
-                "content",
-                "createdAt",
-                "likes",
-                "dislikes",
-                "_id",
-                "commentsId",
-            ],
-            options: { sort: { createdAt: -1 } },
-            populate: { path: "userId", select: ["username", "profilePicture"] },
-        })
-            //.populate('following', 'username')
-            //.populate('followers', 'username')
-            .select("-password");
-        if (!user)
-            return res.status(404).json({ errorMsg: "who are you?" });
-        return res.status(201).json(user);
-    }
-    catch (err) {
-        res.status(404).json({ errorMsg: err });
-    }
-}));
-// Recovery Password
-router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { email } = req.body;
-        if (!email)
-            return res.status(400).json({ error: "Email not provided" });
-        const [user] = yield mongoose_1.User.find({ email: email });
-        if (!user)
-            return res.status(400).json({
-                error: "Email provided does not belong to any registered user",
-            });
-        const dummyPassword = "abcde12345";
-        const mailMessage = {
-            title: "Password Restored",
-            subject: "Password Restoration",
-            message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
-      <li>New Password: <strong>${dummyPassword}</strong></li>`,
-        };
-        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
-        console.log(message);
-        //password encryption
-        let salt = yield bcrypt_1.default.genSalt(10);
-        let hash = yield bcrypt_1.default.hash(dummyPassword, salt);
-        user.password = hash;
-        yield user.save();
-        return res.status(200).json({
-            message: "Successfully user's password restored",
-        });
-    }
-    catch (err) {
-        return res.status(400).json(err);
-    }
-}));
+// PUT "/updatePassword"
 router.put("/updatePassword", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
@@ -242,47 +130,206 @@ router.put("/updatePassword", passport_1.default.authenticate("jwt", {
         return res.status(400).json(err);
     }
 }));
-router.put("/:userId", passport_1.default.authenticate("jwt", {
+// PUT '/:userId'
+router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const { username, firstname, lastname, biography, profilePicture } = req.body;
+        if (!username && !firstname && !lastname && (!biography && biography !== '') && !profilePicture) {
+            return res.status(400).json({ errprMsg: 'Please send data' });
+        }
+        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
+            .populate({
+            path: 'posts',
+            select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt', 'multimedia'],
+            options: { sort: { 'createdAt': -1 } },
+            populate: { path: 'userId', select: ['username', 'profilePicture'] }
+        })
+            // .populate('following', 'username')
+            // .populate('followers', 'username')
+            .select("-password");
+        if (!user)
+            return res.status(404).json({ errorMsg: "who are you?" });
+        return res.status(200).json(user);
+    }
+    catch (err) {
+        res.status(400).json(err);
+    }
+}));
+// GET '/home/:userId'
+router.get("/home/:userId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    let page = parseInt(req.query.page);
+    if (!page)
+        page = 0;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            return res.status(404).json({ errorMsg: "who are you?" });
+        if (user.following.length === 0) {
+            const posts = yield mongoose_1.Post.find({})
+                .sort({ createdAt: -1 })
+                .skip(page * 20)
+                .limit(20)
+                .populate("userId", ["username", "profilePicture"]);
+            res.json(posts);
+        }
+        else {
+            const posts = yield mongoose_1.Post.find({})
+                .sort({ createdAt: -1 })
+                .skip(page * 20)
+                .limit(20)
+                .populate("userId", ["username", "profilePicture"]);
+            res.json(posts);
+        }
+    }
+    catch (err) {
+        return res.status(404).json({ errorMsg: err });
+    }
+}));
+router.get('/following/:userId', passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId } = req.params;
-        const { username, firstname, lastname, biography } = req.body;
-        if (!username &&
-            !firstname &&
-            !lastname &&
-            !biography &&
-            biography !== "") {
-            return res.status(400).json({ errprMsg: "Please send data" });
+        let userId = req.params.userId;
+        let user = yield mongoose_1.User.findById(`${userId}`).populate('following', ['username', 'profilePicture']);
+        console.log(user.following);
+        if (!user) {
+            return res.status(400).json('not following');
         }
-        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, {
-            new: true,
-        })
-            .populate({
-            path: "posts",
-            select: [
-                "content",
-                "likes",
-                "dislikes",
-                "_id",
-                "commentsId",
-                "createdAt",
-            ],
-            populate: { path: "userId", select: ["username", "profilePicture"] },
-        })
-            .populate("following", "username")
-            .populate("followers", "username")
-            .populate('followRequest', 'username')
-            .select("-password");
-        if (!user)
-            return res.status(404).json({ errorMsg: "who are you?" });
-        return res.json(user);
+        res.status(200).json(user.following);
     }
     catch (err) {
-        res.status(400).json({ errorMsg: err });
+        res.status(400).json(err);
     }
 }));
+// GET '/:userId' - esta repetida, pero esta no tiene multimedia
+/* router.get(
+  "/:userId",
+  passport.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+  }),
+  async (req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    try {
+      const user = await User.findById(`${userId}`)
+        // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
+        .populate({
+          path: "posts",
+          select: [
+            "content",
+            "createdAt",
+            "likes",
+            "dislikes",
+            "_id",
+            "commentsId",
+          ],
+          options: { sort: { createdAt: -1 } },
+          populate: { path: "userId", select: ["username", "profilePicture"] },
+        })
+
+        //.populate('following', 'username')
+        //.populate('followers', 'username')
+        .select("-password");
+      if (!user) return res.status(404).json({ errorMsg: "who are you?" });
+      return res.status(201).json(user);
+    } catch (err) {
+      res.status(404).json({ errorMsg: err });
+    }
+  }
+); */
+// POST "/restorePassword"
+router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.body;
+        if (!email)
+            return res.status(400).json({ error: "Email not provided" });
+        const [user] = yield mongoose_1.User.find({ email: email });
+        if (!user)
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        const dummyPassword = "abcde12345";
+        const mailMessage = {
+            title: "Password Restored",
+            subject: "Password Restoration",
+            message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
+      <li>New Password: <strong>${dummyPassword}</strong></li>`,
+        };
+        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        console.log(message);
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(dummyPassword, salt);
+        user.password = hash;
+        yield user.save();
+        return res.status(200).json({
+            message: "Successfully user's password restored",
+        });
+    }
+    catch (err) {
+        return res.status(400).json(err);
+    }
+}));
+// PUT '/:userId'
+/*
+COMENTO ESTA PORQUE FRAN DIJO QUE PUEDE SER QUE ESTA SEA EL PROBLEMA, PORQUE ESTÁ DESACTUALIZADA, PERO NO LA BORRO POR SI SE ROMPE ALGO
+router.put(
+  "/:userId",
+  passport.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+  }),
+  async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      const { username, firstname, lastname, biography } = req.body;
+
+      if (
+        !username &&
+        !firstname &&
+        !lastname &&
+        !biography &&
+        biography !== ""
+      ) {
+        return res.status(400).json({ errprMsg: "Please send data" });
+      }
+
+      const user = await User.findByIdAndUpdate(`${userId}`, req.body, {
+        new: true,
+      })
+        .populate({
+          path: "posts",
+          select: [
+            "content",
+            "likes",
+            "dislikes",
+            "_id",
+            "commentsId",
+            "createdAt",
+          ],
+          populate: { path: "userId", select: ["username", "profilePicture"] },
+        })
+        .populate("following", "username")
+        .populate("followers", "username")
+        .populate('followRequest', 'username')
+        .select("-password");
+
+      if (!user) return res.status(404).json({ errorMsg: "who are you?" });
+
+      return res.json(user);
+    } catch (err) {
+      res.status(400).json({ errorMsg: err });
+    }
+  }
+); */
+// PUT "/follow/:userId/:userIdFollowed"
 router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
@@ -332,6 +379,77 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });
+    }
+}));
+//ruta para borrar la cuenta de un usuario
+router.put("/deleted/:userId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userId = req.params.userId;
+        /*    let deletePost = await Post.deleteMany({userId:`${userId}`});
+           let deleteComment = await Comment.deleteMany({userId:`${userId}`});
+            let deleteReview = await Review.deleteMany({userId:`${userId}`});
+            let deleteMessage = await Message.deleteMany({from:`${userId}`});
+            let deleteChat = await Chat.findOneAndUpdate({users:{_id:`${userId}`}}); */
+        let userDeleted = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, { isDeleted: true }, { new: true });
+        if (!userDeleted) {
+            return res.status(400).json("Eror deleting user");
+        }
+        return res.status(200).json(userDeleted);
+    }
+    catch (err) {
+        res.json(err);
+    }
+}));
+// -------------- PUT /acceptFollow/:userId/:userRequestingId --- Aceptar solicitud de seguimiento ------------------
+router.put('/acceptFollow/:userId/:userRequestingId', passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId, userRequestingId } = req.params;
+        const userRequesting = yield mongoose_1.User.findById(`${userRequestingId}`);
+        if (!userRequesting)
+            return res.status(404).json({ msg: 'User requesting not found' });
+        const user = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, {
+            $pull: {
+                followRequest: `${userRequesting._id}`
+            }
+        }, { new: true });
+        if (!user)
+            return res.status(404).json({ msg: 'User not found' });
+        user.followers.push(`${userRequesting._id}`);
+        yield user.save();
+        userRequesting.following.push(user._id);
+        yield userRequesting.save();
+        // user = await user
+        // .populate()
+        return res.json({ followers: user.followers, followRequest: user.followRequest });
+    }
+    catch (error) {
+        return res.status(400).json(error);
+    }
+}));
+// -------------- PUT /cancelFollow/:userId/:userRequestingId --- Cancelar solicitud de seguimiento ------------------
+router.put('/cancelFollow/:userId/:userRequestingId', passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId, userRequestingId } = req.params;
+        const userRequesting = yield mongoose_1.User.findById(`${userRequestingId}`);
+        if (!userRequesting)
+            return res.status(404).json({ msg: 'User requesting not found' });
+        const user = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, {
+            $pull: {
+                followRequest: `${userRequesting._id}`
+            }
+        }, { new: true });
+        if (!user)
+            return res.status(404).json({ msg: 'User not found' });
+        yield user.save();
+        return res.json({ followers: user.followers, followRequest: user.followRequest });
+    }
+    catch (error) {
+        return res.status(400).json(error);
     }
 }));
 exports.default = router;
