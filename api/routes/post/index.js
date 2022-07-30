@@ -120,7 +120,7 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
                 },
             });
         }
-        let dislikes = yield mongoose_1.Post.findOne({ "dislikes._id": id });
+        let dislikes = yield mongoose_1.Post.findOne({ _id: postId, "dislikes._id": id });
         if (!dislikes) {
             post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
                 $push: {
@@ -158,10 +158,8 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             return res.status(400).json("algo salio mal");
         }
         let id = user._id;
-        let dislikes = yield mongoose_1.Post.findOne({ "dislikes._id": id });
-        console.log(dislikes);
+        let dislikes = yield mongoose_1.Post.findOne({ _id: postId, "dislikes._id": id });
         if (dislikes) {
-            console.log("entre");
             yield mongoose_1.Post.updateOne({ _id: postId }, {
                 $pull: {
                     dislikes: { _id: id },

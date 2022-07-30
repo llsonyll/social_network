@@ -37,7 +37,7 @@ export const newlikePostTitle = (postId, userId) => async (dispatch) => {
       data: { likes, dislikes },
     } = await apiConnection.put(`post/like/${postId}/${userId}`);
     console.log(likes)
-    dispatch(likesPost({likes}));
+    dispatch(likesPost(likes));
   } catch (err) {
     console.log(err);
   }
