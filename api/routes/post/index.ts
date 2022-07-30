@@ -128,7 +128,7 @@ async (req:Request, res:Response) => {
 
      if(!post){return res.status(400).json("not found dislikes")} 
 
-    res.status(200).json({ dislikes: post.dislikes});
+    res.status(200).json({ dislikes: post.dislikes, likes: post.likes });
    } catch (err) {
      return res.status(400).json(err);
    }
@@ -154,10 +154,13 @@ async (req:Request, res:Response) => {
     
     let id = user._id;
 
-    if(post.dislikes.includes(user._id)){
+    let dislikes: IPost | null = await Post.findOne({"dislikes._id": id });
+    console.log(dislikes)
+    if(dislikes){
+        console.log("entre");
        await Post.updateOne({_id: postId}, {
            $pull: {
-              dislikes: id,
+              dislikes: { _id: id },
            },
        });
      }

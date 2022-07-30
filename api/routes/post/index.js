@@ -133,7 +133,7 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
         if (!post) {
             return res.status(400).json("not found dislikes");
         }
-        res.status(200).json({ dislikes: post.dislikes });
+        res.status(200).json({ dislikes: post.dislikes, likes: post.likes });
     }
     catch (err) {
         return res.status(400).json(err);
@@ -152,10 +152,13 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             return res.status(400).json("algo salio mal");
         }
         let id = user._id;
-        if (post.dislikes.includes(user._id)) {
+        let dislikes = yield mongoose_1.Post.findOne({ "dislikes._id": id });
+        console.log(dislikes);
+        if (dislikes) {
+            console.log("entre");
             yield mongoose_1.Post.updateOne({ _id: postId }, {
                 $pull: {
-                    dislikes: id,
+                    dislikes: { _id: id },
                 },
             });
         }
