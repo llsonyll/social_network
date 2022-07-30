@@ -24,7 +24,18 @@ const postReducer = createSlice({
         },
         likesComment(state,{payload}){
               let index = state.postDetail.commentsId.findIndex(comment => comment._id === payload._id);
-              state.postDetail.commentsId[index].likes = payload.likes;
+            state.postDetail.commentsId[index].dislikes = payload.dislikes;
+            state.postDetail.commentsId[index].likes = payload.likes;
+        },
+        dislikesComment(state,{payload}){
+            let index = state.postDetail.commentsId.findIndex(comment => comment._id === payload._id);
+          state.postDetail.commentsId[index].dislikes = payload.dislikes;
+          state.postDetail.commentsId[index].likes = payload.likes;
+      },
+        dislikesComment(state,{payload}){
+            let index = state.postDetail.commentsId.findIndex(comment => comment._id === payload._id);
+            state.postDetail.commentsId[index].dislikes = payload.dislikes;
+            state.postDetail.commentsId[index].likes = payload.likes;
         },
     }
 })
@@ -36,6 +47,7 @@ export const {
     likesPost,
     dislikesPost,
     likesComment,
+    dislikesComment,
 } = postReducer.actions
 
 

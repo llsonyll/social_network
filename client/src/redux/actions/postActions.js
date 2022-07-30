@@ -4,6 +4,7 @@ import {
   likesPost,
   dislikesPost,
   likesComment,
+  dislikesComment,
 } from "../reducers/postReducer.slice";
 import { apiConnection } from "../../utils/axios";
 
@@ -58,9 +59,20 @@ export const newDislikesPostTitle = (postId, userId) => async (dispatch) => {
 export const newLikesComment = (commentId, userId) => async (dispatch) => {
   try {
     const {
-      data: { _id, likes },
+      data: { _id, likes, dislikes },
     } = await apiConnection.put(`comment/like/${commentId}/${userId}`);
-    dispatch(likesComment({ _id, likes }));
+    dispatch(likesComment({ _id, likes, dislikes }));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const newDislikesComment = (commentId, userId) => async (dispatch) => {
+  try {
+    const {
+      data: { _id, likes, dislikes },
+    } = await apiConnection.put(`comment/dislike/${commentId}/${userId}`);
+    dispatch(dislikesComment({ _id, likes, dislikes }));
   } catch (err) {
     console.log(err);
   }

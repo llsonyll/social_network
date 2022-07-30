@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
 
 const ProfilePosts = (props) => {
-	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes, multimedia } = props
+	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes,dislikes , multimedia } = props
   
 	const { _id } = useSelector(state => state.auth.loggedUser);
   const dispatch = useDispatch();
