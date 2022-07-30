@@ -27,25 +27,30 @@ router.put("/like/:commentId/:userId", passport_1.default.authenticate("jwt", { 
         if (!user) {
             return res.status(400).json("user does not exist");
         }
-        if (comment.dislikes.includes(user._id)) {
+        let dislikes = yield mongoose_1.Comment.findOne({ _id: commentId, "dislikes._id": user._id });
+        if (dislikes) {
             yield mongoose_1.Comment.updateOne({ _id: commentId }, {
                 $pull: {
-                    dislikes: user._id
+                    dislikes: { _id: user._id }
                 }
             });
         }
-        if (!comment.likes.includes(user._id)) {
-            comment.likes.push(user._id);
-            yield comment.save();
+        let likes = yield mongoose_1.Comment.findOne({ _id: commentId, "likes._id": user._id });
+        if (!likes) {
+            comment = yield mongoose_1.Comment.findOneAndUpdate({ _id: commentId }, {
+                $push: {
+                    likes: { _id: user._id, username: user.username }
+                }
+            }, { new: true });
         }
         else {
             comment = yield mongoose_1.Comment.findOneAndUpdate({ _id: commentId }, {
                 $pull: {
-                    likes: user._id
+                    likes: { _id: user._id }
                 }
             }, { new: true });
         }
-        return res.status(200).json({ likes: comment.likes, _id: comment._id });
+        return res.status(200).json({ likes: comment.likes, _id: comment._id, dislikes: comment.dislikes });
     }
     catch (err) {
         return res.json(err);
@@ -62,25 +67,30 @@ router.put("/dislike/:commentId/:userId", passport_1.default.authenticate("jwt",
         if (!user) {
             return res.status(400).json("user does not exist");
         }
-        if (comment.likes.includes(user._id)) {
+        let likes = yield mongoose_1.Comment.findOne({ _id: commentId, "likes._id": user._id });
+        if (likes) {
             yield mongoose_1.Comment.updateOne({ _id: commentId }, {
                 $pull: {
-                    likes: user._id
+                    likes: { _id: user._id }
                 }
             });
         }
-        if (!comment.dislikes.includes(user._id)) {
-            comment.dislikes.push(user._id);
-            yield comment.save();
+        let dislikes = yield mongoose_1.Comment.findOne({ _id: commentId, "dislikes._id": user._id });
+        if (!dislikes) {
+            comment = yield mongoose_1.Comment.findOneAndUpdate({ _id: commentId }, {
+                $push: {
+                    dislikes: { _id: user._id, username: user.username }
+                }
+            }, { new: true });
         }
         else {
             comment = yield mongoose_1.Comment.findOneAndUpdate({ _id: commentId }, {
                 $pull: {
-                    dislikes: user._id
+                    dislikes: { _id: user._id }
                 }
             }, { new: true });
         }
-        return res.status(200).json({ dislikes: comment.dislikes, _id: comment._id });
+        return res.status(200).json({ dislikes: comment.dislikes, _id: comment._id, likes: comment.likes });
     }
     catch (err) {
         return res.json(err);

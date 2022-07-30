@@ -21,13 +21,13 @@ exports.postSchema = new mongoose_1.Schema({
     ],
     likes: [
         new mongoose_1.Schema({
-            _id: { type: mongoose_1.Schema.Types.ObjectId, require: true },
+            _id: { type: mongoose_1.Schema.Types.ObjectId, require: true, unique: true, ref: "User", },
             username: { type: String }
         })
     ],
     dislikes: [
         new mongoose_1.Schema({
-            _id: { type: mongoose_1.Schema.Types.ObjectId, required: true },
+            _id: { type: mongoose_1.Schema.Types.ObjectId, required: true, unique: true, ref: "User", },
             username: { type: String }
         })
     ],

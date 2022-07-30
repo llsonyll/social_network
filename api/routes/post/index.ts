@@ -43,7 +43,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
         const {postId} = req.params
         //Search a post and select the data we want to send
         let post = await Post.findById(`${postId}`)
-        .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+        .populate({path: 'commentsId',select: ['content', 'likes', 'dislikes'], populate:{path: 'userId', select: ['username', 'likes', 'dislikes','profilePicture']}})
         .populate('userId', ['username', 'profilePicture'])
         //.populate('likes', 'username')
         .populate('dislikes', 'username')
@@ -52,6 +52,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
             res.status(400).json("Post doesn't exist")
         }else{
             res.json(post)
+            console.log(post)
         }
     }catch(err){
         res.status(400).json('Something went wrong')

@@ -22,13 +22,13 @@ export let postSchema = new Schema<IPost>({
 	],
 	likes: [
 		 new Schema<ILikesAndDislikes>({
-			  _id: {type: Schema.Types.ObjectId, require:true},
+			  _id: {type: Schema.Types.ObjectId, require:true, unique: true, ref: "User", },
 				username: {type: String}
 		 })
 	],
 	dislikes: [
 		  new Schema<ILikesAndDislikes>({
-				_id:{type: Schema.Types.ObjectId, required: true},
+				_id:{type: Schema.Types.ObjectId, required: true, unique: true, ref: "User", },
 				username:{type: String}
 			})
 	],

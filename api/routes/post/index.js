@@ -54,7 +54,7 @@ router.get('/:postId', passport_1.default.authenticate('jwt', { session: false, 
         const { postId } = req.params;
         //Search a post and select the data we want to send
         let post = yield mongoose_1.Post.findById(`${postId}`)
-            .populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } })
+            .populate({ path: 'commentsId', select: ['content', 'likes', 'dislikes'], populate: { path: 'userId', select: ['username', 'likes', 'dislikes', 'profilePicture'] } })
             .populate('userId', ['username', 'profilePicture'])
             //.populate('likes', 'username')
             .populate('dislikes', 'username');
@@ -64,6 +64,7 @@ router.get('/:postId', passport_1.default.authenticate('jwt', { session: false, 
         }
         else {
             res.json(post);
+            console.log(post);
         }
     }
     catch (err) {
@@ -182,18 +183,6 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
                 },
             }, { new: true });
         }
-        //  let userPost = await User.findById(`${post.userId}`)
-        //  .populate({
-        //      path: 'posts',
-        //      options: {sort: {'createdAt': -1 } },
-        //      select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
-        //      populate: { path: 'userId', select: ['username', 'profilePicture'] },
-        //  })
-        //  .populate('following', 'username')
-        //  .populate('followers', 'username')
-        //  .populate('followRequest', 'username')
-        //  .select('-password')
-        //   let likes = !post.likes? [] : post.likes;
         return res.status(200).json({ likes: post.likes, dislikes: post.dislikes });
     }
     catch (err) {
