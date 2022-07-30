@@ -1,0 +1,10 @@
+.icon_more{
+    color: #fff;
+    font-size: 30px;
+    position: absolute;
+    right: 0px;
+    transition: .2s all;
+}
+.icon_more:hover{
+    color:#4e864c ;
+}
