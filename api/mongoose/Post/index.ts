@@ -1,4 +1,6 @@
-import { Schema } from 'mongoose'
+import { Types } from 'mongoose';
+import { ILikesAndDislikes } from './../../types/index';
+import { Schema } from 'mongoose';
 import { IPost } from '../../types'
 
 export let postSchema = new Schema<IPost>({
@@ -22,13 +24,13 @@ export let postSchema = new Schema<IPost>({
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'User',
-		},
+		}
 	],
 	dislikes: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'User',
-		},
+		  new Schema<ILikesAndDislikes>({
+				_id:{type: Schema.Types.ObjectId, required: true},
+				username:{type: String}
+			})
 	],
 	content: {type: String},
 	multimedia: String
