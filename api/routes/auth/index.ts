@@ -219,7 +219,7 @@ router.post(
         }
       }
 
-      return res.status(200).json({ _id: id, username, profilePicture });
+      return res.status(200).json({ _id: id, username, profilePicture});
     } catch (err) {
       return res.status(400).json(err);
     }
