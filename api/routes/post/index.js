@@ -54,7 +54,7 @@ router.get('/:postId', passport_1.default.authenticate('jwt', { session: false, 
         const { postId } = req.params;
         //Search a post and select the data we want to send
         let post = yield mongoose_1.Post.findById(`${postId}`)
-            .populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } })
+            .populate({ path: 'commentsId', select: ['content', 'likes', 'dislikes'], populate: { path: 'userId', select: ['username', 'likes', 'dislikes', 'profilePicture'] } })
             .populate('userId', ['username', 'profilePicture'])
             //.populate('likes', 'username')
             .populate('dislikes', 'username');
@@ -64,6 +64,7 @@ router.get('/:postId', passport_1.default.authenticate('jwt', { session: false, 
         }
         else {
             res.json(post);
+            console.log(post);
         }
     }
     catch (err) {
@@ -113,14 +114,15 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
             return res.status(400).json("algo salio mal");
         }
         let id = user._id;
-        if (post.likes.includes(user._id)) {
+        let likes = yield mongoose_1.Post.findOne({ _id: postId, "likes._id": id });
+        if (likes) {
             yield mongoose_1.Post.updateOne({ _id: postId }, {
                 $pull: {
-                    likes: id,
+                    likes: { _id: id },
                 },
             });
         }
-        let dislikes = yield mongoose_1.Post.findOne({ "dislikes._id": id });
+        let dislikes = yield mongoose_1.Post.findOne({ _id: postId, "dislikes._id": id });
         if (!dislikes) {
             post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
                 $push: {
@@ -158,40 +160,30 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             return res.status(400).json("algo salio mal");
         }
         let id = user._id;
-        let dislikes = yield mongoose_1.Post.findOne({ "dislikes._id": id });
-        console.log(dislikes);
+        let dislikes = yield mongoose_1.Post.findOne({ _id: postId, "dislikes._id": id });
         if (dislikes) {
-            console.log("entre");
             yield mongoose_1.Post.updateOne({ _id: postId }, {
                 $pull: {
                     dislikes: { _id: id },
                 },
             });
         }
-        if (!post.likes.includes(user._id)) {
-            post.likes.push({ _id: userId });
-            yield (post === null || post === void 0 ? void 0 : post.save());
+        let likes = yield mongoose_1.Post.findOne({ _id: postId, "likes._id": id });
+        if (!likes) {
+            post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
+                $push: {
+                    likes: { _id: id, username: user.username }
+                }
+            }, { new: true });
         }
         else {
             post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
                 $pull: {
-                    likes: id,
+                    likes: { _id: id },
                 },
             }, { new: true });
         }
-        let userPost = yield mongoose_1.User.findById(`${post.userId}`)
-            .populate({
-            path: 'posts',
-            options: { sort: { 'createdAt': -1 } },
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
-            populate: { path: 'userId', select: ['username', 'profilePicture'] },
-        })
-            .populate('following', 'username')
-            .populate('followers', 'username')
-            .populate('followRequest', 'username')
-            .select('-password');
-        let likes = !post.likes ? [] : post.likes;
-        return res.status(200).json({ likes, userPost });
+        return res.status(200).json({ likes: post.likes, dislikes: post.dislikes });
     }
     catch (err) {
         return res.status(400).json(err);

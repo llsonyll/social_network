@@ -2,8 +2,9 @@ import Avatar from "../Avatar";
 import { FaHeart } from "react-icons/fa";
 import { AiOutlineMore } from "react-icons/ai";
 import { IconContext } from "react-icons";
+import { ImHeartBroken } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
-import { newLikesComment } from "../../redux/actions/postActions";
+import { newDislikesComment, newLikesComment } from "../../redux/actions/postActions";
 // import { Link } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -29,11 +30,14 @@ const CommentTile = ({ data , props }) => {
     dispatch(newLikesComment(data._id, _id));
   };
 
+  const handleDislikeComment = ()  => {
+     dispatch(newDislikesComment(data._id, _id))
+  }
+
   let renderHeartIcon = () => {
-    if (!data.likes.includes(_id)) {
+    if (!data.likes.find( like => like._id === _id)) {
       return <FaHeart />;
-    }
-    if (data.likes.includes(_id)) {
+    }else{
       return (
         <IconContext.Provider
           value={{ color: "red", className: "global-heart-class-name" }}
@@ -45,6 +49,22 @@ const CommentTile = ({ data , props }) => {
       );
     }
   };
+   console.log(data);
+  let renderHeartBrokenIcon = () => {
+    if (!data.dislikes.find( dislike => dislike._id === _id)) {
+      console.log('Entra blanco');
+      return <ImHeartBroken />
+    }else{
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: "#9400D3", className: 'global-heart-class-name' }}>
+          <div>
+            <ImHeartBroken />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+  }
 
   const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
     if (nameOfTheComponentToRender === "editComment") {
@@ -96,8 +116,15 @@ const CommentTile = ({ data , props }) => {
             onClick={handleLikeComment}
             className="flex gap-1 items-center hover:text-gray-300"
           >
-            {renderHeartIcon()} {data ? data.likes.length : 12}
+            {data && renderHeartIcon()} {data && data.likes.length }
           </button>
+             <button
+                className="flex items-center gap-1"
+                onClick={handleDislikeComment}
+              >
+                  {data && renderHeartBrokenIcon()}
+                {data && data.dislikes.length }
+              </button>
         </div>
       </div>
       {editComents === true && 

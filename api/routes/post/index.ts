@@ -43,7 +43,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
         const {postId} = req.params
         //Search a post and select the data we want to send
         let post = await Post.findById(`${postId}`)
-        .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+        .populate({path: 'commentsId',select: ['content', 'likes', 'dislikes'], populate:{path: 'userId', select: ['username', 'likes', 'dislikes','profilePicture']}})
         .populate('userId', ['username', 'profilePicture'])
         //.populate('likes', 'username')
         .populate('dislikes', 'username')
@@ -52,6 +52,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
             res.status(400).json("Post doesn't exist")
         }else{
             res.json(post)
+            console.log(post)
         }
     }catch(err){
         res.status(400).json('Something went wrong')
@@ -110,16 +111,18 @@ async (req:Request, res:Response) => {
     
     let id = user._id;
 
-    if(post.likes.includes(user._id)){
+    let likes: IPost | null = await Post.findOne({ _id: postId ,"likes._id": id });
+
+    if(likes){
        await Post.updateOne({_id: postId}, {
            $pull: {
-              likes: id,
+              likes: { _id: id },
            },
        });
      }
 
-     let dislikes: IPost | null = await Post.findOne({"dislikes._id": id }); 
-     
+     let dislikes: IPost | null = await Post.findOne({ _id: postId ,"dislikes._id": id }); 
+
      if( ! dislikes ){
           post = await Post.findOneAndUpdate({_id: postId}, {
             $push:{
@@ -163,10 +166,9 @@ async (req:Request, res:Response) => {
     
     let id = user._id;
 
-    let dislikes: IPost | null = await Post.findOne({"dislikes._id": id });
-    console.log(dislikes)
+    let dislikes: IPost | null = await Post.findOne({ _id: postId ,"dislikes._id": id }); 
+
     if(dislikes){
-        console.log("entre");
        await Post.updateOne({_id: postId}, {
            $pull: {
               dislikes: { _id: id },
@@ -174,32 +176,23 @@ async (req:Request, res:Response) => {
        });
      }
 
-     if( !post.likes.includes(user._id)){
-        post.likes.push({ _id: userId });
-        await post?.save();
+    let likes: IPost | null = await Post.findOne({ _id: postId ,"likes._id": id });
+
+     if( !likes){
+        post = await Post.findOneAndUpdate({_id: postId},{
+            $push:{
+                likes: { _id: id, username: user.username }
+            }
+        },{new: true})
        }else{
            post = await Post.findOneAndUpdate({_id: postId}, {
                 $pull: {
-                    likes: id ,
+                    likes: { _id: id },
                 },
              },{new: true});
         }
      
-     let userPost = await User.findById(`${post.userId}`)
-     .populate({
-         path: 'posts',
-         options: {sort: {'createdAt': -1 } },
-         select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
-         populate: { path: 'userId', select: ['username', 'profilePicture'] },
-     })
-     .populate('following', 'username')
-     .populate('followers', 'username')
-     .populate('followRequest', 'username')
-     .select('-password')
-       
-      let likes = !post.likes? [] : post.likes;
-
-       return res.status(200).json({likes, userPost});
+       return res.status(200).json({likes: post.likes, dislikes: post.dislikes });
     } catch (err) {
      return res.status(400).json(err);
    }
