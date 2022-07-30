@@ -190,6 +190,23 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
         return res.status(404).json({ errorMsg: err });
     }
 }));
+router.get('/following/:userId', passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userId = req.params.userId;
+        let user = yield mongoose_1.User.findById(`${userId}`).populate('following', ['username', 'profilePicture']);
+        console.log(user.following);
+        if (!user) {
+            return res.status(400).json('not following');
+        }
+        res.status(200).json(user.following);
+    }
+    catch (err) {
+        res.status(400).json(err);
+    }
+}));
 // GET '/:userId' - esta repetida, pero esta no tiene multimedia
 /* router.get(
   "/:userId",
@@ -362,6 +379,28 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });
+    }
+}));
+//ruta para borrar la cuenta de un usuario
+router.put("/deleted/:userId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userId = req.params.userId;
+        /*    let deletePost = await Post.deleteMany({userId:`${userId}`});
+           let deleteComment = await Comment.deleteMany({userId:`${userId}`});
+            let deleteReview = await Review.deleteMany({userId:`${userId}`});
+            let deleteMessage = await Message.deleteMany({from:`${userId}`});
+            let deleteChat = await Chat.findOneAndUpdate({users:{_id:`${userId}`}}); */
+        let userDeleted = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, { isDeleted: true }, { new: true });
+        if (!userDeleted) {
+            return res.status(400).json("Eror deleting user");
+        }
+        return res.status(200).json(userDeleted);
+    }
+    catch (err) {
+        res.json(err);
     }
 }));
 // -------------- PUT /acceptFollow/:userId/:userRequestingId --- Aceptar solicitud de seguimiento ------------------

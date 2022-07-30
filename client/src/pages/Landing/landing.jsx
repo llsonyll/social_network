@@ -30,10 +30,16 @@ const Landing = () => {
   }, [])
 
  useEffect(() => {
-    if (loggedUser._id) {
+  if (loggedUser.isDeleted) {
+    localStorage.removeItem('token')
+    alert("You deleted your account. You have to create a new one to enter.")
+    //navigate("/");
+  }
+    if (loggedUser._id && loggedUser.isDeleted === false) {
       navigate("/home");
     }
   }, [loggedUser]);
+
   
 
   const handleChangeCheck = () => {
