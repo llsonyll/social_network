@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState ={
-    postDetail: {_id: '',likes: "", dislikes: ""},
+    postDetail: {_id: '',likes: "", dislikes: []},
 }
 
 const postReducer = createSlice({
@@ -18,7 +18,8 @@ const postReducer = createSlice({
            state.postDetail.likes = action.payload
         },
         dislikesPost(state,action){
-           state.postDetail.dislikes = [...action.payload]
+           state.postDetail.dislikes = action.payload.dislikes
+           state.postDetail.likes = action.payload.likes
         },
         likesComment(state,{payload}){
               let index = state.postDetail.commentsId.findIndex(comment => comment._id === payload._id);

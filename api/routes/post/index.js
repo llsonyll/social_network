@@ -120,29 +120,26 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
                 },
             });
         }
-        if (!post.dislikes.includes(user._id)) {
-            post.dislikes.push({ _id: userId });
-            yield (post === null || post === void 0 ? void 0 : post.save());
-        }
-        else {
-            post = yield mongoose_1.Post.updateOne({ _id: postId }, {
-                $pull: {
-                    dislikes: id,
-                },
+        let dislikes = yield mongoose_1.Post.findOne({ "dislikes._id": id });
+        if (!dislikes) {
+            post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
+                $push: {
+                    dislikes: { _id: id, username: user.username }
+                }
             }, { new: true });
         }
-        let userPost = yield mongoose_1.User.findById(`${userId}`)
-            .populate({
-            path: 'posts',
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
-            populate: { path: 'userId', select: ['username', 'profilePicture'] },
-        })
-            .populate('following', 'username')
-            .populate('followers', 'username')
-            .populate('followRequest', 'username')
-            .select('-password');
-        let dislikes = !post.likes ? [] : post.likes;
-        return res.status(200).json({ dislikes, userPost });
+        else {
+            console.log("entre");
+            post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
+                $pull: {
+                    dislikes: { _id: id }
+                }
+            }, { new: true });
+        }
+        if (!post) {
+            return res.status(400).json("not found dislikes");
+        }
+        res.status(200).json({ dislikes: post.dislikes, likes: post.likes });
     }
     catch (err) {
         return res.status(400).json(err);
@@ -161,10 +158,13 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
             return res.status(400).json("algo salio mal");
         }
         let id = user._id;
-        if (post.dislikes.includes(user._id)) {
+        let dislikes = yield mongoose_1.Post.findOne({ "dislikes._id": id });
+        console.log(dislikes);
+        if (dislikes) {
+            console.log("entre");
             yield mongoose_1.Post.updateOne({ _id: postId }, {
                 $pull: {
-                    dislikes: id,
+                    dislikes: { _id: id },
                 },
             });
         }
