@@ -24,6 +24,7 @@ export interface IUser {
    paymentsId?: string[];
    plan?: 'weekly' | 'monthly' | 'yearly';
    expirationDate?: Date;
+   isDeleted: boolean;
 }
 
 export interface ILikesAndDislikes {

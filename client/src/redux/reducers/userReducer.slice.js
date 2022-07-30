@@ -51,6 +51,9 @@ const userReducer = createSlice({
     toggleResponseFollow(state, action) {
       state.userProfileData.followRequest = action.payload.followRequest;
       state.userProfileData.followers = action.payload.followers;
+    },
+    deleteAccount(state, action) {
+      state.userProfileData = [];
     }
 }});
 
