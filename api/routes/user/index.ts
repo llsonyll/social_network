@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { Comment, Post, User } from "../../mongoose";
+import { Comment, Post, User, Review, Chat, Message } from "../../mongoose";
 import passport from "passport";
 import bcrypt from "bcrypt";
 
@@ -407,5 +407,28 @@ router.put(
     }
   }
 );
+//ruta para borrar la cuenta de un usuario
+router.put("/deleted/:userId",
+passport.authenticate("jwt", {
+  session: false,
+  failureRedirect: "/auth/loginjwt",
+}), async(req:Request,res:Response) => {
+  try {
+   let userId = req.params.userId;
+/*    let deletePost = await Post.deleteMany({userId:`${userId}`});
+   let deleteComment = await Comment.deleteMany({userId:`${userId}`});
+    let deleteReview = await Review.deleteMany({userId:`${userId}`});
+    let deleteMessage = await Message.deleteMany({from:`${userId}`});
+    let deleteChat = await Chat.findOneAndUpdate({users:{_id:`${userId}`}}); */
+   let userDeleted = await User.findOneAndUpdate({_id: `${userId}`}, {isDeleted: true}, {new: true});
+
+   if(!userDeleted){return res.status(400).json("Eror deleting user")}
+
+   return res.status(200).json(userDeleted);
+  } catch (err) {
+     res.json(err);
+  }
+})
+
 
 export default router;

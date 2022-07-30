@@ -363,4 +363,25 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
         return res.status(404).json({ errorMsg: err });
     }
 }));
+router.put("/deleted/:userId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userId = req.params.userId;
+        /*    let deletePost = await Post.deleteMany({userId:`${userId}`});
+           let deleteComment = await Comment.deleteMany({userId:`${userId}`});
+            let deleteReview = await Review.deleteMany({userId:`${userId}`});
+            let deleteMessage = await Message.deleteMany({from:`${userId}`});
+            let deleteChat = await Chat.findOneAndUpdate({users:{_id:`${userId}`}}); */
+        let userDeleted = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, { isDeleted: true }, { new: true });
+        if (!userDeleted) {
+            return res.status(400).json("Eror deleting user");
+        }
+        return res.status(200).json(userDeleted);
+    }
+    catch (err) {
+        res.json(err);
+    }
+}));
 exports.default = router;
