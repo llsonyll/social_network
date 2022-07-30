@@ -1,6 +1,9 @@
 import { userProfile, homePosts } from "../reducers/userReducer.slice";
 import { toggleFollowUser } from "../reducers/userReducer.slice";
+import { logOutUser } from "../reducers/authReducer.slice";
 import { apiConnection } from "../../utils/axios";
+
+
 
 export const getUserProfile = (id) => async (dispatch) => {
   try {
@@ -106,3 +109,17 @@ export const followOrUnfollowUser = (userId, followUserId) => async (dispatch) =
     console.log(err);
   }
 };
+export const deleteUser = (userId) => async (dispatch) => {
+  //recibe Id del usuario y luego id del usuario a seguir por params
+  try {
+    // devuelve la lista de usuarios que sigen al perfil del seguido 
+    const { data } = await apiConnection.put(`user/deleted/${userId}`);
+    //console.log(data)
+    console.log('Your account has been deleted.')
+    localStorage.removeItem('token')
+    dispatch(logOutUser())
+  } catch (err) {
+    console.log(err);
+  }
+};
+

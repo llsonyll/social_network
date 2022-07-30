@@ -7,9 +7,9 @@ import { apiConnection, setAuthorization } from "../../utils/axios";
 export const loginAction = (obj) => async (dispatch) => {
   try {
     const {
-      data: { token, username, _id, profilePicture },
+      data: { token, username, _id, profilePicture, isDeleted },
     } = await apiConnection.post("auth/login", obj);
-
+    console.log(isDeleted)
     if (obj.rememberMe) {
       localStorage.setItem("token", token);
     }
@@ -20,6 +20,7 @@ export const loginAction = (obj) => async (dispatch) => {
         username: username,
         _id: _id,
         profilePicture: profilePicture,
+        isDeleted: isDeleted
       })
     );
   } catch (err) {
@@ -37,7 +38,7 @@ export const loginAction = (obj) => async (dispatch) => {
 export const registerAction = (obj) => async (dispatch) => {
   try {
     const {
-      data: { token, username, _id, profilePicture },
+      data: { token, username, _id, profilePicture, isDeleted },
     } = await apiConnection.post("auth/register", obj);
     localStorage.setItem("token", token);
     setAuthorization(token);
@@ -46,6 +47,7 @@ export const registerAction = (obj) => async (dispatch) => {
         username: username,
         _id: _id,
         profilePicture: profilePicture,
+        isDeleted: isDeleted
       })
     );
   } catch (err) {
@@ -65,13 +67,14 @@ export const getLoggedUserInfo = () => async (dispatch) => {
     const token = localStorage.getItem("token");
     setAuthorization(token);
     const {
-      data: { username, _id, profilePicture },
+      data: { username, _id, profilePicture, isDeleted  },
     } = await apiConnection.post("auth");
     return dispatch(
       loginUser({
         username: username,
         _id: _id,
         profilePicture: profilePicture,
+        isDeleted: isDeleted
       })
     );
   } catch (err) {

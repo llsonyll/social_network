@@ -38,6 +38,9 @@ const userReducer = createSlice({
     },
     toggleFollowUser(state, action) {
       state.userProfileData.followers = action.payload;
+    },
+    deleteAccount(state, action) {
+      state.userProfileData = [];
     }
   },
 });
