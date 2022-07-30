@@ -115,7 +115,6 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
             });
         }
         let dislikes = yield mongoose_1.Post.findOne({ "dislikes._id": id });
-        console.log(dislikes);
         if (!dislikes) {
             post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
                 $push: {
@@ -131,24 +130,12 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
                 }
             }, { new: true });
         }
-        // let userPost = await User.findById(`${userId}`)
-        // .populate({
-        //     path: 'posts',
-        //     select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
-        //     populate: { path: 'userId', select: ['username', 'profilePicture'] },
-        // })
-        // .populate('following', 'username')
-        // .populate('followers', 'username')
-        // .populate('followRequest', 'username')
-        // .select('-password')
         if (!post) {
             return res.status(400).json("not found dislikes");
         }
-        //console.log(post);
-        res.status(200).json(post.dislikes);
+        res.status(200).json({ dislikes: post.dislikes });
     }
     catch (err) {
-        console.log(err);
         return res.status(400).json(err);
     }
 }));

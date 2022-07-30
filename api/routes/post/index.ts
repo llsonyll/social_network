@@ -128,7 +128,7 @@ async (req:Request, res:Response) => {
 
      if(!post){return res.status(400).json("not found dislikes")} 
 
-    res.status(200).json(post.dislikes);
+    res.status(200).json({ dislikes: post.dislikes});
    } catch (err) {
      return res.status(400).json(err);
    }
