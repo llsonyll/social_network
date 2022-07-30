@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 
 const initialState = {
   userProfileData: {},
@@ -43,10 +42,22 @@ const userReducer = createSlice({
        let index = state.homePostsData.findIndex(post => post._id === payload.postId )
        state.homePostsData[index].dislikes = payload.dislikes;
        state.homePostsData[index].likes = payload.likes;
+    },
+    toggleResponseFollow(state, action) {
+      state.userProfileData.followRequest = action.payload.followRequest;
+      state.userProfileData.followers = action.payload.followers;
     }
-  },
-});
+}});
 
-export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData, toggleFollowUser, dislikesPost } = userReducer.actions;
+export const {
+  userProfile,
+  homePosts,
+  addNewPost,
+  addNewPostProfile,
+  clearProfileData,
+  toggleFollowUser,
+  toggleResponseFollow,
+  dislikesPost
+} = userReducer.actions;
 
 export default userReducer.reducer;

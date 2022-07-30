@@ -65,3 +65,23 @@ export const newLikesComment = (commentId, userId) => async (dispatch) => {
     console.log(err);
   }
 };
+
+export const deletePost = (userId, postId) => async (dispatch) => {
+  try {
+    const { data } = await apiConnection.delete(`post/${userId}/${postId}`);
+
+    //return dispatch(addPostDetail(data));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const editPost = (userId, postId, content) => async (dispatch) => {
+  try {
+    const { data } = await apiConnection.put(`post/${userId}/${postId}`, content);
+
+    return dispatch(addPostDetail(data));
+  } catch (err) {
+    console.log(err);
+  }
+};

@@ -34,6 +34,7 @@ router.get(
 		}
 	}
 )
+
 // GET '/home/:userId' - esta rompe la home
 /* router.get(
 	'/home/:userId',
@@ -42,23 +43,23 @@ router.get(
 		const { userId } = req.params
 		let page = parseInt(`${req.query.page}`)
 
-		if (!page) page = 0
+// 		if (!page) page = 0
 
-		try {
-			const user = await User.findById(`${userId}`)
-			if (!user) return res.status(404).json({ errorMsg: 'who are you?' })
+// 		try {
+// 			const user = await User.findById(`${userId}`)
+// 			if (!user) return res.status(404).json({ errorMsg: 'who are you?' })
 
-			if (user.following.length === 0) {
-				const posts = await Post.find({})
-					.sort({ createdAt: -1 })
-					.skip(page * 20)
-					.limit(20)
-                    .populate('userId', ['username', 'profilePicture'])
-				res.json(posts)
-			}
-			//  else {
+// 			if (user.following.length === 0) {
+// 				const posts = await Post.find({})
+// 					.sort({ createdAt: -1 })
+// 					.skip(page * 20)
+// 					.limit(20)
+//                     .populate('userId', ['username', 'profilePicture'])
+// 				res.json(posts)
+// 			}
+// 			//  else {
 
-			//si el usuario sigue a otros usuarios
+// 			//si el usuario sigue a otros usuarios
 
 			// }
 		} catch (err) {
@@ -66,6 +67,7 @@ router.get(
 		}
 	}
 ) */
+
 // GET '/:userId'
 router.get(
 	'/:userId',
@@ -82,9 +84,9 @@ router.get(
 					options: {sort: {'createdAt': -1 } },
 					populate: { path: 'userId', select: ['username', 'profilePicture'] },
 				})
-
-				//.populate('following', 'username')
-				//.populate('followers', 'username')
+        // .populate('followRequest', 'username')
+				// .populate('following', 'username')
+				// .populate('followers', 'username')
 				.select('-password')
 			if (!user) return res.status(404).json({ errorMsg: 'who are you?' })
 			return res.status(201).json(user)
@@ -93,6 +95,7 @@ router.get(
 		}
 	}
 )
+
 // PUT "/updatePassword"
 router.put(
   "/updatePassword",
@@ -144,6 +147,7 @@ router.put(
     }
   }
 );
+
 // PUT '/:userId'
 router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req: Request, res: Response) => {
     try{
@@ -174,6 +178,7 @@ router.put('/:userId', passport.authenticate('jwt', {session:false, failureRedir
     }
   }
 );
+
 // GET '/home/:userId'
 router.get(
   "/home/:userId",
@@ -247,6 +252,7 @@ router.get(
     }
   }
 ); */
+
 // POST "/restorePassword"
 router.post("/restorePassword", async (req: Request, res: Response) => {
   try {
@@ -285,6 +291,7 @@ router.post("/restorePassword", async (req: Request, res: Response) => {
     return res.status(400).json(err);
   }
 });
+
 // PUT '/:userId'
 /* 
 COMENTO ESTA PORQUE FRAN DIJO QUE PUEDE SER QUE ESTA SEA EL PROBLEMA, PORQUE ESTÁ DESACTUALIZADA, PERO NO LA BORRO POR SI SE ROMPE ALGO
@@ -337,6 +344,7 @@ router.put(
     }
   }
 ); */
+
 // PUT "/follow/:userId/:userIdFollowed"
 router.put(
   "/follow/:userId/:userIdFollowed",
@@ -407,5 +415,60 @@ router.put(
     }
   }
 );
+
+// -------------- PUT /acceptFollow/:userId/:userRequestingId --- Aceptar solicitud de seguimiento ------------------
+router.put('/acceptFollow/:userId/:userRequestingId', passport.authenticate("jwt", {session: false, failureRedirect: "/auth/loginjwt",
+}), async (req: Request, res: Response) => {
+  try {
+    const { userId, userRequestingId } = req.params;
+
+    const userRequesting = await User.findById(`${userRequestingId}`);
+    if (!userRequesting) return res.status(404).json({msg: 'User requesting not found'});
+
+    const user = await User.findOneAndUpdate({ _id: `${userId}` }, {
+      $pull: {
+        followRequest: `${userRequesting._id}`
+      }
+    }, { new: true });
+    if (!user) return res.status(404).json({msg: 'User not found'});
+    user.followers.push(`${userRequesting._id}`);
+    
+    await user.save();
+    
+    userRequesting.following.push(user._id);
+    await userRequesting.save();
+
+    // user = await user
+    // .populate()
+
+    return res.json({followers: user.followers, followRequest: user.followRequest});
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
+
+// -------------- PUT /cancelFollow/:userId/:userRequestingId --- Cancelar solicitud de seguimiento ------------------
+router.put('/cancelFollow/:userId/:userRequestingId', passport.authenticate("jwt", {session: false, failureRedirect: "/auth/loginjwt",
+}), async (req: Request, res: Response) => {
+  try {
+    const { userId, userRequestingId } = req.params;
+
+    const userRequesting = await User.findById(`${userRequestingId}`);
+    if (!userRequesting) return res.status(404).json({msg: 'User requesting not found'});
+
+    const user = await User.findOneAndUpdate({ _id: `${userId}` }, {
+      $pull: {
+        followRequest: `${userRequesting._id}`
+      }
+    }, { new: true });
+    if (!user) return res.status(404).json({msg: 'User not found'});
+    
+    await user.save();
+
+    return res.json({followers: user.followers, followRequest: user.followRequest});
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
 
 export default router;
