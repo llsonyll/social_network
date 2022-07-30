@@ -118,8 +118,8 @@ async (req:Request, res:Response) => {
        });
      }
 
-     let dislikes: IPost | null = await Post.findOne({"dislikes._id": id }); 
-     
+     let dislikes: IPost | null = await Post.findOne({ _id: postId ,"dislikes._id": id }); 
+
      if( ! dislikes ){
           post = await Post.findOneAndUpdate({_id: postId}, {
             $push:{
@@ -163,10 +163,9 @@ async (req:Request, res:Response) => {
     
     let id = user._id;
 
-    let dislikes: IPost | null = await Post.findOne({"dislikes._id": id });
-    console.log(dislikes)
+    let dislikes: IPost | null = await Post.findOne({ _id: postId ,"dislikes._id": id }); 
+
     if(dislikes){
-        console.log("entre");
        await Post.updateOne({_id: postId}, {
            $pull: {
               dislikes: { _id: id },

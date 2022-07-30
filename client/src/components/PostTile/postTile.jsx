@@ -69,17 +69,17 @@ const PostTile = (props) => {
   
    
   const {likes, dislikes} = useSelector(state => state.post.postDetail)
- console.log(post?.likes)
-  console.log(user?._id);
-  console.log(likes?.includes(user?._id)); 
+ console.log(post?._id)
+  console.log(likes);
+  // console.log(likes?.includes(user?._id)); 
 
 
   let renderHeartIcon = () => {
-    if (!post?.likes.includes(user?._id)) {
+    if (!likes.includes(user?._id)) {
       console.log('Entra blanco');
       return <FaHeart />
     }
-    if (post?.likes.includes(user?._id)) {
+    if (likes.includes(user?._id)) {
 
       console.log('Entra rojo');
       return (

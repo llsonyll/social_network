@@ -1,8 +1,8 @@
 import { FaComment, FaHeart } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import Avatar from '../Avatar'
-import { Link } from 'react-router-dom'
 import { ImHeartBroken } from "react-icons/im";
+import { Link } from 'react-router-dom'
 import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
@@ -36,8 +36,8 @@ const ProfilePosts = (props) => {
 		}
 	}
 
-	const posts = useSelector(state => state.user.userProfileData.posts);
-	let index = posts.findIndex( post => post._id === postNumber);
+  const posts = useSelector(state => state.user.userProfileData.posts);
+	let index = posts.findIndex(post => post._id === postNumber);
 
 	let renderHeartBrokenIcon = () => {
     if (!posts[index].dislikes.find( dislike => dislike._id === _id)) {
@@ -95,14 +95,13 @@ const ProfilePosts = (props) => {
 						{renderHeartIcon()}
 						{likesLength}
 					</button>
-
 					<button
                 className="flex items-center gap-1"
                 onClick={handleDislike}
               >
                   {posts && renderHeartBrokenIcon()}
                 {posts && posts[index].dislikes.length }
-              </button>
+          </button>
 				</div>
 			</div>
 		</Fragment>
