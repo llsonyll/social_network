@@ -24,19 +24,25 @@ router.put('/:userId/:postId', passport_1.default.authenticate('jwt', { session:
         if (!content) {
             return res.status(400).json('Necesita tener contenido');
         }
-        let post = yield mongoose_1.Post.findById(`${postId}`);
+        let post = yield mongoose_1.Post.findById(`${postId}`)
+            .populate({ path: 'commentsId', select: ['content', 'likes'], populate: { path: 'userId', select: ['username', 'likes', 'profilePicture'] } })
+            //.populate('likes', 'username')
+            .populate('dislikes', 'username');
         //Checks if post exists and if the post was made by the user
         if (!post) {
             res.status(400).json("Post doesn't exist");
         }
-        else if (`${post.userId}` !== userId) {
+        else if (`${post.userId}` !== userId) { // ALGO PASAAA
+            console.log(`${post.userId}`);
+            console.log(userId);
             res.status(400).json("Only modify your own posts");
         }
         else {
             //Change content and save
             post.content = content;
             yield post.save();
-            res.status(200).json('Comment modified');
+            post = yield post.populate('userId', ['username', 'profilePicture']);
+            res.status(200).json(post);
         }
     }
     catch (err) {
@@ -87,7 +93,7 @@ router.delete('/:userId/:postId', passport_1.default.authenticate('jwt', { sessi
         let comments = post.commentsId;
         yield mongoose_1.Comment.deleteMany({ _id: { $in: comments } });
         //Remove post and send response
-        post.remove();
+        yield post.remove();
         res.json('Eliminated from the world');
     }
     catch (err) {
