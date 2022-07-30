@@ -2,6 +2,7 @@ import { FaComment, FaHeart } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import Avatar from '../Avatar'
 import { Link } from 'react-router-dom'
+import { ImHeartBroken } from "react-icons/im";
 import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
@@ -34,6 +35,25 @@ const ProfilePosts = (props) => {
 			)
 		}
 	}
+
+	const posts = useSelector(state => state.user.userProfileData.posts);
+	let index = posts.findIndex( post => post._id === postNumber);
+
+	let renderHeartBrokenIcon = () => {
+    if (!posts[index].dislikes.find( dislike => dislike._id === _id)) {
+      console.log('Entra blanco');
+      return <ImHeartBroken />
+    }else{
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: "#9400D3", className: 'global-heart-class-name' }}>
+          <div>
+            <ImHeartBroken />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+  }
 
 	return (
 		<Fragment key={postNumber}>
@@ -75,6 +95,14 @@ const ProfilePosts = (props) => {
 						{renderHeartIcon()}
 						{likesLength}
 					</button>
+
+					<button
+                className="flex items-center gap-1"
+                onClick={handleDislike}
+              >
+                  {posts && renderHeartBrokenIcon()}
+                {posts && posts[index].dislikes.length }
+              </button>
 				</div>
 			</div>
 		</Fragment>
