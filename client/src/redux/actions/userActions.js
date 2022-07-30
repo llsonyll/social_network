@@ -1,6 +1,6 @@
 
 import { logOutUser } from "../reducers/authReducer.slice";
-import { userProfile, homePosts, dislikesPost, toggleUSERFollowing } from "../reducers/userReducer.slice";
+import { userProfile, homePosts, dislikesPost, toggleUSERFollowing, dislikesProfilePost } from "../reducers/userReducer.slice";
 import { toggleFollowUser, toggleResponseFollow } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
 
@@ -59,9 +59,9 @@ export const newLikeUserProfile = (postId, userId) => async (dispatch) => {
 export const newDislikeUserProfile = (postId, userId) => async (dispatch) => {
   try {
     const {
-      data: { userPost },
+      data: { likes, dislikes },
     } = await apiConnection.put(`post/dislike/${postId}/${userId}`);
-    dispatch(userProfile(userPost));
+    dispatch(dislikesProfilePost({likes,dislikes,postId}));
   } catch (err) {
     console.log(err);
   }
