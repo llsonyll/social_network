@@ -2,6 +2,7 @@ import { FaComment, FaHeart } from "react-icons/fa";
 import { IconContext } from 'react-icons'
 import Avatar from "../Avatar";
 import { Link } from "react-router-dom";
+import { ImHeartBroken } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
 import { newLikeHomePost, newDislikeHomePost } from "../../redux/actions/userActions";
 import { useEffect } from "react";
@@ -53,6 +54,28 @@ const HomePostCard = (props) => {
 		}
 	}
 
+  let homePostsData = useSelector( state => state.user.homePostsData );
+  let user = useSelector(state => state.auth.loggedUser);
+  
+  let index = homePostsData.findIndex( post => post._id === props.postId);
+  console.log(homePostsData[index].dislikes.find( dislike => dislike._id === user._id));
+ 
+  let renderHeartBrokenIcon = () => {
+    if (!homePostsData[index].dislikes.find( dislike => dislike._id === user._id)) {
+      console.log('Entra blanco');
+      return <ImHeartBroken />
+    }else{
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: "#9400D3", className: 'global-heart-class-name' }}>
+          <div>
+            <ImHeartBroken />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+  }
+
   return (
     <div className="bg-[#252525] w-full rounded-md md:p-4 p-2 flex flex-col text-white">
       <div className="flex  gap-4 md:p-2 rounded-md" id="father__content">
@@ -95,6 +118,16 @@ const HomePostCard = (props) => {
           {renderHeartIcon()}
           {props.likes? props.likes.length : 0}
         </button>
+
+        <div className="flex items-center gap-1 hover:text-gray-300">
+              <button
+                className="flex items-center gap-1"
+                onClick={handleDislikesPost}
+              >
+                  {post && renderHeartBrokenIcon()}
+                {props.dislikes && props.dislikes.length }
+              </button>
+            </div>
       </div>
     </div>
   );
