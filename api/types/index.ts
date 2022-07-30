@@ -27,13 +27,18 @@ export interface IUser {
    isDeleted: boolean;
 }
 
+export interface ILikesAndDislikes {
+   _id: Types.ObjectId,
+   username: string
+}
+
 export interface IPost{
    _id: Types.ObjectId;
    userId: Types.ObjectId;
    content?: string;
    commentsId: Types.Array<Types.ObjectId>;
    likes: Types.Array<Types.ObjectId>;
-   dislikes: Types.Array<Types.ObjectId>;
+   dislikes: Types.Array<ILikesAndDislikes>;
    createdAt: Date;
    multimedia?: string;
 }

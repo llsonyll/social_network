@@ -1,6 +1,6 @@
 import { userProfile, homePosts } from "../reducers/userReducer.slice";
-import { toggleFollowUser } from "../reducers/userReducer.slice";
 import { logOutUser } from "../reducers/authReducer.slice";
+import { toggleFollowUser, toggleResponseFollow } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
 
 
@@ -104,6 +104,28 @@ export const followOrUnfollowUser = (userId, followUserId) => async (dispatch) =
   try {
     // devuelve la lista de usuarios que sigen al perfil del seguido 
     const { data } = await apiConnection.put(`user/follow/${userId}/${followUserId}`);
+    return dispatch(toggleFollowUser(data));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// -------------- Action para aceptar solicitud de seguimiento ------------------
+export const acceptFollowRequest = (userId, userRequestingId) => async (dispatch) => {
+  //recibe Id del usuario y luego id del usuario a aceptar por params
+  try {
+    const { data } = await apiConnection.put(`user/acceptFollow/${userId}/${userRequestingId}`);
+    return dispatch(toggleFollowUser(data));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// -------------- Action para cancelar solicitud de seguimiento ------------------
+export const cancelFollowRequest = (userId, userRequestingId) => async (dispatch) => {
+  //recibe Id del usuario y luego id del usuario a cancelar por params
+  try {
+    const { data } = await apiConnection.put(`user/cancelFollow/${userId}/${userRequestingId}`);
     return dispatch(toggleFollowUser(data));
   } catch (err) {
     console.log(err);

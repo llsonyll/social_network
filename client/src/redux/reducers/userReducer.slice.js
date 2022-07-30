@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 
 const initialState = {
   userProfileData: {},
@@ -39,12 +38,24 @@ const userReducer = createSlice({
     toggleFollowUser(state, action) {
       state.userProfileData.followers = action.payload;
     },
+    toggleResponseFollow(state, action) {
+      state.userProfileData.followRequest = action.payload.followRequest;
+      state.userProfileData.followers = action.payload.followers;
+    },
     deleteAccount(state, action) {
       state.userProfileData = [];
     }
   },
 });
 
-export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData, toggleFollowUser } = userReducer.actions;
+export const {
+  userProfile,
+  homePosts,
+  addNewPost,
+  addNewPostProfile,
+  clearProfileData,
+  toggleFollowUser,
+  toggleResponseFollow
+} = userReducer.actions;
 
 export default userReducer.reducer;
