@@ -38,12 +38,15 @@ const HomePostCard = (props) => {
     return `${Math.round(minutes / 60)} hours ago`;
   }
 
+  let homePostsData = useSelector( state => state.user.homePostsData );
+  let user = useSelector(state => state.auth.loggedUser);
+  
+  let index = homePostsData.findIndex( post => post._id === props.postId);
 
   let renderHeartIcon = () => {
-		if (!props.likes.includes(_id)) {
+		if (!homePostsData[index].likes.find( like => like._id === user._id)) {
 			return <FaHeart />
-		}
-		if (props.likes.includes(_id)) {
+		}else{
 			return (
 				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
 					<div>
@@ -54,12 +57,6 @@ const HomePostCard = (props) => {
 		}
 	}
 
-  let homePostsData = useSelector( state => state.user.homePostsData );
-  let user = useSelector(state => state.auth.loggedUser);
-  
-  let index = homePostsData.findIndex( post => post._id === props.postId);
-  console.log(homePostsData[index].dislikes.find( dislike => dislike._id === user._id));
- 
   let renderHeartBrokenIcon = () => {
     if (!homePostsData[index].dislikes.find( dislike => dislike._id === user._id)) {
       console.log('Entra blanco');
@@ -115,8 +112,8 @@ const HomePostCard = (props) => {
           className="flex items-center gap-1 hover:text-gray-300"
           onClick={handleLikesPost}
         >
-          {renderHeartIcon()}
-          {props.likes? props.likes.length : 0}
+          {post && renderHeartIcon()}
+          {homePostsData && homePostsData[index].likes.length }
         </button>
 
         <div className="flex items-center gap-1 hover:text-gray-300">
@@ -125,7 +122,7 @@ const HomePostCard = (props) => {
                 onClick={handleDislikesPost}
               >
                   {post && renderHeartBrokenIcon()}
-                {props.dislikes && props.dislikes.length }
+                {homePostsData && homePostsData[index].dislikes.length }
               </button>
             </div>
       </div>
