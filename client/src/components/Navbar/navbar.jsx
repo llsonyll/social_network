@@ -12,10 +12,10 @@ import {
   browserCleanUp,
 } from "../../redux/actions/browserActions";
 import { logOutUser } from "../../redux/reducers/authReducer.slice";
-import { MdOutlineLogout } from "react-icons/md";
+import { MdOutlineLogout, MdAdminPanelSettings } from "react-icons/md";
 import SearchResults from "../SearchResults/searchResults";
 
-const NavBar = ({ openModal }) => {
+const NavBar = ({ openModal, openAdmin }) => {
   let activeStyle = {
     fontWeight: "bold",
   };
@@ -115,6 +115,12 @@ const NavBar = ({ openModal }) => {
           onClick={handleLogOut}
         >
           <MdOutlineLogout />
+        </button>
+        <button
+          className="bg-blue-700 p-2 rounded font-bold text-lg"
+          onClick={openAdmin}
+        >
+          <MdAdminPanelSettings />
         </button>
         <NewPostBtn action={openModal} />
       </div>
