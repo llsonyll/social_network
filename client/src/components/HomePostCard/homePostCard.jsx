@@ -1,10 +1,10 @@
-import { FaComment, FaHeart } from "react-icons/fa";
+import { FaComment, FaHeart, FaExclamation } from "react-icons/fa";
 import { IconContext } from 'react-icons'
 import Avatar from "../Avatar";
 import { Link } from "react-router-dom";
 import { ImHeartBroken } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
-import { newLikeHomePost, newDislikeHomePost, followOrUnfollowUser, getUserFollowings } from "../../redux/actions/userActions";
+import { newLikeHomePost, newDislikeHomePost, followOrUnfollowUser, getUserFollowings, makeReport } from "../../redux/actions/userActions";
 import { useEffect } from "react";
 
 
@@ -158,7 +158,17 @@ const HomePostCard = (props) => {
                   {post && renderHeartBrokenIcon()}
                 {homePostsData && homePostsData[index].dislikes.length }
               </button>
-            </div>
+          </div>
+          
+          <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              dispatch(makeReport(user._id, props.postId, {reason /*crear input */ , reported: 'post'})) // reported toma valores 'post', 'comment' y 'user'
+            }}
+          >
+            <FaExclamation />
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
       </div>
     </div>
   );

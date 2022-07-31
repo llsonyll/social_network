@@ -156,4 +156,12 @@ export const deleteUser = (userId) => async (dispatch) => {
   }
 };
 
+export const makeReport = (userId, reportId, info) => async (dispatch) => {
+  try {
+    const { data } = await apiConnection.post(`report/${userId}/${reportId}`, info);
 
+    return console.log(data);
+  } catch (error) {
+    console.log(error)
+  }
+}

@@ -9,7 +9,7 @@ import ProfilePosts from "../../components/ProfilePostsRenderer";
 import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { acceptFollowRequest, cancelFollowRequest, getUserProfile, modifyUser } from "../../redux/actions/userActions";
+import { acceptFollowRequest, cancelFollowRequest, getUserProfile, makeReport, modifyUser } from "../../redux/actions/userActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
@@ -23,6 +23,7 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
 //iconos
 import {AiFillSetting} from 'react-icons/ai'
+import { FaExclamation } from "react-icons/fa";
 
 
 const Profile = () => {
@@ -333,6 +334,17 @@ const Profile = () => {
                           {userData.followers && followRenderer()}
                         </button>
                       </div>
+                      
+            <button
+            className=""
+            onClick={() => {
+              dispatch(makeReport(userLoggedId, params.id, {reason: 'que ondaa' /*crear input */ , reported: 'user'})) // reported toma valores 'post', 'comment' y 'user'
+            }}
+          >
+            <FaExclamation /> Report user
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
+
                     </div>
                   ) : null}
                 </div>
