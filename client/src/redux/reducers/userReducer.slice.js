@@ -68,10 +68,20 @@ const userReducer = createSlice({
     },
     deleteAccount(state, action) {
       state.userProfileData = [];
-    }
+    },
+    editUserPosts(state, {payload}) {
+      let index = state.userProfileData.posts.findIndex(post=> post._id === payload.postId) 
+
+      state.userProfileData.posts[index] = payload.post;
+    },
+    deletePostsGeneral(state, action) {
+      state.userProfileData.posts = action.payload;
+    },
 }});
 
 export const {
+  deletePostsGeneral,
+  editUserPosts,
   userProfile,
   homePosts,
   addNewPost,
