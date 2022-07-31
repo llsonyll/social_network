@@ -60,8 +60,8 @@ const Home = () => {
         className="fixed left-0 top-16 h-screen w-72 bg-stone-800 hidden md:flex  p-6 flex-col items-center overflow-auto"
         id="contenedor_friends"
       >
-        <div className="text-white font-normal text-xl mb-4 uppercase tracking-wide">
-          Following
+        <div id='title_friend_Postile' className="text-white font-normal text-xl mb-4 uppercase tracking-wide">
+          <h1> - Following -</h1>
         </div>
         {
         userFollowings ?
