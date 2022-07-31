@@ -25,11 +25,11 @@ const FriendPostTile = ({ img, username, key , userId }) => {
   return (
     <NavLink
       to={`/home/profile/${userId}`}
-      className="flex w-full my-3 p-2 bg-[#353535] rounded-md hover:scale-105 transition-all"
+      className="contenedorfriend flex w-full my-3 p-2 bg-[#353535] rounded-md hover:scale-105 transition-all"
       // onClick={handleTileClick}
     >
       <Avatar size="l" imgUrl={img} />
-      <div className="px-2 flex   items-center ">
+      <div className="contenedorfriend_info px-2 flex   items-center ">
         <div className="text-white text-md font-bold mb-1">{username}</div>
         {/* <div className="text-opacity-50 text-white text-sm font-normal leading-3">
           {getTimePublished()}
