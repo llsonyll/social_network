@@ -4,6 +4,7 @@ import { AiFillCloseSquare } from "react-icons/ai";
 import Avatar from "../Avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { modifyUser } from "../../redux/actions/userActions";
+import { errorAlerts, goodAlerts } from "../../utils/SweetAlertTypes/SweetAlerts";
 
 const EditUsername = ({ renderChangeRenderComponents, user }) => {
   const [username, setUsername] = useState("");
@@ -25,22 +26,22 @@ const EditUsername = ({ renderChangeRenderComponents, user }) => {
   const handleOnSubmit = () => {
     if (username) {
       if (username.split(" ").length !== 1) {
-        return alert("Username should not have empty spaces");
+        return errorAlerts("Username should not have empty spaces");
       }
 
       if (username.trim().length > 13) {
-        return alert("Username should not have no more than 13 characters");
+        return errorAlerts("Username should not have no more than 13 characters");
       }
 
       try {
         dispatch(modifyUser(loggedUser._id, { username: username }));
-        alert("You changed your username!");
+        goodAlerts("You changed your username!");
         renderChangeRenderComponents("username");
       } catch (error) {
         console.log(error);
       }
     } else {
-      alert("You need to have an username!");
+      errorAlerts("You need to have an username!");
     }
   };
 

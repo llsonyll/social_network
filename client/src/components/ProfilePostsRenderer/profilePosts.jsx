@@ -1,13 +1,14 @@
 import { FaComment, FaHeart } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import Avatar from '../Avatar'
+import { ImHeartBroken } from "react-icons/im";
 import { Link } from 'react-router-dom'
 import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
 
 const ProfilePosts = (props) => {
-	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes, multimedia } = props
+	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes,dislikes , multimedia } = props
   
 	const { _id } = useSelector(state => state.auth.loggedUser);
   const dispatch = useDispatch();
@@ -17,14 +18,16 @@ const ProfilePosts = (props) => {
 	}
 
 	const handleDislike = () => {
-       dispatch(newDislikeUserProfile(postNumber,_id));
+		dispatch(newDislikeUserProfile(postNumber,_id));
 	}
-
+	
+	const posts = useSelector(state => state.user.userProfileData.posts);
+	let index = posts.findIndex(post => post._id === postNumber);
+	
 	let renderHeartIcon = () => {
-		if (!likes.includes(_id)) {
+		if (!posts[index].likes.find( like => like._id === _id)) {
 			return <FaHeart />
-		}
-		if (likes.includes(_id)) {
+		}else{
 			return (
 				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
 					<div>
@@ -34,6 +37,23 @@ const ProfilePosts = (props) => {
 			)
 		}
 	}
+
+
+	let renderHeartBrokenIcon = () => {
+    if (!posts[index].dislikes.find( dislike => dislike._id === _id)) {
+      console.log('Entra blanco');
+      return <ImHeartBroken />
+    }else{
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: "#9400D3", className: 'global-heart-class-name' }}>
+          <div>
+            <ImHeartBroken />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+  }
 
 	return (
 		<Fragment key={postNumber}>
@@ -72,9 +92,16 @@ const ProfilePosts = (props) => {
 					<button className='flex items-center gap-1'
 					 onClick = {handleLike}
 					>
-						{renderHeartIcon()}
-						{likesLength}
+						{posts && renderHeartIcon()}
+						{posts && posts[index].likes.length }
 					</button>
+					<button
+                className="flex items-center gap-1"
+                onClick={handleDislike}
+              >
+                  {posts && renderHeartBrokenIcon()}
+                {posts && posts[index].dislikes.length }
+          </button>
 				</div>
 			</div>
 		</Fragment>

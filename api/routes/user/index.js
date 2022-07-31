@@ -162,21 +162,22 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
     failureRedirect: "/auth/loginjwt",
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
-    let page = parseInt(req.query.page);
+    let page = parseInt(`${req.query.page}`);
+    let control = req.query.control;
+    !control ? control = "true" : null;
     if (!page)
         page = 0;
     try {
         const user = yield mongoose_1.User.findById(`${userId}`);
         if (!user)
-<<<<<<< HEAD
-            return res.status(404).json({ errorMsg: 'who are you?' });
+            return res.status(404).json({ errorMsg: "who are you?" });
         const date = new Date().getTime();
         let result = [];
         if (user.following.length > 0) {
             if (control === "true") {
                 result = yield mongoose_1.Post.find({
                     // userId: { $in: [...user.following, user._id] }, 
-                    $or: [{userId: user._id}, {userId: {$in: user.following}}],    //posts hechos por el usuario o por los usuarios a los que sigue
+                    $or: [{ userId: user._id }, { userId: { $in: user.following } }],
                     createdAt: { $gte: new Date(date - 259200000) }
                 }) //menos 3 dias                
                     .sort({ createdAt: -1 })
@@ -195,25 +196,14 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
                     .populate('userId', ['username', 'profilePicture']);
             }
         }
-=======
-            return res.status(404).json({ errorMsg: "who are you?" });
->>>>>>> bd51a29b3056f3fe2dd32d28e1e2566fb0acf118
         if (user.following.length === 0) {
-            const posts = yield mongoose_1.Post.find({})
+            result = yield mongoose_1.Post.find({ createdAt: { $gte: new Date(date - 259200000) } })
                 .sort({ createdAt: -1 })
-                .skip(page * 20)
-                .limit(20)
-                .populate("userId", ["username", "profilePicture"]);
-            res.json(posts);
+                .skip(page * 10)
+                .limit(10)
+                .populate('userId', ['username', 'profilePicture']);
         }
-        else {
-            const posts = yield mongoose_1.Post.find({})
-                .sort({ createdAt: -1 })
-                .skip(page * 20)
-                .limit(20)
-                .populate("userId", ["username", "profilePicture"]);
-            res.json(posts);
-        }
+        res.json(result);
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });

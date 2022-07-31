@@ -4,9 +4,10 @@ import './settings.css'
 import {useDispatch, useSelector} from 'react-redux'
 import { useState } from 'react'
 import {createNewReview, getAllReviewes, deleteReview, modifyReview} from '../../redux/actions/reviewAction'
-import { changePassword, getUserProfile} from '../../redux/actions/userActions'
+import { changePassword, getUserProfile, deleteUser} from '../../redux/actions/userActions'
 import { privacityChange } from '../../redux/actions/premiumAction'
-
+import { errorAlerts, goodAlerts } from "../../utils/SweetAlertTypes/SweetAlerts";
+import { logOutUser } from "../../redux/reducers/authReducer.slice";
 function settings() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -51,10 +52,10 @@ function settings() {
               }, "500")
             
         } else if (userReview) {
-            alert('You already have a review, edit it or delete it to change it')
+            errorAlerts('You already have a review, edit it or delete it to change it')
         } 
         else {
-            alert('You can only have 1 review, the review should be between 10 and 50 characters long and you should select a star number for the app. If you want to edit your review, fill the inputs again and click on the button "Edit review". Or, you can delete your review too.')
+            errorAlerts('The review should be between 10 and 50 characters long.')
         }
     }
     const handleEditReview =  (e) => {
@@ -69,7 +70,7 @@ function settings() {
         }, "500")
 
        } else {
-           alert('You can only have 1 review, the review should be between 10 and 50 characters long and you should select a star number for the app. If you want to edit your review, fill all the inputs again and click on the button "Edit review".')
+        errorAlerts('The review should be between 10 and 50 characters long. If you want to edit your review, write a different one and fill all the inputs again, then click "Edit review".')
        } 
     }
     const handleDeleteReview =  (e) => {
@@ -78,6 +79,7 @@ function settings() {
         setTimeout(() => {
             dispatch(getAllReviewes())
         }, "500")
+        goodAlerts('Review deleted')
     }
     let reviewRenderer =()=>{
         if (userReview){
@@ -106,12 +108,12 @@ function settings() {
     }
     let handleSubmitToUpdatePassword = ( e ) =>{
         e.preventDefault() 
-        if ( oldPassword && newPassword === confirmPassword) {
+        if ( oldPassword.length > 6 && newPassword  === confirmPassword && newPassword.length > 6  && confirmPassword.length > 6) {
             dispatch(changePassword(oldPassword, newPassword, _id))
-            alert('Your password changed')
+            goodAlerts('Your password changed')
         }
         else {
-            alert('Fill all the password inputs with the correct data before submitting.')
+            errorAlerts('Your password should have more than 6 characters. Fill all the password inputs with correct data before submitting.')
         }
     }
 
@@ -120,23 +122,29 @@ function settings() {
         if (userData.isPremium === true && userData.isPrivate === false) {
             dispatch(privacityChange(_id));
             //console.log('se envio make private action')
-            alert('Your profile is private now!!!') 
+            goodAlerts('Your profile is private now!!!') 
             navigate(`/home/profile/${_id}`, { replace: true })
         }
         if (userData.isPremium === true && userData.isPrivate === true) {
             dispatch(privacityChange(_id));
             //console.log('se envio make private action')
-            alert('Your profile is public now!!!') 
+            goodAlerts('Your profile is public now!!!') 
             navigate(`/home/profile/${_id}`, { replace: true })
         }
         if (userData.isPremium === false) {
-            alert('You are not premium yet')
+            errorAlerts('You are not premium yet')
             navigate(`/home/premium/${_id}`, { replace: true })
         }
     }
 
 
-
+let handleDeleteUser = (e) =>{
+    e.preventDefault()
+    dispatch(deleteUser(_id))
+    goodAlerts('You successfully deleted your account, see you next time <3')
+    dispatch(logOutUser())
+    navigate(`/`)
+}
 
   return (
     <div className='settings-container'>
@@ -193,7 +201,7 @@ function settings() {
             >Delete current review</button>
             :
             null}
-            <button className='deleteaccount redbutton'>Delete account forever</button>
+            <button className='deleteaccount redbutton' onClick={handleDeleteUser}>Delete account forever</button>
 
         </div>
     </div>

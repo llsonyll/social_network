@@ -188,14 +188,16 @@ router.get(
   }),
   async (req: Request, res: Response) => {
     const { userId } = req.params;
-    let page = parseInt(req.query.page as string);
+    let page = parseInt(`${req.query.page}`)
+    let control= req.query.control
+    !control ? control="true" : null
     if (!page) page = 0;
 
     try {
       const user = await User.findById(`${userId}`);
       if (!user) return res.status(404).json({ errorMsg: "who are you?" });
+      const date = new Date().getTime()
 
-<<<<<<< HEAD
 			let result: any[] = []
 			if (user.following.length > 0 ) {
         if(control==="true") {
@@ -234,28 +236,7 @@ router.get(
 		}
 	}
 )
-=======
-      if (user.following.length === 0) {
-        const posts = await Post.find({})
-          .sort({ createdAt: -1 })
-          .skip(page * 20)
-          .limit(20)
-          .populate("userId", ["username", "profilePicture"]);
-        res.json(posts);
-      } else {
-        const posts = await Post.find({})
-          .sort({ createdAt: -1 })
-          .skip(page * 20)
-          .limit(20)
-          .populate("userId", ["username", "profilePicture"]);
-        res.json(posts);
-      }
-    } catch (err) {
-      return res.status(404).json({ errorMsg: err });
-    }
-  }
-);
->>>>>>> bd51a29b3056f3fe2dd32d28e1e2566fb0acf118
+    
 
 router.get('/following/:userId', passport.authenticate("jwt", {
   session: false,

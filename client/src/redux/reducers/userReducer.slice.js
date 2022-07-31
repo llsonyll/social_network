@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 
 const initialState = {
   userProfileData: {},
   homePostsData: [],
-  control: "true"
+  control: true,
+  userFollowings : []
 };
 
 const userReducer = createSlice({
@@ -43,10 +43,52 @@ const userReducer = createSlice({
     },
     toggleFollowUser(state, action) {
       state.userProfileData.followers = action.payload;
+    },
+    likesPost(state,{payload}){
+      let index = state.homePostsData.findIndex(post => post._id === payload.postId )
+       state.homePostsData[index].dislikes = payload.dislikes;
+       state.homePostsData[index].likes = payload.likes;
+    },
+    dislikesPost(state,{payload}){
+       let index = state.homePostsData.findIndex(post => post._id === payload.postId )
+       state.homePostsData[index].dislikes = payload.dislikes;
+       state.homePostsData[index].likes = payload.likes;
+    },
+    likesProfilePost(state,{payload}){
+      let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId)
+      state.userProfileData.posts[index].dislikes = payload.dislikes;
+      state.userProfileData.posts[index].likes = payload.likes;
+    },
+    dislikesProfilePost(state,{payload}){
+       let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId)
+       state.userProfileData.posts[index].dislikes = payload.dislikes;
+       state.userProfileData.posts[index].likes = payload.likes;
+    },
+    toggleUSERFollowing(state, action) {
+      state.userFollowings = action.payload;
+    },
+    toggleResponseFollow(state, action) {
+      state.userProfileData.followRequest = action.payload.followRequest;
+      state.userProfileData.followers = action.payload.followers;
+    },
+    deleteAccount(state, action) {
+      state.userProfileData = [];
     }
-  },
-});
+}});
 
-export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData, toggleFollowUser } = userReducer.actions;
+export const {
+  userProfile,
+  homePosts,
+  addNewPost,
+  addNewPostProfile,
+  clearProfileData,
+  toggleFollowUser,
+  toggleResponseFollow,
+  likesProfilePost,
+  likesPost,
+  dislikesPost,
+  dislikesProfilePost,
+  toggleUSERFollowing,
+} = userReducer.actions;
 
 export default userReducer.reducer;
