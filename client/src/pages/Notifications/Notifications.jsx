@@ -7,15 +7,15 @@ import './Notifications.css'
 let arrDatos = [
     {
         username: 'pepo',
-        notifyContent: 'te acabo de enviar un mensaje'
+        notifyContent: 'te envio un mensaje'
     },
     {
         username: 'pepo',
-        notifyContent: 'te acabo de enviar un mensaje'
+        notifyContent: 'te envio un mensaje'
     },
     {
         username: 'pepo',
-        notifyContent: 'te acabo de enviar un mensaje'
+        notifyContent: 'te envio un mensaje'
     },
    
 ]
@@ -33,7 +33,7 @@ const Notifications = () => {
                                 <Link to=''>
                                     <Avatar imgUrl={user.profilePicture} size="xl" />
                                 </Link>
-                            </div>
+                            </div>                      
                             <div className='notify-info_container'>
                                 <Link to=''>
                                     <span>{user.username}</span>
