@@ -13,6 +13,7 @@ import morgan from "morgan";
 import chatRoute from './chat';
 import premiumRoute from "./premium";
 import reportRoute from './report';
+import notificationRoute from './notification';
 
 const server = express();
 
@@ -50,5 +51,6 @@ server.use('/comment', commentRoute);
 server.use('/chat', chatRoute);
 server.use('/premium', premiumRoute);
 server.use('/report', reportRoute);
+server.use('/notification', notificationRoute)
 
 export default server;
