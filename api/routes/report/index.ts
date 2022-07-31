@@ -40,4 +40,32 @@ async (req: Request, res: Response) => {
     }
 });
 
+
+router.get('/', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
+async (req: Request, res: Response) => {
+
+const {type} = req.query
+
+
+try{
+    let reports: any[] = []
+    if(!type) {
+        reports = await Report.find({})
+    }
+    if(type === "postReportedId") {
+        reports = await Report.find({postReportedId: {$exists: true} })
+    } if(type==="commentReportedId") {
+        reports = await Report.find({commentReportedId: {$exists: true}})
+    } if(type==="userReportedId") {
+        reports = await Report.find({userReportedId: {$exists: true}})
+    }
+
+    res.json(reports)
+
+} catch(err) { 
+    res.status(400).json({errMsg: err})
+}
+
+})
+
 export default router;
