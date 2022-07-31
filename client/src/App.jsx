@@ -68,15 +68,7 @@ function App() {
 	}
   },[loggedUser])
 
-//Si el usuario borró su cuenta, nunca más va a poder pasar del login con esa cuenta.
-  useEffect(() => {
-	if (loggedUser.isDeleted || Object.keys(loggedUser).length === 0) {
-		localStorage.removeItem('token')
-		if ( location.pathname !== "/") {
-			navigate("/");
-		}
-	}
-  }, [loggedUser, location])
+
   
 
   //'PRIMARY' USE EFFECT, LOGS THE USER IN AND CONTROL CALL AND ANSWER
