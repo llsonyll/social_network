@@ -20,6 +20,9 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
     try {
         const { userId, reportId } = req.params;
         const { reason, reported } = req.body; // REPORTED VA A ACEPTAR 3 VALORES: COMMENT, POST Y USER
+        if (!reason) {
+            return res.status(404).json({ msg: 'Not Reason' });
+        }
         if (reported === 'comment') {
             const comment = yield mongoose_1.Comment.findById(`${reportId}`);
             if (!comment)

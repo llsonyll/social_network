@@ -3,6 +3,7 @@ import { logOutUser } from "../reducers/authReducer.slice";
 import { userProfile, homePosts, dislikesPost, toggleUSERFollowing, dislikesProfilePost, likesProfilePost, likesPost } from "../reducers/userReducer.slice";
 import { toggleFollowUser, toggleResponseFollow } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
+import Swal from "sweetalert2";
 
 
 
@@ -158,10 +159,23 @@ export const deleteUser = (userId) => async (dispatch) => {
 
 export const makeReport = (userId, reportId, info) => async (dispatch) => {
   try {
-    const { data } = await apiConnection.post(`report/${userId}/${reportId}`, info);
-
-    return console.log(data);
+    const response = await apiConnection.post(`report/${userId}/${reportId}`, info);
+    Swal.fire({
+      icon: "success",
+      title: "Your report was sent successfully",
+      text: response.data.msg,
+      background: "#4c4d4c",
+      color: "white",
+    });
+    return response;
   } catch (error) {
-    console.log(error)
+    Swal.fire({
+      icon: "error",
+      title: "Ups... Something went wrong",
+      text: error.response.data.msg,
+      background: "#4c4d4c",
+      color: "white",
+    });
+    return error.response.data.msg
   }
 }
