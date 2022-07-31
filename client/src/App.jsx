@@ -31,6 +31,7 @@ import { useState } from "react";
 //iconos
 import {FiPhoneMissed} from 'react-icons/fi'
 import {AiOutlineAudioMuted, AiOutlineVideoCamera} from 'react-icons/ai'
+import Notifications from "./pages/Notifications/Notifications";
 function App() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -223,6 +224,7 @@ function App() {
 				<Route path='/' element={<Landing />} />
 				<Route path='/home' element={<DashBoard />}>
 				  <Route path='settings' element={<Settings />} />
+				  <Route path='notifications' element={<Notifications />} />
 					<Route index element={<Home />} />
 					<Route path='profile/:id' element={<Profile />} />
 				    <Route path='premium/:id' element={<PremiumComponent/>} />

@@ -2,7 +2,7 @@ import "./navbar.css";
 
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
-
+import{MdNotifications} from 'react-icons/md'
 import NewPostBtn from "../NewPostBtn";
 import logoSN from "../../../assets/LogoSN.png";
 import { useEffect, useState } from "react";
@@ -93,6 +93,14 @@ const NavBar = ({ openModal }) => {
         <NavLink to="" className="flex items-center gap-2">
           <FaHome />
           Home
+        </NavLink>
+        <NavLink
+          to={`/home/notifications`}
+          className="flex items-center gap-2"
+          style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
+        >
+          <MdNotifications />
+          Notifications
         </NavLink>
         <NavLink
           to={`profile/${userId}`}
