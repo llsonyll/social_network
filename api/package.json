@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.8",
@@ -22,6 +23,7 @@
     "@types/passport-local": "^1.0.34",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
@@ -30,12 +32,17 @@
     "morgan": "^1.10.0",
     "nodemailer": "^6.7.7",
     "passport": "^0.6.0",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "socket.io": "^4.5.1",
     "stripe": "^9.16.0"
   },
   "devDependencies": {
+    "@types/passport-facebook": "^2.1.11",
+    "@types/passport-google-oauth20": "^2.0.11",
     "nodemon": "^2.0.19"
   }
 }
