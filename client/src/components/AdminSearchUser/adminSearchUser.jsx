@@ -7,6 +7,7 @@ import { AiFillStar } from "react-icons/ai";
 
 import { useState, useEffect } from "react";
 import { apiConnection } from "../../utils/axios";
+import Swal from "sweetalert2";
 
 const AdminSearchUser = () => {
   const [userInfo, setUserInfo] = useState({
@@ -62,10 +63,22 @@ const AdminSearchUser = () => {
         `user/${userInfo._id}`,
         userInfo
       );
-      console.log(data);
-      // return dispatch(userProfile(data));
+
+      Swal.fire({
+        icon: "success",
+        title: "Updated",
+        text: "User has been updated successfully",
+      });
     } catch (err) {
       console.log(err);
+
+      Swal.fire({
+        icon: "error",
+        title: "Ups... Something went wrong",
+        text: "Try it again later",
+        background: "#4c4d4c",
+        color: "white",
+      });
     }
   };
 
@@ -81,6 +94,37 @@ const AdminSearchUser = () => {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handlePasswordReset = async () => {
+    if (!userInfo._id) return;
+
+    try {
+      const { data } = await apiConnection.post(`user/restorePassword`, {
+        email: userInfo.email,
+      });
+      console.log(data);
+
+      Swal.fire({
+        icon: "success",
+        title: "Restored",
+        text: "User's password has been restored successfully",
+      });
+    } catch (err) {
+      console.log(err);
+
+      Swal.fire({
+        icon: "error",
+        title: "Ups... Something went wrong",
+        text: "Try it again later",
+        background: "#4c4d4c",
+        color: "white",
+      });
+    }
+  };
+
+  const handleUserBanned = () => {
+    console.log("handleUserBanned");
   };
 
   useEffect(() => {
@@ -138,7 +182,7 @@ const AdminSearchUser = () => {
           type="submit"
           value="Search"
           disabled={searchText.length === 0}
-          className="bg-green-800 text-white md:px-5 px-3 py-2 rounded-md cursor-pointer focus:bg-green-700 disabled:opacity-50"
+          className="bg-green-800 text-white md:px-5 px-3 py-2 rounded-md focus:bg-green-700 disabled:opacity-50"
         />
       </form>
       <div className="text-white md:mt-6 mt-3 -z-10">
@@ -169,10 +213,9 @@ const AdminSearchUser = () => {
             <div className="basis-3/4 flex justify-end">
               <ActionButton
                 label="Restaurar"
-                action={() => {
-                  console.log("Restaurar contraseña");
-                }}
+                action={handlePasswordReset}
                 bg="bg-blue-500"
+                disabled={!userInfo._id}
               />
             </div>
           </div>
@@ -228,13 +271,17 @@ const AdminSearchUser = () => {
 
           <div className="flex flex-col md:mt-4 mt-2 gap-2">
             <button
-              className="bg-green-700  py-1 font-semibold rounded-sm disabled:opacity-50"
+              className="bg-green-700  py-1 font-semibold rounded-sm disabled:opacity-75"
               disabled={!userInfo._id}
               onClick={handleUserSelectedUpdate}
             >
               Guardar
             </button>
-            <button className="bg-red-500  py-1 font-semibold rounded-sm">
+            <button
+              className="bg-red-500  py-1 font-semibold rounded-sm disabled:opacity-75"
+              disabled={!userInfo._id}
+              onClick={handleUserBanned}
+            >
               Suspender
             </button>
           </div>

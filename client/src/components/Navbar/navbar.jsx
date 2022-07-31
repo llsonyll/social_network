@@ -29,6 +29,7 @@ const NavBar = ({ openModal, openAdmin }) => {
   const [searched, setSearched] = useState(false);
   const { searches } = useSelector((state) => state.browserReducer);
   const userId = useSelector((state) => state.auth.loggedUser._id);
+  const isAdmin = useSelector((state) => state.auth.loggedUser.isAdmin);
 
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -116,12 +117,14 @@ const NavBar = ({ openModal, openAdmin }) => {
         >
           <MdOutlineLogout />
         </button>
-        <button
-          className="bg-blue-700 p-2 rounded font-bold text-lg"
-          onClick={openAdmin}
-        >
-          <MdAdminPanelSettings />
-        </button>
+        {isAdmin && (
+          <button
+            className="bg-blue-700 p-2 rounded font-bold text-lg"
+            onClick={openAdmin}
+          >
+            <MdAdminPanelSettings />
+          </button>
+        )}
         <NewPostBtn action={openModal} />
       </div>
     </div>
