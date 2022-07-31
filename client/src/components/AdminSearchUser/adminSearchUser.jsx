@@ -3,7 +3,7 @@ import ActionButton from "../ActionButton";
 import LoadingSpinner from "../LoadingSpinner";
 import SearchUsersBox from "../SearchUsersBox";
 
-import { AiFillStar } from "react-icons/ai";
+import { AiFillStar, AiFillInfoCircle } from "react-icons/ai";
 
 import { useState, useEffect } from "react";
 import { apiConnection } from "../../utils/axios";
@@ -34,6 +34,7 @@ const AdminSearchUser = () => {
 
     try {
       const { data } = await apiConnection.get(`user/browser/${searchText}`);
+      console.log(data);
       setSearchResults(data);
     } catch (error) {
       setSearchResults([]);
@@ -63,6 +64,8 @@ const AdminSearchUser = () => {
         `user/${userInfo._id}`,
         userInfo
       );
+
+      console.log(data);
 
       Swal.fire({
         icon: "success",
@@ -123,8 +126,22 @@ const AdminSearchUser = () => {
     }
   };
 
-  const handleUserBanned = () => {
-    console.log("handleUserBanned");
+  const handleDeleteUser = async () => {
+    console.log("handleDeleteUser");
+    try {
+      // devuelve la lista de usuarios que sigen al perfil del seguido
+      const { data } = await apiConnection.put(`user/deleted/${userInfo._id}`);
+      console.log(data);
+      console.log("Your account has been deleted");
+      setUserInfo((prev) => ({
+        ...prev,
+        isDeleted: true,
+      }));
+      // localStorage.removeItem('token')
+      // dispatch(logOutUser())
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -133,6 +150,7 @@ const AdminSearchUser = () => {
       setLoadingSearchResults(true);
     }
   }, [searchText]);
+
   return (
     <>
       <form onSubmit={handleSearch} className="flex items-center gap-8">
@@ -187,6 +205,15 @@ const AdminSearchUser = () => {
       </form>
       <div className="text-white md:mt-6 mt-3 -z-10">
         <div className="px-9 flex flex-col gap-2">
+          {userInfo.isDeleted && (
+            <div className="bg-red-600 rounded-md shadow-md px-2 py-1 flex items-center gap-3 justify-center opacity-75 mb-2">
+              <AiFillInfoCircle />
+              <div className="font-light text-sm">
+                Este usuario esta suspendido
+              </div>
+            </div>
+          )}
+
           <InputText
             label="Id"
             value={userInfo._id}
@@ -220,6 +247,18 @@ const AdminSearchUser = () => {
             </div>
           </div>
           <InputText label="Email" value={userInfo.email} disabled />
+          {/* <div className="info_row flex gap-4">
+            <div className="basis-1/4 font-light"> Biography </div>
+            <div className="basis-3/4 flex justify-end">
+              <textarea
+                id="message"
+                rows="4"
+                className="block outline-none bg-[#363636] p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none"
+                value={userInfo.biography}
+                onChange={() => {}}
+              ></textarea>
+            </div>
+          </div> */}
           {/* <InputText label="Biography" value={''} /> */}
           <div className="info_row flex gap-4">
             <div className="basis-1/4 font-light"> isAdmin </div>
@@ -279,8 +318,8 @@ const AdminSearchUser = () => {
             </button>
             <button
               className="bg-red-500  py-1 font-semibold rounded-sm disabled:opacity-75"
-              disabled={!userInfo._id}
-              onClick={handleUserBanned}
+              disabled={userInfo.isDeleted || !userInfo._id}
+              onClick={handleDeleteUser}
             >
               Suspender
             </button>
