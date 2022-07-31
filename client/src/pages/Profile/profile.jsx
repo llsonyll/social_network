@@ -338,7 +338,7 @@ const Profile = () => {
             <button
             className=""
             onClick={() => {
-              dispatch(makeReport(userLoggedId, params.id, {reason: 'que ondaa' /*crear input */ , reported: 'user'})) // reported toma valores 'post', 'comment' y 'user'
+              dispatch(makeReport(userLoggedId, params.id, {reason /*crear input */ , reported: 'user'})) // reported toma valores 'post', 'comment' y 'user'
             }}
           >
             <FaExclamation /> Report user

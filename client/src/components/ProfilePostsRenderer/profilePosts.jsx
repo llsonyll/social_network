@@ -106,7 +106,7 @@ const ProfilePosts = (props) => {
 		  <button
             className="flex items-center gap-1"
             onClick={() => {
-              dispatch(makeReport(_id, posts[index]._id, {reason: 'pruebitaa' /*crear input */ , reported: 'post'})) // reported toma valores 'post', 'comment' y 'user'
+              dispatch(makeReport(_id, posts[index]._id, {reason /*crear input */ , reported: 'post'})) // reported toma valores 'post', 'comment' y 'user'
             }}
           >
             <FaExclamation />
