@@ -4,6 +4,7 @@ import { AiFillCloseSquare } from 'react-icons/ai'
 import Avatar from '../Avatar'
 import { useDispatch, useSelector } from 'react-redux'
 import { modifyUser } from '../../redux/actions/userActions'
+import { goodAlerts } from "../../utils/SweetAlertTypes/SweetAlerts";
 
 const EditFullname = ({ renderChangeRenderComponents, user }) => {
 	const [bio, setBio] = useState('')
@@ -20,7 +21,7 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 
 	const handleOnSubmit = () => {
 		dispatch(modifyUser(loggedUser._id, {biography: bio}))
-		alert('You changed your Biography!')
+		goodAlerts('You changed your Biography!')
 		renderChangeRenderComponents('biography')
 	}
 
