@@ -330,8 +330,7 @@ const Profile = () => {
           user={user}
         />
       )}
-      {/* {image === true && <EditLastname renderChangeRenderComponents={renderChangeRenderComponents} user={user} />} */}
-      {/* Espacio para mapear 20 objetos con el componente renderizador de los posts y los 20 posts que le pido a la db */}
+
     </>
   );
 };
