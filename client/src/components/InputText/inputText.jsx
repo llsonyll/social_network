@@ -1,10 +1,14 @@
-const InputText = ({ value, setValue }) => {
+const InputText = ({ label, value, setValue, disabled = false }) => {
   return (
     <div className="info_row flex gap-4">
-      <div className="basis-1/4 font-light"> {value} </div>
+      <div className="basis-1/4 font-light"> {label} </div>
       <input
         type="text"
-        className="focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full basis-3/4"
+        name={label.toLowerCase()}
+        value={value}
+        disabled={disabled}
+        onChange={setValue}
+        className="focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full basis-3/4 disabled:opacity-70 disabled:z-auto"
       />
     </div>
   );

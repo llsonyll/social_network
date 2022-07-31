@@ -67,7 +67,7 @@ export const getLoggedUserInfo = () => async (dispatch) => {
     const token = localStorage.getItem("token");
     setAuthorization(token);
     const {
-      data: { username, _id, profilePicture, isDeleted  },
+      data: { username, _id, profilePicture, isDeleted },
     } = await apiConnection.post("auth");
     return dispatch(
       loginUser({
