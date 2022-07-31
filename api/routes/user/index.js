@@ -69,23 +69,37 @@ router.get("/browser/:username", passport_1.default.authenticate("jwt", {
     }
 ) */
 // GET '/:userId'
-router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:userId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     try {
         const user = yield mongoose_1.User.findById(`${userId}`)
             // .populate('posts', select['_id', 'likes', 'dislikes', 'content','commentsId'], populate:{path: 'userId', select: ['username', 'likes']} )
             .populate({
-            path: 'posts',
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
-            options: { sort: { 'createdAt': -1 } },
-            populate: { path: 'userId', select: ['username', 'profilePicture'] },
+            path: "posts",
+            select: [
+                "content",
+                "createdAt",
+                "likes",
+                "dislikes",
+                "_id",
+                "commentsId",
+                "multimedia",
+            ],
+            options: { sort: { createdAt: -1 } },
+            populate: { path: "userId", select: ["username", "profilePicture"] },
+        })
+            .populate({
+            path: "review",
         })
             // .populate('followRequest', 'username')
             // .populate('following', 'username')
             // .populate('followers', 'username')
-            .select('-password');
+            .select("-password");
         if (!user)
-            return res.status(404).json({ errorMsg: 'who are you?' });
+            return res.status(404).json({ errorMsg: "who are you?" });
         return res.status(201).json(user);
     }
     catch (err) {
@@ -131,19 +145,37 @@ router.put("/updatePassword", passport_1.default.authenticate("jwt", {
     }
 }));
 // PUT '/:userId'
-router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put("/:userId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
         const { username, firstname, lastname, biography, profilePicture } = req.body;
-        if (!username && !firstname && !lastname && (!biography && biography !== '') && !profilePicture) {
-            return res.status(400).json({ errprMsg: 'Please send data' });
+        if (!username &&
+            !firstname &&
+            !lastname &&
+            !biography &&
+            biography !== "" &&
+            !profilePicture) {
+            return res.status(400).json({ errprMsg: "Please send data" });
         }
-        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, { new: true })
+        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, {
+            new: true,
+        })
             .populate({
-            path: 'posts',
-            select: ['content', 'likes', 'dislikes', '_id', 'commentsId', 'createdAt', 'multimedia'],
-            options: { sort: { 'createdAt': -1 } },
-            populate: { path: 'userId', select: ['username', 'profilePicture'] }
+            path: "posts",
+            select: [
+                "content",
+                "likes",
+                "dislikes",
+                "_id",
+                "commentsId",
+                "createdAt",
+                "multimedia",
+            ],
+            options: { sort: { createdAt: -1 } },
+            populate: { path: "userId", select: ["username", "profilePicture"] },
         })
             // .populate('following', 'username')
             // .populate('followers', 'username')
@@ -190,16 +222,19 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
         return res.status(404).json({ errorMsg: err });
     }
 }));
-router.get('/following/:userId', passport_1.default.authenticate("jwt", {
+router.get("/following/:userId", passport_1.default.authenticate("jwt", {
     session: false,
     failureRedirect: "/auth/loginjwt",
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let userId = req.params.userId;
-        let user = yield mongoose_1.User.findById(`${userId}`).populate('following', ['username', 'profilePicture']);
+        let user = yield mongoose_1.User.findById(`${userId}`).populate("following", [
+            "username",
+            "profilePicture",
+        ]);
         console.log(user.following);
         if (!user) {
-            return res.status(400).json('not following');
+            return res.status(400).json("not following");
         }
         res.status(200).json(user.following);
     }
@@ -359,8 +394,8 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
             if (userFollowed.followRequest.includes(user._id)) {
                 yield mongoose_1.User.updateOne({ _id: userFollowed._id }, {
                     $pull: {
-                        followRequest: user._id
-                    }
+                        followRequest: user._id,
+                    },
                 }, { new: true });
             }
             else {
@@ -389,10 +424,10 @@ router.put("/deleted/:userId", passport_1.default.authenticate("jwt", {
     try {
         let userId = req.params.userId;
         /*    let deletePost = await Post.deleteMany({userId:`${userId}`});
-           let deleteComment = await Comment.deleteMany({userId:`${userId}`});
-            let deleteReview = await Review.deleteMany({userId:`${userId}`});
-            let deleteMessage = await Message.deleteMany({from:`${userId}`});
-            let deleteChat = await Chat.findOneAndUpdate({users:{_id:`${userId}`}}); */
+     let deleteComment = await Comment.deleteMany({userId:`${userId}`});
+      let deleteReview = await Review.deleteMany({userId:`${userId}`});
+      let deleteMessage = await Message.deleteMany({from:`${userId}`});
+      let deleteChat = await Chat.findOneAndUpdate({users:{_id:`${userId}`}}); */
         let userDeleted = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, { isDeleted: true }, { new: true });
         if (!userDeleted) {
             return res.status(400).json("Eror deleting user");
@@ -404,49 +439,59 @@ router.put("/deleted/:userId", passport_1.default.authenticate("jwt", {
     }
 }));
 // -------------- PUT /acceptFollow/:userId/:userRequestingId --- Aceptar solicitud de seguimiento ------------------
-router.put('/acceptFollow/:userId/:userRequestingId', passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt",
+router.put("/acceptFollow/:userId/:userRequestingId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId, userRequestingId } = req.params;
         const userRequesting = yield mongoose_1.User.findById(`${userRequestingId}`);
         if (!userRequesting)
-            return res.status(404).json({ msg: 'User requesting not found' });
+            return res.status(404).json({ msg: "User requesting not found" });
         const user = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, {
             $pull: {
-                followRequest: `${userRequesting._id}`
-            }
+                followRequest: `${userRequesting._id}`,
+            },
         }, { new: true });
         if (!user)
-            return res.status(404).json({ msg: 'User not found' });
+            return res.status(404).json({ msg: "User not found" });
         user.followers.push(`${userRequesting._id}`);
         yield user.save();
         userRequesting.following.push(user._id);
         yield userRequesting.save();
         // user = await user
         // .populate()
-        return res.json({ followers: user.followers, followRequest: user.followRequest });
+        return res.json({
+            followers: user.followers,
+            followRequest: user.followRequest,
+        });
     }
     catch (error) {
         return res.status(400).json(error);
     }
 }));
 // -------------- PUT /cancelFollow/:userId/:userRequestingId --- Cancelar solicitud de seguimiento ------------------
-router.put('/cancelFollow/:userId/:userRequestingId', passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt",
+router.put("/cancelFollow/:userId/:userRequestingId", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId, userRequestingId } = req.params;
         const userRequesting = yield mongoose_1.User.findById(`${userRequestingId}`);
         if (!userRequesting)
-            return res.status(404).json({ msg: 'User requesting not found' });
+            return res.status(404).json({ msg: "User requesting not found" });
         const user = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, {
             $pull: {
-                followRequest: `${userRequesting._id}`
-            }
+                followRequest: `${userRequesting._id}`,
+            },
         }, { new: true });
         if (!user)
-            return res.status(404).json({ msg: 'User not found' });
+            return res.status(404).json({ msg: "User not found" });
         yield user.save();
-        return res.json({ followers: user.followers, followRequest: user.followRequest });
+        return res.json({
+            followers: user.followers,
+            followRequest: user.followRequest,
+        });
     }
     catch (error) {
         return res.status(400).json(error);

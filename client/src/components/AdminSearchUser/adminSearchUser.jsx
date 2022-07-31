@@ -20,7 +20,7 @@ const AdminSearchUser = () => {
     isAdmin: false,
     isPremium: false,
     isPrivate: false,
-    review: "",
+    review: {},
   });
 
   const [searchText, setSearchText] = useState("");
@@ -29,12 +29,11 @@ const AdminSearchUser = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    console.log("SEARCH", searchText);
     setLoadingSearchResults(true);
 
     try {
       const { data } = await apiConnection.get(`user/browser/${searchText}`);
-      console.log(data);
+      // console.log(data);
       setSearchResults(data);
     } catch (error) {
       setSearchResults([]);
@@ -46,7 +45,7 @@ const AdminSearchUser = () => {
   const handleSelection = async (id) => {
     try {
       const { data } = await apiConnection.get(`user/${id}`);
-      console.log(data);
+      // console.log(data);
       setSearchText("");
       setSearchResults("");
       setUserInfo(data);
@@ -65,7 +64,7 @@ const AdminSearchUser = () => {
         userInfo
       );
 
-      console.log(data);
+      // console.log(data);
 
       Swal.fire({
         icon: "success",
@@ -106,7 +105,8 @@ const AdminSearchUser = () => {
       const { data } = await apiConnection.post(`user/restorePassword`, {
         email: userInfo.email,
       });
-      console.log(data);
+
+      // console.log(data);
 
       Swal.fire({
         icon: "success",
@@ -127,18 +127,14 @@ const AdminSearchUser = () => {
   };
 
   const handleDeleteUser = async () => {
-    console.log("handleDeleteUser");
     try {
-      // devuelve la lista de usuarios que sigen al perfil del seguido
       const { data } = await apiConnection.put(`user/deleted/${userInfo._id}`);
-      console.log(data);
-      console.log("Your account has been deleted");
+      // console.log(data);
+      // console.log("Your account has been deleted");
       setUserInfo((prev) => ({
         ...prev,
         isDeleted: true,
       }));
-      // localStorage.removeItem('token')
-      // dispatch(logOutUser())
     } catch (err) {
       console.log(err);
     }
@@ -155,7 +151,7 @@ const AdminSearchUser = () => {
     <>
       <form onSubmit={handleSearch} className="flex items-center gap-8">
         <div className="text-green-700 font-bold">
-          Search account by id or email:
+          Search account by id/username/email:
         </div>
         <div className="w-full relative">
           <input
@@ -247,18 +243,19 @@ const AdminSearchUser = () => {
             </div>
           </div>
           <InputText label="Email" value={userInfo.email} disabled />
-          {/* <div className="info_row flex gap-4">
+          <div className="info_row flex gap-4">
             <div className="basis-1/4 font-light"> Biography </div>
             <div className="basis-3/4 flex justify-end">
               <textarea
                 id="message"
                 rows="4"
                 className="block outline-none bg-[#363636] p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none"
+                name="biography"
                 value={userInfo.biography}
-                onChange={() => {}}
+                onChange={handleTextInputChange}
               ></textarea>
             </div>
-          </div> */}
+          </div>
           {/* <InputText label="Biography" value={''} /> */}
           <div className="info_row flex gap-4">
             <div className="basis-1/4 font-light"> isAdmin </div>
@@ -296,15 +293,24 @@ const AdminSearchUser = () => {
           <div className="info_row flex gap-4">
             <div className="basis-1/4 font-light"> Review </div>
             <div className="basis-3/4 flex gap-2 items-center">
-              <div className="flex items-center">
-                <div className="font-semibold">5</div>
-                <AiFillStar />
-              </div>
-              <input
-                type="text"
-                disabled
-                className="focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full"
-              />
+              {userInfo.review ? (
+                <>
+                  <div className="flex items-center">
+                    <div className="font-semibold">
+                      {userInfo.review.stars ?? ""}
+                    </div>
+                    <AiFillStar />
+                  </div>
+                  <input
+                    type="text"
+                    disabled
+                    value={userInfo.review.description ?? ""}
+                    className="focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full"
+                  />
+                </>
+              ) : (
+                "Sin review"
+              )}
             </div>
           </div>
 
