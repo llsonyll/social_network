@@ -172,8 +172,8 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
         if (user.following.length > 0) {
             if (control === "true") {
                 result = yield mongoose_1.Post.find({
-                    userId: { $in: user.following }, 
-                    // userId: user._id,
+                    // userId: { $in: [...user.following, user._id] }, 
+                    $or: [{userId: user._id}, {userId: {$in: user.following}}],    //posts hechos por el usuario o por los usuarios a los que sigue
                     createdAt: { $gte: new Date(date - 259200000) }
                 }) //menos 3 dias                
                     .sort({ createdAt: -1 })

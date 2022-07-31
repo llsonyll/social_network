@@ -20,7 +20,7 @@ const userReducer = createSlice({
           return state
         }
         console.log(action.payload)
-        if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 3]._id !== action.payload[action.payload?.length - 3]._id) {
+        if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
           state.homePostsData = state.homePostsData.concat(action.payload);
           if(action.payload.length < 10 && state.control==="true") {
             state.control = "false"
