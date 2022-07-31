@@ -138,6 +138,30 @@ router.post("/login", passport_1.default.authenticate("local", {
         res.json(error);
     }
 }));
+//--------------------------------------login google-------------------------------------
+router.get("/loginGoogle", passport_1.default.authenticate('google', { session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        const send = user;
+        res.cookie("token", createToken(user));
+        return res.redirect(`${process.env.URL_FRONT}`);
+    }
+    catch (err) {
+        res.status(400).json({ err: "todo salio mal" });
+    }
+}));
+//---------------------------facebook---------------------------------
+router.get("/loginFacebook", passport_1.default.authenticate('facebook', { scope: ['email'], session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        const send = user;
+        res.cookie("token", createToken(user));
+        return res.redirect(`${process.env.URL_FRONT}`);
+    }
+    catch (err) {
+        res.status(400).json({ err: "todo salio mal" });
+    }
+}));
 //------------------------route data user----------------------------------
 router.post("/", passport_1.default.authenticate("jwt", {
     session: false,

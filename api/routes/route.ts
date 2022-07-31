@@ -13,6 +13,7 @@ import morgan from "morgan";
 import chatRoute from './chat';
 import premiumRoute from "./premium";
 import reportRoute from './report';
+import cookie from 'cookie-parser';
 
 const server = express();
 
@@ -34,6 +35,7 @@ const options: cors.CorsOptions = {
 server.use(cors(options));
 
 server.use(express.json());
+server.use(cookie())
 server.use(morgan("dev"));
 Auth(server,User);
 server.use(passport.initialize());

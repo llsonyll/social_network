@@ -9,10 +9,10 @@ export const loginAction = (obj) => async (dispatch) => {
     const {
       data: { token, username, _id, profilePicture, isDeleted },
     } = await apiConnection.post("auth/login", obj);
-    console.log(isDeleted)
-    if (obj.rememberMe) {
+    
+  // if (obj.rememberMe) {
       localStorage.setItem("token", token);
-    }
+   //}
 
     setAuthorization(token);
     return dispatch(

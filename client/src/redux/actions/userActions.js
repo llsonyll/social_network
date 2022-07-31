@@ -126,7 +126,7 @@ export const acceptFollowRequest = (userId, userRequestingId) => async (dispatch
   //recibe Id del usuario y luego id del usuario a aceptar por params
   try {
     const { data } = await apiConnection.put(`user/acceptFollow/${userId}/${userRequestingId}`);
-    return dispatch(toggleFollowUser(data));
+    return dispatch(toggleResponseFollow(data));
   } catch (err) {
     console.log(err);
   }
@@ -137,7 +137,7 @@ export const cancelFollowRequest = (userId, userRequestingId) => async (dispatch
   //recibe Id del usuario y luego id del usuario a cancelar por params
   try {
     const { data } = await apiConnection.put(`user/cancelFollow/${userId}/${userRequestingId}`);
-    return dispatch(toggleFollowUser(data));
+    return dispatch(toggleResponseFollow(data));
 } catch (err) {
   console.log(err);
 }
