@@ -157,10 +157,7 @@ router.put('/:userId', passport_1.default.authenticate('jwt', { session: false, 
     }
 }));
 // GET '/home/:userId'
-router.get("/home/:userId", passport_1.default.authenticate("jwt", {
-    session: false,
-    failureRedirect: "/auth/loginjwt",
-}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     let page = parseInt(`${req.query.page}`);
     let control = req.query.control;
@@ -170,7 +167,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
     try {
         const user = yield mongoose_1.User.findById(`${userId}`);
         if (!user)
-            return res.status(404).json({ errorMsg: "who are you?" });
+            return res.status(404).json({ errorMsg: 'who are you?' });
         const date = new Date().getTime();
         let result = [];
         if (user.following.length > 0) {
@@ -188,7 +185,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
             else {
                 result = yield mongoose_1.Post.find({
                     createdAt: { $gte: new Date(date - 259200000) },
-                    userId: { $nin: user.following }
+                    userId: { $nin: [...user.following, user._id] }
                 })
                     .sort({ createdAt: -1 })
                     .skip(page * 10)

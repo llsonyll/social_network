@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   userProfileData: {},
   homePostsData: [],
-  control: true,
+  control: "true",
   userFollowings : []
 };
 
@@ -28,6 +28,10 @@ const userReducer = createSlice({
         } else {
           state.homePostsData = action.payload;
       }
+    },
+    clearHomePosts(state, action) {
+      state.homePostsData= [],
+      state.control="true"
     },
     addNewPost(state, action) {
       state.homePostsData = [action.payload, ...state.homePostsData]
@@ -89,6 +93,7 @@ export const {
   dislikesPost,
   dislikesProfilePost,
   toggleUSERFollowing,
+  clearHomePosts,
 } = userReducer.actions;
 
 export default userReducer.reducer;
