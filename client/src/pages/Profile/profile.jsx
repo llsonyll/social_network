@@ -9,7 +9,7 @@ import ProfilePosts from "../../components/ProfilePostsRenderer";
 import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { getUserProfile, modifyUser } from "../../redux/actions/userActions";
+import { acceptFollowRequest, cancelFollowRequest, getUserProfile, modifyUser } from "../../redux/actions/userActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
@@ -60,7 +60,7 @@ const Profile = () => {
 
   const handleGetUserProfile = async () => {
     setLoading(true);
-    await dispatch(getUserProfile(params.id));
+    dispatch(getUserProfile(params.id));
     setLoading(false);
   };
 
@@ -144,7 +144,7 @@ const Profile = () => {
   const followRenderer = () => {
     return usersFollowing.includes(userLoggedId) ? (
       <Fragment key={Math.random()}>Unfollow</Fragment>
-    ) : user.followRequest.includes(userLoggedId) ? (
+    ) : (user.followRequest.length && (user.followRequest?.includes(userLoggedId) || (user.followRequest?.map(u => u._id?.includes(userLoggedId))))) ? (
       <Fragment key={Math.random()}>Pending</Fragment>
     ) : (
       <Fragment key={Math.random()}>Follow</Fragment>
@@ -275,6 +275,37 @@ const Profile = () => {
                         </button>
                       </div>
                     ) : null}
+                  </div>
+                  <div>
+                  {params.id === userLoggedId ? 
+                    user.followRequest ? (
+                      <div className="button_container">
+                        {
+                          user.followRequest.map(r => {
+                            return <div key={r._id}>
+                              <img src={r.profilePicture} className='img-follow-request'/>
+                              <p className="username-follow-request">{r.username}</p>
+                              <button
+                                onClick={() => {
+                                  dispatch(cancelFollowRequest(user._id, r._id));
+                                }}
+                                type="button"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => {
+                                  dispatch(acceptFollowRequest(user._id, r._id));
+                                }}
+                                type="button"
+                              >
+                                Acept
+                              </button>
+                            </div>
+                          })
+                        }
+                      </div>
+                    ) : null : null}
                   </div>
                   <div className="user-mess">
                     <div className="info_container">

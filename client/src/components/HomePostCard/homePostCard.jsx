@@ -65,7 +65,9 @@ const HomePostCard = (props) => {
     })
     if (on) {
       return  <div key={Math.random()}>Unfollow</div>
-    } else {
+    } /*else if (props.followRequest?.length && props.followRequest?.map(u => u._id?.includes(user._id))) {
+      return <div key={Math.random()}>Pending</div>
+    }*/ else {
       return <div key={Math.random()}>Follow</div>
     }
   };
