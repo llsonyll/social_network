@@ -1,6 +1,7 @@
 import { FaComment, FaHeart } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import Avatar from '../Avatar'
+import { AiOutlineMore } from "react-icons/ai";
 import { ImHeartBroken } from "react-icons/im";
 import { Link } from 'react-router-dom'
 import { Fragment } from 'react'
@@ -21,6 +22,7 @@ const ProfilePosts = (props) => {
 		dispatch(newDislikeUserProfile(postNumber,_id));
 	}
 	
+	const loggedUser = useSelector(state => state.auth.loggedUser)
 	const posts = useSelector(state => state.user.userProfileData.posts);
 	let index = posts.findIndex(post => post._id === postNumber);
 	
@@ -68,6 +70,15 @@ const ProfilePosts = (props) => {
 						</Link>
 						<div className='opacity-50'>{timeAgo ? timeAgo : '3hr'}</div>
 					</div>
+          {
+          loggedUser._id  === userId &&
+          <button 
+          className="user-post-icon_more"
+          onClick={() => setEditComments(true)}
+          >
+            <AiOutlineMore />
+          </button>
+          }
 				</div>
 				<Link to={`/home/post/${postNumber}`}>
 				<div className='user-post-profile__content flex-1 pl-2 md:pl-4'>
