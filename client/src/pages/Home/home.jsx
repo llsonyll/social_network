@@ -36,9 +36,6 @@ const [pageFalse, setPageFalse] = useState(0)
 
   }, [userId]);
   
-  useEffect(() => {
-
-  }, [])
   
 
   useEffect(() => {
