@@ -1,6 +1,7 @@
 import passport from "passport";
 import express, { Request, Response } from "express";
 import { Comment, Post, User } from "../../mongoose";
+import { IComments } from "../../types";
 
 const router = express.Router();
 
@@ -20,25 +21,32 @@ async (req: Request, res: Response) => {
         return  res.status(400).json("user does not exist")
       }
 
-      if(comment.dislikes.includes(user._id)){
+    let dislikes: IComments | null = await Comment.findOne({ _id: commentId ,"dislikes._id": user._id });
+
+      if(dislikes){
           await Comment.updateOne({_id: commentId},{
             $pull: {
-                dislikes: user._id
+                dislikes: {_id: user._id}
             }
           });
       }
       
-      if(!comment.likes.includes(user._id)){
-         comment.likes.push(user._id);
-         await comment.save();
+    let likes: IComments | null = await Comment.findOne({ _id: commentId ,"likes._id": user._id });
+      
+      if(!likes){
+         comment = await Comment.findOneAndUpdate({_id: commentId },{
+            $push: {
+                likes: { _id: user._id, username: user.username }
+            }
+         },{new: true});
       }else{
          comment = await Comment.findOneAndUpdate({_id: commentId },{
             $pull: {
-                likes: user._id
+                likes: { _id: user._id}
             }
          },{new: true});
       }
-     return res.status(200).json({likes : comment.likes, _id : comment._id});
+     return res.status(200).json({likes : comment.likes, _id : comment._id, dislikes: comment.dislikes});
    } catch (err) {
       return res.json(err);
    }
@@ -60,26 +68,33 @@ async (req: Request, res: Response) => {
         return  res.status(400).json("user does not exist")
       }
 
-      if(comment.likes.includes(user._id)){
+    let likes: IComments | null = await Comment.findOne({ _id: commentId ,"likes._id": user._id });
+
+      if(likes){
           await Comment.updateOne({_id: commentId},{
             $pull: {
-                likes: user._id
+                likes: { _id: user._id}
             }
           });
       }
+
+    let dislikes: IComments | null = await Comment.findOne({ _id: commentId ,"dislikes._id": user._id });
       
-      if(!comment.dislikes.includes(user._id)){
-         comment.dislikes.push(user._id);
-         await comment.save();
+      if(!dislikes){
+         comment = await Comment.findOneAndUpdate({_id: commentId },{
+            $push: {
+                dislikes: { _id: user._id, username: user.username }
+            }
+         },{new: true});
       }else{
          comment = await Comment.findOneAndUpdate({_id: commentId },{
             $pull: {
-                dislikes: user._id
+                dislikes: { _id: user._id }
             }
          },{new: true});
       }
 
-     return res.status(200).json({dislikes : comment.dislikes, _id : comment._id});
+     return res.status(200).json({dislikes : comment.dislikes, _id : comment._id, likes: comment.likes});
    } catch (err) {
       return res.json(err);
    }
@@ -111,7 +126,7 @@ router.post('/:userId/:postId', passport.authenticate('jwt', {session:false, fai
 
         await post.save();
 
-        post = await post.populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+        post = await post.populate({path: 'commentsId',select: ['content', 'likes', "dislikes"], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
 
         return res.status(201).json(post);
     } catch (error) {
@@ -139,7 +154,7 @@ async (req: Request, res: Response) => {
       const post = await Post.findById(`${postId}`)
       .populate('userId', ['username', 'profilePicture'])
       .populate('dislikes', 'username')
-      .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+      .populate({path: 'commentsId',select: ['content', 'likes', "dislikes"], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
 
       return res.status(201).json(post)
    } catch (error) {
@@ -168,7 +183,7 @@ async (req: Request, res: Response) => {
       const newPost = await Post.findById(comment.postId)
       .populate('userId', ['username', 'profilePicture'])
       .populate('dislikes', 'username')
-      .populate({path: 'commentsId',select: ['content', 'likes'], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
+      .populate({path: 'commentsId',select: ['content', 'likes', "dislikes"], populate:{path: 'userId', select: ['username', 'likes','profilePicture']}})
 
       if (newPost) return res.status(201).json(newPost);
    } catch (error) {

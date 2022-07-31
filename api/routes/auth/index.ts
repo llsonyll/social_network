@@ -96,6 +96,7 @@ router.post(
           username: send.username,
           _id: send._id,
           profilePicture: send.profilePicture,
+          isDeleted: send.isDeleted,
         });
         //res.redirect()
       }
@@ -153,6 +154,7 @@ router.post(
           username: send.username,
           _id: send._id,
           profilePicture: send.profilePicture,
+          isDeleted: send.isDeleted,
         });
         //res.redirect()
       }
@@ -162,6 +164,36 @@ router.post(
     }
   }
 );
+
+//--------------------------------------login google-------------------------------------
+router.get("/loginGoogle",passport.authenticate('google',{session: false,failureRedirect: "/auth/loginjwt" }),
+async(req:Request,res:Response)=>{
+    try {
+			const user: any = req.user;
+
+				const send: IUser = user as IUser;
+
+				res.cookie("token",createToken(user as IUser));
+		    return res.redirect(`${process.env.URL_FRONT}`);
+		} catch (err) {
+			 res.status(400).json({err:"todo salio mal"});
+		}
+});
+
+//---------------------------facebook---------------------------------
+router.get("/loginFacebook",passport.authenticate('facebook',{scope:['email'],session: false,failureRedirect: "/auth/loginjwt" }),
+async(req:Request,res:Response)=>{
+    try {
+			const user: any = req.user;
+
+				const send: IUser = user as IUser;
+
+				res.cookie("token",createToken(user as IUser));
+		    return res.redirect(`${process.env.URL_FRONT}`);
+		} catch (err) {
+			 res.status(400).json({err:"todo salio mal"});
+		}
+});
 
 //------------------------route data user----------------------------------
 router.post(
@@ -204,7 +236,7 @@ router.post(
         return res.status(400).json("Invalid Token");
       }
 
-      let { username, profilePicture } = user;
+      let { username, profilePicture, isDeleted } = user;
 
       if (user.isPremium) {
         const date = new Date();
@@ -218,8 +250,7 @@ router.post(
           }
         }
       }
-
-      return res.status(200).json({ _id: id, username, profilePicture });
+      return res.status(200).json({ _id: id, username, profilePicture, isDeleted  });
     } catch (err) {
       return res.status(400).json(err);
     }

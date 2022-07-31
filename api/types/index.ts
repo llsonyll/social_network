@@ -24,6 +24,12 @@ export interface IUser {
    paymentsId?: string[];
    plan?: 'weekly' | 'monthly' | 'yearly';
    expirationDate?: Date;
+   isDeleted: boolean;
+}
+
+export interface ILikesAndDislikes {
+   _id: Types.ObjectId,
+   username: string
 }
 
 export interface IPost{
@@ -31,8 +37,8 @@ export interface IPost{
    userId: Types.ObjectId;
    content?: string;
    commentsId: Types.Array<Types.ObjectId>;
-   likes: Types.Array<Types.ObjectId>;
-   dislikes: Types.Array<Types.ObjectId>;
+   likes: Types.Array<ILikesAndDislikes>;
+   dislikes: Types.Array<ILikesAndDislikes>;
    createdAt: Date;
    multimedia?: string;
 }
@@ -43,8 +49,8 @@ export  interface IComments {
    userId: Types.ObjectId;
    content: string;
    createdAt: Date,
-   likes: Types.Array<Types.ObjectId>,
-   dislikes: Types.Array<Types.ObjectId>
+   likes: Types.Array<ILikesAndDislikes>,
+   dislikes: Types.Array<ILikesAndDislikes>
 }
 
 export interface IReview {
