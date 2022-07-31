@@ -17,6 +17,15 @@ const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = __importDefault(require("passport-local"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const passport_google_oauth20_1 = __importDefault(require("passport-google-oauth20"));
+const passport_facebook_1 = __importDefault(require("passport-facebook"));
+const profileArray = [
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p2_tj88ek.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p3_dlphru.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p4_zy2yhe.png",
+    "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p5_i3n2nd.png",
+];
 //Auth configuration function
 function Auth(app, userCollection) {
     //Local strategy for authentication
@@ -35,6 +44,70 @@ function Auth(app, userCollection) {
                 return done(null, user);
         });
     }));
+    //google strategy
+    passport_1.default.use(new passport_google_oauth20_1.default.Strategy({
+        clientID: `${process.env.GOOGLE_CLIENT_ID}`,
+        clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+        callbackURL: `${process.env.URL}auth/loginGoogle`,
+        scope: ["email", "profile"],
+    }, (accessToken, RefreshToken, profile, done) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let { _json } = profile;
+            let user = yield userCollection.findOne({ email: `${_json.email}` });
+            if (!user) {
+                let salt = yield bcrypt_1.default.genSalt(10);
+                let hash = yield bcrypt_1.default.hash(`${profile.id}`, salt);
+                let newUser = new userCollection({
+                    lastname: _json.family_name,
+                    firstname: _json.given_name,
+                    username: _json.given_name,
+                    email: _json.email,
+                    password: hash,
+                    profilePicture: profileArray[Math.floor(Math.random() * 5)]
+                });
+                yield newUser.save();
+                return done(null, newUser);
+            }
+            else {
+                return done(null, user);
+            }
+        }
+        catch (err) {
+            return done(null, false);
+        }
+    })));
+    //facebook strategy
+    passport_1.default.use("facebook", new passport_facebook_1.default.Strategy({
+        clientID: `${process.env.FACEBOOK_APP_ID}`,
+        clientSecret: `${process.env.FACEBOOK_APP_SECRET}`,
+        callbackURL: `${process.env.URL}auth/loginFacebook`,
+        profileFields: ['email', 'id', "name", 'displayName', 'photos'],
+    }, (accessToken, RefreshToken, profile, done) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            let { _json } = profile;
+            let user = yield userCollection.findOne({ email: `${_json.email}` });
+            if (!user) {
+                let salt = yield bcrypt_1.default.genSalt(10);
+                let hash = yield bcrypt_1.default.hash(`${profile.id}`, salt);
+                let newUser = new userCollection({
+                    lastname: _json.last_name,
+                    firstname: _json.first_name,
+                    username: _json.first_name,
+                    email: _json.email,
+                    password: hash,
+                    profilePicture: profileArray[Math.floor(Math.random() * 5)],
+                });
+                yield newUser.save();
+                return done(null, newUser);
+            }
+            else {
+                return done(null, user);
+            }
+        }
+        catch (err) {
+            return done(null, false);
+        }
+    })));
     //JasonWebToken strategy for auth
     passport_1.default.use('jwt', new passport_jwt_1.default.Strategy(
     //Extracts the token

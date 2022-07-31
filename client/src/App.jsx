@@ -43,33 +43,29 @@ function App() {
   const [otherVideo, setOtherVideo] = useState()
   const [onCall, setOnCall] = useState(false)
 
-
-
-
+  
   useEffect(() => {
-    if (localStorage.getItem("token") && !loggedUser._id) {
-      dispatch(getLoggedUserInfo());
+		if (localStorage.getItem("token") && !loggedUser._id) {
+			dispatch(getLoggedUserInfo());
     }
   }, []);
 
 
   useEffect(() => {
     // if (!localStorage.getItem("token") && location.pathname !== "/") {
-    //   dispatch(removeLoggedUser());
-    //   console.log("removeLoggedUser");
+			//   dispatch(removeLoggedUser());
+			//   console.log("removeLoggedUser");
     //   navigate("/");
     // }
   }, [location]);
 
   //SOCKET useEffect TO REPORT A LOGGED USER, AND HANDLE CALLS
   useEffect(() => {
-	if(loggedUser._id){
-		setActuallyLogged(loggedUser._id)
-	}
+		if(loggedUser._id){
+			setActuallyLogged(loggedUser._id)
+		}
   },[loggedUser])
-
-
-  
+	
 
   //'PRIMARY' USE EFFECT, LOGS THE USER IN AND CONTROL CALL AND ANSWER
   useEffect(() => {
@@ -83,11 +79,11 @@ function App() {
       	socket.emit('logged', actualyLogged, socket.id)
 		//DETECTS WHEN SOMEONE CALLS YOU
 		socket.on('call',(_id) => {
-					//DISPLAYS THE VIDEOCALL
-					setOnCall(true)
-					//GET CAMERA AND MIC DATA
-					getUserMedia(
-					{ video: true, audio: true }, function(stream){
+			//DISPLAYS THE VIDEOCALL
+			setOnCall(true)
+			//GET CAMERA AND MIC DATA
+			getUserMedia(
+				{ video: true, audio: true }, function(stream){
 					//EXECUTE THE CALL
 					call = peer.call(_id, stream);
 					//DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
@@ -129,7 +125,7 @@ function App() {
 				},
 			);
 		});
-    }
+	}
     return (() => {
 		socket.off('logged')
 		socket.off('call')
@@ -138,10 +134,10 @@ function App() {
 
   //SOCKET useEFFECT TO LISTEN MESSAGES
   useEffect(() => {
-    if(!location.pathname.includes('messages')){
-      console.log('hola?')
+		if(!location.pathname.includes('messages')){
+			console.log('hola?')
       socket.on('privMessage', (content, _id, chatId) =>{
-          console.log('Escucho mensajes pero no los agrego')  
+				console.log('Escucho mensajes pero no los agrego')  
       })
     }
     return (()=> socket.off('privMessage'))
@@ -149,12 +145,12 @@ function App() {
 
   //SHOWS THE INCOMING VIDEO
   	useEffect(() => {
-		if(otherVideo){
+			if(otherVideo){
 			remoteVideoRef.current.srcObject = otherVideo
 			remoteVideoRef.current.onloadedmetadata = function(e) {remoteVideoRef.current.play()}
 		}
 	},[otherVideo])
-
+	
 	//SHOWS LOCAL VIDEO AND LISTENS TO ENDING CALLS
 	useEffect(()=>{
 		if(myVideo){
@@ -188,9 +184,9 @@ function App() {
 	function handleMuteMic() {
 		myVideo.getAudioTracks().forEach(track => track.enabled = !track.enabled)
 	}
-
+		
 	return (
-			<>
+		<>
 			
 			{
 				onCall ?
