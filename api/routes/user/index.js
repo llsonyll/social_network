@@ -185,7 +185,7 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
             else {
                 result = yield mongoose_1.Post.find({
                     createdAt: { $gte: new Date(date - 259200000) },
-                    userId: { $nin: [...user.following, user._id] }
+                    userId: { $nin: [...user.following, user._id], 'user.isPrivate': true }
                 })
                     .sort({ createdAt: -1 })
                     .skip(page * 10)
@@ -194,7 +194,9 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
             }
         }
         if (user.following.length === 0) {
-            result = yield mongoose_1.Post.find({ createdAt: { $gte: new Date(date - 259200000) } })
+            result = yield mongoose_1.Post.find({
+                createdAt: { $gte: new Date(date - 259200000) }
+            })
                 .sort({ createdAt: -1 })
                 .skip(page * 10)
                 .limit(10)

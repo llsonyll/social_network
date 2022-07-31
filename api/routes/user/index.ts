@@ -210,7 +210,7 @@ router.get(
         } else {
 						result = await Post.find({
 							createdAt: {$gte: new Date(date - 259200000)},
-							userId: {$nin: [...user.following, user._id]}
+							userId: {$nin: [...user.following, user._id], 'user.isPrivate': true}
 						})
 						.sort({ createdAt: -1 })
 						.skip(page * 10)
@@ -220,7 +220,9 @@ router.get(
 				}
 
 				if(user.following.length===0) {
-					result = await Post.find({createdAt: {$gte: new Date(date - 259200000)}})
+					result = await Post.find({
+            createdAt: {$gte: new Date(date - 259200000)}
+          })
 					.sort({ createdAt: -1 })
 					.skip(page * 10)
 					.limit(10)
