@@ -17,7 +17,7 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 //IMPORTS PARA SOCKET IO
 import io from 'socket.io-client';
 import { addMessage } from "./redux/reducers/chatReducer";
-export const socket = io('http://localhost:3001');
+export const socket = io('http://www.dreamteamapi.tech');
 let peer;
 let call;
 
@@ -193,8 +193,8 @@ function App() {
 			<Draggable bounds='parent'>
 				<div id="video_container">
 					<div className="user_videos_container">
-					<video ref={remoteVideoRef} autoPlay muted/>
-					<video ref={localVideoRef}  autoPlay />
+					<video ref={remoteVideoRef} autoPlay />
+					<video ref={localVideoRef}  autoPlay muted/>
 
 					</div>
 					<div className="buttons_video_container">
