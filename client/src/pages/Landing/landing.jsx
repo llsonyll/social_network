@@ -58,7 +58,7 @@ const Landing = () => {
       //console.log(arrOfReviewsToShow);
       let reviewObj = arrOfReviewsToShow[Math.floor(Math.random()*arrOfReviewsToShow.length)]
       if (!reviewObj || reviewObj === undefined) {
-        dispatch(getAllReviewes())
+        // dispatch(getAllReviewes())
       }
       return (
         arrOfReviewsToShow?.length ?
