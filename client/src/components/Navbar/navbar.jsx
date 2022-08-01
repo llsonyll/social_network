@@ -83,6 +83,7 @@ const NavBar = ({ openModal, openAdmin }) => {
           </form>
           <SearchResults
             input={searchInput}
+            setInput={setSearchInput}
             selectRecent={handleSelectRecent}
             searched={searched}
             setSearched={setSearched}

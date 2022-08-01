@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Avatar from "../Avatar";
 import CommentTile from "../CommentTile";
 // import CommentInput from "../CommentInput";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaExclamation } from "react-icons/fa";
 import { ImHeartBroken } from "react-icons/im";
 import { IconContext } from 'react-icons'
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,8 @@ import { createComment } from '../../redux/actions/commentActions'
 import { newDislikesPostTitle, newlikePostTitle } from "../../redux/actions/postActions";
 import { TiArrowBack } from "react-icons/ti";
 import './postTile.css';
+import { makeReport } from "../../redux/actions/userActions";
+import Swal from "sweetalert2";
 
 
 const PostTile = (props) => {
@@ -164,6 +166,30 @@ const PostTile = (props) => {
                 {dislikes && dislikes.length }
               </button>
             </div>
+
+            <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              Swal.fire({
+                background: "#4c4d4c",
+                color: "white",
+                title: 'Submit your Report',
+                input: 'textarea',
+                inputAttributes: {
+                  autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                  dispatch(makeReport(user._id, post._id, {reason: login, reported: 'post'})) 
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              })}}
+          >
+            <FaExclamation />
+          </button>
+
           </div>
 
           <div className="comments">

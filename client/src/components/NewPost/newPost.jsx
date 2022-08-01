@@ -70,7 +70,7 @@ const NewPost = ({ showModal, setShowModal }) => {
   return (
     <div
       data-modal-placement="top-middle"
-      className={`absolute inset-0 z-50 bg-black/40 items-center justify-center overflow-y-auto overflow-x-hidden ${
+      className={`fixed inset-0 z-50 bg-black/40 items-center justify-center overflow-y-auto overflow-x-hidden ${
         showModal ? "flex" : "hidden"
       }`}
     >

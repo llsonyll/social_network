@@ -1,4 +1,4 @@
-import { addNewPost, addNewPostProfile } from "../reducers/userReducer.slice";
+import { addNewPost, addNewPostProfile, deletePostsGeneral, editUserPosts } from "../reducers/userReducer.slice";
 import {
   addPostDetail,
   likesPost,
@@ -81,8 +81,8 @@ export const newDislikesComment = (commentId, userId) => async (dispatch) => {
 export const deletePost = (userId, postId) => async (dispatch) => {
   try {
     const { data } = await apiConnection.delete(`post/${userId}/${postId}`);
-
-    //return dispatch(addPostDetail(data));
+    //console.log(data)
+    return dispatch(deletePostsGeneral({postId}));
   } catch (err) {
     console.log(err);
   }
@@ -90,10 +90,12 @@ export const deletePost = (userId, postId) => async (dispatch) => {
 
 export const editPost = (userId, postId, content) => async (dispatch) => {
   try {
+    //console.log(userId,postId,content);
     const { data } = await apiConnection.put(`post/${userId}/${postId}`, content);
 
-    return dispatch(addPostDetail(data));
+    return dispatch(editUserPosts({ post:data, postId}));
   } catch (err) {
     console.log(err);
   }
 };
+

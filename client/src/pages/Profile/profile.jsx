@@ -9,7 +9,7 @@ import ProfilePosts from "../../components/ProfilePostsRenderer";
 import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { getUserProfile, modifyUser } from "../../redux/actions/userActions";
+import { acceptFollowRequest, cancelFollowRequest, getUserProfile, makeReport, modifyUser } from "../../redux/actions/userActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
@@ -23,6 +23,8 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
 //iconos
 import {AiFillSetting} from 'react-icons/ai'
+import { FaExclamation } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 
 const Profile = () => {
@@ -60,7 +62,7 @@ const Profile = () => {
 
   const handleGetUserProfile = async () => {
     setLoading(true);
-    await dispatch(getUserProfile(params.id));
+    dispatch(getUserProfile(params.id));
     setLoading(false);
   };
 
@@ -144,7 +146,7 @@ const Profile = () => {
   const followRenderer = () => {
     return usersFollowing.includes(userLoggedId) ? (
       <Fragment key={Math.random()}>Unfollow</Fragment>
-    ) : user.followRequest.includes(userLoggedId) ? (
+    ) : (user.followRequest.length && (user.followRequest?.includes(userLoggedId) || (user.followRequest?.map(u => u._id?.includes(userLoggedId))))) ? (
       <Fragment key={Math.random()}>Pending</Fragment>
     ) : (
       <Fragment key={Math.random()}>Follow</Fragment>
@@ -276,6 +278,37 @@ const Profile = () => {
                       </div>
                     ) : null}
                   </div>
+                  <div>
+                  {params.id === userLoggedId ? 
+                    user.followRequest ? (
+                      <div className="button_container">
+                        {
+                          user.followRequest.map(r => {
+                            return <div key={r._id}>
+                              <img src={r.profilePicture} className='img-follow-request'/>
+                              <p className="username-follow-request">{r.username}</p>
+                              <button
+                                onClick={() => {
+                                  dispatch(cancelFollowRequest(user._id, r._id));
+                                }}
+                                type="button"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => {
+                                  dispatch(acceptFollowRequest(user._id, r._id));
+                                }}
+                                type="button"
+                              >
+                                Acept
+                              </button>
+                            </div>
+                          })
+                        }
+                      </div>
+                    ) : null : null}
+                  </div>
                   <div className="user-mess">
                     <div className="info_container">
                       <span className="span-info">Send Message </span>
@@ -302,6 +335,31 @@ const Profile = () => {
                           {userData.followers && followRenderer()}
                         </button>
                       </div>
+                      
+            <button
+              className="flex items-center gap-1"
+              onClick={() => {
+					      Swal.fire({
+					        background: "#4c4d4c",
+  					      color: "white",
+	  			        title: 'Submit your Report',
+		  		        input: 'textarea',
+					        inputAttributes: {
+			  		      autocapitalize: 'off'
+				          },
+				          showCancelButton: true,
+					        confirmButtonText: 'Submit',
+					        showLoaderOnConfirm: true,
+					        preConfirm: (login) => {
+						        dispatch(makeReport(userLoggedId, params.id, {reason: login, reported: 'user'})) 
+					        },
+				          allowOutsideClick: () => !Swal.isLoading()
+				        })
+		          }}
+            >
+              <FaExclamation /> Report user
+            </button>
+
                     </div>
                   ) : null}
                 </div>

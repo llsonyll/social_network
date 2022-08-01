@@ -214,6 +214,19 @@
 	min-width: 260px;
 	
 }
+
+#Profile-posts__container .profile-posts-component .user-post-icon_more {
+	color: #fff;
+	font-size: 30px;
+	position: absolute;
+	right: 13%;
+	transition: .2s all;
+}
+
+#Profile-posts__container .profile-posts-component .user-post-icon_more:hover  {
+	color: #4e864c;
+}
+
 #Profile-posts__container .profile-posts-component .user-post__info{
 	display: flex;
 	align-items: center;
@@ -299,4 +312,15 @@
 .img-container .settingButton:hover{
 	transform: scale(1.2);
 	color: #666666;
+}
+
+.img-follow-request {
+	max-width: 30px;
+	border-radius: 1000px;
+}
+
+.username-follow-request {
+	display: inline-block;
+	position: absolute;
+	margin-left: 40px;
 }
