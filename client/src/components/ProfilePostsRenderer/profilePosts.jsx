@@ -6,12 +6,20 @@ import { ImHeartBroken } from "react-icons/im";
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { newDislikeUserProfile, newLikeUserProfile, makeReport } from '../../redux/actions/userActions';
+
+import { newDislikeUserProfile, newLikeUserProfile, makeReport } from '../../redux/actions/userActions'
+import Swal from 'sweetalert2';
 import EditPost from '../EditPost.jsx/editPost';
+import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
+
 
 const ProfilePosts = (props) => {
-	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes,dislikes , multimedia } = props
+	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes, dislikes , multimedia } = props
 	const [editPost, setEditPost] = useState(false)
+	const [showLikes, setShowLikes] = useState(false)
+	const [showDislikes, setShowDislikes] = useState(false)
+
+	let isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
 
 	const { _id } = useSelector(state => state.auth.loggedUser);
   	const dispatch = useDispatch();
@@ -19,7 +27,6 @@ const ProfilePosts = (props) => {
 	let showEditComponent = () => {
 		setEditPost(!editPost)
 	}
-
 	const handleLike = () => {
        dispatch(newLikeUserProfile(postNumber, _id));
 	}
@@ -29,7 +36,6 @@ const ProfilePosts = (props) => {
 	const loggedUser = useSelector(state => state.auth.loggedUser)
 	const posts = useSelector(state => state.user.userProfileData.posts);
 	let index = posts.findIndex(post => post._id === postNumber);
-	
 	let renderHeartIcon = () => {
 		if (!posts[index].likes.find( like => like._id === _id)) {
 			return <FaHeart />
@@ -57,11 +63,21 @@ const ProfilePosts = (props) => {
         </IconContext.Provider>
       )
     }
-  }
+    }
   	let renderEditPost = () => {
+
 		if(editPost){
 			return <EditPost userId={userId} postNumber={postNumber} content={content} showEditComponent={showEditComponent}/>
-		}}
+	}}
+
+	let renderLikes = () => {
+		setShowLikes(!showLikes)
+	}
+	let renderDislikes = () => {
+		setShowDislikes(!showDislikes)
+	}
+
+
 
 	return (
 		<Fragment key={postNumber}>
@@ -76,8 +92,6 @@ const ProfilePosts = (props) => {
 						</Link>
 						<div className='opacity-50'>{timeAgo ? timeAgo : '3hr'}</div>
 					</div>
-
-
           {
           loggedUser._id  === userId &&
           <button 
@@ -87,7 +101,7 @@ const ProfilePosts = (props) => {
             <AiOutlineMore />
           </button>
           }
-		{loggedUser._id  === userId && renderEditPost()}
+		  {loggedUser._id  === userId && renderEditPost()}
 
 				</div>
 				<Link to={`/home/post/${postNumber}`}>
@@ -105,37 +119,57 @@ const ProfilePosts = (props) => {
 				</div>
 				</Link>
 				<div className='actions flex gap-3 justify-end mt-2 md:mt-4 text-lg'>
-					<button className='flex items-center gap-1'>
-						<FaComment />
-						{commentsLength}
-					</button>
+					<Link to={`/home/post/${postNumber}`}>
+						<button className='flex items-center gap-1'>
+							<FaComment />
+							{commentsLength}
+						</button>
+					</Link>
 
 					<button className='flex items-center gap-1'
 					 onClick = {handleLike}
 					>
 						{posts && renderHeartIcon()}
-						{posts && posts[index].likes.length }
 					</button>
+					<button onClick={renderLikes}>{posts && posts[index].likes.length}</button>
 					<button
                 className="flex items-center gap-1"
                 onClick={handleDislike}
               >
                   {posts && renderHeartBrokenIcon()}
-                {posts && posts[index].dislikes.length }
           </button>
+		  <button onClick={renderDislikes}>{posts && posts[index].dislikes.length }</button>
 
+							
 		  <button
             className="flex items-center gap-1"
-            onClick={() => {
-              dispatch(makeReport(_id, posts[index]._id, {reason /*crear input */ , reported: 'post'})) // reported toma valores 'post', 'comment' y 'user'
-            }}
+            onClick={
+				() => {
+					Swal.fire({
+					  background: "#4c4d4c",
+					  color: "white",
+					  title: 'Submit your Report',
+					  input: 'textarea',
+					  inputAttributes: {
+						autocapitalize: 'off'
+					  },
+					  showCancelButton: true,
+					  confirmButtonText: 'Submit',
+					  showLoaderOnConfirm: true,
+					  preConfirm: (login) => {
+						dispatch(makeReport(_id, props.postNumber, {reason: login, reported: 'post'})) 
+					  },
+					  allowOutsideClick: () => !Swal.isLoading()
+					})
+			}}
           >
             <FaExclamation />
             {/* {post && renderHeartBrokenIcon()} */}
           </button>
-
 				</div>
 			</div>
+			{showLikes === true && <ListOfUsersRenderer likes={likes} renderLikes={renderLikes}/>}
+			{showDislikes === true && isPremium===true ? <ListOfUsersRenderer dislikes={dislikes} renderDislikes={renderDislikes}/> : null}
 		</Fragment>
 	)
 }

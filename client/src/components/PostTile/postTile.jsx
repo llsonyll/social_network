@@ -12,6 +12,7 @@ import { newDislikesPostTitle, newlikePostTitle } from "../../redux/actions/post
 import { TiArrowBack } from "react-icons/ti";
 import './postTile.css';
 import { makeReport } from "../../redux/actions/userActions";
+import Swal from "sweetalert2";
 
 
 const PostTile = (props) => {
@@ -169,11 +170,24 @@ const PostTile = (props) => {
             <button
             className="flex items-center gap-1"
             onClick={() => {
-              dispatch(makeReport(user._id, props.postId, {reason /*crear input */ , reported: 'post'})) // reported toma valores 'post', 'comment' y 'user'
-            }}
+              Swal.fire({
+                background: "#4c4d4c",
+                color: "white",
+                title: 'Submit your Report',
+                input: 'textarea',
+                inputAttributes: {
+                  autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                  dispatch(makeReport(user._id, post._id, {reason: login, reported: 'post'})) 
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              })}}
           >
             <FaExclamation />
-            {/* {post && renderHeartBrokenIcon()} */}
           </button>
 
           </div>
