@@ -199,7 +199,7 @@ router.get(
 			if (user.following.length > 0 ) {
         if(control==="true") {
 				result = await Post.find({
-					// userId: { $in: [...user.following, user._id] }, 
+					// userId: { $in: [...user.following, user._id] },  
           $or: [{ userId: user._id }, { userId: { $in: user.following } }],
 					createdAt: {$gte: new Date(date - 259200000)} }) //menos 3 dias                
 					.sort({ createdAt: -1 })
@@ -210,7 +210,7 @@ router.get(
         } else {
 						result = await Post.find({
 							createdAt: {$gte: new Date(date - 259200000)},
-							userId: {$nin: [...user.following, user._id], 'user.isPrivate': true}
+							userId: {$nin: [...user.following, user._id], }
 						})
 						.sort({ createdAt: -1 })
 						.skip(page * 10)
