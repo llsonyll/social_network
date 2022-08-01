@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Avatar from "../Avatar";
 import CommentTile from "../CommentTile";
 // import CommentInput from "../CommentInput";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaExclamation } from "react-icons/fa";
 import { ImHeartBroken } from "react-icons/im";
 import { IconContext } from 'react-icons'
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import { createComment } from '../../redux/actions/commentActions'
 import { newDislikesPostTitle, newlikePostTitle } from "../../redux/actions/postActions";
 import { TiArrowBack } from "react-icons/ti";
 import './postTile.css';
+import { makeReport } from "../../redux/actions/userActions";
 
 
 const PostTile = (props) => {
@@ -164,6 +165,17 @@ const PostTile = (props) => {
                 {dislikes && dislikes.length }
               </button>
             </div>
+
+            <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              dispatch(makeReport(user._id, props.postId, {reason /*crear input */ , reported: 'post'})) // reported toma valores 'post', 'comment' y 'user'
+            }}
+          >
+            <FaExclamation />
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
+
           </div>
 
           <div className="comments">

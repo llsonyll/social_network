@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 
 //Redux register Action
 import { registerAction } from "../../redux/actions/authActions";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [input, setInput] = useState({
@@ -280,15 +281,16 @@ const Register = () => {
           <div className="line"></div>
         </div>
         <div className="social_buttons">
+          <Link to=''>
           <button>
             <BsGoogle />
           </button>
+          </Link>
+          <Link to=''>
           <button>
             <AiFillFacebook />
           </button>
-          <button>
-            <AiOutlineTwitter />
-          </button>
+          </Link>
         </div>
       </div>
     </form>
