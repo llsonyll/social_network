@@ -100,7 +100,7 @@ const NavBar = ({ openModal }) => {
           style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
         >
           <FaUserCircle />
-        
+          Me
         </NavLink>
         <NavLink
           to="messages"
