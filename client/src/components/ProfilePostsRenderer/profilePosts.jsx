@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { newDislikeUserProfile, newLikeUserProfile, makeReport } from '../../redux/actions/userActions'
+import Swal from 'sweetalert2';
 
 const ProfilePosts = (props) => {
 	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes,dislikes , multimedia } = props
@@ -102,12 +103,28 @@ const ProfilePosts = (props) => {
                   {posts && renderHeartBrokenIcon()}
                 {posts && posts[index].dislikes.length }
           </button>
-
+							
 		  <button
             className="flex items-center gap-1"
-            onClick={() => {
-              dispatch(makeReport(_id, posts[index]._id, {reason /*crear input */ , reported: 'post'})) // reported toma valores 'post', 'comment' y 'user'
-            }}
+            onClick={
+				() => {
+					Swal.fire({
+					  background: "#4c4d4c",
+					  color: "white",
+					  title: 'Submit your Report',
+					  input: 'textarea',
+					  inputAttributes: {
+						autocapitalize: 'off'
+					  },
+					  showCancelButton: true,
+					  confirmButtonText: 'Submit',
+					  showLoaderOnConfirm: true,
+					  preConfirm: (login) => {
+						dispatch(makeReport(_id, props.postNumber, {reason: login, reported: 'post'})) 
+					  },
+					  allowOutsideClick: () => !Swal.isLoading()
+					})
+			}}
           >
             <FaExclamation />
             {/* {post && renderHeartBrokenIcon()} */}
