@@ -56,6 +56,7 @@ const Profile = () => {
     profilePicture,
     biography: userBiography,
     isPrivate,
+    username: userUserName,
   } = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
   const [changeProfilePicture, setChangeProfilePicture] = useState("");
@@ -419,7 +420,7 @@ const Profile = () => {
                   <div className="user-username">
                     <div className="info_container">
                       <span className="span-info">Username</span>
-                      {"@" + username}
+                      {"@" + userUserName}
                     </div>
                     {params.id === userLoggedId ? (
                       <div className="button_container">
@@ -583,9 +584,7 @@ const Profile = () => {
         {(isPrivate && usersFollowing?.includes(userLoggedId)) ||
         userLoggedId === params.id ||
         !isPrivate ? (
-          <div id="Profile-posts__container">
-            {user._id ? renderer() : null}
-          </div>
+          <div id="Profile-posts__container">{_id ? renderer() : null}</div>
         ) : null}
       </div>
       {firstname === true && (
