@@ -54,25 +54,27 @@ const Landing = () => {
 
 
   let showReviews = ( ) =>{
-      let arrOfReviewsToShow = arrOfReviews?.filter(r => r.stars >= 4 )
+      let arrOfReviewsToShow = arrOfReviews?.filter(r => r?.stars >= 4 )
       //console.log(arrOfReviewsToShow);
       let reviewObj = arrOfReviewsToShow[Math.floor(Math.random()*arrOfReviewsToShow.length)]
       if (!reviewObj || reviewObj === undefined) {
         dispatch(getAllReviewes())
       }
       return (
+        reviewObj?.length ?
       <div className="sn_review">
       <div className="star">
         <AiFillStar />
-        <span>{reviewObj.stars}</span>
+        <span>{reviewObj?.stars}</span>
       </div>
       <div>
-        <h3>{ reviewObj.userId.firstname +' '+ reviewObj.userId.lastname}</h3>
+        <h3>{ reviewObj?.userId?.firstname +' '+ reviewObj?.userId?.lastname}</h3>
         <p>
-          {reviewObj.description}
+          {reviewObj?.description}
         </p>
       </div>
     </div>
+    : null
       )
   }
 

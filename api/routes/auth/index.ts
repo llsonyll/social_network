@@ -98,6 +98,7 @@ router.post(
           profilePicture: send.profilePicture,
           isDeleted: send.isDeleted,
           isAdmin: send.isAdmin,
+          isPremium: send.isPremium,
         });
         //res.redirect()
       }
@@ -157,6 +158,7 @@ router.post(
           profilePicture: send.profilePicture,
           isDeleted: send.isDeleted,
           isAdmin: send.isAdmin,
+          isPremium: send.isPremium,
         });
         //res.redirect()
       }
@@ -250,8 +252,7 @@ router.post(
       if (!user) {
         return res.status(400).json("Invalid Token");
       }
-
-      let { username, profilePicture, isDeleted, isAdmin } = user;
+      let { username, profilePicture, isDeleted, isPremium, isAdmin } = user;
 
       if (user.isPremium) {
         const date = new Date();
@@ -265,9 +266,7 @@ router.post(
           }
         }
       }
-      return res
-        .status(200)
-        .json({ _id: id, username, profilePicture, isDeleted, isAdmin });
+      return res.status(200).json({ _id: id, username, profilePicture, isDeleted, isPremium, isAdmin  });
     } catch (err) {
       return res.status(400).json(err);
     }

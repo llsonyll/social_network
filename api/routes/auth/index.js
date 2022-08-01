@@ -81,6 +81,7 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
                 profilePicture: send.profilePicture,
                 isDeleted: send.isDeleted,
                 isAdmin: send.isAdmin,
+                isPremium: send.isPremium,
             });
             //res.redirect()
         }
@@ -131,6 +132,7 @@ router.post("/login", passport_1.default.authenticate("local", {
                 profilePicture: send.profilePicture,
                 isDeleted: send.isDeleted,
                 isAdmin: send.isAdmin,
+                isPremium: send.isPremium,
             });
             //res.redirect()
         }
@@ -196,7 +198,7 @@ router.post("/", passport_1.default.authenticate("jwt", {
         if (!user) {
             return res.status(400).json("Invalid Token");
         }
-        let { username, profilePicture, isDeleted, isAdmin } = user;
+        let { username, profilePicture, isDeleted, isPremium, isAdmin } = user;
         if (user.isPremium) {
             const date = new Date();
             if (user.expirationDate) {
@@ -208,9 +210,7 @@ router.post("/", passport_1.default.authenticate("jwt", {
                 }
             }
         }
-        return res
-            .status(200)
-            .json({ _id: id, username, profilePicture, isDeleted, isAdmin });
+        return res.status(200).json({ _id: id, username, profilePicture, isDeleted, isPremium, isAdmin });
     }
     catch (err) {
         return res.status(400).json(err);
