@@ -80,6 +80,8 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
                 _id: send._id,
                 profilePicture: send.profilePicture,
                 isDeleted: send.isDeleted,
+                isAdmin: send.isAdmin,
+                isPremium: send.isPremium,
             });
             //res.redirect()
         }
@@ -129,6 +131,8 @@ router.post("/login", passport_1.default.authenticate("local", {
                 _id: send._id,
                 profilePicture: send.profilePicture,
                 isDeleted: send.isDeleted,
+                isAdmin: send.isAdmin,
+                isPremium: send.isPremium,
             });
             //res.redirect()
         }
@@ -139,7 +143,10 @@ router.post("/login", passport_1.default.authenticate("local", {
     }
 }));
 //--------------------------------------login google-------------------------------------
-router.get("/loginGoogle", passport_1.default.authenticate('google', { session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/loginGoogle", passport_1.default.authenticate("google", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
         const send = user;
@@ -151,7 +158,11 @@ router.get("/loginGoogle", passport_1.default.authenticate('google', { session: 
     }
 }));
 //---------------------------facebook---------------------------------
-router.get("/loginFacebook", passport_1.default.authenticate('facebook', { scope: ['email'], session: false, failureRedirect: "/auth/loginjwt" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/loginFacebook", passport_1.default.authenticate("facebook", {
+    scope: ["email"],
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
         const send = user;
@@ -187,7 +198,7 @@ router.post("/", passport_1.default.authenticate("jwt", {
         if (!user) {
             return res.status(400).json("Invalid Token");
         }
-        let { username, profilePicture, isDeleted } = user;
+        let { username, profilePicture, isDeleted, isAdmin, isPremium } = user;
         if (user.isPremium) {
             const date = new Date();
             if (user.expirationDate) {
@@ -199,7 +210,14 @@ router.post("/", passport_1.default.authenticate("jwt", {
                 }
             }
         }
-        return res.status(200).json({ _id: id, username, profilePicture, isDeleted });
+        return res.status(200).json({
+            _id: id,
+            username,
+            profilePicture,
+            isDeleted,
+            isAdmin,
+            isPremium,
+        });
     }
     catch (err) {
         return res.status(400).json(err);

@@ -23,12 +23,15 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
         if (!reason) {
             return res.status(404).json({ msg: 'Not Reason' });
         }
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            return res.status(404).json({ msg: 'User not found' });
         if (reported === 'comment') {
             const comment = yield mongoose_1.Comment.findById(`${reportId}`);
             if (!comment)
                 return res.status(404).json({ msg: 'Comment not found' });
             var report = new mongoose_1.Report({
-                userId,
+                userId: user._id,
                 commentReportedId: comment._id,
                 reason
             });
@@ -38,7 +41,7 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
             if (!post)
                 return res.status(404).json({ msg: 'Post not found' });
             var report = new mongoose_1.Report({
-                userId,
+                userId: user._id,
                 postReportedId: post._id,
                 reason
             });
@@ -48,7 +51,7 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
             if (!user)
                 return res.status(404).json({ msg: 'User not found' });
             var report = new mongoose_1.Report({
-                userId,
+                userId: user._id,
                 userReportedId: user._id,
                 reason
             });

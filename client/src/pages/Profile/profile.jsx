@@ -32,6 +32,7 @@ import Multiselect from "multiselect-react-dropdown";
 //iconos
 import { AiFillSetting } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const Profile = () => {
   const params = useParams();
@@ -525,6 +526,33 @@ const Profile = () => {
                           {followers && followRenderer()}
                         </button>
                       </div>
+<<<<<<< HEAD
+=======
+                      
+            <button
+              className="flex items-center gap-1"
+              onClick={() => {
+					      Swal.fire({
+					        background: "#4c4d4c",
+  					      color: "white",
+	  			        title: 'Submit your Report',
+		  		        input: 'textarea',
+					        inputAttributes: {
+			  		      autocapitalize: 'off'
+				          },
+				          showCancelButton: true,
+					        confirmButtonText: 'Submit',
+					        showLoaderOnConfirm: true,
+					        preConfirm: (login) => {
+						        dispatch(makeReport(userLoggedId, params.id, {reason: login, reported: 'user'})) 
+					        },
+				          allowOutsideClick: () => !Swal.isLoading()
+				        })
+		          }}
+            >
+              <FaExclamation /> Report user
+            </button>
+>>>>>>> 7076baca90813f87bf0308e2f13f053b42c481f2
 
                       <button
                         className=""
@@ -548,9 +576,19 @@ const Profile = () => {
           )}
         </div>
         <hr />
+<<<<<<< HEAD
         <div id="Profile-posts__container">{_id ? renderer() : null}</div>
       </div>
       {firstname === true && (
+=======
+
+    {user?.isPrivate && usersFollowing?.includes(userLoggedId) || userLoggedId === params.id || !user?.isPrivate?
+        <div id="Profile-posts__container">{user._id ? renderer() : null}</div>
+        : null
+      }
+        </div>
+        {firstname === true && (
+>>>>>>> 7076baca90813f87bf0308e2f13f053b42c481f2
         <EditFullname
           renderChangeRenderComponents={renderChangeRenderComponents}
           user={user}
@@ -568,8 +606,13 @@ const Profile = () => {
           user={user}
         />
       )}
+<<<<<<< HEAD
     </>
   );
+=======
+      </>
+      )
+>>>>>>> 7076baca90813f87bf0308e2f13f053b42c481f2
 };
 
 export default Profile;
