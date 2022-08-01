@@ -368,9 +368,13 @@ const Profile = () => {
           )}
         </div>
         <hr />
+
+    {user?.isPrivate && usersFollowing?.includes(userLoggedId) || userLoggedId === params.id || !user?.isPrivate?
         <div id="Profile-posts__container">{user._id ? renderer() : null}</div>
-      </div>
-      {firstname === true && (
+        : null
+      }
+        </div>
+        {firstname === true && (
         <EditFullname
           renderChangeRenderComponents={renderChangeRenderComponents}
           user={user}
@@ -388,9 +392,8 @@ const Profile = () => {
           user={user}
         />
       )}
-
-    </>
-  );
+      </>
+      )
 };
 
 export default Profile;
