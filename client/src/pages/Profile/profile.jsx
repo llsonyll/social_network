@@ -9,7 +9,13 @@ import ProfilePosts from "../../components/ProfilePostsRenderer";
 import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { acceptFollowRequest, cancelFollowRequest, getUserProfile, makeReport, modifyUser } from "../../redux/actions/userActions";
+import {
+  acceptFollowRequest,
+  cancelFollowRequest,
+  getUserProfile,
+  makeReport,
+  modifyUser,
+} from "../../redux/actions/userActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
@@ -18,17 +24,16 @@ import { Link } from "react-router-dom";
 import { useRef } from "react";
 import axios from "axios";
 
-import {AiFillCloseCircle} from 'react-icons/ai'
+import { AiFillCloseCircle } from "react-icons/ai";
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
+import Multiselect from "multiselect-react-dropdown";
+
 //iconos
-import {AiFillSetting} from 'react-icons/ai'
+import { AiFillSetting } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
 
-
 const Profile = () => {
-
-  
   const params = useParams();
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);
@@ -39,10 +44,20 @@ const Profile = () => {
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
-  const userData = useSelector((state) => state.user.userProfileData);
+  const {
+    _id,
+    posts,
+    followers,
+    following,
+    followRequest,
+    firstname: userFirstName,
+    lastname: userLastName,
+    profilePicture,
+    biography: userBiography,
+  } = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
-  const [changeProfilePicture, setChangeProfilePicture] = useState('')
-  const hiddenImageInput = useRef()
+  const [changeProfilePicture, setChangeProfilePicture] = useState("");
+  const hiddenImageInput = useRef();
 
   const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
     if (nameOfTheComponentToRender === "fullname") {
@@ -72,35 +87,39 @@ const Profile = () => {
   }, [params.id]);
 
   //COMIENZO DE FUNCION DE SUBIDAS DE FOTO DE PERFIL
-  const uploadPicture = async(file) =>{
-    let formData = new FormData()
-    formData.append('file', file)
-    formData.append('upload_preset', 'h0tqwdio')
-    let res = await axios.post('https://api.cloudinary.com/v1_1/pischetz/image/upload', formData)
-    return res.data.secure_url
-  }
+  const uploadPicture = async (file) => {
+    let formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "h0tqwdio");
+    let res = await axios.post(
+      "https://api.cloudinary.com/v1_1/pischetz/image/upload",
+      formData
+    );
+    return res.data.secure_url;
+  };
 
-  const handleChangePicture = () =>{
-    hiddenImageInput.current.click()
-  }
+  const handleChangePicture = () => {
+    hiddenImageInput.current.click();
+  };
 
-  const handleChange = async (event) =>{
-    const fileUploaded = event.target.files[0]
-    let picture = await uploadPicture(fileUploaded)
-    console.log(picture)
-    setChangeProfilePicture(picture)
-  }
+  const handleChange = async (event) => {
+    const fileUploaded = event.target.files[0];
+    let picture = await uploadPicture(fileUploaded);
+    console.log(picture);
+    setChangeProfilePicture(picture);
+  };
 
   const cancelChangePicture = () => {
-    setChangeProfilePicture('')
-  }
+    setChangeProfilePicture("");
+  };
 
   const handleSavePicture = () => {
-    dispatch(modifyUser(userLoggedId, {profilePicture: changeProfilePicture}))
-    dispatch(getLoggedUserInfo())
-    setChangeProfilePicture('')
-  }
-
+    dispatch(
+      modifyUser(userLoggedId, { profilePicture: changeProfilePicture })
+    );
+    dispatch(getLoggedUserInfo());
+    setChangeProfilePicture("");
+  };
 
   function getTimeOfCreation(date) {
     let now = new Date().getTime();
@@ -114,38 +133,191 @@ const Profile = () => {
     return `${Math.round(minutes / 60)} hours ago`;
   }
 
-  let user = userData;
-  //console.log(user);
-  let userPosts = user.posts;
+  const [withMultimedia, setWithMultimedia] = useState(false);
+  const [datePublishedAsc, setDatePublishedAsc] = useState(false);
+  const [likesAsc, setLikesAsc] = useState(false);
+  const [commentsQtyAsc, setCommentsQtyAsc] = useState(false);
+
+  const [filtersActive, setFiltersActive] = useState(false);
+
+  useEffect(() => {
+    if (!filtersActive) {
+      setWithMultimedia(false);
+      setDatePublishedAsc(false);
+      setLikesAsc(false);
+      setCommentsQtyAsc(false);
+    }
+  }, [filtersActive]);
+
+  const filters = () => {
+    return (
+      <div className="bg-[#202225] flex md:p-4 p-2 md:gap-8 gap-4 text-white font-semibold">
+        <div className="flex flex-row-reverse gap-1">
+          <label htmlFor=""> Filters </label>
+          <input
+            type="checkbox"
+            checked={filtersActive}
+            onChange={(e) => setFiltersActive(e.target.checked)}
+          />
+        </div>
+        <div
+          className={`flex flex-row-reverse gap-1 ${
+            filtersActive ? "" : "opacity-75"
+          }`}
+        >
+          <label htmlFor=""> With Multimedia </label>
+          <input
+            type="checkbox"
+            checked={withMultimedia}
+            onChange={(e) => setWithMultimedia(e.target.checked)}
+            disabled={!filtersActive}
+          />
+        </div>
+        <div
+          className={`flex flex-row-reverse gap-1 ${
+            filtersActive ? "" : "opacity-75"
+          }`}
+        >
+          <label htmlFor="">Date {datePublishedAsc ? "ASC" : "DESC"}</label>
+          <input
+            type="checkbox"
+            checked={datePublishedAsc}
+            onChange={(e) => setDatePublishedAsc(e.target.checked)}
+            disabled={!filtersActive}
+          />
+        </div>
+        <div
+          className={`flex flex-row-reverse gap-1 ${
+            filtersActive ? "" : "opacity-75"
+          }`}
+        >
+          <label htmlFor=""> Likes {likesAsc ? "ASC" : "DESC"} </label>
+          <input
+            type="checkbox"
+            checked={likesAsc}
+            onChange={(e) => setLikesAsc(e.target.checked)}
+            disabled={!filtersActive}
+          />
+        </div>
+        <div
+          className={`flex flex-row-reverse gap-1 ${
+            filtersActive ? "" : "opacity-75"
+          }`}
+        >
+          <label htmlFor="">Comments {commentsQtyAsc ? "ASC" : "DESC"}</label>
+          <input
+            type="checkbox"
+            checked={commentsQtyAsc}
+            onChange={(e) => setCommentsQtyAsc(e.target.checked)}
+            disabled={!filtersActive}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const [dummyOptions, setDummyOptions] = useState([
+    { name: "with Multimedia", id: 1 },
+    { name: "Date Published 2️⃣", id: 2 },
+    { name: "Likes 2️⃣", id: 3 },
+    { name: "Comments 2️⃣", id: 4 },
+  ]);
+
+  const multiSelectFilters = () => {
+    return (
+      <Multiselect
+        options={dummyOptions} // Options to display in the dropdown
+        // selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
+        onSelect={(e) => console.log(e)} // Function will trigger on select event
+        onRemove={(e) => console.log(e)} // Function will trigger on remove event
+        displayValue="name" // Property name to display in the dropdown options
+      />
+    );
+  };
+
+  const postApplyFilters = () => {
+    if (!posts) return [];
+    if (!filtersActive) return posts;
+    let dummyPost = posts;
+
+    if (withMultimedia) {
+      dummyPost = dummyPost.filter((post) => !!post.multimedia);
+    } else {
+      dummyPost = dummyPost.filter((post) => !post.multimedia);
+    }
+    if (datePublishedAsc) {
+      dummyPost = dummyPost.sort((post, nextPost) => {
+        const t1 = new Date(nextPost.createdAt);
+        const t2 = new Date(post.createdAt);
+        return t1 - t2;
+      });
+    } else {
+      dummyPost = dummyPost.sort((post, nextPost) => {
+        const t1 = new Date(nextPost.createdAt);
+        const t2 = new Date(post.createdAt);
+        return t2 - t1;
+      });
+    }
+    if (likesAsc) {
+      dummyPost = dummyPost.sort((post, nextPost) => {
+        return post.likes.length - nextPost.likes.length;
+      });
+    } else {
+      dummyPost = dummyPost.sort((post, nextPost) => {
+        return nextPost.likes.length - post.likes.length;
+      });
+    }
+    if (commentsQtyAsc) {
+      dummyPost = dummyPost.sort((post, nextPost) => {
+        return post.commentsId.length - nextPost.commentsId.length;
+      });
+    } else {
+      dummyPost = dummyPost.sort((post, nextPost) => {
+        return nextPost.commentsId.length - post.commentsId.length;
+      });
+    }
+
+    console.log(dummyPost.map((t) => t.createdAt));
+
+    return dummyPost;
+  };
 
   let renderer = () => {
-    if (userPosts.length > 0) {
-      return userPosts.map((p) => {
-        return (
-          <Fragment key={p.postNumber}>
-            <ProfilePosts
-              userId={p.userId._id}
-              postNumber={p._id}
-              fullname={`${user.firstname + " " + user.lastname}`}
-              timeAgo={getTimeOfCreation(p.createdAt)}
-              commentsLength={p.commentsId.length}
-              likesLength={p.likes.length}
-              likes={p.likes}
-              dislikes={p.dislikes}
-              content={p.content}
-              profilePicture={p.userId.profilePicture}
-              multimedia={p.multimedia}
-            />
-          </Fragment>
-        );
-      });
+    if (posts && posts.length > 0) {
+      return (
+        <>
+          {filters()}
+          {/* {multiSelectFilters()} */}
+          {postApplyFilters().map((p) => {
+            return (
+              <Fragment key={p.postNumber}>
+                <ProfilePosts
+                  userId={p.userId._id}
+                  postNumber={p._id}
+                  fullname={`${userFirstName + " " + userLastName}`}
+                  timeAgo={getTimeOfCreation(p.createdAt)}
+                  commentsLength={p.commentsId.length}
+                  likesLength={p.likes.length}
+                  likes={p.likes}
+                  dislikes={p.dislikes}
+                  content={p.content}
+                  profilePicture={p.userId.profilePicture}
+                  multimedia={p.multimedia}
+                />
+              </Fragment>
+            );
+          })}
+        </>
+      );
     }
   };
 
   const followRenderer = () => {
     return usersFollowing.includes(userLoggedId) ? (
       <Fragment key={Math.random()}>Unfollow</Fragment>
-    ) : (user.followRequest.length && (user.followRequest?.includes(userLoggedId) || (user.followRequest?.map(u => u._id?.includes(userLoggedId))))) ? (
+    ) : followRequest.length &&
+      (followRequest?.includes(userLoggedId) ||
+        followRequest?.map((u) => u._id?.includes(userLoggedId))) ? (
       <Fragment key={Math.random()}>Pending</Fragment>
     ) : (
       <Fragment key={Math.random()}>Follow</Fragment>
@@ -169,50 +341,65 @@ const Profile = () => {
               alt='Profile Picture'>
             </img> */}
                 <div className="imgChange_container">
-                    {user?.profilePicture ? (
-                      <>
-                      <Avatar imgUrl={changeProfilePicture? changeProfilePicture: user.profilePicture} size="xxl" />
-                      <input type={'file'} ref={hiddenImageInput} onChange={handleChange} accept="image/*" style={{display:"none"}}/>
-                      {changeProfilePicture 
-                      ? 
-                      <button className=" button_changephoto" 
-                      onClick={handleSavePicture}
-                      type="button">
-                        Save &#10004;
-                      </button>
-                      : 
-                      null}
-                      {changeProfilePicture 
-                      ? 
-                      <button className=" button_changephoto_cancel" 
-                      type="button"
-                      onClick={cancelChangePicture}>
-                      <AiFillCloseCircle/>
-                      </button>
-                      : 
-                      null}
-                      </>
-                    ) : (
-                      <Avatar size="xxl" />
-                    )}
-                    {params.id === userLoggedId ? (
-                      <p id="Text" onClick={handleChangePicture}>Change Photo</p>
-                    ) : null}
+                  {profilePicture ? (
+                    <>
+                      <Avatar
+                        imgUrl={
+                          changeProfilePicture
+                            ? changeProfilePicture
+                            : profilePicture
+                        }
+                        size="xxl"
+                      />
+                      <input
+                        type={"file"}
+                        ref={hiddenImageInput}
+                        onChange={handleChange}
+                        accept="image/*"
+                        style={{ display: "none" }}
+                      />
+                      {changeProfilePicture ? (
+                        <button
+                          className=" button_changephoto"
+                          onClick={handleSavePicture}
+                          type="button"
+                        >
+                          Save &#10004;
+                        </button>
+                      ) : null}
+                      {changeProfilePicture ? (
+                        <button
+                          className=" button_changephoto_cancel"
+                          type="button"
+                          onClick={cancelChangePicture}
+                        >
+                          <AiFillCloseCircle />
+                        </button>
+                      ) : null}
+                    </>
+                  ) : (
+                    <Avatar size="xxl" />
+                  )}
+                  {params.id === userLoggedId ? (
+                    <p id="Text" onClick={handleChangePicture}>
+                      Change Photo
+                    </p>
+                  ) : null}
                 </div>
-                    {params.id === userLoggedId && (
-                    <Link to='/home/settings'>
+                {params.id === userLoggedId && (
+                  <Link to="/home/settings">
                     <button className="settingButton">
-                      <AiFillSetting/>       
+                      <AiFillSetting />
                     </button>
-                    </Link>          
-                    ) }
+                  </Link>
+                )}
               </div>
               <div className="shadow-box">
                 <div className="user_description">
                   <div className="user-firstname">
                     <div className="info_container">
                       <span className="span-info">Full name</span>
-                      <p>{`${user.firstname + " " + user.lastname}`}</p>
+                      <p>{`${userFirstName + " " + userLastName}`}</p>
                     </div>
                     {params.id === userLoggedId ? (
                       <div className="button_container">
@@ -230,7 +417,7 @@ const Profile = () => {
                   <div className="user-username">
                     <div className="info_container">
                       <span className="span-info">Username</span>
-                      {"@" + user.username}
+                      {"@" + username}
                     </div>
                     {params.id === userLoggedId ? (
                       <div className="button_container">
@@ -249,20 +436,20 @@ const Profile = () => {
                   <div className="user-followers">
                     <div className="info_container">
                       <span className="span-info">Followers</span>
-                      {user.followers ? user.followers.length : null}
+                      {followers ? followers.length : null}
                     </div>
                   </div>
                   <div className="user-following">
                     <div className="info_container">
                       <span className="span-info">Following</span>
-                      {user._id ? user.following.length : null}
+                      {_id ? following.length : null}
                     </div>
                   </div>
 
                   <div className="user-biography">
                     <div className="info_container">
                       <span className="span-info">Biography</span>
-                      {user.biography ? user.biography : "No bio yet"}
+                      {userBiography ?? "No bio yet"}
                     </div>
                     {params.id === userLoggedId ? (
                       <div className="button_container">
@@ -278,35 +465,41 @@ const Profile = () => {
                     ) : null}
                   </div>
                   <div>
-                  {params.id === userLoggedId ? 
-                    user.followRequest ? (
-                      <div className="button_container">
-                        {
-                          user.followRequest.map(r => {
-                            return <div key={r._id}>
-                              <img src={r.profilePicture} className='img-follow-request'/>
-                              <p className="username-follow-request">{r.username}</p>
-                              <button
-                                onClick={() => {
-                                  dispatch(cancelFollowRequest(user._id, r._id));
-                                }}
-                                type="button"
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                onClick={() => {
-                                  dispatch(acceptFollowRequest(user._id, r._id));
-                                }}
-                                type="button"
-                              >
-                                Acept
-                              </button>
-                            </div>
-                          })
-                        }
-                      </div>
-                    ) : null : null}
+                    {params.id === userLoggedId ? (
+                      followRequest ? (
+                        <div className="button_container">
+                          {followRequest.map((r) => {
+                            return (
+                              <div key={r._id}>
+                                <img
+                                  src={r.profilePicture}
+                                  className="img-follow-request"
+                                />
+                                <p className="username-follow-request">
+                                  {r.username}
+                                </p>
+                                <button
+                                  onClick={() => {
+                                    dispatch(cancelFollowRequest(_id, r._id));
+                                  }}
+                                  type="button"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    dispatch(acceptFollowRequest(_id, r._id));
+                                  }}
+                                  type="button"
+                                >
+                                  Acept
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : null
+                    ) : null}
                   </div>
                   <div className="user-mess">
                     <div className="info_container">
@@ -318,33 +511,35 @@ const Profile = () => {
                       </Link>
                     </div>
                   </div>
-                  {userLoggedId !== userData._id ? (
+                  {userLoggedId !== _id ? (
                     <div className="user-follow">
                       <div className="info_container"></div>
                       <div className="button_container">
                         <button
                           className="button_container"
                           onClick={() => {
-                            dispatch(
-                              followOrUnfollowUser(userLoggedId, userData._id)
-                            );
+                            dispatch(followOrUnfollowUser(userLoggedId, _id));
                           }}
                           type="button"
                         >
-                          {userData.followers && followRenderer()}
+                          {followers && followRenderer()}
                         </button>
                       </div>
-                      
-            <button
-            className=""
-            onClick={() => {
-              dispatch(makeReport(userLoggedId, params.id, {reason /*crear input */ , reported: 'user'})) // reported toma valores 'post', 'comment' y 'user'
-            }}
-          >
-            <FaExclamation /> Report user
-            {/* {post && renderHeartBrokenIcon()} */}
-          </button>
 
+                      <button
+                        className=""
+                        onClick={() => {
+                          dispatch(
+                            makeReport(userLoggedId, params.id, {
+                              reason /*crear input */,
+                              reported: "user",
+                            })
+                          ); // reported toma valores 'post', 'comment' y 'user'
+                        }}
+                      >
+                        <FaExclamation /> Report user
+                        {/* {post && renderHeartBrokenIcon()} */}
+                      </button>
                     </div>
                   ) : null}
                 </div>
@@ -353,7 +548,7 @@ const Profile = () => {
           )}
         </div>
         <hr />
-        <div id="Profile-posts__container">{user._id ? renderer() : null}</div>
+        <div id="Profile-posts__container">{_id ? renderer() : null}</div>
       </div>
       {firstname === true && (
         <EditFullname
@@ -373,7 +568,6 @@ const Profile = () => {
           user={user}
         />
       )}
-
     </>
   );
 };
