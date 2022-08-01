@@ -6,7 +6,7 @@ import EditFullname from "../../components/EditFullname";
 import EditUsername from "../../components/EditUsername";
 import EditBiography from "../../components/EditBiography";
 import ProfilePosts from "../../components/ProfilePostsRenderer";
-import { mockPost } from "../../data/20DummyPosts";
+// import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import {
@@ -24,13 +24,12 @@ import { Link } from "react-router-dom";
 import { useRef } from "react";
 import axios from "axios";
 
-import { AiFillCloseCircle } from "react-icons/ai";
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
-import Multiselect from "multiselect-react-dropdown";
+// import Multiselect from "multiselect-react-dropdown";
 
 //iconos
-import { AiFillSetting } from "react-icons/ai";
+import { AiFillSetting, AiFillCloseCircle } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
 import Swal from "sweetalert2";
 
@@ -219,28 +218,29 @@ const Profile = () => {
     );
   };
 
-  const [dummyOptions, setDummyOptions] = useState([
-    { name: "with Multimedia", id: 1 },
-    { name: "Date Published 2️⃣", id: 2 },
-    { name: "Likes 2️⃣", id: 3 },
-    { name: "Comments 2️⃣", id: 4 },
-  ]);
+  // const [dummyOptions, setDummyOptions] = useState([
+  //   { name: "with Multimedia", id: 1 },
+  //   { name: "Date Published 2️⃣", id: 2 },
+  //   { name: "Likes 2️⃣", id: 3 },
+  //   { name: "Comments 2️⃣", id: 4 },
+  // ]);
 
-  const multiSelectFilters = () => {
-    return (
-      <Multiselect
-        options={dummyOptions} // Options to display in the dropdown
-        // selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
-        onSelect={(e) => console.log(e)} // Function will trigger on select event
-        onRemove={(e) => console.log(e)} // Function will trigger on remove event
-        displayValue="name" // Property name to display in the dropdown options
-      />
-    );
-  };
+  // const multiSelectFilters = () => {
+  //   return (
+  //     <Multiselect
+  //       options={dummyOptions} // Options to display in the dropdown
+  //       // selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
+  //       onSelect={(e) => console.log(e)} // Function will trigger on select event
+  //       onRemove={(e) => console.log(e)} // Function will trigger on remove event
+  //       displayValue="name" // Property name to display in the dropdown options
+  //     />
+  //   );
+  // };
 
   const postApplyFilters = () => {
     if (!posts) return [];
     if (!filtersActive) return posts;
+
     let dummyPost = posts;
 
     if (withMultimedia) {
