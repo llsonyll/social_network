@@ -55,6 +55,7 @@ const Profile = () => {
     lastname: userLastName,
     profilePicture,
     biography: userBiography,
+    isPrivate,
   } = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
   const [changeProfilePicture, setChangeProfilePicture] = useState("");
@@ -578,7 +579,14 @@ const Profile = () => {
           )}
         </div>
         <hr />
-        <div id="Profile-posts__container">{_id ? renderer() : null}</div>
+
+        {(isPrivate && usersFollowing?.includes(userLoggedId)) ||
+        userLoggedId === params.id ||
+        !isPrivate ? (
+          <div id="Profile-posts__container">
+            {user._id ? renderer() : null}
+          </div>
+        ) : null}
       </div>
       {firstname === true && (
         <EditFullname
