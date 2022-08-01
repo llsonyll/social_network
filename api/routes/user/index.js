@@ -185,7 +185,7 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
             else {
                 result = yield mongoose_1.Post.find({
                     createdAt: { $gte: new Date(date - 259200000) },
-                    userId: { $nin: [...user.following, user._id], 'user.isPrivate': true }
+                    userId: { $nin: [...user.following, user._id], }
                 })
                     .sort({ createdAt: -1 })
                     .skip(page * 10)
