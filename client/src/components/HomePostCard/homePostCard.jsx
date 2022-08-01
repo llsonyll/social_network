@@ -6,6 +6,7 @@ import { ImHeartBroken } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
 import { newLikeHomePost, newDislikeHomePost, followOrUnfollowUser, getUserFollowings, makeReport } from "../../redux/actions/userActions";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 
 const HomePostCard = (props) => {
@@ -163,7 +164,22 @@ const HomePostCard = (props) => {
           <button
             className="flex items-center gap-1"
             onClick={() => {
-              dispatch(makeReport(user._id, props.postId, {reason /*crear input */ , reported: 'post'})) // reported toma valores 'post', 'comment' y 'user'
+              Swal.fire({
+                background: "#4c4d4c",
+                color: "white",
+                title: 'Submit your Report',
+                input: 'textarea',
+                inputAttributes: {
+                  autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                  dispatch(makeReport(user._id, props.postId, {reason: login, reported: 'post'})) 
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              })
             }}
           >
             <FaExclamation />

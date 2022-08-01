@@ -12,6 +12,7 @@ import './commentTile.css'
 import { useState } from "react";
 import EditComment from "../editComment/editComment";
 import { makeReport } from "../../redux/actions/userActions";
+import Swal from "sweetalert2";
 
 
 const CommentTile = ({ data , props }) => {
@@ -130,8 +131,22 @@ const CommentTile = ({ data , props }) => {
             <button
             className="flex items-center gap-1"
             onClick={() => {
-              dispatch(makeReport(_id, data._id, {reason /*crear input */ , reported: 'comment'})) // reported toma valores 'post', 'comment' y 'user'
-            }}
+              Swal.fire({
+                background: "#4c4d4c",
+                color: "white",
+                title: 'Submit your Report',
+                input: 'textarea',
+                inputAttributes: {
+                  autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                  dispatch(makeReport(_id, data._id, {reason: login, reported: 'comment'})) 
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              })}}
           >
             <FaExclamation />
             {/* {post && renderHeartBrokenIcon()} */}

@@ -24,6 +24,7 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 //iconos
 import {AiFillSetting} from 'react-icons/ai'
 import { FaExclamation } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 
 const Profile = () => {
@@ -337,9 +338,7 @@ const Profile = () => {
                       
             <button
             className=""
-            onClick={() => {
-              dispatch(makeReport(userLoggedId, params.id, {reason /*crear input */ , reported: 'user'})) // reported toma valores 'post', 'comment' y 'user'
-            }}
+            // onClick={}
           >
             <FaExclamation /> Report user
             {/* {post && renderHeartBrokenIcon()} */}

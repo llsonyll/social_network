@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   userProfileData: {},
   homePostsData: [],
-  control: true,
+  control: "true",
   userFollowings : []
 };
 
@@ -15,14 +15,23 @@ const userReducer = createSlice({
       state.userProfileData = action.payload;
     },
     homePosts(state, action) {
-      if (!state.homePostsData.length || state.homePostsData[0]._id !== action.payload[0]._id) {
-        state.homePostsData = state.homePostsData.concat(action.payload);
-      } else {
-        state.homePostsData = action.payload;
+        if(action.payload.length === 0 )  {
+          state.control = ""
+          return state
+        }
+        console.log(action.payload)
+        if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
+          state.homePostsData = state.homePostsData.concat(action.payload);
+          if(action.payload.length < 10 && state.control==="true") {
+            state.control = "false"
+          }
+        } else {
+          state.homePostsData = action.payload;
       }
-      if (action.payload.length === 0) {
-        state.control = false
-      }
+    },
+    clearHomePosts(state, action) {
+      state.homePostsData= [],
+      state.control="true"
     },
     addNewPost(state, action) {
       state.homePostsData = [action.payload, ...state.homePostsData]
@@ -69,10 +78,20 @@ const userReducer = createSlice({
     },
     deleteAccount(state, action) {
       state.userProfileData = [];
-    }
+    },
+    editUserPosts(state, {payload}) {
+      let index = state.userProfileData.posts.findIndex(post=> post._id === payload.postId);
+      state.userProfileData.posts[index] = payload.post;
+    },
+    deletePostsGeneral(state, {payload}) {
+      let filter = state.userProfileData.posts.filter(post => post._id !== payload.postId);
+      state.userProfileData.posts = filter;
+    },
 }});
 
 export const {
+  deletePostsGeneral,
+  editUserPosts,
   userProfile,
   homePosts,
   addNewPost,
@@ -85,6 +104,7 @@ export const {
   dislikesPost,
   dislikesProfilePost,
   toggleUSERFollowing,
+  clearHomePosts,
 } = userReducer.actions;
 
 export default userReducer.reducer;
