@@ -1,1 +1,1 @@
-export { default } from './adminStadistics.jsx'
+export { default } from './adminStatistics.jsx'

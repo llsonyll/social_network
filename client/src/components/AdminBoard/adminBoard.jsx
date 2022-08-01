@@ -53,7 +53,7 @@ const AdminBoard = ({ showAdmin, setShowAdmin }) => {
             onClick={() => setTab("stadistics")}
           >
             <HiOutlineChartSquareBar />
-            Stadistics
+            Statistics
           </button>
         </div>
         <div className="">
