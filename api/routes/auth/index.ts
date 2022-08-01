@@ -97,6 +97,7 @@ router.post(
           _id: send._id,
           profilePicture: send.profilePicture,
           isDeleted: send.isDeleted,
+          isAdmin: send.isAdmin,
           isPremium: send.isPremium,
         });
         //res.redirect()
@@ -138,13 +139,13 @@ router.post(
           const date = new Date();
           if (send.expirationDate) {
             if (date > send.expirationDate) {
-              const newUser = await User.findById(send._id)
+              const newUser = await User.findById(send._id);
               if (newUser) {
                 newUser.isPremium = false;
                 newUser.expirationDate = undefined;
                 newUser.plan = undefined;
-  
-                await newUser.save()
+
+                await newUser.save();
               }
             }
           }
@@ -156,6 +157,7 @@ router.post(
           _id: send._id,
           profilePicture: send.profilePicture,
           isDeleted: send.isDeleted,
+          isAdmin: send.isAdmin,
           isPremium: send.isPremium,
         });
         //res.redirect()
@@ -168,34 +170,47 @@ router.post(
 );
 
 //--------------------------------------login google-------------------------------------
-router.get("/loginGoogle",passport.authenticate('google',{session: false,failureRedirect: "/auth/loginjwt" }),
-async(req:Request,res:Response)=>{
+router.get(
+  "/loginGoogle",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+  }),
+  async (req: Request, res: Response) => {
     try {
-			const user: any = req.user;
+      const user: any = req.user;
 
-				const send: IUser = user as IUser;
+      const send: IUser = user as IUser;
 
-				res.cookie("token",createToken(user as IUser));
-		    return res.redirect(`${process.env.URL_FRONT}`);
-		} catch (err) {
-			 res.status(400).json({err:"todo salio mal"});
-		}
-});
+      res.cookie("token", createToken(user as IUser));
+      return res.redirect(`${process.env.URL_FRONT}`);
+    } catch (err) {
+      res.status(400).json({ err: "todo salio mal" });
+    }
+  }
+);
 
 //---------------------------facebook---------------------------------
-router.get("/loginFacebook",passport.authenticate('facebook',{scope:['email'],session: false,failureRedirect: "/auth/loginjwt" }),
-async(req:Request,res:Response)=>{
+router.get(
+  "/loginFacebook",
+  passport.authenticate("facebook", {
+    scope: ["email"],
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+  }),
+  async (req: Request, res: Response) => {
     try {
-			const user: any = req.user;
+      const user: any = req.user;
 
-				const send: IUser = user as IUser;
+      const send: IUser = user as IUser;
 
-				res.cookie("token",createToken(user as IUser));
-		    return res.redirect(`${process.env.URL_FRONT}`);
-		} catch (err) {
-			 res.status(400).json({err:"todo salio mal"});
-		}
-});
+      res.cookie("token", createToken(user as IUser));
+      return res.redirect(`${process.env.URL_FRONT}`);
+    } catch (err) {
+      res.status(400).json({ err: "todo salio mal" });
+    }
+  }
+);
 
 //------------------------route data user----------------------------------
 router.post(
@@ -238,7 +253,7 @@ router.post(
         return res.status(400).json("Invalid Token");
       }
 
-      let { username, profilePicture, isDeleted, isPremium } = user;
+      let { username, profilePicture, isDeleted, isAdmin, isPremium } = user;
 
       if (user.isPremium) {
         const date = new Date();
@@ -248,11 +263,18 @@ router.post(
             user.expirationDate = undefined;
             user.plan = undefined;
 
-            await user.save()
+            await user.save();
           }
         }
       }
-      return res.status(200).json({ _id: id, username, profilePicture, isDeleted, isPremium  });
+      return res.status(200).json({
+        _id: id,
+        username,
+        profilePicture,
+        isDeleted,
+        isAdmin,
+        isPremium,
+      });
     } catch (err) {
       return res.status(400).json(err);
     }
