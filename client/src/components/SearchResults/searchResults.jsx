@@ -6,7 +6,13 @@ import LoadingSpinner from "../LoadingSpinner";
 
 import { MdRemoveCircle } from "react-icons/md";
 
-const SearchResults = ({ input, selectRecent, searched, setSearched }) => {
+const SearchResults = ({
+  input,
+  setInput,
+  selectRecent,
+  searched,
+  setSearched,
+}) => {
   const { searches, error, loading } = useSelector(
     (state) => state.browserReducer
   );
@@ -65,11 +71,13 @@ const SearchResults = ({ input, selectRecent, searched, setSearched }) => {
           !loading ? (
             searches.map((user) => {
               return (
-                <SearchUsersBox
-                  username={user.username}
-                  key={user._id}
-                  id={user._id}
-                />
+                <div className="" onClick={() => setInput("")}>
+                  <SearchUsersBox
+                    username={user.username}
+                    key={user._id}
+                    id={user._id}
+                  />
+                </div>
               );
             })
           ) : (
