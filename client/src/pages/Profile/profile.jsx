@@ -48,6 +48,7 @@ const Profile = () => {
   const {
     _id,
     posts,
+    isPrivate,
     followers,
     following,
     followRequest,
@@ -574,8 +575,8 @@ const Profile = () => {
         </div>
         <hr />
 
-    {user?.isPrivate && usersFollowing?.includes(userLoggedId) || userLoggedId === params.id || !user?.isPrivate?
-        <div id="Profile-posts__container">{user._id ? renderer() : null}</div>
+    {isPrivate && usersFollowing?.includes(userLoggedId) || userLoggedId === params.id || !isPrivate?
+        <div id="Profile-posts__container">{_id ? renderer() : null}</div>
         : null
       }
         </div>
