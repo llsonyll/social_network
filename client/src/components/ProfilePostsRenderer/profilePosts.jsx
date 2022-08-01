@@ -6,7 +6,8 @@ import { ImHeartBroken } from "react-icons/im";
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { newDislikeUserProfile, newLikeUserProfile, makeReport } from '../../redux/actions/userActions'
+import { newDislikeUserProfile, newLikeUserProfile, makeReport } from '../../redux/actions/userActions';
+import EditPost from '../EditPost.jsx/editPost';
 
 const ProfilePosts = (props) => {
 	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes,dislikes , multimedia } = props

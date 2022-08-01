@@ -60,7 +60,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
 });
 
 router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req:Request, res:Response) =>{
-   /*  try{
+    try{
         const {userId, postId} = req.params
         let post = await Post.findById(`${postId}`)
         //if no post founded or the post was made by other user sends error
@@ -70,19 +70,14 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
         if(`${post.userId}` !== userId){
             return res.status(400).json('Delete only your own posts')
         }
-        let user = await User.findByIdAndUpdate({`${userId}`}, {$pull: {posts: post._id}}).populate({
-            path: 'posts',
-            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
-            options: {sort: {'createdAt': -1 } },
-            populate: { path: 'userId', select: ['username', 'profilePicture'] },
-        }).select('-password')
+        let user = await User.findById(`${userId}`)
         //If no user found send an error
         if(!user){
             return res.status(400).json('Wtf who did this post????')
         }
         //Delete the post from the posts of the User
-         user = await User.findByIdAndUpdate( {} )
-        await user.save() 
+        await user.updateOne({$pull: {posts: postId}})
+        await user.save()
         
         //Delete comments done at this post
         let comments = post.commentsId
@@ -90,10 +85,10 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
         //Remove post and send response
         await post.remove();
         
-        res.json(user.posts)
+        res.json('Eliminated from the world')
     }catch(err){
         res.status(400).json('something went wrong')
-    } */
+    }
 });
 
 router.put("/dislike/:postId/:userId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),

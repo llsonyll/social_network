@@ -80,12 +80,12 @@ const userReducer = createSlice({
       state.userProfileData = [];
     },
     editUserPosts(state, {payload}) {
-      let index = state.userProfileData.posts.findIndex(post=> post._id === payload.postId) 
-
+      let index = state.userProfileData.posts.findIndex(post=> post._id === payload.postId);
       state.userProfileData.posts[index] = payload.post;
     },
-    deletePostsGeneral(state, action) {
-      state.userProfileData.posts = action.payload;
+    deletePostsGeneral(state, {payload}) {
+      let filter = state.userProfileData.posts.filter(post => post._id !== payload.postId);
+      state.userProfileData.posts = filter;
     },
 }});
 
