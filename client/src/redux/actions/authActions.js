@@ -22,7 +22,7 @@ export const loginAction = (obj) => async (dispatch) => {
         profilePicture: profilePicture,
         isDeleted: isDeleted,
         isAdmin: isAdmin,
-        isPremium:  isPremium
+        isPremium: isPremium
       })
     );
   } catch (err) {
@@ -40,7 +40,7 @@ export const loginAction = (obj) => async (dispatch) => {
 export const registerAction = (obj) => async (dispatch) => {
   try {
     const {
-      data: { token, username, _id, profilePicture, isDeleted, isPremium, isAdmin },
+      data: { token, username, _id, profilePicture, isDeleted, isAdmin, isPremium },
     } = await apiConnection.post("auth/register", obj);
     localStorage.setItem("token", token);
     setAuthorization(token);
@@ -51,7 +51,7 @@ export const registerAction = (obj) => async (dispatch) => {
         profilePicture: profilePicture,
         isDeleted: isDeleted,
         isAdmin: isAdmin,
-        isPremium:  isPremium
+        isPremium: isPremium
       })
     );
   } catch (err) {
@@ -71,7 +71,7 @@ export const getLoggedUserInfo = () => async (dispatch) => {
     const token = localStorage.getItem("token");
     setAuthorization(token);
     const {
-      data: { username, _id, profilePicture, isDeleted, isPremium, isAdmin  },
+      data: { username, _id, profilePicture, isDeleted, isAdmin, isPremium },
     } = await apiConnection.post("auth");
     return dispatch(
       loginUser({
@@ -80,7 +80,7 @@ export const getLoggedUserInfo = () => async (dispatch) => {
         profilePicture: profilePicture,
         isDeleted: isDeleted,
         isAdmin: isAdmin,
-        isPremium:  isPremium
+        isPremium: isPremium
       })
     );
   } catch (err) {

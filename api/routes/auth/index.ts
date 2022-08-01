@@ -252,7 +252,8 @@ router.post(
       if (!user) {
         return res.status(400).json("Invalid Token");
       }
-      let { username, profilePicture, isDeleted, isPremium, isAdmin } = user;
+
+      let { username, profilePicture, isDeleted, isAdmin, isPremium } = user;
 
       if (user.isPremium) {
         const date = new Date();
@@ -266,7 +267,14 @@ router.post(
           }
         }
       }
-      return res.status(200).json({ _id: id, username, profilePicture, isDeleted, isPremium, isAdmin  });
+      return res.status(200).json({
+        _id: id,
+        username,
+        profilePicture,
+        isDeleted,
+        isAdmin,
+        isPremium,
+      });
     } catch (err) {
       return res.status(400).json(err);
     }

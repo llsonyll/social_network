@@ -219,61 +219,62 @@ router.put(
 
 // GET '/home/:userId'
 router.get(
-	'/home/:userId',
-	passport.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }),
-	async (req: Request, res: Response) => {
-		const { userId } = req.params
-		let page = parseInt(`${req.query.page}`)
-    let control= req.query.control
-    !control ? control="true" : null
-		if (!page) page = 0
+  "/home/:userId",
+  passport.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+  }),
+  async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    let page = parseInt(`${req.query.page}`);
+    let control = req.query.control;
+    !control ? (control = "true") : null;
+    if (!page) page = 0;
 
-		try {
-			const user = await User.findById(`${userId}`)
-			if (!user) return res.status(404).json({ errorMsg: 'who are you?' })
-			const date = new Date().getTime()
+    try {
+      const user = await User.findById(`${userId}`);
+      if (!user) return res.status(404).json({ errorMsg: "who are you?" });
+      const date = new Date().getTime();
 
-			let result: any[] = []
-			if (user.following.length > 0 ) {
-        if(control==="true") {
-				result = await Post.find({
-					// userId: { $in: [...user.following, user._id] },  
-          $or: [{ userId: user._id }, { userId: { $in: user.following } }],
-					createdAt: {$gte: new Date(date - 259200000)} }) //menos 3 dias                
-					.sort({ createdAt: -1 })
-					.skip(page * 10)
-					.limit(10)
-          .populate('userId', ['username', 'profilePicture'])
-
+      let result: any[] = [];
+      if (user.following.length > 0) {
+        if (control === "true") {
+          result = await Post.find({
+            // userId: { $in: [...user.following, user._id] },
+            $or: [{ userId: user._id }, { userId: { $in: user.following } }],
+            createdAt: { $gte: new Date(date - 259200000) },
+          }) //menos 3 dias
+            .sort({ createdAt: -1 })
+            .skip(page * 10)
+            .limit(10)
+            .populate("userId", ["username", "profilePicture"]);
         } else {
-						result = await Post.find({
-							createdAt: {$gte: new Date(date - 259200000)},
-							userId: {$nin: [...user.following, user._id], }
-						})
-						.sort({ createdAt: -1 })
-						.skip(page * 10)
-						.limit(10)
-            .populate('userId', ['username', 'profilePicture'])
-					}
-				}
-
-				if(user.following.length===0) {
-					result = await Post.find({
-            createdAt: {$gte: new Date(date - 259200000)}
+          result = await Post.find({
+            createdAt: { $gte: new Date(date - 259200000) },
+            userId: { $nin: [...user.following, user._id] },
           })
-					.sort({ createdAt: -1 })
-					.skip(page * 10)
-					.limit(10)
-					.populate('userId', ['username', 'profilePicture'])
-					
-					}
-					res.json(result)
-		} catch (err) {
-			return res.status(404).json({ errorMsg: err })
-		}
-	}
-)
-    
+            .sort({ createdAt: -1 })
+            .skip(page * 10)
+            .limit(10)
+            .populate("userId", ["username", "profilePicture"]);
+        }
+      }
+
+      if (user.following.length === 0) {
+        result = await Post.find({
+          createdAt: { $gte: new Date(date - 259200000) },
+        })
+          .sort({ createdAt: -1 })
+          .skip(page * 10)
+          .limit(10)
+          .populate("userId", ["username", "profilePicture"]);
+      }
+      res.json(result);
+    } catch (err) {
+      return res.status(404).json({ errorMsg: err });
+    }
+  }
+);
 
 router.get(
   "/following/:userId",
@@ -288,7 +289,6 @@ router.get(
         "username",
         "profilePicture",
       ]);
-      console.log(user.following);
 
       if (!user) {
         return res.status(400).json("not following");
@@ -494,7 +494,12 @@ router.put(
       }
 
       const userFollowedUpdated: any = await User.findById(userFollowed._id);
-      return res.status(200).json({followers: userFollowedUpdated.followers, followRequest: userFollowedUpdated.followRequest});
+      return res
+        .status(200)
+        .json({
+          followers: userFollowedUpdated.followers,
+          followRequest: userFollowedUpdated.followRequest,
+        });
     } catch (err) {
       return res.status(404).json({ errorMsg: err });
     }
