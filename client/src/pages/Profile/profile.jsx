@@ -151,7 +151,7 @@ const Profile = () => {
 
   const filters = () => {
     return (
-      <div className="bg-[#202225] flex md:p-4 p-2 md:gap-8 gap-4 text-white font-semibold">
+      <div className="bg-[#202225] flex md:flex-row flex-col justify-center items-center p-4 md:gap-8 gap-4 text-white font-semibold md:text-base text-xs">
         <div className="flex flex-row-reverse gap-1">
           <label htmlFor=""> Filters </label>
           <input
