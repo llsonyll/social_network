@@ -12,7 +12,7 @@ const AdminBoard = ({ showAdmin, setShowAdmin }) => {
   const [tab, setTab] = useState("search"); // search, reports, stadistics
 
   return (
-    <div className="absolute inset-0 z-50 bg-black/80 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
       <div className="bg-[#262626] shadow-xl rounded-sm relative md:p-12 p-6">
         <button
           type="button"
