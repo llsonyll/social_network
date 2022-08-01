@@ -173,7 +173,7 @@ router.get('/home/:userId', passport_1.default.authenticate('jwt', { session: fa
         if (user.following.length > 0) {
             if (control === "true") {
                 result = yield mongoose_1.Post.find({
-                    // userId: { $in: [...user.following, user._id] }, 
+                    // userId: { $in: [...user.following, user._id] },  
                     $or: [{ userId: user._id }, { userId: { $in: user.following } }],
                     createdAt: { $gte: new Date(date - 259200000) }
                 }) //menos 3 dias                
