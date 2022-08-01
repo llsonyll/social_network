@@ -46,7 +46,8 @@ const userReducer = createSlice({
       state.userProfileData = {}
     },
     toggleFollowUser(state, action) {
-      state.userProfileData.followers = action.payload;
+      state.userProfileData.followers = action.payload.followers;
+      state.userProfileData.followRequest = action.payload.followRequest;
     },
     likesPost(state,{payload}){
       let index = state.homePostsData.findIndex(post => post._id === payload.postId )
@@ -77,10 +78,20 @@ const userReducer = createSlice({
     },
     deleteAccount(state, action) {
       state.userProfileData = [];
-    }
+    },
+    editUserPosts(state, {payload}) {
+      let index = state.userProfileData.posts.findIndex(post=> post._id === payload.postId);
+      state.userProfileData.posts[index] = payload.post;
+    },
+    deletePostsGeneral(state, {payload}) {
+      let filter = state.userProfileData.posts.filter(post => post._id !== payload.postId);
+      state.userProfileData.posts = filter;
+    },
 }});
 
 export const {
+  deletePostsGeneral,
+  editUserPosts,
   userProfile,
   homePosts,
   addNewPost,

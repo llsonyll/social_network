@@ -1,5 +1,5 @@
 import Avatar from "../Avatar";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaExclamation } from "react-icons/fa";
 import { AiOutlineMore } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import { ImHeartBroken } from "react-icons/im";
@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 import './commentTile.css'
 import { useState } from "react";
 import EditComment from "../editComment/editComment";
+import { makeReport } from "../../redux/actions/userActions";
+import Swal from "sweetalert2";
 
 
 const CommentTile = ({ data , props }) => {
@@ -125,6 +127,31 @@ const CommentTile = ({ data , props }) => {
                   {data && renderHeartBrokenIcon()}
                 {data && data.dislikes.length }
               </button>
+              
+            <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              Swal.fire({
+                background: "#4c4d4c",
+                color: "white",
+                title: 'Submit your Report',
+                input: 'textarea',
+                inputAttributes: {
+                  autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                  dispatch(makeReport(_id, data._id, {reason: login, reported: 'comment'})) 
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              })}}
+          >
+            <FaExclamation />
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
+
         </div>
       </div>
       {editComents === true && 

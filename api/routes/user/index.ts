@@ -84,7 +84,7 @@ router.get(
 					options: {sort: {'createdAt': -1 } },
 					populate: { path: 'userId', select: ['username', 'profilePicture'] },
 				})
-        // .populate('followRequest', 'username')
+        .populate('followRequest', ['username', 'profilePicture'])
 				// .populate('following', 'username')
 				// .populate('followers', 'username')
 				.select('-password')
@@ -199,7 +199,7 @@ router.get(
 			if (user.following.length > 0 ) {
         if(control==="true") {
 				result = await Post.find({
-					// userId: { $in: [...user.following, user._id] }, 
+					// userId: { $in: [...user.following, user._id] },  
           $or: [{ userId: user._id }, { userId: { $in: user.following } }],
 					createdAt: {$gte: new Date(date - 259200000)} }) //menos 3 dias                
 					.sort({ createdAt: -1 })
@@ -210,7 +210,7 @@ router.get(
         } else {
 						result = await Post.find({
 							createdAt: {$gte: new Date(date - 259200000)},
-							userId: {$nin: [...user.following, user._id], 'user.isPrivate': true}
+							userId: {$nin: [...user.following, user._id], }
 						})
 						.sort({ createdAt: -1 })
 						.skip(page * 10)
@@ -245,7 +245,6 @@ async (req: Request, res: Response) => {
   try {
       let userId = req.params.userId;
       let user: any = await User.findById(`${userId}`).populate('following' , ['username' , 'profilePicture']);
-      console.log(user.following);
       
       if(!user){ return res.status(400).json('not following')}
 
@@ -449,7 +448,7 @@ router.put(
       }
 
       const userFollowedUpdated: any = await User.findById(userFollowed._id);
-      return res.status(200).json(userFollowedUpdated.followers);
+      return res.status(200).json({followers: userFollowedUpdated.followers, followRequest: userFollowedUpdated.followRequest});
     } catch (err) {
       return res.status(404).json({ errorMsg: err });
     }
