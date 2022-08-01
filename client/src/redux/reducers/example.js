@@ -1,6 +1,6 @@
 /* import { createSlice } from '@reduxjs/toolkit'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-
+ dadawdawdawd
 const initialState = {
 	number: 0,
 	datos: [],

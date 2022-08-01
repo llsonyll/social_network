@@ -1,11 +1,12 @@
-import { FaComment, FaHeart } from "react-icons/fa";
+import { FaComment, FaHeart, FaExclamation } from "react-icons/fa";
 import { IconContext } from 'react-icons'
 import Avatar from "../Avatar";
 import { Link } from "react-router-dom";
 import { ImHeartBroken } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
-import { newLikeHomePost, newDislikeHomePost, followOrUnfollowUser, getUserFollowings } from "../../redux/actions/userActions";
+import { newLikeHomePost, newDislikeHomePost, followOrUnfollowUser, getUserFollowings, makeReport } from "../../redux/actions/userActions";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 
 const HomePostCard = (props) => {
@@ -65,7 +66,9 @@ const HomePostCard = (props) => {
     })
     if (on) {
       return  <div key={Math.random()}>Unfollow</div>
-    } else {
+    } /*else if (props.followRequest?.length && props.followRequest?.map(u => u._id?.includes(user._id))) {
+      return <div key={Math.random()}>Pending</div>
+    }*/ else {
       return <div key={Math.random()}>Follow</div>
     }
   };
@@ -156,7 +159,32 @@ const HomePostCard = (props) => {
                   {post && renderHeartBrokenIcon()}
                 {homePostsData && homePostsData[index].dislikes.length }
               </button>
-            </div>
+          </div>
+          
+          <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              Swal.fire({
+                background: "#4c4d4c",
+                color: "white",
+                title: 'Submit your Report',
+                input: 'textarea',
+                inputAttributes: {
+                  autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                  dispatch(makeReport(user._id, props.postId, {reason: login, reported: 'post'})) 
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              })
+            }}
+          >
+            <FaExclamation />
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
       </div>
     </div>
   );

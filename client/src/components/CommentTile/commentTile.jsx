@@ -1,5 +1,5 @@
 import Avatar from "../Avatar";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaExclamation } from "react-icons/fa";
 import { AiOutlineMore } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import { ImHeartBroken } from "react-icons/im";
@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import './commentTile.css'
 import { useState } from "react";
 import EditComment from "../editComment/editComment";
+import { makeReport } from "../../redux/actions/userActions";
 
 
 const CommentTile = ({ data , props }) => {
@@ -125,6 +126,17 @@ const CommentTile = ({ data , props }) => {
                   {data && renderHeartBrokenIcon()}
                 {data && data.dislikes.length }
               </button>
+              
+            <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              dispatch(makeReport(_id, data._id, {reason /*crear input */ , reported: 'comment'})) // reported toma valores 'post', 'comment' y 'user'
+            }}
+          >
+            <FaExclamation />
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
+
         </div>
       </div>
       {editComents === true && 
