@@ -12,10 +12,10 @@ import {
   browserCleanUp,
 } from "../../redux/actions/browserActions";
 import { logOutUser } from "../../redux/reducers/authReducer.slice";
-import { MdOutlineLogout } from "react-icons/md";
+import { MdOutlineLogout, MdAdminPanelSettings } from "react-icons/md";
 import SearchResults from "../SearchResults/searchResults";
 
-const NavBar = ({ openModal }) => {
+const NavBar = ({ openModal, openAdmin }) => {
   let activeStyle = {
     fontWeight: "bold",
   };
@@ -29,6 +29,7 @@ const NavBar = ({ openModal }) => {
   const [searched, setSearched] = useState(false);
   const { searches } = useSelector((state) => state.browserReducer);
   const userId = useSelector((state) => state.auth.loggedUser._id);
+  const isAdmin = useSelector((state) => state.auth.loggedUser.isAdmin);
 
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -117,6 +118,14 @@ const NavBar = ({ openModal }) => {
         >
           <MdOutlineLogout />
         </button>
+        {isAdmin && (
+          <button
+            className="bg-blue-700 p-2 rounded font-bold text-lg"
+            onClick={openAdmin}
+          >
+            <MdAdminPanelSettings />
+          </button>
+        )}
         <NewPostBtn action={openModal} />
       </div>
     </div>
