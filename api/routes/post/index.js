@@ -82,7 +82,12 @@ router.delete('/:userId/:postId', passport_1.default.authenticate('jwt', { sessi
         if (`${post.userId}` !== userId) {
             return res.status(400).json('Delete only your own posts');
         }
-        let user = yield mongoose_1.User.findById(`${userId}`);
+        let user = yield mongoose_1.User.findById(`${userId}`).populate({
+            path: 'posts',
+            select: ['content', 'createdAt', 'likes', 'dislikes', '_id', 'commentsId', 'multimedia'],
+            options: { sort: { 'createdAt': -1 } },
+            populate: { path: 'userId', select: ['username', 'profilePicture'] },
+        }).select('-password');
         //If no user found send an error
         if (!user) {
             return res.status(400).json('Wtf who did this post????');
@@ -95,7 +100,7 @@ router.delete('/:userId/:postId', passport_1.default.authenticate('jwt', { sessi
         yield mongoose_1.Comment.deleteMany({ _id: { $in: comments } });
         //Remove post and send response
         yield post.remove();
-        res.json('Eliminated from the world');
+        res.json(user.posts);
     }
     catch (err) {
         res.status(400).json('something went wrong');

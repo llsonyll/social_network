@@ -1,27 +1,35 @@
 import { FaComment, FaHeart, FaExclamation } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import Avatar from '../Avatar'
+import { AiOutlineMore } from "react-icons/ai";
 import { ImHeartBroken } from "react-icons/im";
 import { Link } from 'react-router-dom'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { newDislikeUserProfile, newLikeUserProfile, makeReport } from '../../redux/actions/userActions'
 import Swal from 'sweetalert2';
+import EditPost from '../EditPost.jsx/editPost';
+
 
 const ProfilePosts = (props) => {
 	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes,dislikes , multimedia } = props
-  
+	const [editPost, setEditPost] = useState(false)
+
 	const { _id } = useSelector(state => state.auth.loggedUser);
-  const dispatch = useDispatch();
+  	const dispatch = useDispatch();
+
+	let showEditComponent = () => {
+		setEditPost(!editPost)
+	}
 
 	const handleLike = () => {
        dispatch(newLikeUserProfile(postNumber, _id));
 	}
-
 	const handleDislike = () => {
 		dispatch(newDislikeUserProfile(postNumber,_id));
 	}
-	
+	const loggedUser = useSelector(state => state.auth.loggedUser)
 	const posts = useSelector(state => state.user.userProfileData.posts);
 	let index = posts.findIndex(post => post._id === postNumber);
 	
@@ -38,8 +46,6 @@ const ProfilePosts = (props) => {
 			)
 		}
 	}
-
-
 	let renderHeartBrokenIcon = () => {
     if (!posts[index].dislikes.find( dislike => dislike._id === _id)) {
       console.log('Entra blanco');
@@ -55,6 +61,10 @@ const ProfilePosts = (props) => {
       )
     }
   }
+  	let renderEditPost = () => {
+		if(editPost){
+			return <EditPost userId={userId} postNumber={postNumber} content={content} showEditComponent={showEditComponent}/>
+		}}
 
 	return (
 		<Fragment key={postNumber}>
@@ -69,6 +79,19 @@ const ProfilePosts = (props) => {
 						</Link>
 						<div className='opacity-50'>{timeAgo ? timeAgo : '3hr'}</div>
 					</div>
+
+
+          {
+          loggedUser._id  === userId &&
+          <button 
+          className="user-post-icon_more"
+          onClick={showEditComponent}
+          >
+            <AiOutlineMore />
+          </button>
+          }
+		{loggedUser._id  === userId && renderEditPost()}
+
 				</div>
 				<Link to={`/home/post/${postNumber}`}>
 				<div className='user-post-profile__content flex-1 pl-2 md:pl-4'>
