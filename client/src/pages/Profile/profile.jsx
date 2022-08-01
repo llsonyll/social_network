@@ -337,12 +337,28 @@ const Profile = () => {
                       </div>
                       
             <button
-            className=""
-            // onClick={}
-          >
-            <FaExclamation /> Report user
-            {/* {post && renderHeartBrokenIcon()} */}
-          </button>
+              className="flex items-center gap-1"
+              onClick={() => {
+					      Swal.fire({
+					        background: "#4c4d4c",
+  					      color: "white",
+	  			        title: 'Submit your Report',
+		  		        input: 'textarea',
+					        inputAttributes: {
+			  		      autocapitalize: 'off'
+				          },
+				          showCancelButton: true,
+					        confirmButtonText: 'Submit',
+					        showLoaderOnConfirm: true,
+					        preConfirm: (login) => {
+						        dispatch(makeReport(userLoggedId, params.id, {reason: login, reported: 'user'})) 
+					        },
+				          allowOutsideClick: () => !Swal.isLoading()
+				        })
+		          }}
+            >
+              <FaExclamation /> Report user
+            </button>
 
                     </div>
                   ) : null}
