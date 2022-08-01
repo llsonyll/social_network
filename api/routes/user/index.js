@@ -80,7 +80,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
             options: { sort: { 'createdAt': -1 } },
             populate: { path: 'userId', select: ['username', 'profilePicture'] },
         })
-            // .populate('followRequest', 'username')
+            .populate('followRequest', ['username', 'profilePicture'])
             // .populate('following', 'username')
             // .populate('followers', 'username')
             .select('-password');
@@ -215,7 +215,6 @@ router.get('/following/:userId', passport_1.default.authenticate("jwt", {
     try {
         let userId = req.params.userId;
         let user = yield mongoose_1.User.findById(`${userId}`).populate('following', ['username', 'profilePicture']);
-        console.log(user.following);
         if (!user) {
             return res.status(400).json('not following');
         }
@@ -393,7 +392,7 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
             yield userFollowed.save();
         }
         const userFollowedUpdated = yield mongoose_1.User.findById(userFollowed._id);
-        return res.status(200).json(userFollowedUpdated.followers);
+        return res.status(200).json({ followers: userFollowedUpdated.followers, followRequest: userFollowedUpdated.followRequest });
     }
     catch (err) {
         return res.status(404).json({ errorMsg: err });

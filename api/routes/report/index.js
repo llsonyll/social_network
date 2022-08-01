@@ -20,24 +20,36 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
     try {
         const { userId, reportId } = req.params;
         const { reason, reported } = req.body; // REPORTED VA A ACEPTAR 3 VALORES: COMMENT, POST Y USER
+        if (!reason) {
+            return res.status(404).json({ msg: 'Not Reason' });
+        }
         if (reported === 'comment') {
+            const comment = yield mongoose_1.Comment.findById(`${reportId}`);
+            if (!comment)
+                return res.status(404).json({ msg: 'Comment not found' });
             var report = new mongoose_1.Report({
                 userId,
-                commentReportedId: reportId,
+                commentReportedId: comment._id,
                 reason
             });
         }
         else if (reported === 'post') {
+            const post = yield mongoose_1.Post.findById(`${reportId}`);
+            if (!post)
+                return res.status(404).json({ msg: 'Post not found' });
             var report = new mongoose_1.Report({
                 userId,
-                postReportedId: reportId,
+                postReportedId: post._id,
                 reason
             });
         }
         else {
+            const user = yield mongoose_1.User.findById(`${reportId}`);
+            if (!user)
+                return res.status(404).json({ msg: 'User not found' });
             var report = new mongoose_1.Report({
                 userId,
-                userReportedId: reportId,
+                userReportedId: user._id,
                 reason
             });
         }

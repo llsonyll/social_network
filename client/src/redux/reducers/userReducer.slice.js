@@ -46,7 +46,8 @@ const userReducer = createSlice({
       state.userProfileData = {}
     },
     toggleFollowUser(state, action) {
-      state.userProfileData.followers = action.payload;
+      state.userProfileData.followers = action.payload.followers;
+      state.userProfileData.followRequest = action.payload.followRequest;
     },
     likesPost(state,{payload}){
       let index = state.homePostsData.findIndex(post => post._id === payload.postId )
