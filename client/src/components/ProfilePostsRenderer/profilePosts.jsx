@@ -108,10 +108,12 @@ const ProfilePosts = (props) => {
 				</div>
 				</Link>
 				<div className='actions flex gap-3 justify-end mt-2 md:mt-4 text-lg'>
-					<button className='flex items-center gap-1'>
-						<FaComment />
-						{commentsLength}
-					</button>
+					<Link to={`/home/post/${postNumber}`}>
+						<button className='flex items-center gap-1'>
+							<FaComment />
+							{commentsLength}
+						</button>
+					</Link>
 
 					<button className='flex items-center gap-1'
 					 onClick = {handleLike}
