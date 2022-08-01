@@ -4,6 +4,7 @@ import { AiFillCloseSquare } from "react-icons/ai";
 import Avatar from "../Avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { modifyUser } from "../../redux/actions/userActions";
+import { errorAlerts, goodAlerts } from "../../utils/SweetAlertTypes/SweetAlerts";
 
 const EditFullname = ({ renderChangeRenderComponents, user }) => {
   const loggedUser = useSelector((store) => store.auth.loggedUser);
@@ -29,77 +30,77 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 
     if (firstname.length > 0 && lastname.length === 0) {
       if (firstname.split(" ").length !== 1) {
-        return alert("Firstname should not have empty spaces");
+          return errorAlerts('Firstname should not have empty spaces')
       }
 
       if (firstNameNoSpaces.length > 10) {
-        return alert("Firstname should not have more than 10 characters");
+        return errorAlerts("Firstname should not have more than 10 characters");
       }
 
       if (nonDigitsRegex1.test(firstNameNoSpaces) === false) {
-        return alert("Firstname should not have any digits (1-9)");
+        return errorAlerts("Firstname should not have any digits (1-9)");
       }
 
       try {
         dispatch(modifyUser(loggedUser._id, { firstname }));
-        alert("You changed your name!");
+        goodAlerts("You changed your name!");
         renderChangeRenderComponents("fullname");
       } catch (error) {
         console.log(error);
       }
     } else if (firstname.length === 0 && lastname.length > 0) {
       if (lastname.split(" ").length !== 1) {
-        return alert("Lastname should not have empty spaces");
+        return errorAlerts("Lastname should not have empty spaces");
       }
 
       if (lastNameNoSpaces.length > 10) {
-        return alert("Lastname should not have more than 10 characters");
+        return errorAlerts("Lastname should not have more than 10 characters");
       }
 
       if (nonDigitsRegex2.test(lastNameNoSpaces) === false) {
-        return alert("Lastname should not have any digits (1-9)");
+        return errorAlerts("Lastname should not have any digits (1-9)");
       }
 
       try {
         dispatch(modifyUser(loggedUser._id, { lastname }));
-        alert("You changed your lastName!");
+        goodAlerts("You changed your lastName!");
         renderChangeRenderComponents("fullname");
       } catch (error) {
         console.log(error);
       }
     } else if (firstname.length > 0 && lastname.length > 0) {
       if (firstname.split(" ").length !== 1) {
-        return alert("Firstname should not have empty spaces");
+        return errorAlerts("Firstname should not have empty spaces");
       }
 
       if (lastname.split(" ").length !== 1) {
-        return alert("Lastname should not have empty spaces");
+        return errorAlerts("Lastname should not have empty spaces");
       }
       if (firstNameNoSpaces.length > 10) {
-        return alert("Firstname should not have more than 10 characters");
+        return errorAlerts("Firstname should not have more than 10 characters");
       }
 
       if (lastNameNoSpaces.length > 10) {
-        return alert("Lastname should not have more than 10 characters");
+        return errorAlerts("Lastname should not have more than 10 characters");
       }
 
       if (nonDigitsRegex1.test(firstNameNoSpaces) === false) {
-        return alert("Firstname should not have any digits (1-9)");
+        return errorAlerts("Firstname should not have any digits (1-9)");
       }
 
       if (nonDigitsRegex2.test(lastNameNoSpaces) === false) {
-        return alert("Lastname should not have any digits (1-9)");
+        return errorAlerts("Lastname should not have any digits (1-9)");
       }
 
       try {
         dispatch(modifyUser(loggedUser._id, { firstname, lastname }));
-        alert("You changed your full-name!");
+        goodAlerts("You changed your full-name!");
         renderChangeRenderComponents("fullname");
       } catch (error) {
         console.log(error);
       }
     } else if (firstname.length === 0 && lastname.length === 0) {
-      alert("Fill any input before submitting");
+      errorAlerts("Fill any input before submitting");
     }
   };
 

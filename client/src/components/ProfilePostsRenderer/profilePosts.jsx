@@ -1,4 +1,4 @@
-import { FaComment, FaHeart } from 'react-icons/fa'
+import { FaComment, FaHeart, FaExclamation } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import Avatar from '../Avatar'
 import { AiOutlineMore } from "react-icons/ai";
@@ -6,7 +6,7 @@ import { ImHeartBroken } from "react-icons/im";
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
+import { newDislikeUserProfile, newLikeUserProfile, makeReport } from '../../redux/actions/userActions';
 import EditPost from '../EditPost.jsx/editPost';
 import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
 
@@ -134,6 +134,16 @@ const ProfilePosts = (props) => {
                   {posts && renderHeartBrokenIcon()}
           </button>
 		  <button onClick={renderDislikes}>{posts && posts[index].dislikes.length }</button>
+
+		  <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              dispatch(makeReport(_id, posts[index]._id, {reason /*crear input */ , reported: 'post'})) // reported toma valores 'post', 'comment' y 'user'
+            }}
+          >
+            <FaExclamation />
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
 				</div>
 			</div>
 			{showLikes === true && <ListOfUsersRenderer likes={likes} renderLikes={renderLikes}/>}

@@ -10,6 +10,12 @@
 #contenedor_friends {
   box-shadow: inset 0px 0px 20px rgb(26, 26, 26);
 }
+#contenedor_friends .contenedorfriend .contenedorfriend_info {
+  width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 #contenedor_friends .linkfriend_message{
   display: flex;
 }
@@ -21,6 +27,16 @@
 }
 #contenedor_friends .mess_friend_section:hover {
   color: #4e864c;
+}
+#contenedor_friends #title_friend_Postile {
+  width: 100%;
+  text-align: center;
+}
+#contenedor_friends #title_friend_Postile h1 {
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 4px 4px 2px #4e864c ; 
+  user-select: none;
 }
 
 #contenedor_posts {
