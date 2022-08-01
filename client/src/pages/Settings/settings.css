@@ -1,178 +1,219 @@
 /* CONTENEDOR PRINCIPAL */
 .settings-container{
-    display: grid;
-    grid-template-columns: 1fr 70% 1fr;
-    grid-template-rows: 1fr;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
 }
 /* CONTENEDOR DE SETTINGS */
 .settings{
-    grid-column: 2/3;
-    grid-row: 1/3;
-    display: grid;
-    grid-template-columns: 25% 55% 20%;
-    grid-template-rows: 40px 90px 40px 30px 30px 30px 40px 40px 40px 40px 200px 200px 40px 35px 35px 40px 100px 40px 100px;
-    background-color: #222222;
-    color: rgb(255, 255, 255);
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    background-color: #252525;
+   border-radius: 10px;
 }
 /*  TEXTOS GENERALES */
 
-.boldtext{
-    font-weight: bolder;
-    font-size: larger;
-    color: aliceblue;
-
-}
-
-
-
 .g-settings{
-    grid-column: 2/3;
-    grid-row: 2/3;
-    color: aliceblue;
+    width: 100%;
+    text-align: center;
+    font-size: 35px;
+    color: white;
+    font-weight: 700;
+    text-shadow: 5px 5px 2px #4e864c;
+    padding: 10px;
 }
-.changepass{
-    grid-column: 1/2;
-    grid-row: 3/4;
+
+.change-password_container{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
 }
-.oldpass{
-    grid-column: 1/2;
-    grid-row: 4/5;
-}   
-.oldpassinput{
-    grid-column: 2/3;
-    grid-row: 4/5;
-    background-color: #222222;
-    border-color: aliceblue;
-    border-width: 1px;
+.change-password_container .change-password_section{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
     
-} 
-.newpass{
-    grid-column: 1/2;
-    grid-row: 5/6;
 }
-.newpassinput{
-    grid-column: 2/3;
-    grid-row: 5/6;
-    background-color: #222222;
-    border-color: aliceblue;
-    border-width: 1px;
+.change-password_container .changepass{
+    width: 100%;
+    color: white;
+    font-size: 25px;
+    font-weight: 700;
+    
 }
-.confirmpass{
-    grid-column: 1/2;
-    grid-row: 6/7;
+.change-password_container  div{
+   display: flex;
+   margin: 10px
 }
-.confirmpassinput{
-    grid-column: 2/3;
-    grid-row: 6/7;
-    background-color: #222222;
-    border-color: aliceblue;
-    border-width: 1px;
+.change-password_container  div input{
+   background-color: #2e2e2e;
+   border-radius: 5px;
+   color: white;
+   padding: 10px;
+  outline: none;
+  width: 70%;
 }
-.premiumacc{
-    grid-column: 1/2;
-    grid-row: 7/8;
+.change-password_container  div p {
+  color: white;
+  font-size: 20px;
+  width: 130px;
+  text-align: center;
+  margin-right: 10px;
 }
-.premiumtext{
-    grid-column: 1/3;
-    grid-row: 8/9;
+.change-password_container  div:nth-child(4) {
+  align-items: center;
 }
-.privateacc{
-    grid-column: 1/2;
-    grid-row: 9/10;
-}
-.privatetext{
-    grid-column: 1/3;
-    grid-row: 10/11;
+.change-password_container  div:nth-child(2) {
+  margin-top: 20px;
 }
 
-
-/* BOOOOOOOOTOOOOOOOOOOOOOOOOOOONEEEEEEEEEEEESSSSSSSSSSSS */
-.greenbutton {
-	background-color: #4e864c;
-	border-radius: 5px;
-	padding: 5px 15px;
-	transition: 0.3s all;
-}
-.greenbutton:hover {
+.change-password_container  button{
     background-color: #4e864c;
-    cursor: pointer;
+    font-size: 13px;
+    border-radius: 5px;
+    margin-left: 15px;
+    color: white;
+    padding: 10px;
+    transition: .2s all;
+ }
+.change-password_container  button:hover{
+    background-color: #396438;
+   
+ }
+
+
+ /* make styles */
+
+ .make_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+ }
+ .make_container > div{
+    display: flex;
+    color: white;
+    margin: 10px;
+    padding: 10px;
+ }
+ .make_container > div h2{
+   font-size: 24px;
+   margin-bottom: 10px;
+ }
+ .make_container > div p{
+  color: gray;
+ }
+ .make-premium-button_container,
+ .make-private-button_container{
+   display: flex;
+   align-items: flex-end;
+   margin-left: 20px;
+ }
+ .make_container > div button{
+   background-color: #4e864c;
+   padding: 10px;
+   border-radius: 5px;
+   transition: .2s all;
+ }
+ .make-private-button_container button:hover{
+   background-color: #396138;
+ }
+ .make-premium-button_container button:hover{
+    background-color: rgb(157, 177, 68);
+    transform: scale(1.02);
+ }
+
+
+ /* review styles */
+.review_container{
+    width: 100%;
+    width: 90%;
+    align-self: center;
+    margin-top: 30px;
+    margin-bottom: 40px;
+  
 }
-.greenbutton:active {
-    background-color: #30552f;
-    cursor: pointer;
+.review_container div{
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
-.changepassbutton{
-    grid-column: 3/4;
-    grid-row: 6/7;
+.review_container .review{
+   color: white;
+   font-size: 25px;
 }
-.buypremiumbutton{
-    grid-column: 3/4;
-    grid-row: 8/9;
+.currentreviewtext , .newreview{
+    margin: 10px;
 }
-.makeprivate{
-    grid-column: 3/4;
-    grid-row: 10/11;
+.new-review-input_container{
+    margin-bottom: 30px;
 }
-.reviewbutton{
-    grid-column: 3/4;
-    grid-row: 15/16;
+.review_container .currentreviewtext .now_review {
+    background-color:#2e2e2e ;
+    border-radius: 5px;
+    color: white;
+    width: 70%;
+    padding: 10px;
+}
+.review_container button{
+   background-color:#4e864c;
+   border-radius: 5px;
+    color: white;
+    padding: 5px;
+  
+}
+
+.newreview input{
+   background-color: #2e2e2e;
+   border-radius: 5px;
+   color: white;
+   width: 70%;
+   padding: 10px;
+   outline: none;
+}
+
+.currentreviewtext > p , .newreview div > p{
+    color: white;
+    width: 150px;
+}
+.review_container .newreview >div{
+    flex-direction: column;
+}
+
+.edit-review-button_container , .send-review_container  {
+    width: auto !important;
+    margin-left: 20px;
+
+}
+
+.delete-review-button_container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
+}
+.delete-review-button_container button{
+   background-color: #9B423D;
+   padding: 10px;
+
+}
+
+
+.delete-count_container{
+    width: 100%;
+    display: flex !important;
+    justify-content: center !important;
+    margin: 50px 0px;
 }
 .deleteaccount{
-    grid-column: 2/3;
-    grid-row: 18/19;
-}
-.redbutton{
-    background-color: #9b2c35;
-    border-radius: 5px;
-    padding: 5px 15px;
-    transition: 0.3s all;
-}
-.redbutton:active {
-    background-color: #621c22;
-    cursor: pointer;
-}
-.editreviewbutton{
-    grid-column: 3/4;
-    grid-row: 16/17;
-}
-.deletereviewbutton{
-    grid-column: 3/4;
-    grid-row: 17/18;
-}
-
-
-.review{
-    grid-column: 1/2;
-    grid-row: 13/14;
-}
-.currentreviewtext{
-    grid-column: 1/2;
-    grid-row: 14/15;
-}
-.currentreview{
-    grid-column: 2/3;
-    grid-row: 14/15;
-}
-.newreview{
-    grid-column: 1/2;
-    grid-row: 15/16;
-}
-.newreviewinput{
-    grid-column: 2/3;
-    grid-row: 15/16;
-    background-color: #222222;
-    border-color: aliceblue;
-    border-width: 1px;
-}
-.stars{
-    grid-column: 1/2;
-    grid-row: 16/17;
-}
-
-.selectstars{
-    grid-column: 2/3;
-    grid-row: 16/17;
-    background-color: #222222;
-    border-color: aliceblue;
-    border-width: 1px;
+    background-color: #8b3b37 !important ;
+    padding: 10px !important ;
+   width: 70%;
+   color: white;
+   border-radius: 10px;
+   font-size: 20px;
 }
