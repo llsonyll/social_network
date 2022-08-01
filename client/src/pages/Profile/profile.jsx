@@ -24,6 +24,7 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 //iconos
 import {AiFillSetting} from 'react-icons/ai'
 import { FaExclamation } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 
 const Profile = () => {
@@ -336,14 +337,28 @@ const Profile = () => {
                       </div>
                       
             <button
-            className=""
-            onClick={() => {
-              dispatch(makeReport(userLoggedId, params.id, {reason /*crear input */ , reported: 'user'})) // reported toma valores 'post', 'comment' y 'user'
-            }}
-          >
-            <FaExclamation /> Report user
-            {/* {post && renderHeartBrokenIcon()} */}
-          </button>
+              className="flex items-center gap-1"
+              onClick={() => {
+					      Swal.fire({
+					        background: "#4c4d4c",
+  					      color: "white",
+	  			        title: 'Submit your Report',
+		  		        input: 'textarea',
+					        inputAttributes: {
+			  		      autocapitalize: 'off'
+				          },
+				          showCancelButton: true,
+					        confirmButtonText: 'Submit',
+					        showLoaderOnConfirm: true,
+					        preConfirm: (login) => {
+						        dispatch(makeReport(userLoggedId, params.id, {reason: login, reported: 'user'})) 
+					        },
+				          allowOutsideClick: () => !Swal.isLoading()
+				        })
+		          }}
+            >
+              <FaExclamation /> Report user
+            </button>
 
                     </div>
                   ) : null}
