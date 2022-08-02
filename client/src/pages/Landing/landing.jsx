@@ -1,8 +1,8 @@
 import "./landing.css";
 import PasswordRecovery from "../../components/PasswordRecovery";
 import { useState } from "react";
-import {useDispatch, useSelector } from 'react-redux'
-import { getAllReviewes } from '../../redux/actions/reviewAction'
+import { useDispatch, useSelector } from "react-redux";
+import { getAllReviewes } from "../../redux/actions/reviewAction";
 //iconos
 import { AiFillStar } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
@@ -12,35 +12,30 @@ import Logo from "../../../assets/LogoSN.png";
 //componentes
 import Register from "../../components/LandingRegister";
 import Signin from "../../components/LandingSignIn";
-//elementos html
-
 
 const Landing = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const loggedUser = useSelector((store) => store.auth.loggedUser);
-  const arrOfReviews = useSelector(state => state.review.allReviewes);
+  const arrOfReviews = useSelector((state) => state.review.allReviewes);
   const navigate = useNavigate();
 
   const [form, setForm] = useState("Sign in");
   //const [reviewToShow, setReviewToShow] = useState();
-  
 
   useEffect(() => {
-      dispatch(getAllReviewes())
-  }, [])
+    dispatch(getAllReviewes());
+  }, []);
 
- useEffect(() => {
-  if (loggedUser.isDeleted) {
-    localStorage.removeItem('token')
-    alert("You deleted your account. You have to create a new one to enter.")
-    //navigate("/");
-  }
-    if (loggedUser._id && loggedUser.isDeleted === false) {
+  useEffect(() => {
+    if (loggedUser.isDeleted) {
+      localStorage.removeItem("token");
+      alert("You deleted your account. You have to create a new one to enter.");
+      //navigate("/");
+    }
+    if (loggedUser._id && !loggedUser.isDeleted) {
       navigate("/home");
     }
   }, [loggedUser]);
-
-  
 
   const handleChangeCheck = () => {
     if (form === "Sign in") {
@@ -50,35 +45,30 @@ const Landing = () => {
       setForm("Sign in");
     }
   };
-  
 
-
-  let showReviews = ( ) =>{
-      let arrOfReviewsToShow = arrOfReviews?.filter(r => r.stars >= 4 )
-      //console.log(arrOfReviewsToShow);
-      let reviewObj = arrOfReviewsToShow[Math.floor(Math.random()*arrOfReviewsToShow.length)]
-      if (!reviewObj || reviewObj === undefined) {
-        // dispatch(getAllReviewes())
-      }
-      return (
-        arrOfReviewsToShow?.length ?
+  let showReviews = () => {
+    let arrOfReviewsToShow = arrOfReviews?.filter((r) => r.stars >= 4);
+    //console.log(arrOfReviewsToShow);
+    let reviewObj =
+      arrOfReviewsToShow[Math.floor(Math.random() * arrOfReviewsToShow.length)];
+    if (!reviewObj || reviewObj === undefined) {
+      // dispatch(getAllReviewes())
+    }
+    return arrOfReviewsToShow?.length ? (
       <div className="sn_review">
-      <div className="star">
-        <AiFillStar />
-        <span>{reviewObj?.stars}</span>
+        <div className="star">
+          <AiFillStar />
+          <span>{reviewObj?.stars}</span>
+        </div>
+        <div>
+          <h3>
+            {reviewObj?.userId?.firstname + " " + reviewObj?.userId?.lastname}
+          </h3>
+          <p>{reviewObj?.description}</p>
+        </div>
       </div>
-      <div>
-        <h3>{ reviewObj?.userId?.firstname +' '+ reviewObj?.userId?.lastname}</h3>
-        <p>
-          {reviewObj?.description}
-        </p>
-      </div>
-    </div>
-    : null
-      )
-  }
-
-
+    ) : null;
+  };
 
   return (
     <div className="landing_container">
@@ -86,7 +76,6 @@ const Landing = () => {
         <PasswordRecovery goBack={() => setForm("Sign in")} />
       ) : (
         <>
-        
           <div className="wrap_toggle">
             <input id="toggle" type="checkbox" onClick={handleChangeCheck} />
             <label className="switch" htmlFor="toggle"></label>
@@ -105,37 +94,36 @@ const Landing = () => {
             </div>
           </div>
 
-    
-      <div className="form">
-        <div className="buttons_container">
-          <button
-            className={form === "Sign in" ? "bg-[#416b3f]" : "bg-[#363636]"}
-            type="button"
-            onClick={() => setForm("Sign in")}
-          >
-            Sign in
-          </button>
-          <button
-            className={form === "Sign in" ? "bg-[#363636]" : "bg-[#416b3f]"}
-            type="button"
-            onClick={() => setForm("Register")}
-          >
-            Sign up
-          </button>
-        </div>
-        <div className="logo">
-          <img src={Logo} alt="Social Network Logo" />
-          <h1>
-            <i>Social Network</i>
-          </h1>
-        </div>
-        {form === "Sign in" ? <Signin setForm={setForm}/> : <Register />}
-      </div>
-            { arrOfReviews.length > 0 ?  showReviews() :null }
-            </>
-  )}
-  </div>
-  )
-}
+          <div className="form">
+            <div className="buttons_container">
+              <button
+                className={form === "Sign in" ? "bg-[#416b3f]" : "bg-[#363636]"}
+                type="button"
+                onClick={() => setForm("Sign in")}
+              >
+                Sign in
+              </button>
+              <button
+                className={form === "Sign in" ? "bg-[#363636]" : "bg-[#416b3f]"}
+                type="button"
+                onClick={() => setForm("Register")}
+              >
+                Sign up
+              </button>
+            </div>
+            <div className="logo">
+              <img src={Logo} alt="Social Network Logo" />
+              <h1>
+                <i>Social Network</i>
+              </h1>
+            </div>
+            {form === "Sign in" ? <Signin setForm={setForm} /> : <Register />}
+          </div>
+          {arrOfReviews.length > 0 ? showReviews() : null}
+        </>
+      )}
+    </div>
+  );
+};
 
 export default Landing;
