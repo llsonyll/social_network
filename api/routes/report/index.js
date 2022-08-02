@@ -20,24 +20,39 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
     try {
         const { userId, reportId } = req.params;
         const { reason, reported } = req.body; // REPORTED VA A ACEPTAR 3 VALORES: COMMENT, POST Y USER
+        if (!reason) {
+            return res.status(404).json({ msg: 'Not Reason' });
+        }
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            return res.status(404).json({ msg: 'User not found' });
         if (reported === 'comment') {
+            const comment = yield mongoose_1.Comment.findById(`${reportId}`);
+            if (!comment)
+                return res.status(404).json({ msg: 'Comment not found' });
             var report = new mongoose_1.Report({
-                userId,
-                commentReportedId: reportId,
+                userId: user._id,
+                commentReportedId: comment._id,
                 reason
             });
         }
         else if (reported === 'post') {
+            const post = yield mongoose_1.Post.findById(`${reportId}`);
+            if (!post)
+                return res.status(404).json({ msg: 'Post not found' });
             var report = new mongoose_1.Report({
-                userId,
-                postReportedId: reportId,
+                userId: user._id,
+                postReportedId: post._id,
                 reason
             });
         }
         else {
+            const user = yield mongoose_1.User.findById(`${reportId}`);
+            if (!user)
+                return res.status(404).json({ msg: 'User not found' });
             var report = new mongoose_1.Report({
-                userId,
-                userReportedId: reportId,
+                userId: user._id,
+                userReportedId: user._id,
                 reason
             });
         }
@@ -48,6 +63,28 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
     }
     catch (error) {
         return res.status(400).json(error);
+    }
+}));
+router.get('/', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { type } = req.query;
+    try {
+        let reports = [];
+        if (!type) {
+            reports = yield mongoose_1.Report.find({});
+        }
+        if (type === "postReportedId") {
+            reports = yield mongoose_1.Report.find({ postReportedId: { $exists: true } });
+        }
+        if (type === "commentReportedId") {
+            reports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } });
+        }
+        if (type === "userReportedId") {
+            reports = yield mongoose_1.Report.find({ userReportedId: { $exists: true } });
+        }
+        res.json(reports);
+    }
+    catch (err) {
+        res.status(400).json({ errMsg: err });
     }
 }));
 exports.default = router;

@@ -7,41 +7,66 @@ import FriendPostTile from "../../components/FriendPostTile";
 import HomePostCard from "../../components/HomePostCard";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getHomePosts } from "../../redux/actions/userActions";
+import { getHomePosts, getUserFollowings } from "../../redux/actions/userActions";
 import InfiniteScroll from 'react-infinite-scroll-component'
 import LoadingSpinner from "../../components/LoadingSpinner";
+import {clearHomePosts} from '../../redux/reducers/userReducer.slice'
+
 
 const Home = () => {
-  let {homePostsData , control} = useSelector((state) => state.user);
+  
+  let {homePostsData } = useSelector((state) => state.user);
+  const getControl = useSelector((state) => state.user.control)
+  let {userFollowings} = useSelector((state) => state.user);
   const homePosts = homePostsData;
   const userId = useSelector((state) => state.auth.loggedUser._id);
   const dispatch = useDispatch();
-  let page = 0;
-  let pages = '';
-
+  const [control ,setControl ]= useState(true)
+  const [page, setPage] = useState(0)
+const [pageFalse, setPageFalse] = useState(0)
+  
   useEffect(() => {
-    userId ? dispatch(getHomePosts(userId, parseInt(page))) : null;
+    if(userId && getControl !== "") {
+      dispatch(getHomePosts(userId, parseInt(page), "true"))
+
+    }
+    dispatch(getUserFollowings(userId))
+    return () => dispatch(clearHomePosts());
+
 
   }, [userId]);
   
+  
 
   useEffect(() => {
+    if(getControl === "true") {
+    dispatch(getHomePosts(userId, parseInt(page), "true"));
+    // console.log(page)
+    } else if(getControl === "false"){
 
-    pages = homePosts[homePosts.length - 1] 
+        // if(page > 0 ) setPageFalse(0) 
+        console.log("GETCONTROL ES FALSE", )
 
-  }, [homePosts])
+        dispatch(getHomePosts(userId, parseInt(pageFalse), "false"));
+        setPageFalse(pageFalse+1)
+    }
+    if(getControl === "") setControl(false)
+    
+  }, [page, getControl])
   
   const handlePage = () => {
-    page === 0 ? (page = 1) : null;
-    if (homePosts.length === page * 20) {
-      //si la cantidad de post es igual a pagina + 20
-      // console.log("hay q traer mas posts")
-      dispatch(getHomePosts(userId, parseInt(page)));
-      page++;
-      console.log(control);
-    }
 
-  };
+    if(getControl === ""){
+      setControl(false)
+    } else {
+      
+    }
+    page === 0 ? setPage(1) : null;
+    console.log("HANDLE PAGE")
+    if (homePosts.length === page * 10 || homePosts.length === (page * 10) + 10 || getControl === "false")  {
+      getControl === "true" ? setPage(page+1) : setPage(page-1)
+    }
+  } 
   return (
     <div
       className="flex-1 flex px-4 md:pl-80 md:pr-5 pt-3 md:pt-9 gap-8 bg-[#2e2e2e] relative "
@@ -51,12 +76,15 @@ const Home = () => {
         className="fixed left-0 top-16 h-screen w-72 bg-stone-800 hidden md:flex  p-6 flex-col items-center overflow-auto"
         id="contenedor_friends"
       >
-        <div className="text-white font-normal text-xl mb-4 uppercase tracking-wide">
-          Following
+        <div id='title_friend_Postile' className="text-white font-normal text-xl mb-4 uppercase tracking-wide">
+          <h1> - Following -</h1>
         </div>
-        {/* {dummyFriendPost.map((tile) => (
-          <FriendPostTile className="friends" tile={tile} key={tile.postId} />
-        ))} */}
+        {
+        userFollowings ?
+        userFollowings.map((friend) => (
+          <FriendPostTile className="friends" img={friend.profilePicture} username={friend.username} key={friend._id} userId={friend._id}/>
+        )) : <p>...</p>
+        }
       </div>
       <InfiniteScroll dataLength={homePosts.length} hasMore={control} next={handlePage} loader={<LoadingSpinner/>}>
           <div className="flex-1 flex flex-col gap-5 h-full">
@@ -75,6 +103,7 @@ const Home = () => {
                         commentsId={p.commentsId}
                         userId={p.userId._id}
                         username={p.userId.username}
+                        // followRequest={p.userId?.followRequest}
                         page = {page}
                         profilePicture = {p.userId.profilePicture}
                       />

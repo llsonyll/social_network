@@ -275,23 +275,23 @@ input[type="password"]::placeholder {
 /* botones de redes sociales */
 .landing_container .input_container .social_buttons {
   display: flex;
-  justify-content: space-around;
+  
   color: white;
+  width: 100%;
 }
-.landing_container .input_container .social_buttons {
+
+.landing_container .input_container .social_buttons a {
   display: flex;
-  justify-content: space-around;
-  color: white;
-}
-.landing_container .input_container .social_buttons button {
-  display: block;
   padding: 10px 13%;
   margin: 0px 5px;
+  border-radius: 6px;
   font-size: 23px;
   background-color: rgba(255, 255, 255, 0.144);
   transition: all 0.3s;
+  width: 100%;
+  justify-content: center;
 }
-.landing_container .input_container .social_buttons button:hover {
+.landing_container .input_container .social_buttons a:hover {
   transform: scale(0.98);
   background-color: #2e2e2e98;
 }

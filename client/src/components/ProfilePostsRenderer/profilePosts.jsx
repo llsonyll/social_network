@@ -1,30 +1,45 @@
-import { FaComment, FaHeart } from 'react-icons/fa'
+import { FaComment, FaHeart, FaExclamation } from 'react-icons/fa'
 import { IconContext } from 'react-icons'
 import Avatar from '../Avatar'
+import { AiOutlineMore } from "react-icons/ai";
+import { ImHeartBroken } from "react-icons/im";
 import { Link } from 'react-router-dom'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
+
+import { newDislikeUserProfile, newLikeUserProfile, makeReport } from '../../redux/actions/userActions'
+import Swal from 'sweetalert2';
+import EditPost from '../EditPost.jsx/editPost';
+import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
+
 
 const ProfilePosts = (props) => {
-	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes, multimedia } = props
-  
-	const { _id } = useSelector(state => state.auth.loggedUser);
-  const dispatch = useDispatch();
+	const { userId, postNumber, fullname, timeAgo, content, commentsLength, likesLength, likes, dislikes , multimedia } = props
+	const [editPost, setEditPost] = useState(false)
+	const [showLikes, setShowLikes] = useState(false)
+	const [showDislikes, setShowDislikes] = useState(false)
 
+	let isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
+
+	const { _id } = useSelector(state => state.auth.loggedUser);
+  	const dispatch = useDispatch();
+
+	let showEditComponent = () => {
+		setEditPost(!editPost)
+	}
 	const handleLike = () => {
        dispatch(newLikeUserProfile(postNumber, _id));
 	}
-
 	const handleDislike = () => {
-       dispatch(newDislikeUserProfile(postNumber,_id));
+		dispatch(newDislikeUserProfile(postNumber,_id));
 	}
-
+	const loggedUser = useSelector(state => state.auth.loggedUser)
+	const posts = useSelector(state => state.user.userProfileData.posts);
+	let index = posts.findIndex(post => post._id === postNumber);
 	let renderHeartIcon = () => {
-		if (!likes.includes(_id)) {
+		if (!posts[index].likes.find( like => like._id === _id)) {
 			return <FaHeart />
-		}
-		if (likes.includes(_id)) {
+		}else{
 			return (
 				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
 					<div>
@@ -34,6 +49,35 @@ const ProfilePosts = (props) => {
 			)
 		}
 	}
+	let renderHeartBrokenIcon = () => {
+    if (!posts[index].dislikes.find( dislike => dislike._id === _id)) {
+      console.log('Entra blanco');
+      return <ImHeartBroken />
+    }else{
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: "#9400D3", className: 'global-heart-class-name' }}>
+          <div>
+            <ImHeartBroken />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+    }
+  	let renderEditPost = () => {
+
+		if(editPost){
+			return <EditPost userId={userId} postNumber={postNumber} content={content} showEditComponent={showEditComponent}/>
+	}}
+
+	let renderLikes = () => {
+		setShowLikes(!showLikes)
+	}
+	let renderDislikes = () => {
+		setShowDislikes(!showDislikes)
+	}
+
+
 
 	return (
 		<Fragment key={postNumber}>
@@ -48,6 +92,17 @@ const ProfilePosts = (props) => {
 						</Link>
 						<div className='opacity-50'>{timeAgo ? timeAgo : '3hr'}</div>
 					</div>
+          {
+          loggedUser._id  === userId &&
+          <button 
+          className="user-post-icon_more"
+          onClick={showEditComponent}
+          >
+            <AiOutlineMore />
+          </button>
+          }
+		  {loggedUser._id  === userId && renderEditPost()}
+
 				</div>
 				<Link to={`/home/post/${postNumber}`}>
 				<div className='user-post-profile__content flex-1 pl-2 md:pl-4'>
@@ -64,19 +119,57 @@ const ProfilePosts = (props) => {
 				</div>
 				</Link>
 				<div className='actions flex gap-3 justify-end mt-2 md:mt-4 text-lg'>
-					<button className='flex items-center gap-1'>
-						<FaComment />
-						{commentsLength}
-					</button>
+					<Link to={`/home/post/${postNumber}`}>
+						<button className='flex items-center gap-1'>
+							<FaComment />
+							{commentsLength}
+						</button>
+					</Link>
 
 					<button className='flex items-center gap-1'
 					 onClick = {handleLike}
 					>
-						{renderHeartIcon()}
-						{likesLength}
+						{posts && renderHeartIcon()}
 					</button>
+					<button onClick={renderLikes}>{posts && posts[index].likes.length}</button>
+					<button
+                className="flex items-center gap-1"
+                onClick={handleDislike}
+              >
+                  {posts && renderHeartBrokenIcon()}
+          </button>
+		  <button onClick={renderDislikes}>{posts && posts[index].dislikes.length }</button>
+
+							
+		  <button
+            className="flex items-center gap-1"
+            onClick={
+				() => {
+					Swal.fire({
+					  background: "#4c4d4c",
+					  color: "white",
+					  title: 'Submit your Report',
+					  input: 'textarea',
+					  inputAttributes: {
+						autocapitalize: 'off'
+					  },
+					  showCancelButton: true,
+					  confirmButtonText: 'Submit',
+					  showLoaderOnConfirm: true,
+					  preConfirm: (login) => {
+						dispatch(makeReport(_id, props.postNumber, {reason: login, reported: 'post'})) 
+					  },
+					  allowOutsideClick: () => !Swal.isLoading()
+					})
+			}}
+          >
+            <FaExclamation />
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
 				</div>
 			</div>
+			{showLikes === true && <ListOfUsersRenderer likes={likes} renderLikes={renderLikes}/>}
+			{showDislikes === true && isPremium===true ? <ListOfUsersRenderer dislikes={dislikes} renderDislikes={renderDislikes}/> : null}
 		</Fragment>
 	)
 }

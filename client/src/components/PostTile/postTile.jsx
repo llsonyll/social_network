@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 import Avatar from "../Avatar";
 import CommentTile from "../CommentTile";
 // import CommentInput from "../CommentInput";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaExclamation } from "react-icons/fa";
+import { ImHeartBroken } from "react-icons/im";
 import { IconContext } from 'react-icons'
 import { useDispatch, useSelector } from "react-redux";
 import { createComment } from '../../redux/actions/commentActions'
 import { newDislikesPostTitle, newlikePostTitle } from "../../redux/actions/postActions";
 import { TiArrowBack } from "react-icons/ti";
 import './postTile.css';
+import { makeReport } from "../../redux/actions/userActions";
+import Swal from "sweetalert2";
 
 
 const PostTile = (props) => {
@@ -39,8 +42,7 @@ const PostTile = (props) => {
   };
 
   const handleDislikesPost = () => {
-    let { postId } = props;
-    dispatch(newDislikesPostTitle(postId, _id));
+    dispatch(newDislikesPostTitle(post._id, user._id));
   };
 
   const handleCommentPost = async () => {
@@ -68,24 +70,38 @@ const PostTile = (props) => {
   
   
    
-  const {likes} = useSelector(state => state.post.postDetail)
- console.log(post?.likes)
-  console.log(user?._id);
-  console.log(likes?.includes(user?._id)); 
+  const {likes, dislikes} = useSelector(state => state.post.postDetail)
+ console.log(post?._id)
+  console.log(likes);
+  // console.log(likes?.includes(user?._id)); 
 
 
   let renderHeartIcon = () => {
-    if (!post?.likes.includes(user?._id)) {
+    if (!likes.find( like => like._id === user?._id)) {
       console.log('Entra blanco');
       return <FaHeart />
-    }
-    if (post?.likes.includes(user?._id)) {
-
+    }else{
       console.log('Entra rojo');
       return (
-        <IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
+        <IconContext.Provider value={{ color: '#EA544A', className: 'global-heart-class-name' }}>
           <div>
             <FaHeart />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+  }
+
+  let renderHeartBrokenIcon = () => {
+    if (!dislikes.find( dislike => dislike._id === user?._id)) {
+      console.log('Entra blanco');
+      return <ImHeartBroken />
+    }else{
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: "#9400D3", className: 'global-heart-class-name' }}>
+          <div>
+            <ImHeartBroken />
           </div>
         </IconContext.Provider>
       )
@@ -138,13 +154,46 @@ const PostTile = (props) => {
                 onClick={handleLikePost}
               >
                   {post && renderHeartIcon()}
-                {post? post.likes.length : 12}
+                {likes && likes.length }
               </button>
             </div>
+            <div className="flex items-center gap-1 hover:text-gray-300">
+              <button
+                className="flex items-center gap-1"
+                onClick={handleDislikesPost}
+              >
+                  {post && renderHeartBrokenIcon()}
+                {dislikes && dislikes.length }
+              </button>
+            </div>
+
+            <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              Swal.fire({
+                background: "#4c4d4c",
+                color: "white",
+                title: 'Submit your Report',
+                input: 'textarea',
+                inputAttributes: {
+                  autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                  dispatch(makeReport(user._id, post._id, {reason: login, reported: 'post'})) 
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              })}}
+          >
+            <FaExclamation />
+          </button>
+
           </div>
 
           <div className="comments">
-            {post? post.commentsId.map(e =>  <CommentTile data={e}/>) : <>
+            {post? post.commentsId.map(e =>  <CommentTile props={props} data={e}/>) : <>
             </>}
 
             {showInput && (

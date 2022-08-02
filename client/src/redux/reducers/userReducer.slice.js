@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 
 const initialState = {
   userProfileData: {},
   homePostsData: [],
-  control: true
+  control: "true",
+  userFollowings : []
 };
 
 const userReducer = createSlice({
@@ -15,14 +15,23 @@ const userReducer = createSlice({
       state.userProfileData = action.payload;
     },
     homePosts(state, action) {
-      if (!state.homePostsData.length || state.homePostsData[0]._id !== action.payload[0]._id) {
-        state.homePostsData = state.homePostsData.concat(action.payload);
-      } else {
-        state.homePostsData = action.payload;
+        if(action.payload.length === 0 )  {
+          state.control = ""
+          return state
+        }
+        console.log(action.payload)
+        if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
+          state.homePostsData = state.homePostsData.concat(action.payload);
+          if(action.payload.length < 10 && state.control==="true") {
+            state.control = "false"
+          }
+        } else {
+          state.homePostsData = action.payload;
       }
-      if (action.payload.length === 0) {
-        state.control = false
-      }
+    },
+    clearHomePosts(state, action) {
+      state.homePostsData= [],
+      state.control="true"
     },
     addNewPost(state, action) {
       state.homePostsData = [action.payload, ...state.homePostsData]
@@ -37,11 +46,65 @@ const userReducer = createSlice({
       state.userProfileData = {}
     },
     toggleFollowUser(state, action) {
-      state.userProfileData.followers = action.payload;
-    }
-  },
-});
+      state.userProfileData.followers = action.payload.followers;
+      state.userProfileData.followRequest = action.payload.followRequest;
+    },
+    likesPost(state,{payload}){
+      let index = state.homePostsData.findIndex(post => post._id === payload.postId )
+       state.homePostsData[index].dislikes = payload.dislikes;
+       state.homePostsData[index].likes = payload.likes;
+    },
+    dislikesPost(state,{payload}){
+       let index = state.homePostsData.findIndex(post => post._id === payload.postId )
+       state.homePostsData[index].dislikes = payload.dislikes;
+       state.homePostsData[index].likes = payload.likes;
+    },
+    likesProfilePost(state,{payload}){
+      let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId)
+      state.userProfileData.posts[index].dislikes = payload.dislikes;
+      state.userProfileData.posts[index].likes = payload.likes;
+    },
+    dislikesProfilePost(state,{payload}){
+       let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId)
+       state.userProfileData.posts[index].dislikes = payload.dislikes;
+       state.userProfileData.posts[index].likes = payload.likes;
+    },
+    toggleUSERFollowing(state, action) {
+      state.userFollowings = action.payload;
+    },
+    toggleResponseFollow(state, action) {
+      state.userProfileData.followRequest = action.payload.followRequest;
+      state.userProfileData.followers = action.payload.followers;
+    },
+    deleteAccount(state, action) {
+      state.userProfileData = [];
+    },
+    editUserPosts(state, {payload}) {
+      let index = state.userProfileData.posts.findIndex(post=> post._id === payload.postId);
+      state.userProfileData.posts[index] = payload.post;
+    },
+    deletePostsGeneral(state, {payload}) {
+      let filter = state.userProfileData.posts.filter(post => post._id !== payload.postId);
+      state.userProfileData.posts = filter;
+    },
+}});
 
-export const { userProfile, homePosts, addNewPost, addNewPostProfile, clearProfileData, toggleFollowUser } = userReducer.actions;
+export const {
+  deletePostsGeneral,
+  editUserPosts,
+  userProfile,
+  homePosts,
+  addNewPost,
+  addNewPostProfile,
+  clearProfileData,
+  toggleFollowUser,
+  toggleResponseFollow,
+  likesProfilePost,
+  likesPost,
+  dislikesPost,
+  dislikesProfilePost,
+  toggleUSERFollowing,
+  clearHomePosts,
+} = userReducer.actions;
 
 export default userReducer.reducer;

@@ -17,7 +17,7 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 //IMPORTS PARA SOCKET IO
 import io from 'socket.io-client';
 import { addMessage } from "./redux/reducers/chatReducer";
-export const socket = io('http://localhost:3001');
+export const socket = io('http://www.dreamteamapi.tech');
 let peer;
 let call;
 
@@ -31,6 +31,7 @@ import { useState } from "react";
 //iconos
 import {FiPhoneMissed} from 'react-icons/fi'
 import {AiOutlineAudioMuted, AiOutlineVideoCamera} from 'react-icons/ai'
+import Notifications from "./pages/Notifications/Notifications";
 function App() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -43,30 +44,29 @@ function App() {
   const [otherVideo, setOtherVideo] = useState()
   const [onCall, setOnCall] = useState(false)
 
-
-
-
+  
   useEffect(() => {
-    if (localStorage.getItem("token") && !loggedUser._id) {
-      dispatch(getLoggedUserInfo());
+		if (localStorage.getItem("token") && !loggedUser._id) {
+			dispatch(getLoggedUserInfo());
     }
   }, []);
 
 
   useEffect(() => {
     // if (!localStorage.getItem("token") && location.pathname !== "/") {
-    //   dispatch(removeLoggedUser());
-    //   console.log("removeLoggedUser");
+			//   dispatch(removeLoggedUser());
+			//   console.log("removeLoggedUser");
     //   navigate("/");
     // }
   }, [location]);
 
   //SOCKET useEffect TO REPORT A LOGGED USER, AND HANDLE CALLS
   useEffect(() => {
-	if(loggedUser._id){
-		setActuallyLogged(loggedUser._id)
-	}
+		if(loggedUser._id){
+			setActuallyLogged(loggedUser._id)
+		}
   },[loggedUser])
+	
 
   //'PRIMARY' USE EFFECT, LOGS THE USER IN AND CONTROL CALL AND ANSWER
   useEffect(() => {
@@ -80,11 +80,11 @@ function App() {
       	socket.emit('logged', actualyLogged, socket.id)
 		//DETECTS WHEN SOMEONE CALLS YOU
 		socket.on('call',(_id) => {
-					//DISPLAYS THE VIDEOCALL
-					setOnCall(true)
-					//GET CAMERA AND MIC DATA
-					getUserMedia(
-					{ video: true, audio: true }, function(stream){
+			//DISPLAYS THE VIDEOCALL
+			setOnCall(true)
+			//GET CAMERA AND MIC DATA
+			getUserMedia(
+				{ video: true, audio: true }, function(stream){
 					//EXECUTE THE CALL
 					call = peer.call(_id, stream);
 					//DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
@@ -126,7 +126,7 @@ function App() {
 				},
 			);
 		});
-    }
+	}
     return (() => {
 		socket.off('logged')
 		socket.off('call')
@@ -135,10 +135,10 @@ function App() {
 
   //SOCKET useEFFECT TO LISTEN MESSAGES
   useEffect(() => {
-    if(!location.pathname.includes('messages')){
-      console.log('hola?')
+		if(!location.pathname.includes('messages')){
+			console.log('hola?')
       socket.on('privMessage', (content, _id, chatId) =>{
-          console.log('Escucho mensajes pero no los agrego')  
+				console.log('Escucho mensajes pero no los agrego')  
       })
     }
     return (()=> socket.off('privMessage'))
@@ -146,12 +146,12 @@ function App() {
 
   //SHOWS THE INCOMING VIDEO
   	useEffect(() => {
-		if(otherVideo){
+			if(otherVideo){
 			remoteVideoRef.current.srcObject = otherVideo
 			remoteVideoRef.current.onloadedmetadata = function(e) {remoteVideoRef.current.play()}
 		}
 	},[otherVideo])
-
+	
 	//SHOWS LOCAL VIDEO AND LISTENS TO ENDING CALLS
 	useEffect(()=>{
 		if(myVideo){
@@ -185,17 +185,17 @@ function App() {
 	function handleMuteMic() {
 		myVideo.getAudioTracks().forEach(track => track.enabled = !track.enabled)
 	}
-
+		
 	return (
-			<>
+		<>
 			
 			{
 				onCall ?
 			<Draggable bounds='parent'>
 				<div id="video_container">
 					<div className="user_videos_container">
-					<video ref={remoteVideoRef} autoPlay muted/>
-					<video ref={localVideoRef}  autoPlay />
+					<video ref={remoteVideoRef} autoPlay />
+					<video ref={localVideoRef}  autoPlay muted/>
 
 					</div>
 					<div className="buttons_video_container">
@@ -212,6 +212,7 @@ function App() {
 				<Route path='/' element={<Landing />} />
 				<Route path='/home' element={<DashBoard />}>
 				  <Route path='settings' element={<Settings />} />
+				  <Route path='notifications' element={<Notifications />} />
 					<Route index element={<Home />} />
 					<Route path='profile/:id' element={<Profile />} />
 				    <Route path='premium/:id' element={<PremiumComponent/>} />

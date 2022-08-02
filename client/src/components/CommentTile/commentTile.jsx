@@ -1,16 +1,28 @@
 import Avatar from "../Avatar";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaExclamation } from "react-icons/fa";
+import { AiOutlineMore } from "react-icons/ai";
 import { IconContext } from "react-icons";
+import { ImHeartBroken } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
-import { newLikesComment } from "../../redux/actions/postActions";
+import { newDislikesComment, newLikesComment } from "../../redux/actions/postActions";
 // import { Link } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-const CommentTile = ({ data }) => {
+import './commentTile.css'
+import { useState } from "react";
+import EditComment from "../editComment/editComment";
+import { makeReport } from "../../redux/actions/userActions";
+import Swal from "sweetalert2";
+
+
+const CommentTile = ({ data , props }) => {
   // const handleReplyComment = () => {
   //   console.log("Reply Comment");
   // };
+  const[editComents, setEditComments] = useState(false)
+  const loggedUser = useSelector(store => store.auth.loggedUser)
 
+  console.log(editComents);
   console.log(data);
 
   const { _id } = useSelector((state) => state.auth.loggedUser);
@@ -20,11 +32,14 @@ const CommentTile = ({ data }) => {
     dispatch(newLikesComment(data._id, _id));
   };
 
+  const handleDislikeComment = ()  => {
+     dispatch(newDislikesComment(data._id, _id))
+  }
+
   let renderHeartIcon = () => {
-    if (!data.likes.includes(_id)) {
+    if (!data.likes.find( like => like._id === _id)) {
       return <FaHeart />;
-    }
-    if (data.likes.includes(_id)) {
+    }else{
       return (
         <IconContext.Provider
           value={{ color: "red", className: "global-heart-class-name" }}
@@ -34,6 +49,28 @@ const CommentTile = ({ data }) => {
           </div>
         </IconContext.Provider>
       );
+    }
+  };
+   console.log(data);
+  let renderHeartBrokenIcon = () => {
+    if (!data.dislikes.find( dislike => dislike._id === _id)) {
+      console.log('Entra blanco');
+      return <ImHeartBroken />
+    }else{
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: "#9400D3", className: 'global-heart-class-name' }}>
+          <div>
+            <ImHeartBroken />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+  }
+
+  const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
+    if (nameOfTheComponentToRender === "editComment") {
+      setEditComments(false);
     }
   };
 
@@ -51,10 +88,19 @@ const CommentTile = ({ data }) => {
       </div>
       <div className="content flex-1 text-white pl-2">
         {/* TODO: Username should redirect to user profile */}
-        <div className="font-medium text-base">
+        <div className="font-medium text-base relative">
           <Link to={`/home/profile/${data.userId._id}`}>
             {data ? data.userId?.username : "Username"}
           </Link>
+          {
+            loggedUser._id  === data.userId._id &&
+          <button 
+          className="icon_more"
+          onClick={() => setEditComments(true)}
+          >
+            <AiOutlineMore />
+          </button>
+          }
         </div>
         <div className="font-light text-sm">
           {data
@@ -72,10 +118,49 @@ const CommentTile = ({ data }) => {
             onClick={handleLikeComment}
             className="flex gap-1 items-center hover:text-gray-300"
           >
-            {renderHeartIcon()} {data ? data.likes.length : 12}
+            {data && renderHeartIcon()} {data && data.likes.length }
           </button>
+             <button
+                className="flex items-center gap-1"
+                onClick={handleDislikeComment}
+              >
+                  {data && renderHeartBrokenIcon()}
+                {data && data.dislikes.length }
+              </button>
+              
+            <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              Swal.fire({
+                background: "#4c4d4c",
+                color: "white",
+                title: 'Submit your Report',
+                input: 'textarea',
+                inputAttributes: {
+                  autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                  dispatch(makeReport(_id, data._id, {reason: login, reported: 'comment'})) 
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              })}}
+          >
+            <FaExclamation />
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
+
         </div>
       </div>
+      {editComents === true && 
+        <EditComment
+          renderChangeRenderComponents={renderChangeRenderComponents}
+          data={data} 
+          props={props}
+        />
+      }
     </div>
   ) : (
     <></>

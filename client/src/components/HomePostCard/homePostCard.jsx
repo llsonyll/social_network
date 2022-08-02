@@ -1,14 +1,18 @@
-import { FaComment, FaHeart } from "react-icons/fa";
+import { FaComment, FaHeart, FaExclamation } from "react-icons/fa";
 import { IconContext } from 'react-icons'
 import Avatar from "../Avatar";
 import { Link } from "react-router-dom";
+import { ImHeartBroken } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
-import { newLikeHomePost, newDislikeHomePost } from "../../redux/actions/userActions";
+import { newLikeHomePost, newDislikeHomePost, followOrUnfollowUser, getUserFollowings, makeReport } from "../../redux/actions/userActions";
 import { useEffect } from "react";
+import Swal from "sweetalert2";
+
 
 const HomePostCard = (props) => {
   let dispatch = useDispatch();
-
+  const loggedUser = useSelector(store => store.auth.loggedUser)
+  let {userFollowings} = useSelector((state) => state.user);
   const handleCommentPost = () => console.log("PostCard comment");
 
   let { _id } = useSelector((state) => state.auth.loggedUser);
@@ -37,12 +41,15 @@ const HomePostCard = (props) => {
     return `${Math.round(minutes / 60)} hours ago`;
   }
 
+  let homePostsData = useSelector( state => state.user.homePostsData );
+  let user = useSelector(state => state.auth.loggedUser);
+  
+  let index = homePostsData.findIndex( post => post._id === props.postId);
 
   let renderHeartIcon = () => {
-		if (!props.likes.includes(_id)) {
+		if (!homePostsData[index].likes.find( like => like._id === user._id)) {
 			return <FaHeart />
-		}
-		if (props.likes.includes(_id)) {
+		}else{
 			return (
 				<IconContext.Provider value={{ color: 'red', className: 'global-heart-class-name' }}>
 					<div>
@@ -53,6 +60,35 @@ const HomePostCard = (props) => {
 		}
 	}
 
+  const followRenderer = () => {
+    let on = userFollowings.find((e) => {
+      return e._id === props.userId
+    })
+    if (on) {
+      return  <div key={Math.random()}>Unfollow</div>
+    } /*else if (props.followRequest?.length && props.followRequest?.map(u => u._id?.includes(user._id))) {
+      return <div key={Math.random()}>Pending</div>
+    }*/ else {
+      return <div key={Math.random()}>Follow</div>
+    }
+  };
+
+  let renderHeartBrokenIcon = () => {
+    if (!homePostsData[index].dislikes.find( dislike => dislike._id === user._id)) {
+      console.log('Entra blanco');
+      return <ImHeartBroken />
+    }else{
+      console.log('Entra rojo');
+      return (
+        <IconContext.Provider value={{ color: "#9400D3", className: 'global-heart-class-name' }}>
+          <div>
+            <ImHeartBroken />
+          </div>
+        </IconContext.Provider>
+      )
+    }
+  }
+
   return (
     <div className="bg-[#252525] w-full rounded-md md:p-4 p-2 flex flex-col text-white">
       <div className="flex  gap-4 md:p-2 rounded-md" id="father__content">
@@ -61,9 +97,28 @@ const HomePostCard = (props) => {
               {props.profilePicture? <Avatar imgUrl={props.profilePicture} size="xl" /> :<Avatar size="xl" />}
           </Link>
           <div className="user_post__info">
-            <Link to={`profile/${props.userId}`}>
-              <h2>{props.username}</h2>
-            </Link>
+            <div className="flex">
+              <Link to={`profile/${props.userId}`}>
+                <h2>{props.username}</h2>
+              </Link>
+              {
+                loggedUser._id  != props.userId &&
+              <button 
+              type="button"
+              className="ml-2 text-green-600   outline-1 outline px-1 rounded-md hover:text-green-700 transition-all" 
+              onClick={  async() => {
+                console.log('hello');
+                console.log(props.userId);
+               (dispatch(followOrUnfollowUser(loggedUser._id, props.userId))).then( () => dispatch( getUserFollowings(loggedUser._id)))
+               
+              }}
+              >
+                  {
+                    followRenderer()
+                  }
+                </button>
+              }
+            </div>
             <span className="opacity-50" >{getTimeOfCreation(props.date)}</span>
           </div>
         </div>
@@ -92,9 +147,44 @@ const HomePostCard = (props) => {
           className="flex items-center gap-1 hover:text-gray-300"
           onClick={handleLikesPost}
         >
-          {renderHeartIcon()}
-          {props.likes? props.likes.length : 0}
+          {post && renderHeartIcon()}
+          {homePostsData && homePostsData[index].likes.length }
         </button>
+
+        <div className="flex items-center gap-1 hover:text-gray-300">
+              <button
+                className="flex items-center gap-1"
+                onClick={handleDislikesPost}
+              >
+                  {post && renderHeartBrokenIcon()}
+                {homePostsData && homePostsData[index].dislikes.length }
+              </button>
+          </div>
+          
+          <button
+            className="flex items-center gap-1"
+            onClick={() => {
+              Swal.fire({
+                background: "#4c4d4c",
+                color: "white",
+                title: 'Submit your Report',
+                input: 'textarea',
+                inputAttributes: {
+                  autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (login) => {
+                  dispatch(makeReport(user._id, props.postId, {reason: login, reported: 'post'})) 
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+              })
+            }}
+          >
+            <FaExclamation />
+            {/* {post && renderHeartBrokenIcon()} */}
+          </button>
       </div>
     </div>
   );

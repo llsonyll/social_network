@@ -60,3 +60,16 @@ video{
   z-index: 1;
 
 }
+
+
+body::-webkit-scrollbar{
+  width: 10px;
+  background-color: #2e2e2e;
+
+}
+
+body::-webkit-scrollbar-thumb{
+  background:#4e864c;
+  border-radius: 10px;
+
+}

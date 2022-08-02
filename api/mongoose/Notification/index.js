@@ -6,6 +6,7 @@ exports.notificationSchema = new mongoose_1.Schema({
     _id: { type: mongoose_1.Schema.Types.ObjectId, required: true, auto: true },
     from: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     to: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
+    refId: { type: mongoose_1.Schema.Types.ObjectId, required: true },
     type: { type: String, enum: ['like', 'comment', 'follow', 'message'], required: true },
     content: { type: String, required: true },
     seen: { type: Boolean }

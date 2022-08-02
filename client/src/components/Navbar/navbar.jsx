@@ -2,7 +2,7 @@ import "./navbar.css";
 
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
-
+import{MdNotifications} from 'react-icons/md'
 import NewPostBtn from "../NewPostBtn";
 import logoSN from "../../../assets/LogoSN.png";
 import { useEffect, useState } from "react";
@@ -12,10 +12,10 @@ import {
   browserCleanUp,
 } from "../../redux/actions/browserActions";
 import { logOutUser } from "../../redux/reducers/authReducer.slice";
-import { MdOutlineLogout } from "react-icons/md";
+import { MdOutlineLogout, MdAdminPanelSettings } from "react-icons/md";
 import SearchResults from "../SearchResults/searchResults";
 
-const NavBar = ({ openModal }) => {
+const NavBar = ({ openModal, openAdmin }) => {
   let activeStyle = {
     fontWeight: "bold",
   };
@@ -29,6 +29,7 @@ const NavBar = ({ openModal }) => {
   const [searched, setSearched] = useState(false);
   const { searches } = useSelector((state) => state.browserReducer);
   const userId = useSelector((state) => state.auth.loggedUser._id);
+  const isAdmin = useSelector((state) => state.auth.loggedUser.isAdmin);
 
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -82,6 +83,7 @@ const NavBar = ({ openModal }) => {
           </form>
           <SearchResults
             input={searchInput}
+            setInput={setSearchInput}
             selectRecent={handleSelectRecent}
             searched={searched}
             setSearched={setSearched}
@@ -93,6 +95,14 @@ const NavBar = ({ openModal }) => {
         <NavLink to="" className="flex items-center gap-2">
           <FaHome />
           Home
+        </NavLink>
+        <NavLink
+          to={`/home/notifications`}
+          className="flex items-center gap-2"
+          style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
+        >
+          <MdNotifications />
+          Notifications
         </NavLink>
         <NavLink
           to={`profile/${userId}`}
@@ -116,6 +126,14 @@ const NavBar = ({ openModal }) => {
         >
           <MdOutlineLogout />
         </button>
+        {isAdmin && (
+          <button
+            className="bg-blue-700 p-2 rounded font-bold text-lg"
+            onClick={openAdmin}
+          >
+            <MdAdminPanelSettings />
+          </button>
+        )}
         <NewPostBtn action={openModal} />
       </div>
     </div>

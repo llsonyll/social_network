@@ -7,12 +7,12 @@ import { apiConnection, setAuthorization } from "../../utils/axios";
 export const loginAction = (obj) => async (dispatch) => {
   try {
     const {
-      data: { token, username, _id, profilePicture },
+      data: { token, username, _id, profilePicture, isDeleted, isPremium, isAdmin },
     } = await apiConnection.post("auth/login", obj);
 
-    if (obj.rememberMe) {
-      localStorage.setItem("token", token);
-    }
+    // if (obj.rememberMe) {
+    localStorage.setItem("token", token);
+    //}
 
     setAuthorization(token);
     return dispatch(
@@ -20,6 +20,9 @@ export const loginAction = (obj) => async (dispatch) => {
         username: username,
         _id: _id,
         profilePicture: profilePicture,
+        isDeleted: isDeleted,
+        isAdmin: isAdmin,
+        isPremium: isPremium
       })
     );
   } catch (err) {
@@ -37,7 +40,7 @@ export const loginAction = (obj) => async (dispatch) => {
 export const registerAction = (obj) => async (dispatch) => {
   try {
     const {
-      data: { token, username, _id, profilePicture },
+      data: { token, username, _id, profilePicture, isDeleted, isAdmin, isPremium },
     } = await apiConnection.post("auth/register", obj);
     localStorage.setItem("token", token);
     setAuthorization(token);
@@ -46,6 +49,9 @@ export const registerAction = (obj) => async (dispatch) => {
         username: username,
         _id: _id,
         profilePicture: profilePicture,
+        isDeleted: isDeleted,
+        isAdmin: isAdmin,
+        isPremium: isPremium
       })
     );
   } catch (err) {
@@ -65,13 +71,16 @@ export const getLoggedUserInfo = () => async (dispatch) => {
     const token = localStorage.getItem("token");
     setAuthorization(token);
     const {
-      data: { username, _id, profilePicture },
+      data: { username, _id, profilePicture, isDeleted, isAdmin, isPremium },
     } = await apiConnection.post("auth");
     return dispatch(
       loginUser({
         username: username,
         _id: _id,
         profilePicture: profilePicture,
+        isDeleted: isDeleted,
+        isAdmin: isAdmin,
+        isPremium: isPremium
       })
     );
   } catch (err) {

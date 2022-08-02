@@ -30,10 +30,16 @@ const Landing = () => {
   }, [])
 
  useEffect(() => {
-    if (loggedUser._id) {
+  if (loggedUser.isDeleted) {
+    localStorage.removeItem('token')
+    alert("You deleted your account. You have to create a new one to enter.")
+    //navigate("/");
+  }
+    if (loggedUser._id && loggedUser.isDeleted === false) {
       navigate("/home");
     }
   }, [loggedUser]);
+
   
 
   const handleChangeCheck = () => {
@@ -52,21 +58,23 @@ const Landing = () => {
       //console.log(arrOfReviewsToShow);
       let reviewObj = arrOfReviewsToShow[Math.floor(Math.random()*arrOfReviewsToShow.length)]
       if (!reviewObj || reviewObj === undefined) {
-        dispatch(getAllReviewes())
+        // dispatch(getAllReviewes())
       }
       return (
+        arrOfReviewsToShow?.length ?
       <div className="sn_review">
       <div className="star">
         <AiFillStar />
-        <span>{reviewObj.stars}</span>
+        <span>{reviewObj?.stars}</span>
       </div>
       <div>
-        <h3>{ reviewObj.userId.firstname +' '+ reviewObj.userId.lastname}</h3>
+        <h3>{ reviewObj?.userId?.firstname +' '+ reviewObj?.userId?.lastname}</h3>
         <p>
-          {reviewObj.description}
+          {reviewObj?.description}
         </p>
       </div>
     </div>
+    : null
       )
   }
 

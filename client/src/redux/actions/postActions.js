@@ -1,15 +1,17 @@
-import { addNewPost, addNewPostProfile } from "../reducers/userReducer.slice";
+import { addNewPost, addNewPostProfile, deletePostsGeneral, editUserPosts } from "../reducers/userReducer.slice";
 import {
   addPostDetail,
   likesPost,
-  // dislikesPost,
+  dislikesPost,
   likesComment,
+  dislikesComment,
 } from "../reducers/postReducer.slice";
 import { apiConnection } from "../../utils/axios";
 
 export const getPost = (postId) => async (dispatch) => {
   try {
     const { data } = await apiConnection.get(`post/${postId}`);
+
     return dispatch(addPostDetail(data));
   } catch (err) {
     console.log(err);
@@ -18,8 +20,7 @@ export const getPost = (postId) => async (dispatch) => {
 
 export const createPost = (content, userId, path) => async (dispatch) => {
   try {
-    const { data } = await apiConnection.post(`post/${userId}`,  content );
-
+    const { data } = await apiConnection.post(`post/${userId}`, content);
     if (path === "/home") {
       return dispatch(addNewPost(data));
     } else if (path === `/home/profile/${userId}`) {
@@ -33,9 +34,10 @@ export const createPost = (content, userId, path) => async (dispatch) => {
 export const newlikePostTitle = (postId, userId) => async (dispatch) => {
   try {
     const {
-      data: { likes },
+      data: { likes, dislikes },
     } = await apiConnection.put(`post/like/${postId}/${userId}`);
-    dispatch(likesPost(likes));
+
+    dispatch(likesPost({ likes, dislikes }));
   } catch (err) {
     console.log(err);
   }
@@ -44,9 +46,10 @@ export const newlikePostTitle = (postId, userId) => async (dispatch) => {
 export const newDislikesPostTitle = (postId, userId) => async (dispatch) => {
   try {
     const {
-      data: { dislikes },
-    } = await apiConnection.put(`post/likes/${postId}/${userId}`);
-    dispatch(likesPost(dislikes));
+      data: { dislikes, likes },
+    } = await apiConnection.put(`post/dislike/${postId}/${userId}`);
+
+    dispatch(dislikesPost({ dislikes, likes }));
   } catch (err) {
     console.log(err);
   }
@@ -55,10 +58,43 @@ export const newDislikesPostTitle = (postId, userId) => async (dispatch) => {
 export const newLikesComment = (commentId, userId) => async (dispatch) => {
   try {
     const {
-      data: { _id, likes },
+      data: { _id, likes, dislikes },
     } = await apiConnection.put(`comment/like/${commentId}/${userId}`);
-    dispatch(likesComment({ _id, likes }));
+    dispatch(likesComment({ _id, likes, dislikes }));
   } catch (err) {
     console.log(err);
   }
 };
+
+export const newDislikesComment = (commentId, userId) => async (dispatch) => {
+  try {
+    const {
+      data: { _id, likes, dislikes },
+    } = await apiConnection.put(`comment/dislike/${commentId}/${userId}`);
+    dispatch(dislikesComment({ _id, likes, dislikes }));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deletePost = (userId, postId) => async (dispatch) => {
+  try {
+    const { data } = await apiConnection.delete(`post/${userId}/${postId}`);
+    //console.log(data)
+    return dispatch(deletePostsGeneral({ postId }));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const editPost = (userId, postId, content) => async (dispatch) => {
+  try {
+    //console.log(userId,postId,content);
+    const { data } = await apiConnection.put(`post/${userId}/${postId}`, content);
+
+    return dispatch(editUserPosts({ post: data, postId }));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
