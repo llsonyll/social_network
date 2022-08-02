@@ -3,9 +3,9 @@ import "./friendPostTile.css";
 import Avatar from "../../components/Avatar";
 
 import { NavLink } from "react-router-dom";
-import {FaFacebookMessenger } from "react-icons/fa";
+import { FaFacebookMessenger } from "react-icons/fa";
 
-const FriendPostTile = ({ img, username, key , userId }) => {
+const FriendPostTile = ({ img, username, userId }) => {
   // console.log(user);
 
   // const getTimePublished = () => {
@@ -23,24 +23,25 @@ const FriendPostTile = ({ img, username, key , userId }) => {
   // };
 
   return (
-    <NavLink
-      to={`/home/profile/${userId}`}
-      className="contenedorfriend flex w-full my-3 p-2 bg-[#353535] rounded-md hover:scale-105 transition-all"
+    <div
+      className="contenedorfriend flex w-full justify-between my-3 p-2 bg-[#353535] rounded-md hover:scale-105 transition-all"
       // onClick={handleTileClick}
     >
-      <Avatar size="l" imgUrl={img} />
-      <div className="contenedorfriend_info px-2 flex   items-center ">
-        <div className="text-white text-md font-bold mb-1">{username}</div>
-        {/* <div className="text-opacity-50 text-white text-sm font-normal leading-3">
+      <NavLink to={`/home/profile/${userId}`} className="flex">
+        <Avatar size="l" imgUrl={img} />
+        <div className="contenedorfriend_info px-2 flex items-center ">
+          <div className="text-white text-md font-bold mb-1">{username}</div>
+          {/* <div className="text-opacity-50 text-white text-sm font-normal leading-3">
           {getTimePublished()}
         </div> */}
-      </div>
-        
-          <NavLink className='linkfriend_message' to={`/home/messages/${userId}`}>
-            <button className="mess_friend_section"><FaFacebookMessenger/></button>
-          </NavLink>
-       
-    </NavLink>
+        </div>
+      </NavLink>
+      <NavLink className="linkfriend_message" to={`/home/messages/${userId}`}>
+        <button className="mess_friend_section">
+          <FaFacebookMessenger />
+        </button>
+      </NavLink>
+    </div>
   );
 };
 
