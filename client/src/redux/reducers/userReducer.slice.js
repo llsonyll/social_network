@@ -4,7 +4,8 @@ const initialState = {
   userProfileData: {},
   homePostsData: [],
   control: "true",
-  userFollowings : []
+  userFollowings: [],
+  loadingProfile: true,
 };
 
 const userReducer = createSlice({
@@ -15,23 +16,23 @@ const userReducer = createSlice({
       state.userProfileData = action.payload;
     },
     homePosts(state, action) {
-        if(action.payload.length === 0 )  {
-          state.control = ""
-          return state
+      if (action.payload.length === 0) {
+        state.control = ""
+        return state
+      }
+      console.log(action.payload)
+      if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
+        state.homePostsData = state.homePostsData.concat(action.payload);
+        if (action.payload.length < 10 && state.control === "true") {
+          state.control = "false"
         }
-        console.log(action.payload)
-        if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
-          state.homePostsData = state.homePostsData.concat(action.payload);
-          if(action.payload.length < 10 && state.control==="true") {
-            state.control = "false"
-          }
-        } else {
-          state.homePostsData = action.payload;
+      } else {
+        state.homePostsData = action.payload;
       }
     },
     clearHomePosts(state, action) {
-      state.homePostsData= [],
-      state.control="true"
+      state.homePostsData = [],
+        state.control = "true"
     },
     addNewPost(state, action) {
       state.homePostsData = [action.payload, ...state.homePostsData]
@@ -49,25 +50,25 @@ const userReducer = createSlice({
       state.userProfileData.followers = action.payload.followers;
       state.userProfileData.followRequest = action.payload.followRequest;
     },
-    likesPost(state,{payload}){
-      let index = state.homePostsData.findIndex(post => post._id === payload.postId )
-       state.homePostsData[index].dislikes = payload.dislikes;
-       state.homePostsData[index].likes = payload.likes;
+    likesPost(state, { payload }) {
+      let index = state.homePostsData.findIndex(post => post._id === payload.postId)
+      state.homePostsData[index].dislikes = payload.dislikes;
+      state.homePostsData[index].likes = payload.likes;
     },
-    dislikesPost(state,{payload}){
-       let index = state.homePostsData.findIndex(post => post._id === payload.postId )
-       state.homePostsData[index].dislikes = payload.dislikes;
-       state.homePostsData[index].likes = payload.likes;
+    dislikesPost(state, { payload }) {
+      let index = state.homePostsData.findIndex(post => post._id === payload.postId)
+      state.homePostsData[index].dislikes = payload.dislikes;
+      state.homePostsData[index].likes = payload.likes;
     },
-    likesProfilePost(state,{payload}){
+    likesProfilePost(state, { payload }) {
       let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId)
       state.userProfileData.posts[index].dislikes = payload.dislikes;
       state.userProfileData.posts[index].likes = payload.likes;
     },
-    dislikesProfilePost(state,{payload}){
-       let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId)
-       state.userProfileData.posts[index].dislikes = payload.dislikes;
-       state.userProfileData.posts[index].likes = payload.likes;
+    dislikesProfilePost(state, { payload }) {
+      let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId)
+      state.userProfileData.posts[index].dislikes = payload.dislikes;
+      state.userProfileData.posts[index].likes = payload.likes;
     },
     toggleUSERFollowing(state, action) {
       state.userFollowings = action.payload;
@@ -79,15 +80,19 @@ const userReducer = createSlice({
     deleteAccount(state, action) {
       state.userProfileData = [];
     },
-    editUserPosts(state, {payload}) {
-      let index = state.userProfileData.posts.findIndex(post=> post._id === payload.postId);
+    editUserPosts(state, { payload }) {
+      let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId);
       state.userProfileData.posts[index] = payload.post;
     },
-    deletePostsGeneral(state, {payload}) {
+    deletePostsGeneral(state, { payload }) {
       let filter = state.userProfileData.posts.filter(post => post._id !== payload.postId);
       state.userProfileData.posts = filter;
     },
-}});
+    setLoadingProfile(state, action) {
+      state.loadingProfile = action.payload;
+    }
+  }
+});
 
 export const {
   deletePostsGeneral,
@@ -105,6 +110,7 @@ export const {
   dislikesProfilePost,
   toggleUSERFollowing,
   clearHomePosts,
+  setLoadingProfile
 } = userReducer.actions;
 
 export default userReducer.reducer;
