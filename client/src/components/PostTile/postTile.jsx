@@ -174,6 +174,7 @@ const PostTile = ({ post }) => {
               </button>
             </div>
 
+          {user._id !== post.userId?._id ?
             <button
               className="flex items-center gap-1"
               onClick={() => {
@@ -202,6 +203,7 @@ const PostTile = ({ post }) => {
             >
               <FaExclamation />
             </button>
+          : null}
           </div>
 
           <div className="comments">
