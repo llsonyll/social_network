@@ -1,4 +1,4 @@
-import { addNewPost, addNewPostProfile } from "../reducers/userReducer.slice";
+import { addNewPost, addNewPostProfile, deletePostsGeneral, editUserPosts } from "../reducers/userReducer.slice";
 import {
   addPostDetail,
   likesPost,
@@ -20,8 +20,7 @@ export const getPost = (postId) => async (dispatch) => {
 
 export const createPost = (content, userId, path) => async (dispatch) => {
   try {
-    const { data } = await apiConnection.post(`post/${userId}`,  content );
-
+    const { data } = await apiConnection.post(`post/${userId}`, content);
     if (path === "/home") {
       return dispatch(addNewPost(data));
     } else if (path === `/home/profile/${userId}`) {
@@ -38,7 +37,7 @@ export const newlikePostTitle = (postId, userId) => async (dispatch) => {
       data: { likes, dislikes },
     } = await apiConnection.put(`post/like/${postId}/${userId}`);
 
-    dispatch(likesPost({likes, dislikes}));
+    dispatch(likesPost({ likes, dislikes }));
   } catch (err) {
     console.log(err);
   }
@@ -49,8 +48,8 @@ export const newDislikesPostTitle = (postId, userId) => async (dispatch) => {
     const {
       data: { dislikes, likes },
     } = await apiConnection.put(`post/dislike/${postId}/${userId}`);
-  
-    dispatch(dislikesPost({dislikes,likes}));
+
+    dispatch(dislikesPost({ dislikes, likes }));
   } catch (err) {
     console.log(err);
   }
@@ -81,8 +80,8 @@ export const newDislikesComment = (commentId, userId) => async (dispatch) => {
 export const deletePost = (userId, postId) => async (dispatch) => {
   try {
     const { data } = await apiConnection.delete(`post/${userId}/${postId}`);
-
-    //return dispatch(addPostDetail(data));
+    //console.log(data)
+    return dispatch(deletePostsGeneral({ postId }));
   } catch (err) {
     console.log(err);
   }
@@ -90,10 +89,12 @@ export const deletePost = (userId, postId) => async (dispatch) => {
 
 export const editPost = (userId, postId, content) => async (dispatch) => {
   try {
+    //console.log(userId,postId,content);
     const { data } = await apiConnection.put(`post/${userId}/${postId}`, content);
 
-    return dispatch(addPostDetail(data));
+    return dispatch(editUserPosts({ post: data, postId }));
   } catch (err) {
     console.log(err);
   }
 };
+
