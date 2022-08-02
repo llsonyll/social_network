@@ -43,6 +43,8 @@ function App() {
   const [otherVideo, setOtherVideo] = useState();
   const [onCall, setOnCall] = useState(false);
 
+  console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
+
   useEffect(() => {
     if (localStorage.getItem("token") && !loggedUser._id) {
       dispatch(getLoggedUserInfo());
