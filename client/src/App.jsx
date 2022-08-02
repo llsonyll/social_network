@@ -133,14 +133,19 @@ function App() {
 	})
   }, [actualyLogged])
 
-  //SOCKET useEFFECT TO LISTEN MESSAGES
+  //SOCKET useEFFECT TO LISTEN MESSAGES AND NOTIFICATIONS
   useEffect(() => {
-		if(!location.pathname.includes('messages')){
-			console.log('hola?')
-      socket.on('privMessage', (content, _id, chatId) =>{
-				console.log('Escucho mensajes pero no los agrego')  
+	if(!location.pathname.includes('messages')){
+		console.log('hola?')
+		socket.on('privMessage', (content, _id, chatId) =>{
+			console.log('Escucho mensajes pero no los agrego')  
       })
     }
+	if(!location.pathname.includes('notifications')){
+		socket.on('notification', (type, refId, userId, profilePicture, username, content)=>{
+			
+		})
+	}
     return (()=> socket.off('privMessage'))
   }, [location])
 
