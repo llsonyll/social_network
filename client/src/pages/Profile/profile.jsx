@@ -56,6 +56,7 @@ const Profile = () => {
     lastname: userLastName,
     profilePicture,
     biography: userBiography,
+    username: userUsername,
   } = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
   const [changeProfilePicture, setChangeProfilePicture] = useState("");
@@ -413,7 +414,7 @@ const Profile = () => {
                   <div className="user-username justify-between">
                     <div className="info_container">
                       <span className="span-info">Username</span>
-                      {"@" + username}
+                      {"@" + userUsername}
                     </div>
                     {params.id === userLoggedId ? (
                       <div className="button_container">
