@@ -8,7 +8,7 @@ const app = createServer(server)
 
 const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(app, {
     cors: {
-      origin: "http://localhost:3000"
+      origin: "*"
     }
   });
 
