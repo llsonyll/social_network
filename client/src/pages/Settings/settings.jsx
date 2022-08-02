@@ -87,9 +87,7 @@ function settings() {
         }
         if (!userReview){
             return (
-                setTimeout(() => {
-                    <div className='currentreview'>You havent revieved the app</div>
-                }, "500")
+                <div className='currentreview'>You havent revieved the app</div>
     
             )
     }
