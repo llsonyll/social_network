@@ -152,8 +152,8 @@ function App() {
         console.log("Escucho mensajes pero no los agrego");
       });
     }
-    return () => socket.off("privMessage");
 	console.log(call, peer)
+    return () => socket.off("privMessage");
   }, [location]);
 
   //SHOWS THE INCOMING VIDEO
