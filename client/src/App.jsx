@@ -135,7 +135,6 @@ function App() {
     }
     return () => {
       socket.off("logged");
-      socket.off("call");
     };
   }, [actualyLogged]);
 
@@ -174,7 +173,6 @@ function App() {
         call.close();
       });
     }
-    return () => socket.off("closeCall");
   }, [myVideo]);
 
   //TURN OFF CAMERA AND MIC AND EMIT THE CLOSE CHAT ACTION
