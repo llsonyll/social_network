@@ -13,9 +13,9 @@ import {
   acceptFollowRequest,
   cancelFollowRequest,
   getUserProfile,
-  makeReport,
   modifyUser,
 } from "../../redux/actions/userActions";
+import { makeReport } from "../../redux/actions/reportActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";

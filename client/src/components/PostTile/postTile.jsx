@@ -15,7 +15,7 @@ import {
 } from "../../redux/actions/postActions";
 import { TiArrowBack } from "react-icons/ti";
 import "./postTile.css";
-import { makeReport } from "../../redux/actions/userActions";
+import { makeReport } from "../../redux/actions/reportActions";
 import Swal from "sweetalert2";
 
 const PostTile = ({ post }) => {
