@@ -140,6 +140,21 @@ async (req:Request, res:Response) => {
    }
 });
 
+router.get("likes/:postId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
+ async(req:Request, res: Response )=>{
+     try {
+         let postId = req.params.postId;
+
+         let post = await Post.findById(postId)
+                    .populate("likes._id",['username','profilePicture']);
+         if(!post){return res.status(404).json("not post")};
+         
+         res.status(200).json(post);
+     } catch (err) {
+        res.json(err);
+     }
+});
+
 router.put("/like/:postId/:userId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
 async (req:Request, res:Response) => {
    try {

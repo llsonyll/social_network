@@ -143,6 +143,21 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
         return res.status(400).json(err);
     }
 }));
+router.get("likes/:postId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let postId = req.params.postId;
+        let post = yield mongoose_1.Post.findById(postId)
+            .populate("likes._id", ['username', 'profilePicture']);
+        if (!post) {
+            return res.status(404).json("not post");
+        }
+        ;
+        res.status(200).json(post);
+    }
+    catch (err) {
+        res.json(err);
+    }
+}));
 router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let postId = req.params.postId;
