@@ -124,7 +124,12 @@ function App() {
         setOnCall(true);
 		console.log('yo me llamo, de aca en adelante se rompe')
         //GET CAMERA AND MIC DATA
-		const getUserMedia =
+		
+  },[])
+
+  useEffect(()=> {
+	if(onCall){
+	const getUserMedia =
         navigator.getUserMedia ||
         navigator.webkitGetUserMedia ||
         navigator.mozGetUserMedia;
@@ -150,12 +155,8 @@ function App() {
             console.error("Failed to get local stream", err);
           }
         );
-      });
+      }});
   },[onCall])
-
-//   useEffect(()=> {
-
-//   },[])
 
 
 
