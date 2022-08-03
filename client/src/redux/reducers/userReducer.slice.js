@@ -6,6 +6,7 @@ const initialState = {
   control: "true",
   userFollowings: [],
   loadingProfile: true,
+  errorProfile: false,
 };
 
 const userReducer = createSlice({
@@ -90,6 +91,9 @@ const userReducer = createSlice({
     },
     setLoadingProfile(state, action) {
       state.loadingProfile = action.payload;
+    },
+    setProfileError(state, { payload }) {
+      state.errorProfile = payload
     }
   }
 });
@@ -110,7 +114,8 @@ export const {
   dislikesProfilePost,
   toggleUSERFollowing,
   clearHomePosts,
-  setLoadingProfile
+  setLoadingProfile,
+  setProfileError
 } = userReducer.actions;
 
 export default userReducer.reducer;
