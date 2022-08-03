@@ -182,7 +182,7 @@ router.get(
 
       const send: IUser = user as IUser;
 
-      res.cookie("token", createToken(user as IUser),{domain:`*.dream-team-api.social`, httpOnly: true});
+      res.cookie("token", createToken(user as IUser),{domain:`www.dream-team-api.social`, httpOnly: true, secure: true ,path:"/"});
       return res.redirect(`${process.env.URL_FRONT}`);
     } catch (err) {
       res.status(400).json({ err: "todo salio mal" });
