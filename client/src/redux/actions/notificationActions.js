@@ -38,6 +38,11 @@ export const postNotification = ({type, refId, fromId, toId, username, profilePi
         }else if(type === 'message'){
             content = `@${username} has send you a message!`
         }
+        let body = {
+            content,
+            type,
+            refId
+        }
         await apiConnection.post(`notification/${fromId}/${toId}`, body)
         socket.emit('notification', )
         return
