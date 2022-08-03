@@ -3,7 +3,7 @@
     flex-direction: column;
     padding: 0px 10px;
     overflow-y: scroll;
-    height: 395px;
+    
 }
 #coversation__container div {
     border: none;

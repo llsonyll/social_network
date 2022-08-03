@@ -69,36 +69,54 @@ const Home = () => {
       id="contenedor_home"
     >
       <div
-        className="fixed left-0 top-16 h-screen w-72 bg-stone-800 hidden md:flex  p-6 flex-col items-center overflow-auto"
+        className="fixed left-0 top-0 h-screen w-72 bg-stone-800 hidden md:flex  p-6 flex-col items-center overflow-auto pt-20"
         id="contenedor_friends"
-      >
+        >
         <div
           id="title_friend_Postile"
-          className="text-white font-normal text-xl mb-4 uppercase tracking-wide"
-        >
+          className="text-white font-normal text-xl mb-4 uppercase tracking-wide "
+          >
           <h1> - Following -</h1>
-        </div>
-        {userFollowings ? (
-          userFollowings.map((friend) => (
-            <FriendPostTile
-              className="friends"
-              img={friend.profilePicture}
-              username={friend.username}
-              key={friend._id}
-              userId={friend._id}
-            />
-          ))
-        ) : (
-          <p>...</p>
-        )}
+        </div>  
+            {
+              userFollowings ? (
+              userFollowings.map((friend) => (
+                <FriendPostTile
+                className="friends"
+                img={friend.profilePicture}
+                username={friend.username}
+                key={friend._id}
+                userId={friend._id}
+                />
+                ))
+                ) 
+                : (
+                  <p>...</p>
+                  )
+            }
       </div>
       <InfiniteScroll
         dataLength={homePosts.length}
         hasMore={control}
         next={handlePage}
         loader={<LoadingSpinner />}
-      >
+        >
         <div className="flex-1 flex flex-col gap-5 h-full">
+        <div className="contenedorFriends-responsive_container">
+          {userFollowings ? (
+            userFollowings.map((friend) => (
+              <FriendPostTile
+              className="friends"
+              img={friend.profilePicture}
+              username={friend.username}
+              key={friend._id}
+              userId={friend._id}
+              />
+              ))
+              ) : (
+                <p>...</p>
+                )}  
+        </div>
           {
             homePosts.length > 0
               ? homePosts.map((p) => {

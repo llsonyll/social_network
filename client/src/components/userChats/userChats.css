@@ -1,7 +1,12 @@
 .chats__user-father{
 
-    display: grid;
-    grid-auto-rows: .1fr 1fr;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    top: 0px;
+    left: 0px;
+    padding-top:60px ;
 }
 
 #chats-user__container{

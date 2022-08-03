@@ -126,3 +126,44 @@ background-repeat:repeat;
   justify-content: center;
   align-items: center;
 }
+
+/* ESTILOS AMIGOS RESPONSIVE */
+
+.contenedorFriends-responsive_container{
+  display: flex;
+  padding: 10px 0px;
+  overflow-y: auto;
+  display: none;
+  background-color: rgba(17, 17, 17, 0.658);
+  border-radius: 5px;
+}
+.contenedorFriends-responsive_container .contenedorfriend_info{
+  display: NONE;
+
+
+}
+.contenedorFriends-responsive_container .contenedorfriend{
+  border-radius: 50%;
+  width: auto;
+  margin: 0 10px;
+  position: relative;
+
+}
+.contenedorFriends-responsive_container .contenedorfriend .mess_friend_section{
+  position: absolute;
+  color: rgb(129, 129, 129);
+  font-size: 25px;
+  top: 0;right: -6px;
+  transition: .2s all;
+
+}
+.contenedorFriends-responsive_container .contenedorfriend .mess_friend_section:hover{
+ color: #4e864c;
+
+}
+
+@media (max-width:767px) {
+  .contenedorFriends-responsive_container{
+    display: flex;
+  }
+}
