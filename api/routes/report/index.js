@@ -20,13 +20,15 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
     try {
         const { userId, reportId } = req.params;
         const { reason, reported } = req.body;
-        if (!reason) {
-            return res.status(404).json({ msg: 'Not Reason' });
-        }
+        if (!reason)
+            return res.status(404).json({ msg: 'Missing reason' });
         const user = yield mongoose_1.User.findById(`${userId}`);
         if (!user)
             return res.status(404).json({ msg: 'User not found' });
         if (reported === 'comment') {
+            const existReport = yield mongoose_1.Report.findOne({ commentReportedId: `${reportId}` });
+            if (existReport && `${existReport.userId}` === `${userId}`)
+                return res.status(400).json({ msg: 'Report already exist' });
             const comment = yield mongoose_1.Comment.findById(`${reportId}`);
             if (!comment)
                 return res.status(404).json({ msg: 'Comment not found' });
@@ -37,6 +39,9 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
             });
         }
         else if (reported === 'post') {
+            const existReport = yield mongoose_1.Report.findOne({ postReportedId: `${reportId}` });
+            if (existReport && `${existReport.userId}` === `${userId}`)
+                return res.status(400).json({ msg: 'Report already exist' });
             const post = yield mongoose_1.Post.findById(`${reportId}`);
             if (!post)
                 return res.status(404).json({ msg: 'Post not found' });
@@ -47,6 +52,9 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
             });
         }
         else {
+            const existReport = yield mongoose_1.Report.findOne({ userReportedId: `${reportId}` });
+            if (existReport && `${existReport.userId}` === `${userId}`)
+                return res.status(400).json({ msg: 'Report already exist' });
             const user = yield mongoose_1.User.findById(`${reportId}`);
             if (!user)
                 return res.status(404).json({ msg: 'User not found' });
