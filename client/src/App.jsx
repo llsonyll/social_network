@@ -18,7 +18,9 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 
 //IMPORTS PARA SOCKET IO
 import io from "socket.io-client";
-export const socket = io("http://www.dreamteamapi.tech");
+//export const socket = io("http://www.dreamteamapi.tech");
+export const socket = io("https://www.dream-team-api.social");
+
 let peer;
 let call;
 import { Peer } from "peerjs";
@@ -40,6 +42,8 @@ function App() {
   const [myVideo, setMyVideo] = useState();
   const [otherVideo, setOtherVideo] = useState();
   const [onCall, setOnCall] = useState(false);
+
+  console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
 
   useEffect(() => {
     if (localStorage.getItem("token") && !loggedUser._id) {
@@ -131,7 +135,6 @@ function App() {
     }
     return () => {
       socket.off("logged");
-      socket.off("call");
     };
   }, [actualyLogged]);
 
@@ -170,7 +173,6 @@ function App() {
         call.close();
       });
     }
-    return () => socket.off("closeCall");
   }, [myVideo]);
 
   //TURN OFF CAMERA AND MIC AND EMIT THE CLOSE CHAT ACTION

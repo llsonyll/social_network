@@ -42,7 +42,7 @@ function settings() {
     const handleSubmitReview = (e) => {
         e.preventDefault()
         console.log('send review button clicked');
-        if (!userReview && review.length > 5 && review.length < 70 && stars > 0) {
+        if (!userReview && review.length >= 4 && review.length < 70 && stars > 0) {
              dispatch(createNewReview (_id, {
                 description:  review,
                 stars: parseInt(stars)
@@ -60,7 +60,7 @@ function settings() {
     }
     const handleEditReview =  (e) => {
         e.preventDefault(e)
-        if (review.length > 10 && review.length < 70) {
+        if (review.length >= 4 && review.length < 70) {
             dispatch(modifyReview (_id, userReview._id, {
                description:  review,
                stars: parseInt(stars)
@@ -70,7 +70,7 @@ function settings() {
         }, "500")
 
        } else {
-        errorAlerts('The review should be between 10 and 50 characters long. If you want to edit your review, write a different one and fill all the inputs again, then click "Edit review".')
+        errorAlerts('The review should be between 4 and 70 characters long. If you want to edit your review, write a different one and fill all the inputs again, then click "Edit review".')
        } 
     }
     const handleDeleteReview =  (e) => {
@@ -87,9 +87,7 @@ function settings() {
         }
         if (!userReview){
             return (
-                setTimeout(() => {
-                    <div className='currentreview'>You havent revieved the app</div>
-                }, "500")
+                <div className='currentreview'>You havent revieved the app</div>
     
             )
     }

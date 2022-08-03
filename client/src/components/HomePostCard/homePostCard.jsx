@@ -160,8 +160,8 @@ const HomePostCard = (props) => {
                 {homePostsData && homePostsData[index].dislikes.length }
               </button>
           </div>
-          {
-            _id != props.userId &&
+
+        {_id !== post.userId?._id ?
           <button
             className=" transition-all flex items-center gap-1 props.userId  text-red-500 hover:scale-110"
             onClick={() => {
@@ -184,9 +184,10 @@ const HomePostCard = (props) => {
             }}
           >
             <FaExclamation />
-            {/* {post && renderHeartBrokenIcon()} */}
           </button>
-          }
+
+        : null}
+
       </div>
     </div>
   );
