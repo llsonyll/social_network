@@ -153,6 +153,7 @@ function App() {
       });
     }
     return () => socket.off("privMessage");
+	console.log(call, peer)
   }, [location]);
 
   //SHOWS THE INCOMING VIDEO
