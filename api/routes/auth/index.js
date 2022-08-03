@@ -150,7 +150,7 @@ router.get("/loginGoogle", passport_1.default.authenticate("google", {
     try {
         const user = req.user;
         const send = user;
-        res.cookie("token", createToken(user), { domain: `www.dream-team-api.social`, httpOnly: true, secure: true, path: "/" });
+        res.cookie("token", createToken(user), { domain: `client-beta-mauve.vercel.app`, httpOnly: true, secure: true, path: "/" });
         return res.redirect(`${process.env.URL_FRONT}`);
     }
     catch (err) {
