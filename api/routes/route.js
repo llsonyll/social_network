@@ -19,6 +19,7 @@ const chat_1 = __importDefault(require("./chat"));
 const premium_1 = __importDefault(require("./premium"));
 const report_1 = __importDefault(require("./report"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const admin_1 = __importDefault(require("./admin"));
 const server = (0, express_1.default)();
 const options = {
     allowedHeaders: [
@@ -51,4 +52,5 @@ server.use('/comment', comment_1.default);
 server.use('/chat', chat_1.default);
 server.use('/premium', premium_1.default);
 server.use('/report', report_1.default);
+server.use('/admin', admin_1.default);
 exports.default = server;

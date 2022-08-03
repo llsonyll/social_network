@@ -14,6 +14,7 @@ import chatRoute from './chat';
 import premiumRoute from "./premium";
 import reportRoute from './report';
 import cookie from 'cookie-parser';
+import adminRoute from './admin';
 
 const server = express();
 
@@ -52,5 +53,6 @@ server.use('/comment', commentRoute);
 server.use('/chat', chatRoute);
 server.use('/premium', premiumRoute);
 server.use('/report', reportRoute);
+server.use('/admin', adminRoute);
 
 export default server;
