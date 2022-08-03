@@ -15,7 +15,7 @@ export const getUserProfile = (id) => async (dispatch) => {
     dispatch(userProfile(data));
   } catch (err) {
     console.log(err.message ?? 'Error GetUserProfile');
-    // dispatch(setProfileError(true))
+    dispatch(setProfileError(true))
   }
 };
 
