@@ -75,7 +75,7 @@ const CommentTile = ({ data , props }) => {
   };
 
   return data?.userId ? (
-    <div className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
+    <div id="comment_container" className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
       {/* TODO: Avatar should redirect to user profile */}
       <div>
         <Link to={`/home/profile/${data.userId._id}`}>
@@ -102,7 +102,7 @@ const CommentTile = ({ data , props }) => {
           </button>
           }
         </div>
-        <div className="font-light text-sm">
+        <div  id="comment-content_container" className="font-light text-sm">
           {data
             ? data.content
             : `Adipisicing fugiat elit officia ullamco id sit proident occaecat
