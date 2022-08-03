@@ -96,7 +96,7 @@ function App() {
             call.on("close", () => {
               setOnCall(false);
 			  console.log(peer)
-			  console.log(calling)
+			  console.log(call)
             });
             //ON ANSWER SHOWS BOTH VIDEOS
             call.on("stream", function (remoteStream) {
