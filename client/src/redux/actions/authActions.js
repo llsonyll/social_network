@@ -15,6 +15,7 @@ export const loginAction = (obj) => async (dispatch) => {
     //}
 
     setAuthorization(token);
+
     return dispatch(
       loginUser({
         username: username,
@@ -69,20 +70,22 @@ export const registerAction = (obj) => async (dispatch) => {
 export const getLoggedUserInfo = () => async (dispatch) => {
   try {
     const token = localStorage.getItem("token");
-    setAuthorization(token);
-    const {
-      data: { username, _id, profilePicture, isDeleted, isAdmin, isPremium },
-    } = await apiConnection.post("auth");
-    return dispatch(
-      loginUser({
-        username: username,
-        _id: _id,
-        profilePicture: profilePicture,
-        isDeleted: isDeleted,
-        isAdmin: isAdmin,
-        isPremium: isPremium
-      })
-    );
+    if (token) {
+      setAuthorization(token);
+      const {
+        data: { username, _id, profilePicture, isDeleted, isAdmin, isPremium },
+      } = await apiConnection.post("auth");
+      return dispatch(
+        loginUser({
+          username: username,
+          _id: _id,
+          profilePicture: profilePicture,
+          isDeleted: isDeleted,
+          isAdmin: isAdmin,
+          isPremium: isPremium
+        })
+      );
+    }
   } catch (err) {
     console.log(err);
   }

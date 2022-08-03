@@ -1,23 +1,20 @@
 
 import { logOutUser } from "../reducers/authReducer.slice";
-import { userProfile, homePosts, dislikesPost, toggleUSERFollowing, dislikesProfilePost, likesProfilePost, likesPost, setLoadingProfile } from "../reducers/userReducer.slice";
+import { userProfile, homePosts, dislikesPost, toggleUSERFollowing, dislikesProfilePost, likesProfilePost, likesPost, setLoadingProfile, setProfileError } from "../reducers/userReducer.slice";
 import { toggleFollowUser, toggleResponseFollow } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
 import Swal from "sweetalert2";
 
 export const getUserProfile = (id) => async (dispatch) => {
   try {
+    dispatch(setProfileError(false))
     dispatch(setLoadingProfile(true));
     const { data } = await apiConnection.get(`user/${id}`);
     dispatch(setLoadingProfile(false))
     dispatch(userProfile(data));
-    return { data };
   } catch (err) {
-    dispatch(setLoadingProfile(false))
-    console.log(err);
-    return {
-      error: err.message ?? 'Error GetUserProfile'
-    }
+    dispatch(setProfileError(true))
+    console.log(err.message ?? 'Error GetUserProfile');
   }
 };
 

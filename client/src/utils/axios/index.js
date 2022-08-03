@@ -9,9 +9,9 @@ const timeout = 5000;
 export const apiConnection = axios.create({
   baseURL: DEV_URL,
   timeout,
-  headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token') ?? ''}`
-  }
+  // headers: {
+  //   'Authorization': `Bearer ${localStorage.getItem('token') ?? ''}`
+  // }
 });
 
 export const setAuthorization = (token) =>
