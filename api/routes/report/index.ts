@@ -56,33 +56,68 @@ async (req: Request, res: Response) => {
 
 router.get('/', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
 async (req: Request, res: Response) => {
+    try{
+        const {type} = req.query;
 
-const {type} = req.query
+        let reports: any[] = [];
 
+        if(!type) {
+            reports = await Report.find({})
+            .populate({
+                path: 'commentReportedId',
+                select: ['userId', 'content'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            })
+            .populate({
+                path: 'postReportedId',
+                select: ['userId', 'content', 'multimedia'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            })
+            .populate({
+                path: 'userReportedId',
+                select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+            })
+        }
+        if(type === "post") {
+            reports = await Report.find({postReportedId: {$exists: true} })
+            .populate({
+                path: 'postReportedId',
+                select: ['userId', 'content', 'multimedia'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            })
+        }
+        if(type === "comment") {
+            reports = await Report.find({commentReportedId: {$exists: true}})
+            .populate({
+                path: 'commentReportedId',
+                select: ['userId', 'content'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            })
+        }
+        if(type === "user") {
+            reports = await Report.find({userReportedId: {$exists: true}})
+            .populate({
+                path: 'userReportedId',
+                select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+            })
+        }
 
-try{
-    let reports: any[] = []
-    if(!type) {
-        reports = await Report.find({})
-        .populate('commentReportedId', 'userId')
-        .populate('postReportedId', 'userId')
+        return res.json(reports);
+    } catch(err) { 
+        return res.status(400).json({errMsg: err});
     }
-    if(type === "postReportedId") {
-        reports = await Report.find({postReportedId: {$exists: true} })
-        .populate('postReportedId', 'userId')
-    } if(type==="commentReportedId") {
-        reports = await Report.find({commentReportedId: {$exists: true}})
-        .populate('commentReportedId', 'userId')
-    } if(type==="userReportedId") {
-        reports = await Report.find({userReportedId: {$exists: true}})
-    }
-
-    res.json(reports)
-
-} catch(err) { 
-    res.status(400).json({errMsg: err})
-}
-
 });
 
 router.delete('/:userId/:reportId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),

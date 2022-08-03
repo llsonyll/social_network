@@ -66,29 +66,65 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
     }
 }));
 router.get('/', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { type } = req.query;
     try {
+        const { type } = req.query;
         let reports = [];
         if (!type) {
             reports = yield mongoose_1.Report.find({})
-                .populate('commentReportedId', 'userId')
-                .populate('postReportedId', 'userId');
+                .populate({
+                path: 'commentReportedId',
+                select: ['userId', 'content'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            })
+                .populate({
+                path: 'postReportedId',
+                select: ['userId', 'content', 'multimedia'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            })
+                .populate({
+                path: 'userReportedId',
+                select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+            });
         }
-        if (type === "postReportedId") {
+        if (type === "post") {
             reports = yield mongoose_1.Report.find({ postReportedId: { $exists: true } })
-                .populate('postReportedId', 'userId');
+                .populate({
+                path: 'postReportedId',
+                select: ['userId', 'content', 'multimedia'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            });
         }
-        if (type === "commentReportedId") {
+        if (type === "comment") {
             reports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } })
-                .populate('commentReportedId', 'userId');
+                .populate({
+                path: 'commentReportedId',
+                select: ['userId', 'content'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            });
         }
-        if (type === "userReportedId") {
-            reports = yield mongoose_1.Report.find({ userReportedId: { $exists: true } });
+        if (type === "user") {
+            reports = yield mongoose_1.Report.find({ userReportedId: { $exists: true } })
+                .populate({
+                path: 'userReportedId',
+                select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+            });
         }
-        res.json(reports);
+        return res.json(reports);
     }
     catch (err) {
-        res.status(400).json({ errMsg: err });
+        return res.status(400).json({ errMsg: err });
     }
 }));
 router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
