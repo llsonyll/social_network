@@ -7,14 +7,15 @@ import Swal from "sweetalert2";
 
 export const getUserProfile = (id) => async (dispatch) => {
   try {
-    dispatch(setProfileError(false))
+    // dispatch(setProfileError(false))
     dispatch(setLoadingProfile(true));
     const { data } = await apiConnection.get(`user/${id}`);
+    console.log(data);
     dispatch(setLoadingProfile(false))
     dispatch(userProfile(data));
   } catch (err) {
-    dispatch(setProfileError(true))
     console.log(err.message ?? 'Error GetUserProfile');
+    // dispatch(setProfileError(true))
   }
 };
 

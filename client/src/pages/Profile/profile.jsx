@@ -568,7 +568,9 @@ const Profile = () => {
               </div>
             </>
           ) : (
-            <div className=""> No se pudo cargar el perfil </div>
+            <div className="text-center text-white font-bold">
+              No se pudo cargar el perfil
+            </div>
           )}
         </div>
 

@@ -69,23 +69,22 @@ export const registerAction = (obj) => async (dispatch) => {
 
 export const getLoggedUserInfo = () => async (dispatch) => {
   try {
+    console.log('getLoggedUserInfo');
     const token = localStorage.getItem("token");
-    if (token) {
-      setAuthorization(token);
-      const {
-        data: { username, _id, profilePicture, isDeleted, isAdmin, isPremium },
-      } = await apiConnection.post("auth");
-      return dispatch(
-        loginUser({
-          username: username,
-          _id: _id,
-          profilePicture: profilePicture,
-          isDeleted: isDeleted,
-          isAdmin: isAdmin,
-          isPremium: isPremium
-        })
-      );
-    }
+    setAuthorization(token);
+    const {
+      data: { username, _id, profilePicture, isDeleted, isAdmin, isPremium },
+    } = await apiConnection.post("auth");
+    return dispatch(
+      loginUser({
+        username: username,
+        _id: _id,
+        profilePicture: profilePicture,
+        isDeleted: isDeleted,
+        isAdmin: isAdmin,
+        isPremium: isPremium
+      })
+    );
   } catch (err) {
     console.log(err);
   }
