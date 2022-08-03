@@ -124,6 +124,10 @@ function App() {
         setOnCall(true);
 		console.log('yo me llamo, de aca en adelante se rompe')
         //GET CAMERA AND MIC DATA
+		const getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia;
         getUserMedia(
           { video: true, audio: true },
           function (stream) {
@@ -148,6 +152,10 @@ function App() {
         );
       });
   },[])
+
+//   useEffect(()=> {
+
+//   },[])
 
 
 
