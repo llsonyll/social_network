@@ -44,7 +44,7 @@ export const postNotification = ({type, refId, fromId, toId, username, profilePi
             refId
         }
         await apiConnection.post(`notification/${fromId}/${toId}`, body)
-        socket.emit('notification', )
+        socket.emit('notification', type, refId, fromId, toId, username, profilePicture, content)
         return
     }catch(err){
         console.log(err)
