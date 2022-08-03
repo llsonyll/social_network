@@ -578,19 +578,19 @@ const Profile = () => {
       {firstname === true && (
         <EditFullname
           renderChangeRenderComponents={renderChangeRenderComponents}
-          user={user}
+          user={username}
         />
       )}
       {username === true && (
         <EditUsername
           renderChangeRenderComponents={renderChangeRenderComponents}
-          user={user}
+          user={username}
         />
       )}
       {biography === true && (
         <EditBiography
           renderChangeRenderComponents={renderChangeRenderComponents}
-          user={user}
+          user={username}
         />
       )}
     </>
