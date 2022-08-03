@@ -117,12 +117,12 @@ function App() {
           { video: true, audio: true },
           (stream) => {
             //ANSWERS CALL AND SHOWS BOTH MEDIAS
-            calling.answer(stream);
+            call.answer(stream);
             setMyVideo(stream);
-            calling.on("close", () => {
+            call.on("close", () => {
               setOnCall(false);
             });
-            calling.on("stream", (remoteStream) => {
+            call.on("stream", (remoteStream) => {
               setOtherVideo(remoteStream);
               // Show stream in some <video> element.
             });
