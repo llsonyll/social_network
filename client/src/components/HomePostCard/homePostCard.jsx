@@ -52,7 +52,7 @@ const HomePostCard = (props) => {
   let index = homePostsData.findIndex((post) => post._id === props.postId);
 
   let renderHeartIcon = () => {
-    if (!homePostsData[index].likes.find((like) => like._id === user._id)) {
+    if (!homePostsData[index].likes.includes(user._id)) {
       return <FaHeart />;
     } else {
       return (
@@ -82,7 +82,7 @@ const HomePostCard = (props) => {
 
   let renderHeartBrokenIcon = () => {
     if (
-      !homePostsData[index].dislikes.find((dislike) => dislike._id === user._id)
+      !homePostsData[index].dislikes.includes(user._id)
     ) {
       console.log("Entra blanco");
       return <ImHeartBroken />;

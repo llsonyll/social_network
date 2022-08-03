@@ -19,18 +19,8 @@ exports.postSchema = new mongoose_1.Schema({
             ref: 'Comment',
         },
     ],
-    likes: [
-        new mongoose_1.Schema({
-            _id: { type: mongoose_1.Schema.Types.ObjectId, require: true, unique: true, ref: "User", },
-            username: { type: String }
-        })
-    ],
-    dislikes: [
-        new mongoose_1.Schema({
-            _id: { type: mongoose_1.Schema.Types.ObjectId, required: true, unique: true, ref: "User", },
-            username: { type: String }
-        })
-    ],
+    likes: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    dislikes: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
     content: { type: String },
     multimedia: String
 }, {

@@ -36,11 +36,8 @@ export const createPost = (content, userId, path) => async (dispatch) => {
 
 export const newlikePostTitle = (postId, userId) => async (dispatch) => {
   try {
-    const {
-      data: { likes, dislikes },
-    } = await apiConnection.put(`post/like/${postId}/${userId}`);
-
-    dispatch(likesPost({ likes, dislikes }));
+    apiConnection.put(`post/like/${postId}/${userId}`);
+    dispatch(likesPost({userId}));
   } catch (err) {
     console.log(err);
   }
@@ -48,11 +45,8 @@ export const newlikePostTitle = (postId, userId) => async (dispatch) => {
 
 export const newDislikesPostTitle = (postId, userId) => async (dispatch) => {
   try {
-    const {
-      data: { dislikes, likes },
-    } = await apiConnection.put(`post/dislike/${postId}/${userId}`);
-
-    dispatch(dislikesPost({ dislikes, likes }));
+    apiConnection.put(`post/dislike/${postId}/${userId}`);
+    dispatch(dislikesPost({userId}));
   } catch (err) {
     console.log(err);
   }

@@ -15,13 +15,25 @@ const postReducer = createSlice({
         removePostDetail(state, action) {
             state.postDetail = {}
         },
-        likesPost(state, action) {
-            state.postDetail.dislikes = action.payload.dislikes
-            state.postDetail.likes = action.payload.likes
+        likesPost({postDetail}, {payload}) {
+            if(postDetail.dislikes.includes(payload.userId)){ 
+                postDetail.dislikes = postDetail.dislikes.filter(_id => _id !== payload.userId);
+            }
+            if(postDetail.likes.includes(payload.userId)){
+                postDetail.likes = postDetail.likes.filter(_id => _id !== payload.userId);
+            }else{
+                postDetail.likes.push(payload.userId);
+            }
         },
-        dislikesPost(state, action) {
-            state.postDetail.dislikes = action.payload.dislikes
-            state.postDetail.likes = action.payload.likes
+        dislikesPost({postDetail}, {payload}) {
+            if(postDetail.likes.includes(payload.userId)){ 
+                postDetail.likes = postDetail.likes.filter(_id => _id !== payload.userId);
+            }
+            if(postDetail.dislikes.includes(payload.userId)){
+                postDetail.dislikes = postDetail.dislikes.filter(_id => _id !== payload.userId);
+            }else{
+                postDetail.dislikes.push(payload.userId);
+            }
         },
         likesComment(state, { payload }) {
             let index = state.postDetail.commentsId.findIndex(comment => comment._id === payload._id);

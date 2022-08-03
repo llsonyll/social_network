@@ -48,11 +48,13 @@ const ProfilePosts = (props) => {
   const handleDislike = () => {
     dispatch(newDislikeUserProfile(postNumber, _id));
   };
+ 
   const loggedUser = useSelector((state) => state.auth.loggedUser);
   const posts = useSelector((state) => state.user.userProfileData.posts);
   let index = posts.findIndex((post) => post._id === postNumber);
+ 
   let renderHeartIcon = () => {
-    if (!posts[index].likes.find((like) => like._id === _id)) {
+    if (!posts[index].likes.includes(_id)) {
       return <FaHeart />;
     } else {
       return (
@@ -67,7 +69,7 @@ const ProfilePosts = (props) => {
     }
   };
   let renderHeartBrokenIcon = () => {
-    if (!posts[index].dislikes.find((dislike) => dislike._id === _id)) {
+    if (!posts[index].dislikes.includes(_id)) {
       console.log("Entra blanco");
       return <ImHeartBroken />;
     } else {

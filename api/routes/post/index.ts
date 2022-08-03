@@ -109,38 +109,32 @@ async (req:Request, res:Response) => {
         return res.status(400).json("algo salio mal");
     }
     
-    let id = user._id;
 
-    let likes: IPost | null = await Post.findOne({ _id: postId ,"likes._id": id });
-
-    if(likes){
+    if(post.likes.includes(user._id)){
        await Post.updateOne({_id: postId}, {
            $pull: {
-              likes: { _id: id },
+              likes: user._id,
            },
        });
      }
 
-     let dislikes: IPost | null = await Post.findOne({ _id: postId ,"dislikes._id": id }); 
-
-     if( ! dislikes ){
+     if( ! post.dislikes.includes(user._id)){
           post = await Post.findOneAndUpdate({_id: postId}, {
             $push:{
-                   dislikes: { _id: id, username: user.username }
+                   dislikes: user._id
                  }
               },{new: true});
         }else{
-            console.log("entre");
             post = await Post.findOneAndUpdate({_id: postId}, {
                 $pull:{
-                    dislikes: { _id: id }
+                    dislikes: user._id 
                     }
                 },{new: true});
         }
 
      if(!post){return res.status(400).json("not found dislikes")} 
 
-    res.status(200).json({ dislikes: post.dislikes, likes: post.likes });
+    res.status(200).json(post);
    } catch (err) {
      return res.status(400).json(err);
    }
@@ -163,36 +157,31 @@ async (req:Request, res:Response) => {
     if(!post) {
         return res.status(400).json("algo salio mal");
     }
-    
-    let id = user._id;
 
-    let dislikes: IPost | null = await Post.findOne({ _id: postId ,"dislikes._id": id }); 
-
-    if(dislikes){
+    if(post.dislikes.includes(user._id)){
+        console.log("entre mal")
        await Post.updateOne({_id: postId}, {
            $pull: {
-              dislikes: { _id: id },
+              dislikes: user._id ,
            },
        });
      }
 
-    let likes: IPost | null = await Post.findOne({ _id: postId ,"likes._id": id });
-
-     if( !likes){
+     if( ! post.likes.includes(user._id)){
         post = await Post.findOneAndUpdate({_id: postId},{
             $push:{
-                likes: { _id: id, username: user.username }
+                likes: user._id
             }
         },{new: true})
        }else{
            post = await Post.findOneAndUpdate({_id: postId}, {
                 $pull: {
-                    likes: { _id: id },
+                    likes: user._id
                 },
              },{new: true});
         }
      
-       return res.status(200).json({likes: post.likes, dislikes: post.dislikes });
+       return res.status(200).json(post);
     } catch (err) {
      return res.status(400).json(err);
    }
