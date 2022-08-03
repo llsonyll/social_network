@@ -97,6 +97,7 @@ function App() {
               setOnCall(false);
 			  console.log(peer)
 			  console.log(call)
+			  console.log('b')
             });
             //ON ANSWER SHOWS BOTH VIDEOS
             call.on("stream", function (remoteStream) {
@@ -125,6 +126,7 @@ function App() {
               setOnCall(false);
 			  console.log(peer)
 			  console.log(calling)
+			  console.log('a')
             });
             calling.on("stream", (remoteStream) => {
               setOtherVideo(remoteStream);
@@ -171,8 +173,6 @@ function App() {
         localVideoRef.current.play();
       };
       socket.on("closeCall", () => {
-        console.log("aaaa?");
-        console.log(myVideo, otherVideo);
         myVideo.getVideoTracks().forEach((track) => track.stop());
         myVideo.getAudioTracks().forEach((track) => track.stop());
         call.close();
