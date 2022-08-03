@@ -19,7 +19,7 @@ const router = express_1.default.Router();
 router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId, reportId } = req.params;
-        const { reason, reported } = req.body; // REPORTED VA A ACEPTAR 3 VALORES: COMMENT, POST Y USER
+        const { reason, reported } = req.body;
         if (!reason) {
             return res.status(404).json({ msg: 'Not Reason' });
         }
@@ -70,13 +70,17 @@ router.get('/', passport_1.default.authenticate('jwt', { session: false, failure
     try {
         let reports = [];
         if (!type) {
-            reports = yield mongoose_1.Report.find({});
+            reports = yield mongoose_1.Report.find({})
+                .populate('commentReportedId', 'userId')
+                .populate('postReportedId', 'userId');
         }
         if (type === "postReportedId") {
-            reports = yield mongoose_1.Report.find({ postReportedId: { $exists: true } });
+            reports = yield mongoose_1.Report.find({ postReportedId: { $exists: true } })
+                .populate('postReportedId', 'userId');
         }
         if (type === "commentReportedId") {
-            reports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } });
+            reports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } })
+                .populate('commentReportedId', 'userId');
         }
         if (type === "userReportedId") {
             reports = yield mongoose_1.Report.find({ userReportedId: { $exists: true } });
@@ -85,6 +89,67 @@ router.get('/', passport_1.default.authenticate('jwt', { session: false, failure
     }
     catch (err) {
         res.status(400).json({ errMsg: err });
+    }
+}));
+router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId, reportId } = req.params;
+        const { type } = req.body;
+        const admin = yield mongoose_1.User.findById(`${userId}`);
+        if (!admin || !admin.isAdmin)
+            return res.status(401).json('Missings permissions');
+        const report = yield mongoose_1.Report.findById(`${reportId}`);
+        if (!report)
+            return res.status(404).json('Report not found');
+        if (type === 'post') {
+            const post = yield mongoose_1.Post.findById(`${report.postReportedId}`);
+            if (!post)
+                return res.status(404).json('Post not found');
+            console.log(post);
+            const user = yield mongoose_1.User.findById(`${post.userId}`);
+            if (!user)
+                return res.status(404).json('User not found');
+            console.log(user);
+            const newUser = yield mongoose_1.User.findOneAndUpdate({ _id: user._id }, { $pull: { posts: `${post._id}` } }, { new: true });
+            if (!newUser)
+                return res.status(400).json('Not posible to delete');
+            console.log(newUser);
+            yield newUser.save();
+            const commentId = post.commentsId;
+            yield mongoose_1.Comment.deleteMany({ _id: { $in: commentId } });
+            yield report.remove();
+            yield post.remove();
+            return res.json('Reported successfully');
+        }
+        if (type === 'comment') {
+            const comment = yield mongoose_1.Comment.findById(`${report.commentReportedId}`);
+            if (!comment)
+                return res.status(404).json('Comment not found');
+            console.log(comment);
+            const post = yield mongoose_1.Post.findById(comment.postId);
+            if (!post)
+                return res.status(404).json('Post not found');
+            console.log(post);
+            const newPost = yield mongoose_1.Post.findOneAndUpdate({ _id: post._id }, { $pull: { commentsId: comment._id } }, { new: true });
+            if (!newPost)
+                return res.status(400).json('Not posible to delete');
+            yield newPost.save();
+            console.log(newPost);
+            yield report.remove();
+            yield comment.remove();
+            console.log('todo ok');
+            return res.json('Reported successfully');
+        }
+        const user = yield mongoose_1.User.findById(`${report.userReportedId}`);
+        if (!user || `${user._id}` === `${admin._id}`)
+            return res.status(404).json('Not posible to proceed');
+        // FALTA ELIMINAR TODO LO RELACIONADO AL USER
+        user.isDeleted = true;
+        yield user.save();
+        return res.json('Reported successfully');
+    }
+    catch (err) {
+        return res.status(400).json('Something went wrong');
     }
 }));
 exports.default = router;
