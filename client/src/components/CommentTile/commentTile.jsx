@@ -127,7 +127,7 @@ const CommentTile = ({ data , props }) => {
                   {data && renderHeartBrokenIcon()}
                 {data && data.dislikes.length }
               </button>
-              
+          {_id !== data.userId?._id ?
             <button
             className="flex items-center gap-1"
             onClick={() => {
@@ -149,9 +149,8 @@ const CommentTile = ({ data , props }) => {
               })}}
           >
             <FaExclamation />
-            {/* {post && renderHeartBrokenIcon()} */}
           </button>
-
+        : null}
         </div>
       </div>
       {editComents === true && 

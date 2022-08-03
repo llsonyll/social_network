@@ -160,7 +160,7 @@ const HomePostCard = (props) => {
                 {homePostsData && homePostsData[index].dislikes.length }
               </button>
           </div>
-          
+        {_id !== post.userId?._id ?
           <button
             className="flex items-center gap-1"
             onClick={() => {
@@ -183,8 +183,8 @@ const HomePostCard = (props) => {
             }}
           >
             <FaExclamation />
-            {/* {post && renderHeartBrokenIcon()} */}
           </button>
+        : null}
       </div>
     </div>
   );

@@ -140,7 +140,7 @@ const ProfilePosts = (props) => {
           </button>
 		  <button onClick={renderDislikes}>{posts && posts[index].dislikes.length }</button>
 
-							
+		{loggedUser._id  !== userId ?
 		  <button
             className="flex items-center gap-1"
             onClick={
@@ -166,6 +166,7 @@ const ProfilePosts = (props) => {
             <FaExclamation />
             {/* {post && renderHeartBrokenIcon()} */}
           </button>
+		: null}
 				</div>
 			</div>
 			{showLikes === true && <ListOfUsersRenderer likes={likes} renderLikes={renderLikes}/>}
