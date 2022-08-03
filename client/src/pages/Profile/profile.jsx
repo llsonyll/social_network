@@ -518,7 +518,11 @@ const Profile = () => {
                       >
                         {followers && followRenderer()}
                       </button>
-
+                    </div>
+                  ) : null}
+                  {
+                    params.id != userLoggedId &&
+                    <div className="user-report">
                       <button
                         className=" flex-1 flex justify-center items-center gap-1"
                         onClick={() => {
@@ -547,24 +551,10 @@ const Profile = () => {
                       >
                         <FaExclamation /> Report user
                       </button>
-
-                      {/* <button
-                        className="flex-1 flex justify-center items-center gap-1"
-                        onClick={() => {
-                          dispatch(
-                            makeReport(userLoggedId, params.id, {
-                              reason,
-                              reported: "user",
-                            })
-                          ); // reported toma valores 'post', 'comment' y 'user'
-                        }}
-                      >
-                        <FaExclamation /> Report user
-                        {posts && renderHeartBrokenIcon()}
-                      </button> */}
-                    </div>
-                  ) : null}
+                      </div>
+                  }
                 </div>
+                
               </div>
             </>
           ) : (

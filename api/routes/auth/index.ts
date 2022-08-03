@@ -182,7 +182,7 @@ router.get(
 
       const send: IUser = user as IUser;
 
-      res.cookie("token", createToken(user as IUser),{domain:`client-beta-mauve.vercel.app`, httpOnly: true, secure: true ,path:"/"});
+      res.cookie("token", createToken(user as IUser),{domain:`www.socialn.me`, httpOnly: true, secure: true ,path:"/"});
       return res.redirect(`${process.env.URL_FRONT}`);
     } catch (err) {
       res.status(400).json({ err: "todo salio mal" });
@@ -204,7 +204,7 @@ router.get(
 
       const send: IUser = user as IUser;
 
-      res.cookie("token", createToken(user as IUser),{domain:`${process.env.URL_FRONT}`, httpOnly: true});
+      res.cookie("token", createToken(user as IUser),{domain:`back.socialn.me`, httpOnly: true, secure: true ,path:"/"});
       return res.redirect(`${process.env.URL_FRONT}`);
     } catch (err) {
       res.status(400).json({ err: "todo salio mal" });

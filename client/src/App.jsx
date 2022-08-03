@@ -18,8 +18,8 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 
 //IMPORTS PARA SOCKET IO
 import io from "socket.io-client";
-//export const socket = io("http://www.dreamteamapi.tech");
-export const socket = io("https://www.dream-team-api.social");
+export const socket = io("https://back.socialn.me");
+//export const socket = io("https://www.dream-team-api.social");
 
 let peer;
 let call;
