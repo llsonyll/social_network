@@ -117,12 +117,12 @@ function App() {
           { video: true, audio: true },
           (stream) => {
             //ANSWERS CALL AND SHOWS BOTH MEDIAS
-            call.answer(stream);
+            calling.answer(stream);
             setMyVideo(stream);
-            call.on("close", () => {
+            calling.on("close", () => {
               setOnCall(false);
             });
-            call.on("stream", (remoteStream) => {
+            calling.on("stream", (remoteStream) => {
               setOtherVideo(remoteStream);
               // Show stream in some <video> element.
             });
@@ -135,7 +135,7 @@ function App() {
     }
     return () => {
       socket.off("logged");
-      socket.off("call");
+//      socket.off("call");
     };
   }, [actualyLogged]);
 
@@ -174,7 +174,7 @@ function App() {
         call.close();
       });
     }
-    return () => socket.off("closeCall");
+//    return () => socket.off("closeCall");
   }, [myVideo]);
 
   //TURN OFF CAMERA AND MIC AND EMIT THE CLOSE CHAT ACTION
