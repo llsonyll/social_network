@@ -150,7 +150,7 @@ router.get("/loginGoogle", passport_1.default.authenticate("google", {
     try {
         const user = req.user;
         const send = user;
-        res.cookie("token", createToken(user), { domain: `${process.env.URL_FRONT}`, httpOnly: true });
+        res.cookie("token", createToken(user), { domain: `client-beta-mauve.vercel.app`, httpOnly: true, secure: true, path: "/" });
         return res.redirect(`${process.env.URL_FRONT}`);
     }
     catch (err) {
