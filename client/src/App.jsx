@@ -124,7 +124,7 @@ function App() {
         setOnCall(true);
 		console.log('yo me llamo, de aca en adelante se rompe')
         //GET CAMERA AND MIC DATA
-		
+	})
   },[])
 
   useEffect(()=> {
@@ -155,7 +155,7 @@ function App() {
             console.error("Failed to get local stream", err);
           }
         );
-      }});
+      };
   },[onCall])
 
 
