@@ -83,6 +83,34 @@ function App() {
       //EMITS AN LOGGED ACTION
       socket.emit("logged", actualyLogged, socket.id);
       //DETECTS WHEN SOMEONE CALLS YOU
+      socket.on("call", (_id) => {
+        //DISPLAYS THE VIDEOCALL
+        setOnCall(true);
+		console.log('yo me llamo, de aca en adelante se rompe')
+        //GET CAMERA AND MIC DATA
+        getUserMedia(
+          { video: true, audio: true },
+          function (stream) {
+            //EXECUTE THE CALL
+            call = peer.call(_id, stream);
+            //DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
+            call.on("close", () => {
+              setOnCall(false);
+			  console.log(peer)
+			  console.log(call)
+			  console.log('b')
+            });
+            //ON ANSWER SHOWS BOTH VIDEOS
+            call.on("stream", function (remoteStream) {
+              setMyVideo(stream);
+              setOtherVideo(remoteStream);
+            });
+          },
+          (err) => {
+            console.error("Failed to get local stream", err);
+          }
+        );
+      });
       //ANSWER THE CALL FUNCTION
       peer.on("call", (calling) => {
         //DISPLAYS
@@ -117,49 +145,6 @@ function App() {
 //      socket.off("call");
     };
   }, [actualyLogged]);
-
-  useEffect(()=> {
-	socket.on("call", (_id) => {
-        //DISPLAYS THE VIDEOCALL
-        setOnCall(true);
-		console.log('yo me llamo, de aca en adelante se rompe')
-        //GET CAMERA AND MIC DATA
-	})
-  },[])
-
-  useEffect(()=> {
-	if(onCall){
-	const getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
-        getUserMedia(
-          { video: true, audio: true },
-          function (stream) {
-            //EXECUTE THE CALL
-            call = peer.call(_id, stream);
-            //DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
-            call.on("close", () => {
-              setOnCall(false);
-			  console.log(peer)
-			  console.log(call)
-			  console.log('b')
-            });
-            //ON ANSWER SHOWS BOTH VIDEOS
-            call.on("stream", function (remoteStream) {
-              setMyVideo(stream);
-              setOtherVideo(remoteStream);
-            });
-          },
-          (err) => {
-            console.error("Failed to get local stream", err);
-          }
-        );
-      };
-  },[onCall])
-
-
-
 
   //SOCKET useEFFECT TO LISTEN MESSAGES
   useEffect(() => {
