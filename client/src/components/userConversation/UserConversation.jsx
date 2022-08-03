@@ -12,16 +12,15 @@ import { useParams } from 'react-router-dom'
 import { getChatInfo, sendMessage } from '../../redux/actions/chatActions'
 import { addMessage, clearChatInfo } from '../../redux/reducers/chatReducer'
 import { socket } from '../../App'
+import { AiOutlineMore } from "react-icons/ai";
 
-
-const UserConversation = () => {
+const UserConversation = ({mostrarMenu, setmostrarMenu}) => {
 
     const [text, setText] = useState('')
     let dispatch = useDispatch()
     const params = useParams()
     const loggedUser = useSelector(store => store.auth.loggedUser)
     const chatInfo = useSelector(store => store.chat.chatDetails)
-
     let getIndex = (array) => {
       if(array[0]._id === loggedUser._id){
           return 1
@@ -29,7 +28,6 @@ const UserConversation = () => {
           return 0
       }
     }
-
 
     useEffect(()=>{
       if(loggedUser._id && params.id && !chatInfo._id){
@@ -58,7 +56,15 @@ const UserConversation = () => {
         <div className='header_conversation'>
             <Avatar size='l' imgUrl={chatInfo.users[getIndex(chatInfo.users)].profilePicture}/>
            <span>{chatInfo.users[getIndex(chatInfo.users)].username}</span>
-           <button type='button' onClick={handleCall} > <AiOutlinePhone /> </button> 
+           <button type='button' onClick={handleCall} > <AiOutlinePhone /> </button>
+           <button className='more_chat' onClick={()=> setmostrarMenu((state) => !state)}><AiOutlineMore /></button> 
+           {
+            mostrarMenu === true ?
+            <ul className='more_chat_options'>
+              <li>Delete conversation</li>
+              <li>Report user</li>
+            </ul> : null
+           }
         </div>
             <Mensajes id={loggedUser._id} messages={chatInfo.messages}/>
         <form className='input_conversation__container' onSubmit={handleClick}>

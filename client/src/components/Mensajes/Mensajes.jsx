@@ -2,6 +2,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useRef } from 'react'
 import './Mensajes.css'
+import {MdKeyboardArrowDown} from 'react-icons/md'
 
 const arrayPrueba = [
     {
@@ -56,7 +57,7 @@ const arrayPrueba = [
                         <div id='lanzador' ref={messRef}>{mensajes.content}</div>
                     )
                 })
-            : <span>Manda el primer mensajeeee</span>
+            : <span className='no_mensajes'>There are no messages, send the first message   <span className='arrow_chat'><MdKeyboardArrowDown/></span></span>
 
         }
     </div>

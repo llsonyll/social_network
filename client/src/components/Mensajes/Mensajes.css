@@ -3,7 +3,7 @@
     flex-direction: column;
     padding: 0px 10px;
     overflow-y: scroll;
-    
+    position: relative;
 }
 #coversation__container div {
     border: none;
@@ -31,4 +31,24 @@
 }
 #coversation__container #lanzador:last-child{
   margin-bottom: 0px;
+}
+
+.no_mensajes{
+   position: absolute;
+   padding: 0px 15px;
+   bottom: 10px;
+   background-color: #4e864c;
+   color: white;
+   align-self: center;
+   width: 40%;
+   text-align: center;
+   min-width: 150px;
+   border-radius: 5px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.arrow_chat{
+   font-size: 30px;
 }
