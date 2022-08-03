@@ -83,61 +83,70 @@ function App() {
       //EMITS AN LOGGED ACTION
       socket.emit("logged", actualyLogged, socket.id);
       //DETECTS WHEN SOMEONE CALLS YOU
-      socket.on("call", (_id) => {
-        //DISPLAYS THE VIDEOCALL
-        setOnCall(true);
-        //GET CAMERA AND MIC DATA
-        getUserMedia(
-          { video: true, audio: true },
-          function (stream) {
-            //EXECUTE THE CALL
-            call = peer.call(_id, stream);
-            //DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
-            call.on("close", () => {
-              setOnCall(false);
-            });
-            //ON ANSWER SHOWS BOTH VIDEOS
-            call.on("stream", function (remoteStream) {
-              setMyVideo(stream);
-              setOtherVideo(remoteStream);
-            });
-          },
-          (err) => {
-            console.error("Failed to get local stream", err);
-          }
-        );
-      });
+      
       //ANSWER THE CALL FUNCTION
-      peer.on("call", (calling) => {
-        //DISPLAYS
-        setOnCall(true);
-        call = calling;
-        //GET CAMERA AND MIC
-        getUserMedia(
-          { video: true, audio: true },
-          (stream) => {
-            //ANSWERS CALL AND SHOWS BOTH MEDIAS
-            calling.answer(stream);
-            setMyVideo(stream);
-            calling.on("close", () => {
-              setOnCall(false);
-            });
-            calling.on("stream", (remoteStream) => {
-              setOtherVideo(remoteStream);
-              // Show stream in some <video> element.
-            });
-          },
-          (err) => {
-            console.error("Failed to get local stream", err);
-          }
-        );
-      });
     }
     return () => {
       socket.off("logged");
 //      socket.off("call");
     };
   }, [actualyLogged]);
+
+  useEffect(() => {
+	if(peer){
+		socket.on("call", (_id) => {
+			//DISPLAYS THE VIDEOCALL
+			setOnCall(true);
+			//GET CAMERA AND MIC DATA
+			getUserMedia(
+			  { video: true, audio: true },
+			  function (stream) {
+				//EXECUTE THE CALL
+				call = peer.call(_id, stream);
+				//DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
+				call.on("close", () => {
+				  setOnCall(false);
+				});
+				//ON ANSWER SHOWS BOTH VIDEOS
+				call.on("stream", function (remoteStream) {
+				  setMyVideo(stream);
+				  setOtherVideo(remoteStream);
+				});
+			  },
+			  (err) => {
+				console.error("Failed to get local stream", err);
+			  }
+			);
+		  });
+		  peer.on("call", (calling) => {
+			//DISPLAYS
+			setOnCall(true);
+			call = calling;
+			//GET CAMERA AND MIC
+			getUserMedia(
+			  { video: true, audio: true },
+			  (stream) => {
+				//ANSWERS CALL AND SHOWS BOTH MEDIAS
+				calling.answer(stream);
+				setMyVideo(stream);
+				calling.on("close", () => {
+				  setOnCall(false);
+				});
+				calling.on("stream", (remoteStream) => {
+				  setOtherVideo(remoteStream);
+				  // Show stream in some <video> element.
+				});
+			  },
+			  (err) => {
+				console.error("Failed to get local stream", err);
+			  }
+			);
+		  });
+	}
+  }, [peer])
+
+
+
 
   //SOCKET useEFFECT TO LISTEN MESSAGES
   useEffect(() => {
