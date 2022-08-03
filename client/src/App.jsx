@@ -116,7 +116,7 @@ function App() {
 					setMyVideo(stream)
 					calling.on('close', () => {
 						setOnCall(false)
-						console.log(peer)
+						console.log(peer) 
 					})
 					calling.on("stream", (remoteStream) => {
 						setOtherVideo(remoteStream)
