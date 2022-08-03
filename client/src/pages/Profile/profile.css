@@ -156,6 +156,21 @@
 .profile-container .shadow-box .user_description div button:hover {
   background-color: #447543;
 }
+.profile-container .shadow-box .user_description div button:hover {
+  background-color: #447543;
+}
+
+.profile-container .shadow-box .user_description .user-report{
+ 
+  margin-top: 20px;
+}
+.profile-container .shadow-box .user_description .user-report button{
+  background-color: rgb(170, 65, 57);
+ 
+}
+.profile-container .shadow-box .user_description .user-report button:hover{
+  background-color: rgb(131, 51, 45);
+}
 
 .button_container {
   font-size: 0.9rem;

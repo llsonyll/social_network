@@ -160,9 +160,10 @@ const HomePostCard = (props) => {
                 {homePostsData && homePostsData[index].dislikes.length }
               </button>
           </div>
-          
+          {
+            _id != props.userId &&
           <button
-            className="flex items-center gap-1"
+            className=" transition-all flex items-center gap-1 props.userId  text-red-500 hover:scale-110"
             onClick={() => {
               Swal.fire({
                 background: "#4c4d4c",
@@ -185,6 +186,7 @@ const HomePostCard = (props) => {
             <FaExclamation />
             {/* {post && renderHeartBrokenIcon()} */}
           </button>
+          }
       </div>
     </div>
   );
