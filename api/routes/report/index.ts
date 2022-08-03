@@ -139,11 +139,12 @@ async (req:Request, res:Response) =>{
             return res.json('Reported successfully');
         }
 
-        // const report = await User.findById(`${reportId}`);
-        // if (!report) return res.status(404).json('User not found');
+        const user = await User.findById(`${report.userReportedId}`);
+        if (!user || `${user._id}` === `${admin._id}`) return res.status(404).json('Not posible to proceed');
 
-        // report.isDeleted = true;
-        // await report.save();
+        // FALTA ELIMINAR TODO LO RELACIONADO AL USER
+        user.isDeleted = true;
+        await user.save();
         
         return res.json('Reported successfully');
     }catch(err){

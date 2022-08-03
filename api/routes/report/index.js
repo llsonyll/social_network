@@ -140,10 +140,12 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             console.log('todo ok');
             return res.json('Reported successfully');
         }
-        // const report = await User.findById(`${reportId}`);
-        // if (!report) return res.status(404).json('User not found');
-        // report.isDeleted = true;
-        // await report.save();
+        const user = yield mongoose_1.User.findById(`${report.userReportedId}`);
+        if (!user || `${user._id}` === `${admin._id}`)
+            return res.status(404).json('Not posible to proceed');
+        // FALTA ELIMINAR TODO LO RELACIONADO AL USER
+        user.isDeleted = true;
+        yield user.save();
         return res.json('Reported successfully');
     }
     catch (err) {

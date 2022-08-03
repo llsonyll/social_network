@@ -11,6 +11,7 @@ const socket_io_1 = require("socket.io");
 const app = (0, http_1.createServer)(route_js_1.default);
 const io = new socket_io_1.Server(app, {
     cors: {
+        //origin: "http://localhost:3000"
         origin: "*"
     }
 });
