@@ -95,6 +95,8 @@ function App() {
             //DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
             call.on("close", () => {
               setOnCall(false);
+			  console.log(peer)
+			  console.log(calling)
             });
             //ON ANSWER SHOWS BOTH VIDEOS
             call.on("stream", function (remoteStream) {
@@ -121,6 +123,8 @@ function App() {
             setMyVideo(stream);
             calling.on("close", () => {
               setOnCall(false);
+			  console.log(peer)
+			  console.log(calling)
             });
             calling.on("stream", (remoteStream) => {
               setOtherVideo(remoteStream);
