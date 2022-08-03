@@ -5,16 +5,19 @@ import {
   dislikesPost,
   likesComment,
   dislikesComment,
+  setLoadingPostDetail
 } from "../reducers/postReducer.slice";
 import { apiConnection } from "../../utils/axios";
 
 export const getPost = (postId) => async (dispatch) => {
   try {
+    dispatch(setLoadingPostDetail(true));
     const { data } = await apiConnection.get(`post/${postId}`);
-
-    return dispatch(addPostDetail(data));
+    dispatch(addPostDetail(data));
+    dispatch(setLoadingPostDetail(false));
+    return { data };
   } catch (err) {
-    console.log(err);
+    return { error: err.message ?? 'error GetPost' }
   }
 };
 

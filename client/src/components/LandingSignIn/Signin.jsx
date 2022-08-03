@@ -167,10 +167,10 @@ const Signin = ({ setForm }) => {
           <div className="line"></div>
         </div>
         <div className="social_buttons">
-        <a href='http://localhost:3001/auth/loginGoogle'>
+        <a href='https://back.socialn.me/auth/loginGoogle'>
 						  <BsGoogle/>
 					  </a>
-						<a href='http://localhost:3001/auth/loginFacebook'>
+						<a href='https://back.socialn.me/auth/loginFacebook'>
 							<AiFillFacebook/>
 						</a>
 						{/* <a href='http://localhost:3001/auth/loginGithub'>

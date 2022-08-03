@@ -1,12 +1,12 @@
 import "./profile.css";
-import { UsersDummy } from "../../data/20UsersDummy";
+// import { UsersDummy } from "../../data/20UsersDummy";
 import { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 import EditFullname from "../../components/EditFullname";
 import EditUsername from "../../components/EditUsername";
 import EditBiography from "../../components/EditBiography";
 import ProfilePosts from "../../components/ProfilePostsRenderer";
-import { mockPost } from "../../data/20DummyPosts";
+// import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import {
@@ -27,7 +27,7 @@ import axios from "axios";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
-import Multiselect from "multiselect-react-dropdown";
+// import Multiselect from "multiselect-react-dropdown";
 
 //iconos
 import { AiFillSetting } from "react-icons/ai";
@@ -39,9 +39,9 @@ const Profile = () => {
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [image, setImage] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
+  const loading = useSelector((state) => state.user.loadingProfile);
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
@@ -56,6 +56,7 @@ const Profile = () => {
     lastname: userLastName,
     profilePicture,
     biography: userBiography,
+    username: userUsername,
   } = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
   const [changeProfilePicture, setChangeProfilePicture] = useState("");
@@ -76,15 +77,9 @@ const Profile = () => {
     }
   };
 
-  const handleGetUserProfile = async () => {
-    setLoading(true);
-    dispatch(getUserProfile(params.id));
-    setLoading(false);
-  };
-
   //traigo la info del perfil en el q estoy (didMount)
   useEffect(() => {
-    handleGetUserProfile();
+    dispatch(getUserProfile(params.id));
     return () => dispatch(clearProfileData());
   }, [params.id]);
 
@@ -218,24 +213,24 @@ const Profile = () => {
     );
   };
 
-  const [dummyOptions, setDummyOptions] = useState([
-    { name: "with Multimedia", id: 1 },
-    { name: "Date Published 2️⃣", id: 2 },
-    { name: "Likes 2️⃣", id: 3 },
-    { name: "Comments 2️⃣", id: 4 },
-  ]);
+  // const [dummyOptions, setDummyOptions] = useState([
+  //   { name: "with Multimedia", id: 1 },
+  //   { name: "Date Published 2️⃣", id: 2 },
+  //   { name: "Likes 2️⃣", id: 3 },
+  //   { name: "Comments 2️⃣", id: 4 },
+  // ]);
 
-  const multiSelectFilters = () => {
-    return (
-      <Multiselect
-        options={dummyOptions} // Options to display in the dropdown
-        // selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
-        onSelect={(e) => console.log(e)} // Function will trigger on select event
-        onRemove={(e) => console.log(e)} // Function will trigger on remove event
-        displayValue="name" // Property name to display in the dropdown options
-      />
-    );
-  };
+  // const multiSelectFilters = () => {
+  //   return (
+  //     <Multiselect
+  //       options={dummyOptions} // Options to display in the dropdown
+  //       // selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
+  //       onSelect={(e) => console.log(e)} // Function will trigger on select event
+  //       onRemove={(e) => console.log(e)} // Function will trigger on remove event
+  //       displayValue="name" // Property name to display in the dropdown options
+  //     />
+  //   );
+  // };
 
   const postApplyFilters = () => {
     if (!posts) return [];
@@ -292,7 +287,7 @@ const Profile = () => {
           {/* {multiSelectFilters()} */}
           {postApplyFilters().map((p) => {
             return (
-              <Fragment key={p.postNumber}>
+              <Fragment key={p._id}>
                 <ProfilePosts
                   userId={p.userId._id}
                   postNumber={p._id}
@@ -398,7 +393,7 @@ const Profile = () => {
               </div>
               <div className="shadow-box">
                 <div className="user_description">
-                  <div className="user-firstname">
+                  <div className="user-firstname justify-between">
                     <div className="info_container">
                       <span className="span-info">Full name</span>
                       <p>{`${userFirstName + " " + userLastName}`}</p>
@@ -416,10 +411,10 @@ const Profile = () => {
                       </div>
                     ) : null}
                   </div>
-                  <div className="user-username">
+                  <div className="user-username justify-between">
                     <div className="info_container">
                       <span className="span-info">Username</span>
-                      {"@" + username}
+                      {"@" + userUsername}
                     </div>
                     {params.id === userLoggedId ? (
                       <div className="button_container">
@@ -434,7 +429,6 @@ const Profile = () => {
                       </div>
                     ) : null}
                   </div>
-
                   <div className="user-followers">
                     <div className="info_container">
                       <span className="span-info">Followers</span>
@@ -447,11 +441,10 @@ const Profile = () => {
                       {_id ? following.length : null}
                     </div>
                   </div>
-
-                  <div className="user-biography">
+                  <div className="user-biography justify-between">
                     <div className="info_container">
                       <span className="span-info">Biography</span>
-                      {userBiography ?? "No bio yet"}
+                      {userBiography ?? "No biography added yet"}
                     </div>
                     {params.id === userLoggedId ? (
                       <div className="button_container">
@@ -515,91 +508,83 @@ const Profile = () => {
                   </div>
                   {userLoggedId !== _id ? (
                     <div className="user-follow">
-                      <div className="info_container"></div>
-                      <div className="button_container">
-                        <button
-                          className="button_container"
-                          onClick={() => {
-                            dispatch(followOrUnfollowUser(userLoggedId, _id));
-                          }}
-                          type="button"
-                        >
-                          {followers && followRenderer()}
-                        </button>
-                      </div>
-                      
-            <button
-              className="flex items-center gap-1"
-              onClick={() => {
-					      Swal.fire({
-					        background: "#4c4d4c",
-  					      color: "white",
-	  			        title: 'Submit your Report',
-		  		        input: 'textarea',
-					        inputAttributes: {
-			  		      autocapitalize: 'off'
-				          },
-				          showCancelButton: true,
-					        confirmButtonText: 'Submit',
-					        showLoaderOnConfirm: true,
-					        preConfirm: (login) => {
-						        dispatch(makeReport(userLoggedId, params.id, {reason: login, reported: 'user'})) 
-					        },
-				          allowOutsideClick: () => !Swal.isLoading()
-				        })
-		          }}
-            >
-              <FaExclamation /> Report user
-            </button>
-
                       <button
-                        className=""
+                        className="flex-1 flex justify-center"
                         onClick={() => {
-                          dispatch(
-                            makeReport(userLoggedId, params.id, {
-                              reason /*crear input */,
-                              reported: "user",
-                            })
-                          ); // reported toma valores 'post', 'comment' y 'user'
+                          dispatch(followOrUnfollowUser(userLoggedId, _id));
                         }}
+                        type="button"
                       >
-                        <FaExclamation /> Report user
-                        {/* {post && renderHeartBrokenIcon()} */}
+                        {followers && followRenderer()}
                       </button>
                     </div>
                   ) : null}
+                  {
+                    params.id != userLoggedId &&
+                    <div className="user-report">
+                      <button
+                        className=" flex-1 flex justify-center items-center gap-1"
+                        onClick={() => {
+                          Swal.fire({
+                            background: "#4c4d4c",
+                            color: "white",
+                            title: "Submit your Report",
+                            input: "textarea",
+                            inputAttributes: {
+                              autocapitalize: "off",
+                            },
+                            showCancelButton: true,
+                            confirmButtonText: "Submit",
+                            showLoaderOnConfirm: true,
+                            preConfirm: (login) => {
+                              dispatch(
+                                makeReport(userLoggedId, params.id, {
+                                  reason: login,
+                                  reported: "user",
+                                })
+                              );
+                            },
+                            allowOutsideClick: () => !Swal.isLoading(),
+                          });
+                        }}
+                      >
+                        <FaExclamation /> Report user
+                      </button>
+                      </div>
+                  }
                 </div>
+                
               </div>
             </>
           )}
         </div>
-        <hr />
 
-    {isPrivate && usersFollowing?.includes(userLoggedId) || userLoggedId === params.id || !isPrivate?
-        <div id="Profile-posts__container">{_id ? renderer() : null}</div>
-        : null
-      }
-        </div>
-        {firstname === true && (
+        {(isPrivate && usersFollowing?.includes(userLoggedId)) ||
+        userLoggedId === params.id ||
+        !isPrivate ? (
+          <div id="Profile-posts__container">{_id ? renderer() : null}</div>
+        ) : null}
+      </div>
+      {firstname === true && (
         <EditFullname
           renderChangeRenderComponents={renderChangeRenderComponents}
-          user={user}
+          user={username}
         />
       )}
       {username === true && (
         <EditUsername
           renderChangeRenderComponents={renderChangeRenderComponents}
-          user={user}
+          user={username}
         />
       )}
       {biography === true && (
         <EditBiography
           renderChangeRenderComponents={renderChangeRenderComponents}
-          user={user}
+          user={username}
         />
       )}
-      </>
-      )
+    </>
+  );
 };
 
 export default Profile;
