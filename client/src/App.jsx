@@ -86,6 +86,7 @@ function App() {
       socket.on("call", (_id) => {
         //DISPLAYS THE VIDEOCALL
         setOnCall(true);
+		console.log('yo me llamo, de aca en adelante se rompe')
         //GET CAMERA AND MIC DATA
         getUserMedia(
           { video: true, audio: true },
