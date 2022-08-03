@@ -51,7 +51,6 @@ const UserConversation = () => {
 
     const handleCall = () =>{
       socket.emit('call', chatInfo.users[getIndex(chatInfo.users)]._id, loggedUser._id) 
-      socket.off('call')
     }
 
   return (
