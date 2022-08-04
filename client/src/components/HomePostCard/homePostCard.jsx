@@ -16,7 +16,6 @@ const HomePostCard = (props) => {
   useEffect(()=> {
     setShowMore(props.content)
   }, [props.content])
-  console.log(showMore);
   let dispatch = useDispatch();
   const loggedUser = useSelector((store) => store.auth.loggedUser);
   let { userFollowings } = useSelector((state) => state.user);
@@ -52,8 +51,8 @@ const HomePostCard = (props) => {
 
   let index = homePostsData.findIndex((post) => post._id === props.postId);
 
-  console.log(homePostsData);
-  console.log(index);
+  // console.log(homePostsData);
+  // console.log(index);
 
   let renderHeartIcon = () => {  
       if (!homePostsData[index].likes?.includes(user._id)) {
@@ -128,8 +127,8 @@ const HomePostCard = (props) => {
                   type="button"
                   className="ml-2 text-green-600   outline-1 outline px-1 rounded-md hover:text-green-700 transition-all"
                   onClick={async () => {
-                    console.log("hello");
-                    console.log(props.userId);
+                    // console.log("hello");
+                    // console.log(props.userId);
                     dispatch(
                       followOrUnfollowUser(loggedUser._id, props.userId)
                     ).then(() => dispatch(getUserFollowings(loggedUser._id)));
