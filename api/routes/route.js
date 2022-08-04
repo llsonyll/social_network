@@ -53,9 +53,6 @@ server.use('/comment', comment_1.default);
 server.use('/chat', chat_1.default);
 server.use('/premium', premium_1.default);
 server.use('/report', report_1.default);
-<<<<<<< HEAD
 server.use('/notification', notification_1.default);
-=======
 server.use('/admin', admin_1.default);
->>>>>>> 106db5de0d2666234d9376104f74abc94c29d39f
 exports.default = server;
