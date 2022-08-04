@@ -120,12 +120,12 @@ const NavBar = ({ openModal, openAdmin }) => {
           <MdOutlineLogout />
         </button>
         {isAdmin && (
-          <button
+          <NavLink
             className="bg-blue-700 p-2 rounded font-bold text-lg"
-            onClick={openAdmin}
+            to="administrator"
           >
             <MdAdminPanelSettings />
-          </button>
+          </NavLink>
         )}
         <NewPostBtn action={openModal} />
       </div>

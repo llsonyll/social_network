@@ -7,6 +7,7 @@ import PostDetail from "./pages/PostDetail";
 // import Premium from './pages/Premium';
 import DashBoard from "./layout/Dashboard";
 import Settings from "./pages/Settings";
+import Administrator from "./pages/Admin";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,7 +44,7 @@ function App() {
   const [otherVideo, setOtherVideo] = useState();
   const [onCall, setOnCall] = useState(false);
 
-  console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
+  console.log("SOY EL CONSOLE LOG DE AAAAAAAPPPP");
 
   useEffect(() => {
     if (localStorage.getItem("token") && !loggedUser._id) {
@@ -233,6 +234,7 @@ function App() {
             <Route path=":id" element={<Messages />} />
           </Route>
           <Route path="post/:id" element={<PostDetail />} />
+          <Route path="administrator" element={<Administrator />} />
         </Route>
       </Routes>
     </>

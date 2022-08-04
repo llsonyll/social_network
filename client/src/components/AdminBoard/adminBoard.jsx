@@ -12,9 +12,9 @@ const AdminBoard = ({ showAdmin, setShowAdmin }) => {
   const [tab, setTab] = useState("search"); // search, reports, stadistics
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <div className="bg-[#262626] shadow-xl rounded-sm relative md:p-12 p-6">
-        <button
+        {/* <button
           type="button"
           className="absolute top-2 right-1 text-gray-400 bg-transparent rounded-lg text-sm p-1.5 ml-auto inline-flex items-center hover:bg-stone-800"
           data-modal-toggle="popup-modal"
@@ -23,7 +23,7 @@ const AdminBoard = ({ showAdmin, setShowAdmin }) => {
           <span className="text-2xl">
             <AiFillCloseSquare />
           </span>
-        </button>
+        </button> */}
         <div className="text-white font-bold text-4xl text-center md:mb-8 mb-4 ">
           Admin Dashboard
         </div>
