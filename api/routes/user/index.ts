@@ -187,6 +187,22 @@ router.put(
         return res.status(400).json({ errprMsg: "Please send data" });
       }
 
+      if (req.body.isPremium === false) {
+        req.body.plan = undefined;
+        req.body.expirationDate = undefined;
+      }
+
+      if (req.body.isPremium) {
+        req.body.plan = 'weekly';
+        
+        function sumarDias(fecha: Date, dias: number){
+          fecha.setDate(fecha.getDate() + dias);
+          return fecha;
+        }
+        const date = new Date();
+        req.body.expirationDate = sumarDias(date, 7);
+      }
+
       const user = await User.findByIdAndUpdate(`${userId}`, req.body, {
         new: true,
       })
@@ -350,7 +366,12 @@ router.post("/restorePassword", async (req: Request, res: Response) => {
         error: "Email provided does not belong to any registered user",
       });
 
-    const dummyPassword = "abcde12345";
+    const  generateRandomString = (num: number) => {
+      let result = Math.random().toString(36).substring(0, num);             
+      return result;
+    };
+
+    const dummyPassword = generateRandomString(Math.random() * 10 + 6);
 
     const mailMessage: mailInfo = {
       title: "Password Restored",

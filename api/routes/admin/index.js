@@ -50,4 +50,21 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         return res.status(400).json(error);
     }
 }));
+router.get('/payments/:adminId/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { adminId, userId } = req.params;
+        const admin = yield mongoose_1.User.findById(`${adminId}`);
+        if (!admin || !admin.isAdmin)
+            return res.status(401).json('Missing permissions');
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            return res.status(404).json('User not found');
+        const payments = yield mongoose_1.Payment.find({ userId: user._id });
+        return res.json(payments);
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json(error);
+    }
+}));
 exports.default = router;
