@@ -55,9 +55,9 @@ router.get('/:postId', passport_1.default.authenticate('jwt', { session: false, 
         //Search a post and select the data we want to send
         let post = yield mongoose_1.Post.findById(`${postId}`)
             .populate({ path: 'commentsId', select: ['content', 'likes', 'dislikes'], populate: { path: 'userId', select: ['username', 'likes', 'dislikes', 'profilePicture'] } })
-            .populate('userId', ['username', 'profilePicture'])
-            //.populate('likes', 'username')
-            .populate('dislikes', 'username');
+            .populate('userId', ['username', 'profilePicture']);
+        //.populate('likes', 'username')-
+        //.populate('dislikes', 'username')
         //If no post found send error, else send the post
         if (!post) {
             res.status(400).json("Post doesn't exist");
