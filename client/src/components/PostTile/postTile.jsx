@@ -66,7 +66,7 @@ const PostTile = ({ post }) => {
   const { likes, dislikes } = useSelector((state) => state.post.postDetail);
 
   let renderHeartIcon = () => {
-    if (!likes.find((like) => like._id === user?._id)) {
+    if (!likes.includes(user._id)) {
       return <FaHeart />;
     } else {
       return (
@@ -82,7 +82,7 @@ const PostTile = ({ post }) => {
   };
 
   let renderHeartBrokenIcon = () => {
-    if (!dislikes.find((dislike) => dislike._id === user?._id)) {
+    if (!dislikes.includes(user._id)) {
       return <ImHeartBroken />;
     } else {
       return (
