@@ -5,7 +5,7 @@ import { setNotifications } from "../reducers/notificationReducer.slice";
 export const getNotifications = (userId) => async (dispatch) => {
     try{
         let {data} = await apiConnection.get(`notification/${userId}`)
-        
+        console.log(data, 'pidiendo las putas notificaciones')
         return dispatch(setNotifications(data))
     }catch(err){
         console.log(err)
@@ -14,7 +14,7 @@ export const getNotifications = (userId) => async (dispatch) => {
 
 export const setSeenNotifications = (userId) => async(dispatch) => {
     try{
-        let {data} = await apiConnection.put(`notification/${userId}`)
+        let {data} = await apiConnection.put(`notification/seen/${userId}`)
 
         return dispatch(setNotifications(data))
     }catch(err){
@@ -25,10 +25,10 @@ export const setSeenNotifications = (userId) => async(dispatch) => {
 export const postNotification = ({type, refId, fromId, toId, username, profilePicture }) => async(dispatch) => {
     try{
         let content;
-        if(type === 'Postlike'){
+        if(type === 'postLike'){
             type = 'like'
             content = `@${username} liked your post!`
-        }else if (type === 'Commentlike'){
+        }else if (type === 'commentLike'){
             type = 'like'
             content = `@${username} liked your comment!`
         }else if(type === 'comment'){

@@ -21,9 +21,18 @@ router.post('/:fromId/:toId', passport.authenticate("jwt", {
         const { content, type, refId } = req.body;
 
         try {
+            let checkSpam:INotification| null;
             const from: IUser | null = await User.findById(`${fromId}`)
             const to: IUser | null = await User.findById(`${toId}`)
             if (!from || !to) return res.status(404).json({ errorMsg: "Missing data !!!!" })
+            if(type !== 'message' || type !== 'comment'){
+                checkSpam = await Notification.findOne({from: from._id, to:to._id, refId: refId, type:type, content:content})
+            }else{
+                checkSpam = await Notification.findOne({from: from._id, to:to._id, refId: refId, type:type, content:content, seen: false})
+            }
+            if(checkSpam){
+                return res.status(400).json({ errorMsg: 'Already notificated' })
+            }
             const notification = new Notification({
                 from: from._id,
                 to: to._id,
@@ -53,8 +62,10 @@ router.get('/:userId', passport.authenticate("jwt", {
             const user: IUser | null = await User.findById(`${userId}`)
             if (!user) return res.status(404).json({ errorMsg: "Wtf who are you men?" })
             const notifications = await Notification.find({ to: user._id })
+            .populate('from', ['username', 'profilePicture'])
+            .sort({createdAt: -1})
 
-            return res.send(notifications)
+            return res.json(notifications)
         } catch (err) {
             return res.status(400).json({ errorMsg: err })
         }
@@ -79,8 +90,10 @@ router.put('/seen/:userId', passport.authenticate("jwt", {
             const deleted = await Notification.deleteMany({ to: user._id, createdAt: { $lt: new Date(date - 259200000) }, seen: true })
 
             const updatedNotifications = await Notification.find({ to: user._id })
+            .populate('from', ['username', 'profilePicture'])
+            .sort({createdAt: -1})
 
-            return res.send(updatedNotifications)
+            return res.json(updatedNotifications)
 
         } catch (err) {
             res.status(400).json({ errorMsg: err })

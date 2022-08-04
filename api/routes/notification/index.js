@@ -23,10 +23,20 @@ router.post('/:fromId/:toId', passport_1.default.authenticate("jwt", {
     const { fromId, toId } = req.params;
     const { content, type, refId } = req.body;
     try {
+        let checkSpam;
         const from = yield mongoose_1.User.findById(`${fromId}`);
         const to = yield mongoose_1.User.findById(`${toId}`);
         if (!from || !to)
             return res.status(404).json({ errorMsg: "Missing data !!!!" });
+        if (type !== 'message' || type !== 'comment') {
+            checkSpam = yield mongoose_1.Notification.findOne({ from: from._id, to: to._id, refId: refId, type: type, content: content });
+        }
+        else {
+            checkSpam = yield mongoose_1.Notification.findOne({ from: from._id, to: to._id, refId: refId, type: type, content: content, seen: false });
+        }
+        if (checkSpam) {
+            return res.status(400).json({ errorMsg: 'Already notificated' });
+        }
         const notification = new mongoose_1.Notification({
             from: from._id,
             to: to._id,
@@ -51,8 +61,10 @@ router.get('/:userId', passport_1.default.authenticate("jwt", {
         const user = yield mongoose_1.User.findById(`${userId}`);
         if (!user)
             return res.status(404).json({ errorMsg: "Wtf who are you men?" });
-        const notifications = yield mongoose_1.Notification.find({ to: user._id });
-        return res.send(notifications);
+        const notifications = yield mongoose_1.Notification.find({ to: user._id })
+            .populate('from', ['username', 'profilePicture'])
+            .sort({ createdAt: -1 });
+        return res.json(notifications);
     }
     catch (err) {
         return res.status(400).json({ errorMsg: err });
@@ -70,8 +82,10 @@ router.put('/seen/:userId', passport_1.default.authenticate("jwt", {
             return res.status(404).json({ errorMsg: "Wtf who are you?" });
         const seenNotifications = yield mongoose_1.Notification.updateMany({ to: user._id }, { $set: { seen: true } }, { new: true });
         const deleted = yield mongoose_1.Notification.deleteMany({ to: user._id, createdAt: { $lt: new Date(date - 259200000) }, seen: true });
-        const updatedNotifications = yield mongoose_1.Notification.find({ to: user._id });
-        return res.send(updatedNotifications);
+        const updatedNotifications = yield mongoose_1.Notification.find({ to: user._id })
+            .populate('from', ['username', 'profilePicture'])
+            .sort({ createdAt: -1 });
+        return res.json(updatedNotifications);
     }
     catch (err) {
         res.status(400).json({ errorMsg: err });
