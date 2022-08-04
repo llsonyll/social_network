@@ -5,21 +5,6 @@ import { Comment, Post, User } from '../../mongoose';
 
 const router = express.Router()
 
-router.get("likes/:postId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
-     async(req:Request, res: Response )=>{
-         try {
-             let postId = req.params.postId;
-              console.log("entre")
-             let post = await Post.findById(postId)
-                        .populate("likes._id",['username','profilePicture']);
-             if(!post){return res.status(404).json("not post")};
-             
-             res.status(200).json(post);
-         } catch (err) {
-            res.json(err);
-         }
-    });
-
 router.put('/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req:Request, res:Response) => {
     try{
         const {postId, userId} = req.params
@@ -105,6 +90,36 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
         res.status(400).json('something went wrong')
     }
 });
+
+router.get("/likes/:postId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
+     async(req:Request, res: Response )=>{
+         try {
+             let postId = req.params.postId;
+ 
+             let post = await Post.findById(postId)
+                        .populate("likes",['username','profilePicture']);
+             if(!post){return res.status(404).json("not post")};
+             
+             res.status(200).json(post.likes);
+         } catch (err) {
+            res.json(err);
+         }
+    });
+
+    router.get("/dislikes/:postId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
+    async(req:Request, res: Response )=>{
+        try {
+            let postId = req.params.postId;
+
+            let post = await Post.findById(postId)
+                       .populate("dislikes",['username','profilePicture']);
+            if(!post){return res.status(404).json("not post")};
+            
+            res.status(200).json(post.dislikes);
+        } catch (err) {
+           res.json(err);
+        }
+   });
 
 router.put("/dislike/:postId/:userId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
 async (req:Request, res:Response) => {
