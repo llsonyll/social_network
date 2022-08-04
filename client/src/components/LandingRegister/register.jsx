@@ -178,6 +178,7 @@ const Register = () => {
               name="fullname"
               placeholder="Name"
               value={input.fullname}
+              maxLength='25'
               onChange={(e) => {
                 setInput({ ...input, [e.target.name]: e.target.value });
               }}
@@ -196,6 +197,7 @@ const Register = () => {
               name="lastname"
               placeholder="Last name"
               value={input.lastname}
+              maxLength='25'
               onChange={(e) => {
                 setInput({ ...input, [e.target.name]: e.target.value });
               }}
@@ -215,6 +217,7 @@ const Register = () => {
             name="username"
             placeholder="Username"
             value={input.username}
+            maxLength='15'
             onChange={(e) => {
               setInput({ ...input, [e.target.name]: e.target.value });
             }}
@@ -233,6 +236,7 @@ const Register = () => {
             name="email"
             placeholder="example@example.com"
             value={input.email}
+            maxLength='50'
             onChange={(e) => {
               setInput({ ...input, [e.target.name]: e.target.value });
             }}
@@ -251,6 +255,7 @@ const Register = () => {
             name="password"
             placeholder="Password"
             value={input.password}
+            maxLength='20'
             onChange={(e) => {
               setInput({ ...input, [e.target.name]: e.target.value });
             }}

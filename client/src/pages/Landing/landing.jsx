@@ -77,7 +77,7 @@ const Landing = () => {
       ) : (
         <>
           <div className="wrap_toggle">
-            <input id="toggle" type="checkbox" onClick={handleChangeCheck} />
+            <input id="toggle" type="checkbox" onClick={handleChangeCheck}/>
             <label className="switch" htmlFor="toggle"></label>
             <div className="text_toggle">
               <p

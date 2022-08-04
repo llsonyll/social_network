@@ -62,7 +62,8 @@ const UserConversation = () => {
         </div>
             <Mensajes id={loggedUser._id} messages={chatInfo.messages}/>
         <form className='input_conversation__container' onSubmit={handleClick}>
-            <input value={text} type="text" onChange={(e) => setText( e.target.value ) } placeholder='Write a message here'/>
+            <input value={text} type="text" onChange={(e) => setText( e.target.value ) } placeholder='Write a message here'
+            maxLength='2000'/>
             <button type="submit" disabled={text === ''}>
                 <AiOutlineSend />
             </button>
