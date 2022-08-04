@@ -149,6 +149,17 @@ background-repeat:repeat;
   position: relative;
 
 }
+#contenedor_friends::-webkit-scrollbar{
+  width: 10px;
+  background-color: #2e2e2e;
+
+}
+#contenedor_friends::-webkit-scrollbar-thumb{
+  background:#4e864c;
+  border-radius: 10px;
+
+}
+
 .contenedorFriends-responsive_container .contenedorfriend .mess_friend_section{
   position: absolute;
   color: rgb(129, 129, 129);
@@ -160,6 +171,28 @@ background-repeat:repeat;
 .contenedorFriends-responsive_container .contenedorfriend .mess_friend_section:hover{
  color: #4e864c;
 
+}
+
+/* styles input friends */
+
+.input-friends_container{
+  width: 100%;
+  display: flex;
+  margin-top: 10px;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+}
+.input-friends_container .icon-home-search{
+  color: gray;
+  font-size: 20px;
+  align-self: center;
+  
+}
+.input-friends_container input{
+ background-color: transparent;
+ width: 100%;
+ outline: none;
+ padding: 5px;
 }
 
 @media (max-width:767px) {

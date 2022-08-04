@@ -1,9 +1,9 @@
 #coversation__container{
     display: flex;
     flex-direction: column;
-    padding: 0px 10px;
+    padding: 0px 20px;
     overflow-y: scroll;
-    
+    position: relative;
 }
 #coversation__container div {
     border: none;
@@ -21,14 +21,54 @@
 #coversation__container #lanzador {
    background-color: rgb(97, 100, 97);
    align-self: flex-start;
+   position: relative;
+}
+#coversation__container #lanzador::before {
+   content: '';
+   border-left: 5px solid transparent;
+   border-right: 5px solid transparent;
+   border-top: 10px solid rgb(97, 100, 97);
+   position: absolute;
+   left: -5px;
+   top: 0;
 }
 #coversation__container #receptor{
    background-color: #4e864c;
    align-self: flex-end;
+   position: relative;
+}
+#coversation__container #receptor::after{
+   content: '';
+   border-left: 5px solid transparent;
+   border-right: 5px solid transparent;
+   border-top: 10px solid #4e864c;
+   position: absolute;
+   right: -4px;
+   top: 0;
 }
 #coversation__container #receptor:last-child{
    margin-bottom: 0px;
 }
 #coversation__container #lanzador:last-child{
   margin-bottom: 0px;
+}
+
+.no_mensajes{
+   position: absolute;
+   padding: 0px 15px;
+   bottom: 10px;
+   background-color: #4e864c;
+   color: white;
+   align-self: center;
+   width: 40%;
+   text-align: center;
+   min-width: 150px;
+   border-radius: 5px;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.arrow_chat{
+   font-size: 30px;
 }

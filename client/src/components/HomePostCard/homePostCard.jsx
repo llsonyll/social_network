@@ -75,6 +75,8 @@ const HomePostCard = (props) => {
     }
   };
 
+  
+
   let renderHeartBrokenIcon = () => {
     if (
       !homePostsData[index].dislikes.includes(user._id)
@@ -143,10 +145,10 @@ const HomePostCard = (props) => {
           ) : null}
         </Link>
       </div>
-      <div className="actions flex gap-3 justify-end mt-1 md:mt-2 text-lg">
+      <div className="actions flex gap-3 justify-end mt-1 md:mt-2 text-xl">
         <Link to={`post/${props.postId}`}>
           <button
-            className="flex items-center gap-1 hover:text-gray-300"
+            className="flex items-center gap-1 hover:text-green-600"
             onClick={handleCommentPost}
           >
             <FaComment />
@@ -156,14 +158,14 @@ const HomePostCard = (props) => {
         </Link>
 
         <button
-          className="flex items-center gap-1 hover:text-gray-300"
+          className="transition-all flex items-center gap-1 hover:text-red-500"
           onClick={handleLikesPost}
         >
           {post && renderHeartIcon()}
           {homePostsData && homePostsData[index].likes.length}
         </button>
 
-        <div className="flex items-center gap-1 hover:text-gray-300">
+        <div className="flex items-center gap-1 hover:text-violet-500">
           <button
             className="flex items-center gap-1"
             onClick={handleDislikesPost}
