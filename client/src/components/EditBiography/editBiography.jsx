@@ -47,6 +47,7 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 							<textarea
 								id='message'
 								rows='4'
+								maxLength="200"
 								className='block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none'
 								placeholder={`New Biograpy`}
 								value={bio}

@@ -100,6 +100,7 @@ const NewPost = ({ showModal, setShowModal }) => {
                 placeholder="Your message..."
                 onChange={handleInputPost}
                 value={postInput}
+                maxLength="1000"
               ></textarea>
               {/* SI HAY FOTO LA MUESTRA */}
               {postMedia ? (

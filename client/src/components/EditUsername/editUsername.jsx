@@ -75,6 +75,7 @@ const EditUsername = ({ renderChangeRenderComponents, user }) => {
                 placeholder={currentUserName}
                 onChange={handleChange}
                 value={username}
+                maxLength="15"
               ></input>
 
               <div className=" relative text-center flex items-baseline justify-center after:content-[''] after:ml-0 after:absolute after:right-0 after:left-0 after:-top-2 after:bg-[#424242] after:h-0.5">

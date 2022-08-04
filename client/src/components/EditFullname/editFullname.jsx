@@ -136,6 +136,7 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
                 }}
                 className="block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none"
                 placeholder={currentFirstName}
+                maxLength="20"
               ></input>
               <input
                 rows="4"
@@ -145,6 +146,7 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
                 }}
                 className="block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none"
                 placeholder={currentLastName}
+                maxLength="20"
               ></input>
 
               <div className=" relative flex text-center items-baseline justify-center after:content-[''] after:ml-0 after:absolute after:right-0 after:left-0 after:-top-2 after:bg-[#424242] after:h-0.5">

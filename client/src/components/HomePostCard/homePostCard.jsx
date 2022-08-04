@@ -188,6 +188,7 @@ const HomePostCard = (props) => {
                 title: "Submit your Report",
                 input: "textarea",
                 inputAttributes: {
+                  maxlength: 150,
                   autocapitalize: "off",
                 },
                 showCancelButton: true,
