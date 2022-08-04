@@ -42,7 +42,6 @@ const Profile = () => {
   const [image, setImage] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
   const loading = useSelector((state) => state.user.loadingProfile);
-  const error = useSelector((state) => state.user.errorProfile);
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
@@ -330,7 +329,7 @@ const Profile = () => {
             <div className="w-full h-full flex justify-center items-center pt-5">
               <LoadingSpinner />
             </div>
-          ) : !error ? (
+          ) : (
             <>
               <div className="img-container">
                 {/* <img
@@ -532,7 +531,6 @@ const Profile = () => {
                             title: "Submit your Report",
                             input: "textarea",
                             inputAttributes: {
-                              maxlength: 150,
                               autocapitalize: "off",
                             },
                             showCancelButton: true,
@@ -558,10 +556,6 @@ const Profile = () => {
                 
               </div>
             </>
-          ) : (
-            <div className="text-center text-white font-bold">
-              No se pudo cargar el perfil
-            </div>
           )}
         </div>
 

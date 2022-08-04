@@ -60,7 +60,7 @@ const ProfilePosts = (props) => {
 	const posts = useSelector(state => state.user.userProfileData.posts);
 	let index = posts.findIndex(post => post._id === postNumber);
 	let renderHeartIcon = () => {
-		if (!posts[index].likes.find( like => like._id === _id)) {
+		if (!posts[index].likes.includes(_id)) {
 			return <FaHeart />
 		}else{
       return (

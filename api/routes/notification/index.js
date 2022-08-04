@@ -35,7 +35,6 @@ router.post('/:fromId/:toId', passport_1.default.authenticate("jwt", {
             checkSpam = yield mongoose_1.Notification.findOne({ from: from._id, to: to._id, refId: refId, type: type, content: content, seen: false });
         }
         if (checkSpam) {
-            console.log(checkSpam);
             return res.status(400).json({ errorMsg: 'Already notificated' });
         }
         const notification = new mongoose_1.Notification({
