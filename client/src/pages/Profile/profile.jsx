@@ -41,6 +41,7 @@ const Profile = () => {
   const [biography, setBiography] = useState(false);
   const [image, setImage] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
+  const loggedUser = useSelector((state) => state.auth.loggedUser)
   const loading = useSelector((state) => state.user.loadingProfile);
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
@@ -512,6 +513,14 @@ const Profile = () => {
                         className="flex-1 flex justify-center"
                         onClick={() => {
                           dispatch(followOrUnfollowUser(userLoggedId, _id));
+                          dispatch(postNotification({
+                            type:'follow',
+                            refId: loggedUser._id,
+                            fromId: loggedUser._id,
+                            toId: _id,
+                            username: loggedUser.username,
+                            profilePicture: loggedUser.profilePicture
+                          }))
                         }}
                         type="button"
                       >
