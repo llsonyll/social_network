@@ -56,13 +56,13 @@ const UserConversation = () => {
   return (
     chatInfo._id? <div className='userconversation__container'>
         <div className='header_conversation'>
-            <Avatar size='m' imgUrl={chatInfo.users[getIndex(chatInfo.users)].profilePicture}/>
+            <Avatar size='l' imgUrl={chatInfo.users[getIndex(chatInfo.users)].profilePicture}/>
            <span>{chatInfo.users[getIndex(chatInfo.users)].username}</span>
            <button type='button' onClick={handleCall} > <AiOutlinePhone /> </button> 
         </div>
             <Mensajes id={loggedUser._id} messages={chatInfo.messages}/>
         <form className='input_conversation__container' onSubmit={handleClick}>
-            <input value={text} type="text" onChange={(e) => setText( e.target.value ) }/>
+            <input value={text} type="text" onChange={(e) => setText( e.target.value ) } placeholder='Write a message here'/>
             <button type="submit" disabled={text === ''}>
                 <AiOutlineSend />
             </button>

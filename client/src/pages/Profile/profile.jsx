@@ -42,6 +42,7 @@ const Profile = () => {
   const [image, setImage] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
   const loading = useSelector((state) => state.user.loadingProfile);
+  const error = useSelector((state) => state.user.errorProfile);
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
@@ -329,7 +330,7 @@ const Profile = () => {
             <div className="w-full h-full flex justify-center items-center pt-5">
               <LoadingSpinner />
             </div>
-          ) : (
+          ) : !error ? (
             <>
               <div className="img-container">
                 {/* <img
@@ -517,7 +518,11 @@ const Profile = () => {
                       >
                         {followers && followRenderer()}
                       </button>
-
+                    </div>
+                  ) : null}
+                  {
+                    params.id != userLoggedId &&
+                    <div className="user-report">
                       <button
                         className=" flex-1 flex justify-center items-center gap-1"
                         onClick={() => {
@@ -546,26 +551,16 @@ const Profile = () => {
                       >
                         <FaExclamation /> Report user
                       </button>
-
-                      {/* <button
-                        className="flex-1 flex justify-center items-center gap-1"
-                        onClick={() => {
-                          dispatch(
-                            makeReport(userLoggedId, params.id, {
-                              reason,
-                              reported: "user",
-                            })
-                          ); // reported toma valores 'post', 'comment' y 'user'
-                        }}
-                      >
-                        <FaExclamation /> Report user
-                        {posts && renderHeartBrokenIcon()}
-                      </button> */}
-                    </div>
-                  ) : null}
+                      </div>
+                  }
                 </div>
+                
               </div>
             </>
+          ) : (
+            <div className="text-center text-white font-bold">
+              No se pudo cargar el perfil
+            </div>
           )}
         </div>
 

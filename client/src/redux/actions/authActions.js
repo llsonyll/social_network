@@ -15,6 +15,7 @@ export const loginAction = (obj) => async (dispatch) => {
     //}
 
     setAuthorization(token);
+
     return dispatch(
       loginUser({
         username: username,
@@ -68,6 +69,7 @@ export const registerAction = (obj) => async (dispatch) => {
 
 export const getLoggedUserInfo = () => async (dispatch) => {
   try {
+    console.log('getLoggedUserInfo');
     const token = localStorage.getItem("token");
     setAuthorization(token);
     const {

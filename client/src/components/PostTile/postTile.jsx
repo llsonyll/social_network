@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Avatar from "../Avatar";
 import CommentTile from "../CommentTile";
 import LoadingSpinner from "../LoadingSpinner";
+import MultimediaElement from "../MultimediaElement";
 // import CommentInput from "../CommentInput";
 import { FaHeart, FaExclamation } from "react-icons/fa";
 import { ImHeartBroken } from "react-icons/im";
@@ -15,7 +16,7 @@ import {
 } from "../../redux/actions/postActions";
 import { TiArrowBack } from "react-icons/ti";
 import "./postTile.css";
-import { makeReport } from "../../redux/actions/reportActions";
+import { makeReport } from "../../redux/actions/userActions";
 import Swal from "sweetalert2";
 
 const PostTile = ({ post }) => {
@@ -98,7 +99,15 @@ const PostTile = ({ post }) => {
 
   return (
     <>
-      <div className="flex">
+      <div className="flex relative">
+        <button
+          onClick={() => {
+            history.back();
+          }}
+          className="absolute right-2 text-white"
+        >
+          <TiArrowBack />
+        </button>
         <div>
           {post && post.userId ? (
             <Link to={`/home/profile/${post.userId._id}`}>
@@ -112,14 +121,6 @@ const PostTile = ({ post }) => {
         </div>
         <div className="flex-1 px-4 overflow-y-auto">
           <div className="userInfo mb-3">
-            <button
-              onClick={() => {
-                history.back();
-              }}
-              className="divStyle"
-            >
-              <TiArrowBack />
-            </button>
             <div className="text-white font-medium">
               {post && post.userId ? (
                 <Link to={`/home/profile/${post.userId._id}`}>
@@ -145,7 +146,7 @@ const PostTile = ({ post }) => {
           </div>
           {post ? (
             post.multimedia ? (
-              <img src={post.multimedia} alt="" />
+              <MultimediaElement source={post.multimedia} />
             ) : null
           ) : null}
           <div className="actions flex gap-3 items-center justify-end my-2 text-white ">
@@ -174,36 +175,36 @@ const PostTile = ({ post }) => {
               </button>
             </div>
 
-          {user._id !== post.userId?._id ?
-            <button
-              className="flex items-center gap-1"
-              onClick={() => {
-                Swal.fire({
-                  background: "#4c4d4c",
-                  color: "white",
-                  title: "Submit your Report",
-                  input: "textarea",
-                  inputAttributes: {
-                    autocapitalize: "off",
-                  },
-                  showCancelButton: true,
-                  confirmButtonText: "Submit",
-                  showLoaderOnConfirm: true,
-                  preConfirm: (login) => {
-                    dispatch(
-                      makeReport(user._id, post._id, {
-                        reason: login,
-                        reported: "post",
-                      })
-                    );
-                  },
-                  allowOutsideClick: () => !Swal.isLoading(),
-                });
-              }}
-            >
-              <FaExclamation />
-            </button>
-          : null}
+            {user._id !== post.userId?._id ? (
+              <button
+                className="flex items-center gap-1"
+                onClick={() => {
+                  Swal.fire({
+                    background: "#4c4d4c",
+                    color: "white",
+                    title: "Submit your Report",
+                    input: "textarea",
+                    inputAttributes: {
+                      autocapitalize: "off",
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: "Submit",
+                    showLoaderOnConfirm: true,
+                    preConfirm: (login) => {
+                      dispatch(
+                        makeReport(user._id, post._id, {
+                          reason: login,
+                          reported: "post",
+                        })
+                      );
+                    },
+                    allowOutsideClick: () => !Swal.isLoading(),
+                  });
+                }}
+              >
+                <FaExclamation />
+              </button>
+            ) : null}
           </div>
 
           <div className="comments">
