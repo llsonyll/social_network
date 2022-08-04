@@ -46,7 +46,7 @@ router.get('/:postId', passport.authenticate('jwt', {session:false, failureRedir
         .populate({path: 'commentsId',select: ['content', 'likes', 'dislikes'], populate:{path: 'userId', select: ['username', 'likes', 'dislikes','profilePicture']}})
         .populate('userId', ['username', 'profilePicture'])
         //.populate('likes', 'username')
-        .populate('dislikes', 'username')
+        //.populate('dislikes', 'username')
         //If no post found send error, else send the post
         if(!post){
             res.status(400).json("Post doesn't exist")
