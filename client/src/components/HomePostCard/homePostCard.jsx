@@ -46,20 +46,24 @@ const HomePostCard = (props) => {
 
   let index = homePostsData.findIndex((post) => post._id === props.postId);
 
-  let renderHeartIcon = () => {
-    if (!homePostsData[index].likes.includes(user._id)) {
-      return <FaHeart />;
-    } else {
-      return (
-        <IconContext.Provider
-          value={{ color: "red", className: "global-heart-class-name" }}
-        >
-          <div>
-            <FaHeart />
-          </div>
-        </IconContext.Provider>
-      );
-    }
+  console.log(homePostsData);
+  console.log(index);
+
+  let renderHeartIcon = () => {  
+      if (!homePostsData[index].likes?.includes(user._id)) {
+        return <FaHeart />;
+      } else {
+        return (
+          <IconContext.Provider
+            value={{ color: "red", className: "global-heart-class-name" }}
+          >
+            <div>
+              <FaHeart />
+            </div>
+          </IconContext.Provider>
+        );
+      }
+    
   };
 
   const followRenderer = () => {
@@ -79,7 +83,7 @@ const HomePostCard = (props) => {
 
   let renderHeartBrokenIcon = () => {
     if (
-      !homePostsData[index].dislikes.includes(user._id)
+      !homePostsData[index].dislikes?.includes(user._id)
     ) {
       console.log("Entra blanco");
       return <ImHeartBroken />;
@@ -162,7 +166,7 @@ const HomePostCard = (props) => {
           onClick={handleLikesPost}
         >
           {post && renderHeartIcon()}
-          {homePostsData && homePostsData[index].likes.length}
+          {homePostsData && homePostsData[index].likes?.length}
         </button>
 
         <div className="flex items-center gap-1 hover:text-violet-500">
@@ -171,7 +175,7 @@ const HomePostCard = (props) => {
             onClick={handleDislikesPost}
           >
             {post && renderHeartBrokenIcon()}
-            {homePostsData && homePostsData[index].dislikes.length}
+            {homePostsData && homePostsData[index].dislikes?.length}
           </button>
         </div>
         {_id !== post.userId?._id ? (
