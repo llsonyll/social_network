@@ -185,6 +185,7 @@ const PostTile = ({ post }) => {
                     title: "Submit your Report",
                     input: "textarea",
                     inputAttributes: {
+                      maxLength: 150,
                       autocapitalize: "off",
                     },
                     showCancelButton: true,
@@ -222,6 +223,7 @@ const PostTile = ({ post }) => {
                   <Avatar />
                 )}
                 <input
+                  maxLength="500"
                   ref={inputRef}
                   value={commentInput}
                   onChange={handleCommentInput}

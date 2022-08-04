@@ -50,6 +50,7 @@ const EditPost = ({ userId , postNumber, content, showEditComponent}) => {
                         placeholder={`Edit Comment`}
                         defaultValue={content}
                         onChange={(e) => setPostText(e.target.value)}
+                        maxLength={2000}
                         >
                             {/* {
                                 `${content}`

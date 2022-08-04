@@ -158,6 +158,7 @@ const AdminSearchUser = () => {
             type="text"
             className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full"
             value={searchText}
+            maxLength="40"
             onChange={(e) => setSearchText(e.target.value)}
           />
           {searchText.length > 0 && (
@@ -220,16 +221,19 @@ const AdminSearchUser = () => {
             label="Firstname"
             value={userInfo.firstname}
             setValue={handleTextInputChange}
+            maxLength="20"
           />
           <InputText
             label="Lastname"
             value={userInfo.lastname}
             setValue={handleTextInputChange}
+            maxLength="20"
           />
           <InputText
             label="Username"
             value={userInfo.username}
             setValue={handleTextInputChange}
+            maxLength="15"
           />
           <div className="info_row flex gap-4">
             <div className="basis-1/4 font-light"> Password </div>
@@ -249,10 +253,12 @@ const AdminSearchUser = () => {
               <textarea
                 id="message"
                 rows="4"
+                maxLength="200"
                 className="block outline-none bg-[#363636] p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none"
                 name="biography"
                 value={userInfo.biography}
                 onChange={handleTextInputChange}
+                
               ></textarea>
             </div>
           </div>

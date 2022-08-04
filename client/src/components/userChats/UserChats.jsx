@@ -26,7 +26,8 @@ const UserChats = () => {
     <div className='chats__user-father'>
         <div className='search__container'>
             <AiOutlineSearch/>
-            <input type="text" onChange={(e) => setSearchChat(e.target.value)}/>
+            <input type="text" onChange={(e) => setSearchChat(e.target.value)} 
+            maxLength='20'/>
         </div>
         <div id='chats-user__container'>
             {
