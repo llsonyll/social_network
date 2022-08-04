@@ -33,6 +33,7 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 import { AiFillSetting } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { postNotification } from "../../redux/actions/notificationActions";
 
 const Profile = () => {
   const params = useParams();
