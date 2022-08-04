@@ -13,8 +13,10 @@ import { makeReport } from '../../redux/actions/reportActions';
 import Swal from 'sweetalert2';
 import EditPost from '../EditPost.jsx/editPost';
 import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
+import { useEffect } from "react";
 
 const ProfilePosts = (props) => {
+
   const {
     userId,
     postNumber,
@@ -27,6 +29,11 @@ const ProfilePosts = (props) => {
     dislikes,
     multimedia,
   } = props;
+  const [showMore, setShowMore] = useState('')
+  
+  useEffect(()=> {
+    setShowMore(content)
+  }, [content])
   const [editPost, setEditPost] = useState(false);
   const [showLikes, setShowLikes] = useState(false);
   const [showDislikes, setShowDislikes] = useState(false);
@@ -130,7 +137,17 @@ const ProfilePosts = (props) => {
         className="hover:bg-[#353535]  flex flex-col items-center rounded-md"
         >
           <div className="user-post-profile__content flex-1 pl-2 md:pl-4 ">
-            <div className="">{content ? content : null}</div>
+            <div className="">
+             
+
+              {
+                showMore.length > 500 ?  
+                <p>{showMore.substring(0,500)}... {<span className="text-green-600 ">View more</span>}</p> 
+                :
+                <p>{props.content} </p> 
+
+              }
+            </div>
           </div>
             {multimedia ? <MultimediaElement source={multimedia} /> : null}
           
