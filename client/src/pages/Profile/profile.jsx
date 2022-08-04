@@ -24,7 +24,7 @@ import { Link } from "react-router-dom";
 import { useRef } from "react";
 import axios from "axios";
 
-import { AiFillCloseCircle } from "react-icons/ai";
+import { AiFillCloseCircle, AiFillMessage, AiFillEdit } from "react-icons/ai";
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
 // import Multiselect from "multiselect-react-dropdown";
@@ -400,16 +400,16 @@ const Profile = () => {
                       <p>{`${userFirstName + " " + userLastName}`}</p>
                     </div>
                     {params.id === userLoggedId ? (
-                      <div className="button_container">
-                        <button
-                          onClick={() => {
-                            setFirstname(true);
-                          }}
-                          type="button"
-                        >
-                          Edit
-                        </button>
-                      </div>
+                      <button
+                        className="bg-green-600 hover:bg-green-700 my-2 flex items-center justify-center gap-1 font-semibold"
+                        onClick={() => {
+                          setFirstname(true);
+                        }}
+                        type="button"
+                      >
+                        <AiFillEdit />
+                        Edit
+                      </button>
                     ) : null}
                   </div>
                   <div className="user-username justify-between">
@@ -418,16 +418,16 @@ const Profile = () => {
                       {"@" + userUsername}
                     </div>
                     {params.id === userLoggedId ? (
-                      <div className="button_container">
-                        <button
-                          onClick={() => {
-                            setUsername(true);
-                          }}
-                          type="button"
-                        >
-                          Edit
-                        </button>
-                      </div>
+                      <button
+                        className="bg-green-600 hover:bg-green-700 my-2 flex items-center justify-center gap-1 font-semibold"
+                        onClick={() => {
+                          setUsername(true);
+                        }}
+                        type="button"
+                      >
+                        <AiFillEdit />
+                        Edit
+                      </button>
                     ) : null}
                   </div>
                   <div className="user-followers">
@@ -448,18 +448,19 @@ const Profile = () => {
                       {userBiography ?? "No biography added yet"}
                     </div>
                     {params.id === userLoggedId ? (
-                      <div className="button_container">
-                        <button
-                          onClick={() => {
-                            setBiography(true);
-                          }}
-                          type="button"
-                        >
-                          Edit
-                        </button>
-                      </div>
+                      <button
+                        className="bg-green-600 hover:bg-green-700 my-2 flex items-center justify-center gap-1 font-semibold"
+                        onClick={() => {
+                          setBiography(true);
+                        }}
+                        type="button"
+                      >
+                        <AiFillEdit />
+                        Edit
+                      </button>
                     ) : null}
                   </div>
+
                   <div>
                     {params.id === userLoggedId ? (
                       followRequest ? (
@@ -497,20 +498,19 @@ const Profile = () => {
                       ) : null
                     ) : null}
                   </div>
-                  <div className="user-mess">
-                    <div className="info_container">
-                      <span className="span-info">Send Message </span>
-                    </div>
-                    <div className="button_container">
-                      <Link to={`/home/messages/${params.id}`}>
-                        <button>Send Now</button>
-                      </Link>
-                    </div>
-                  </div>
-                  {userLoggedId !== _id ? (
-                    <div className="user-follow">
+
+                  <div className="my-4">
+                    <Link
+                      to={`/home/messages/${params.id}`}
+                      className="flex gap-2 items-center m-none bg-blue-600 py-1 rounded-md justify-center hover:bg-blue-700 my-2 w-full font-semibold"
+                    >
+                      <AiFillMessage />
+                      Send Now
+                    </Link>
+
+                    {userLoggedId !== _id ? (
                       <button
-                        className="flex-1 flex justify-center"
+                        className="bg-green-600 py-1 rounded-md hover:bg-green-700 my-2 w-full font-semibold"
                         onClick={() => {
                           dispatch(followOrUnfollowUser(userLoggedId, _id));
                         }}
@@ -518,13 +518,11 @@ const Profile = () => {
                       >
                         {followers && followRenderer()}
                       </button>
-                    </div>
-                  ) : null}
-                  {
-                    params.id != userLoggedId &&
-                    <div className="user-report">
+                    ) : null}
+
+                    {params.id != userLoggedId && (
                       <button
-                        className=" flex-1 flex justify-center items-center gap-1"
+                        className="flex justify-center items-center gap-1 bg-red-600 py-1 rounded-md hover:bg-red-700 my-2 w-full font-semibold"
                         onClick={() => {
                           Swal.fire({
                             background: "#4c4d4c",
@@ -552,10 +550,9 @@ const Profile = () => {
                       >
                         <FaExclamation /> Report user
                       </button>
-                      </div>
-                  }
+                    )}
+                  </div>
                 </div>
-                
               </div>
             </>
           ) : (
