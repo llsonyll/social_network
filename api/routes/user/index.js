@@ -215,8 +215,8 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
                 }) //menos 3 dias
                     .sort({ createdAt: -1 })
                     .skip(page * 10)
-                    .limit(10);
-                // .populate("userId", ["username", "profilePicture"]);
+                    .limit(10)
+                    .populate("userId", ["username", "profilePicture"]);
             }
             else {
                 result = yield mongoose_1.Post.find({
@@ -225,8 +225,8 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
                 })
                     .sort({ createdAt: -1 })
                     .skip(page * 10)
-                    .limit(10);
-                //.populate("userId", ["username", "profilePicture"]);
+                    .limit(10)
+                    .populate("userId", ["username", "profilePicture"]);
             }
         }
         if (user.following.length === 0) {
@@ -235,8 +235,8 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
             })
                 .sort({ createdAt: -1 })
                 .skip(page * 10)
-                .limit(10);
-            //.populate("userId", ["username", "profilePicture"]);
+                .limit(10)
+                .populate("userId", ["username", "profilePicture"]);
         }
         res.json(result);
     }
