@@ -192,12 +192,15 @@ const ProfilePosts = (props) => {
         </div>
       </div>
       {showLikes === true && (
-        <ListOfUsersRenderer likes={likes} renderLikes={renderLikes} />
+        <ListOfUsersRenderer arrayOfPeopleToRender={likes} closeRenderFunction={renderLikes}
+        title={'Likes'} />
       )}
       {showDislikes === true && isPremium === true ? (
         <ListOfUsersRenderer
-          dislikes={dislikes}
-          renderDislikes={renderDislikes}
+          arrayOfPeopleToRender={dislikes}
+          closeRenderFunction={renderDislikes}
+          title={'Dislikes'}
+
         />
       ) : null}
     </Fragment>

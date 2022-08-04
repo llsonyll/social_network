@@ -39,7 +39,6 @@ const Profile = () => {
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
-  const [image, setImage] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
   const loading = useSelector((state) => state.user.loadingProfile);
   const error = useSelector((state) => state.user.errorProfile);
