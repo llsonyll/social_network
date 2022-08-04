@@ -15,7 +15,7 @@ import {
   newlikePostTitle,
 } from "../../redux/actions/postActions";
 import { TiArrowBack } from "react-icons/ti";
-import "./postTile.css";
+//import "./postTile.css";
 import { makeReport } from "../../redux/actions/userActions";
 import Swal from "sweetalert2";
 
