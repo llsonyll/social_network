@@ -9,8 +9,14 @@ import { newLikeHomePost, newDislikeHomePost, followOrUnfollowUser, getUserFollo
 import { makeReport } from "../../redux/actions/reportActions";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
+import { useState } from "react";
 
 const HomePostCard = (props) => {
+  const [showMore, setShowMore] = useState('')
+  useEffect(()=> {
+    setShowMore(props.content)
+  }, [props.content])
+  console.log(showMore);
   let dispatch = useDispatch();
   const loggedUser = useSelector((store) => store.auth.loggedUser);
   let { userFollowings } = useSelector((state) => state.user);
@@ -138,11 +144,19 @@ const HomePostCard = (props) => {
         </div>
         <Link
           to={`post/${props.postId}`}
-          className="hover:bg-[#353535]"
+          className="hover:bg-[#353535] flex flex-col"
           id="a_content"
         >
           <div className="text-left" id="post_content">
-            <div>{props.content}</div>
+            <div>
+              {
+                showMore.length > 500 ?  
+                <p>{showMore.substring(0,500)}... {<span className="text-green-600 ">View more</span>}</p> 
+                :
+                <p>{props.content} </p> 
+
+              }
+            </div>
           </div>
           {props.multimedia ? (
             <MultimediaElement source={props.multimedia} />

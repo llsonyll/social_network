@@ -121,21 +121,19 @@ const ProfilePosts = (props) => {
               <div className="">{fullname ? fullname : "Dummy username"}</div>
             </Link>
             <div className="opacity-50">{timeAgo ? timeAgo : "3hr"}</div>
+            
           </div>
-          {loggedUser._id === userId && (
-            <button className="user-post-icon_more" onClick={showEditComponent}>
-              <AiOutlineMore />
-            </button>
-          )}
           {loggedUser._id === userId && renderEditPost()}
         </div>
-        <Link to={`/home/post/${postNumber}`}>
-          <div className="user-post-profile__content flex-1 pl-2 md:pl-4">
+        <Link 
+        to={`/home/post/${postNumber}`}
+        className="hover:bg-[#353535]  flex flex-col items-center rounded-md"
+        >
+          <div className="user-post-profile__content flex-1 pl-2 md:pl-4 ">
             <div className="">{content ? content : null}</div>
           </div>
-          <div>
             {multimedia ? <MultimediaElement source={multimedia} /> : null}
-          </div>
+          
         </Link>
         <div className="actions flex gap-3 justify-end mt-2 md:mt-4 text-lg">
           <Link to={`/home/post/${postNumber}`}>
@@ -190,6 +188,11 @@ const ProfilePosts = (props) => {
             </button>
           ) : null}
         </div>
+        {loggedUser._id === userId && (
+            <button className="user-post-icon_more" onClick={showEditComponent}>
+              <AiOutlineMore />
+            </button>
+          )}
       </div>
       {showLikes === true && (
         <ListOfUsersRenderer likes={likes} renderLikes={renderLikes} />
