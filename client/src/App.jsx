@@ -35,6 +35,7 @@ import { AiOutlineAudioMuted, AiOutlineVideoCamera } from "react-icons/ai";
 //iconos
 import Notifications from "./pages/Notifications/Notifications";
 import { getNotifications } from "./redux/actions/notificationActions";
+import { addNotification } from "./redux/reducers/notificationReducer.slice";
 
 function App() {
   const dispatch = useDispatch();
@@ -71,7 +72,6 @@ function App() {
   useEffect(() => {
     if (loggedUser._id) {
       setActuallyLogged(loggedUser._id);
-	  console.log('aca deberia de estar entrando para pedir notis')
 	  dispatch(getNotifications(loggedUser._id))
     }
   }, [loggedUser]);
@@ -155,13 +155,20 @@ function App() {
 			console.log('Escucho mensajes pero no los agrego')  
       })
     }
-	if(!location.pathname.includes('notifications')){
-		socket.on('notification', (type, refId, userId, profilePicture, username, content)=>{
-			
-		})
-	}
-    return (()=> socket.off('privMessage'))
+	
+    return (()=> {
+		socket.off('privMessage')
+	})
   }, [location])
+
+  useEffect(()=>{
+    socket.on('notification', ()=>{
+			dispatch(getNotifications(loggedUser._id))
+		})
+    return (()=> {
+      socket.off('notification')
+    })
+  },[loggedUser])
 
   //SHOWS THE INCOMING VIDEO
   useEffect(() => {

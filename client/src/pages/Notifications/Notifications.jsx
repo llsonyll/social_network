@@ -1,13 +1,23 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Avatar from '../../components/Avatar'
+import { setSeenNotifications } from '../../redux/actions/notificationActions'
 
 import './Notifications.css'
 
 
 const Notifications = () => {
     const notifications = useSelector(store => store.notification.notifications)
+    const loggedUser = useSelector(store => store.auth.loggedUser)
+    let dispatch = useDispatch()
+
+    useEffect(()=>{
+        return (()=> {
+            dispatch(setSeenNotifications(loggedUser._id))
+        })
+    }, [])
 
   return (
     <div className='notifications-father_container'> 

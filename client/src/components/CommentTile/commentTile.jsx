@@ -13,6 +13,7 @@ import { useState } from "react";
 import EditComment from "../editComment/editComment";
 import { makeReport } from "../../redux/actions/userActions";
 import Swal from "sweetalert2";
+import { postNotification } from "../../redux/actions/notificationActions";
 
 
 const CommentTile = ({ data , props }) => {
@@ -30,6 +31,16 @@ const CommentTile = ({ data , props }) => {
 
   const handleLikeComment = () => {
     dispatch(newLikesComment(data._id, _id));
+    if(loggedUser._id !== data.userId._id){
+      dispatch(postNotification({
+        type:'commentLike',
+        refId: data.postId,
+        fromId: loggedUser._id,
+        toId: data.userId._id,
+        username: loggedUser.username,
+        profilePicture: loggedUser.profilePicture
+      }))
+    }
   };
 
   const handleDislikeComment = ()  => {

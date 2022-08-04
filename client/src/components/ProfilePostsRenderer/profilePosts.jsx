@@ -11,6 +11,7 @@ import { newDislikeUserProfile, newLikeUserProfile, makeReport } from '../../red
 import Swal from 'sweetalert2';
 import EditPost from '../EditPost.jsx/editPost';
 import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
+import { postNotification } from '../../redux/actions/notificationActions';
 
 
 const ProfilePosts = (props) => {
@@ -22,6 +23,7 @@ const ProfilePosts = (props) => {
 	let isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
 
 	const { _id } = useSelector(state => state.auth.loggedUser);
+	const loggedUser = useSelector(state => state.auth.loggedUser)
   	const dispatch = useDispatch();
 
 	let showEditComponent = () => {
@@ -29,11 +31,20 @@ const ProfilePosts = (props) => {
 	}
 	const handleLike = () => {
        dispatch(newLikeUserProfile(postNumber, _id));
+	   if(loggedUser._id !== userId){
+		dispatch(postNotification({
+		  type:'postLike',
+		  refId: postNumber,
+		  fromId: loggedUser._id,
+		  toId: userId,
+		  username: loggedUser.username,
+		  profilePicture: loggedUser.profilePicture
+		}))
+	  }
 	}
 	const handleDislike = () => {
 		dispatch(newDislikeUserProfile(postNumber,_id));
 	}
-	const loggedUser = useSelector(state => state.auth.loggedUser)
 	const posts = useSelector(state => state.user.userProfileData.posts);
 	let index = posts.findIndex(post => post._id === postNumber);
 	let renderHeartIcon = () => {

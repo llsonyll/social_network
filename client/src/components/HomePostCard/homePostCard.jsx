@@ -23,14 +23,16 @@ const HomePostCard = (props) => {
 
   const handleLikesPost = () => {
     dispatch(newLikeHomePost(post._id, _id,props.page));
-    dispatch(postNotification({
-      type:'postLike',
-      refId: props.postId,
-      fromId: loggedUser._id,
-      toId: props.userId,
-      username: props.username,
-      profilePicture: props.profilePicture
-    }))
+    if(loggedUser._id !== props.userId){
+      dispatch(postNotification({
+        type:'postLike',
+        refId: props.postId,
+        fromId: loggedUser._id,
+        toId: props.userId,
+        username: loggedUser.username,
+        profilePicture: loggedUser.profilePicture
+      }))
+    }
   };
 
   const handleDislikesPost = () => {

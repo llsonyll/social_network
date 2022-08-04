@@ -17,6 +17,7 @@ import { TiArrowBack } from "react-icons/ti";
 import "./postTile.css";
 import { makeReport } from "../../redux/actions/userActions";
 import Swal from "sweetalert2";
+import { postNotification } from "../../redux/actions/notificationActions";
 
 const PostTile = ({ post }) => {
   const [showInput, setShowInput] = useState(false);
@@ -39,6 +40,16 @@ const PostTile = ({ post }) => {
 
   const handleLikePost = () => {
     dispatch(newlikePostTitle(post._id, user._id));
+    if(user._id !== post.userId._id){
+      dispatch(postNotification({
+        type:'postLike',
+        refId: post._id,
+        fromId: user._id,
+        toId: post.userId._id,
+        username: user.username,
+        profilePicture: user.profilePicture
+      }))
+    }
   };
 
   const handleDislikesPost = () => {
@@ -54,6 +65,16 @@ const PostTile = ({ post }) => {
 
   const handleCommentInput = (e) => {
     setCommentInput(e.target.value);
+    if(user._id !== post.userId._id){
+      dispatch(postNotification({
+        type:'comment',
+        refId: post._id,
+        fromId: user._id,
+        toId: post.userId._id,
+        username: user.username,
+        profilePicture: user.profilePicture
+      }))
+    }
   };
 
   const handleInputSubmit = (e) => {
