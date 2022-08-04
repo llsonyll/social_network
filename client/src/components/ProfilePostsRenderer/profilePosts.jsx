@@ -8,10 +8,6 @@ import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import Swal from 'sweetalert2';
-import EditPost from '../EditPost.jsx/editPost';
-import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
-
 import {
   newDislikeUserProfile,
   newLikeUserProfile,
