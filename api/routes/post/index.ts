@@ -5,6 +5,21 @@ import { Comment, Post, User } from '../../mongoose';
 
 const router = express.Router()
 
+router.get("likes/:postId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
+     async(req:Request, res: Response )=>{
+         try {
+             let postId = req.params.postId;
+              console.log("entre")
+             let post = await Post.findById(postId)
+                        .populate("likes._id",['username','profilePicture']);
+             if(!post){return res.status(404).json("not post")};
+             
+             res.status(200).json(post);
+         } catch (err) {
+            res.json(err);
+         }
+    });
+
 router.put('/:userId/:postId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async (req:Request, res:Response) => {
     try{
         const {postId, userId} = req.params
@@ -108,8 +123,7 @@ async (req:Request, res:Response) => {
     if(!post) {
         return res.status(400).json("algo salio mal");
     }
-    
-
+        
     if(post.likes.includes(user._id)){
        await Post.updateOne({_id: postId}, {
            $pull: {
@@ -140,20 +154,6 @@ async (req:Request, res:Response) => {
    }
 });
 
-router.get("likes/:postId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
- async(req:Request, res: Response )=>{
-     try {
-         let postId = req.params.postId;
-
-         let post = await Post.findById(postId)
-                    .populate("likes._id",['username','profilePicture']);
-         if(!post){return res.status(404).json("not post")};
-         
-         res.status(200).json(post);
-     } catch (err) {
-        res.json(err);
-     }
-});
 
 router.put("/like/:postId/:userId",passport.authenticate("jwt",{session: false, failureRedirect: '/auth/loginjwt'}),
 async (req:Request, res:Response) => {

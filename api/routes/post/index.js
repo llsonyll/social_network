@@ -16,6 +16,22 @@ const express_1 = __importDefault(require("express"));
 const passport_1 = __importDefault(require("passport"));
 const mongoose_1 = require("../../mongoose");
 const router = express_1.default.Router();
+router.get("likes/:postId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let postId = req.params.postId;
+        console.log("entre");
+        let post = yield mongoose_1.Post.findById(postId)
+            .populate("likes._id", ['username', 'profilePicture']);
+        if (!post) {
+            return res.status(404).json("not post");
+        }
+        ;
+        res.status(200).json(post);
+    }
+    catch (err) {
+        res.json(err);
+    }
+}));
 router.put('/:userId/:postId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { postId, userId } = req.params;
@@ -141,21 +157,6 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
     }
     catch (err) {
         return res.status(400).json(err);
-    }
-}));
-router.get("likes/:postId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let postId = req.params.postId;
-        let post = yield mongoose_1.Post.findById(postId)
-            .populate("likes._id", ['username', 'profilePicture']);
-        if (!post) {
-            return res.status(404).json("not post");
-        }
-        ;
-        res.status(200).json(post);
-    }
-    catch (err) {
-        res.json(err);
     }
 }));
 router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
