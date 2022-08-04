@@ -14,15 +14,6 @@ import Swal from 'sweetalert2';
 import EditPost from '../EditPost.jsx/editPost';
 import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
 
-import {
-  newDislikeUserProfile,
-  newLikeUserProfile,
-  makeReport,
-} from "../../redux/actions/userActions";
-import Swal from "sweetalert2";
-import EditPost from "../EditPost.jsx/editPost";
-import ListOfUsersRenderer from "../ListOfUsersRenderer/listOfUsersRenderer";
-
 const ProfilePosts = (props) => {
   const {
     userId,
