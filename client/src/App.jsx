@@ -18,8 +18,8 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 
 //IMPORTS PARA SOCKET IO
 import io from "socket.io-client";
-//export const socket = io("https://back.socialn.me");
-export const socket = io("https://localhost3001");
+export const socket = io("https://back.socialn.me");
+//export const socket = io("https://localhost3001");
 
 let peer;
 let call;
