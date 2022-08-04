@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import './commentTile.css'
 import { useState } from "react";
 import EditComment from "../editComment/editComment";
-import { makeReport } from "../../redux/actions/userActions";
+import { makeReport } from "../../redux/actions/reportActions";
 import Swal from "sweetalert2";
 
 
