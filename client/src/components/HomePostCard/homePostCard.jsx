@@ -5,13 +5,8 @@ import MultimediaElement from "../MultimediaElement";
 import { Link } from "react-router-dom";
 import { ImHeartBroken } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  newLikeHomePost,
-  newDislikeHomePost,
-  followOrUnfollowUser,
-  getUserFollowings,
-  makeReport,
-} from "../../redux/actions/userActions";
+import { newLikeHomePost, newDislikeHomePost, followOrUnfollowUser, getUserFollowings} from "../../redux/actions/userActions";
+import { makeReport } from "../../redux/actions/reportActions";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 

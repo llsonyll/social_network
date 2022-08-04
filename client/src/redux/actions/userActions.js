@@ -160,25 +160,3 @@ export const deleteUser = (userId) => async (dispatch) => {
   }
 };
 
-export const makeReport = (userId, reportId, info) => async (dispatch) => {
-  try {
-    const response = await apiConnection.post(`report/${userId}/${reportId}`, info);
-    Swal.fire({
-      icon: "success",
-      title: "Your report was sent successfully",
-      text: response.data.msg,
-      background: "#4c4d4c",
-      color: "white",
-    });
-    return response;
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Ups... Something went wrong",
-      text: error.response.data.msg,
-      background: "#4c4d4c",
-      color: "white",
-    });
-    return error.response.data.msg
-  }
-}
