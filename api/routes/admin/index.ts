@@ -1,6 +1,6 @@
 import express, { Response, Request } from 'express';
 import passport from 'passport';
-import { Report, User, Comment, Post } from '../../mongoose';
+import { Report, User, Comment, Post, Payment } from '../../mongoose';
 
 const router = express.Router()
 
@@ -49,5 +49,25 @@ async (req: Request, res: Response) => {
     }
 
 });
+
+router.get('/payments/:adminId/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
+async (req: Request, res: Response) => {
+    try {
+        const { adminId, userId } = req.params;
+
+        const admin = await User.findById(`${adminId}`);
+        if (!admin || !admin.isAdmin) return res.status(401).json('Missing permissions')
+
+        const user = await User.findById(`${userId}`);
+        if (!user) return res.status(404).json('User not found');
+
+        const payments = await Payment.find({userId: user._id});
+        
+        return res.json(payments);
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json(error);
+    }
+})
 
 export default router;

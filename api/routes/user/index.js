@@ -160,6 +160,19 @@ router.put("/:userId", passport_1.default.authenticate("jwt", {
             !profilePicture) {
             return res.status(400).json({ errprMsg: "Please send data" });
         }
+        if (req.body.isPremium === false) {
+            req.body.plan = undefined;
+            req.body.expirationDate = undefined;
+        }
+        if (req.body.isPremium) {
+            req.body.plan = 'weekly';
+            function sumarDias(fecha, dias) {
+                fecha.setDate(fecha.getDate() + dias);
+                return fecha;
+            }
+            const date = new Date();
+            req.body.expirationDate = sumarDias(date, 7);
+        }
         const user = yield mongoose_1.User.findByIdAndUpdate(`${userId}`, req.body, {
             new: true,
         })
