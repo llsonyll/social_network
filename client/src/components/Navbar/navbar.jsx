@@ -113,11 +113,17 @@ const NavBar = ({ openModal, openAdmin }) => {
         </NavLink>
         <NavLink
           to={`/home/notifications`}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 relative "
           style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
         >
-          <MdNotifications />
-          {unseen? unseen: null}
+          <MdNotifications className="text-2xl" />
+            {unseen?
+          <span className="alert_notification">
+            unseen
+          </span>
+            : 
+            null
+            }
           Notifications
         </NavLink>
         <NavLink

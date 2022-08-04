@@ -7,6 +7,8 @@ import { setSeenNotifications } from '../../redux/actions/notificationActions'
 
 import './Notifications.css'
 
+//iconos
+import {GrFormClose} from 'react-icons/gr'
 
 const Notifications = () => {
     const notifications = useSelector(store => store.notification.notifications)
@@ -47,6 +49,8 @@ const Notifications = () => {
                                 </Link>
                                 <p>{notification.content}</p>
                             </div>  
+                            
+                        <button className='close-notify'><GrFormClose/></button>
                         </div>
                         </Link>
                     )
