@@ -289,7 +289,11 @@ router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, 
             return res.status(400).json({
                 error: "Email provided does not belong to any registered user",
             });
-        const dummyPassword = "abcde12345";
+        const generateRandomString = (num) => {
+            let result = Math.random().toString(36).substring(0, num);
+            return result;
+        };
+        const dummyPassword = generateRandomString(Math.random() * 10 + 6);
         const mailMessage = {
             title: "Password Restored",
             subject: "Password Restoration",
