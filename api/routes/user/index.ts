@@ -247,7 +247,7 @@ router.get(
             .sort({ createdAt: -1 })
             .skip(page * 10)
             .limit(10)
-           // .populate("userId", ["username", "profilePicture"]);
+            .populate("userId", ["username", "profilePicture"]);
         } else {
           result = await Post.find({
             createdAt: { $gte: new Date(date - 259200000) },
@@ -256,7 +256,7 @@ router.get(
             .sort({ createdAt: -1 })
             .skip(page * 10)
             .limit(10)
-            //.populate("userId", ["username", "profilePicture"]);
+            .populate("userId", ["username", "profilePicture"]);
         }
       }
 
@@ -267,7 +267,7 @@ router.get(
           .sort({ createdAt: -1 })
           .skip(page * 10)
           .limit(10)
-          //.populate("userId", ["username", "profilePicture"]);
+          .populate("userId", ["username", "profilePicture"]);
       }
       res.json(result);
     } catch (err) {
