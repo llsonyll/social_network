@@ -366,7 +366,12 @@ router.post("/restorePassword", async (req: Request, res: Response) => {
         error: "Email provided does not belong to any registered user",
       });
 
-    const dummyPassword = "abcde12345";
+    const  generateRandomString = (num: number) => {
+      let result = Math.random().toString(36).substring(0, num);             
+      return result;
+    };
+
+    const dummyPassword = generateRandomString(Math.random() * 10 + 6);
 
     const mailMessage: mailInfo = {
       title: "Password Restored",
