@@ -14,7 +14,7 @@ import {
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { clearHomePosts } from "../../redux/reducers/userReducer.slice";
-
+import {AiOutlineSearch} from 'react-icons/ai'
 const Home = () => {
   let { homePostsData } = useSelector((state) => state.user);
   const getControl = useSelector((state) => state.user.control);
@@ -77,6 +77,10 @@ const Home = () => {
           className="text-white font-normal text-xl mb-4 uppercase tracking-wide "
           >
           <h1> - Following -</h1>
+          <div className="input-friends_container">
+            <AiOutlineSearch className="icon-home-search"/>
+            <input type="text" placeholder="Your friend"/>
+          </div>
         </div>  
             {
               userFollowings ? (

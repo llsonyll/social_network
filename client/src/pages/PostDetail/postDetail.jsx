@@ -14,9 +14,6 @@ const PostDetail = () => {
   const { postDetail, loadingPostDetail: loading } = useSelector(
     (store) => store.post
   );
-  const containerStyle = {
-    backgroundColor: "#2e2e2e",
-  };
 
   const dispatch = useDispatch();
 
@@ -26,8 +23,8 @@ const PostDetail = () => {
   }, []);
 
   return (
-    <div className="flex-1 flex p-3 md:p-11 gap-8" style={containerStyle}>
-      <div className="bg-stone-800 flex-1 md:basis-4/5 md:p-6 p-3 rounded-md">
+    <div id="post-detail_container" className="flex-1 flex p-3 md:p-11 gap-8 bg-[#2e2e2e]">
+      <div className="bg-stone-800 flex-1 md:basis-4/5 md:p-6 p-3 rounded-md max-w-2xl m-auto">
         {!loading ? <PostTile post={postDetail} /> : <LoadingSpinner />}
       </div>
     </div>

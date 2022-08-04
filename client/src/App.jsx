@@ -18,9 +18,14 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 
 //IMPORTS PARA SOCKET IO
 import io from "socket.io-client";
+<<<<<<< HEAD
 export const socket = io("http://localhost:3001");
 // export const socket = io("https://back.socialn.me");
 //export const socket = io("https://www.dream-team-api.social");
+=======
+export const socket = io("https://back.socialn.me");
+//export const socket = io("https://localhost3001");
+>>>>>>> 106db5de0d2666234d9376104f74abc94c29d39f
 
 let peer;
 let call;

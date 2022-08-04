@@ -7,7 +7,7 @@ import {Link} from 'react-router-dom'
 //iconos
 import {AiOutlineSearch} from 'react-icons/ai'
 
-const UserChats = () => {
+const UserChats = ({setMostrarMenu}) => {
 
     let loggedUser = useSelector(store => store.auth.loggedUser)
     let chats = useSelector(store => store.chat.allChats)
@@ -26,14 +26,15 @@ const UserChats = () => {
     <div className='chats__user-father'>
         <div className='search__container'>
             <AiOutlineSearch/>
-            <input type="text" onChange={(e) => setSearchChat(e.target.value)}/>
+            <input type="text" onChange={(e) => setSearchChat(e.target.value)} 
+            maxLength='20'/>
         </div>
         <div id='chats-user__container'>
             {
                 chats.length ? 
                 chats.map((chat) => {
                     return(
-                        <Link to={`/home/messages/${chat.users[getIndex(chat.users)]._id}`}>
+                        <Link to={`/home/messages/${chat.users[getIndex(chat.users)]._id}`} onClick={() => setMostrarMenu(false)}>
                             <div className='friend-contact'>
                                 <div className='friend-contact__avatar'>
                                     <Avatar  size= 'l'imgUrl={chat.users[getIndex(chat.users)].profilePicture}/>

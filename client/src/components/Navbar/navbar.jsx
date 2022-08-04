@@ -90,6 +90,7 @@ const NavBar = ({ openModal, openAdmin }) => {
             <input
               className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full"
               type="text"
+              maxLength="50"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search a friend"

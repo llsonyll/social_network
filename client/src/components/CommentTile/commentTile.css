@@ -8,3 +8,9 @@
 .icon_more:hover{
     color:#4e864c ;
 }
+
+#comment_container #comment-content_container{
+    word-break: break-all;
+    max-height: 100px;
+    overflow-x: auto;
+  }

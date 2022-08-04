@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -17,6 +18,7 @@ const Messages = () => {
   let loggedUser = useSelector(store => store.auth.loggedUser)
   let params = useParams()
   const chatInfo = useSelector(store => store.chat.chatDetails)
+  const [mostrarMenu, setMostrarMenu] = useState(false)
 
   useEffect(()=> {
     socket.on('privMessage', (content, _id, chatId) => {
@@ -41,8 +43,8 @@ const Messages = () => {
     <div className="messages__father">
       <div className="messages_container">
       
-          <UserChats/>
-          {params.id? <UserConversation/> :null}
+          <UserChats setMostrarMenu={setMostrarMenu}/>
+          {params.id? <UserConversation mostrarMenu={mostrarMenu} setmostrarMenu={setMostrarMenu}/> :null}
         
       </div>
     </div>

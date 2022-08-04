@@ -115,6 +115,7 @@ const Signin = ({ setForm }) => {
             name="email"
             placeholder="Email"
             value={input.email}
+            maxLength='50'
             onChange={(e) => {
               setInput({ ...input, [e.target.name]: e.target.value });
             }}
@@ -129,6 +130,7 @@ const Signin = ({ setForm }) => {
             name="password"
             placeholder="Password"
             value={input.password}
+            maxLength='20'
             onChange={(e) => {
               setInput({ ...input, [e.target.name]: e.target.value });
             }}

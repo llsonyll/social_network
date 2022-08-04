@@ -28,13 +28,14 @@ router.post('/:fromId/:toId', passport_1.default.authenticate("jwt", {
         const to = yield mongoose_1.User.findById(`${toId}`);
         if (!from || !to)
             return res.status(404).json({ errorMsg: "Missing data !!!!" });
-        if (type !== 'message' || type !== 'comment') {
+        if (type !== 'message' && type !== 'comment') {
             checkSpam = yield mongoose_1.Notification.findOne({ from: from._id, to: to._id, refId: refId, type: type, content: content });
         }
         else {
             checkSpam = yield mongoose_1.Notification.findOne({ from: from._id, to: to._id, refId: refId, type: type, content: content, seen: false });
         }
         if (checkSpam) {
+            console.log(checkSpam);
             return res.status(400).json({ errorMsg: 'Already notificated' });
         }
         const notification = new mongoose_1.Notification({

@@ -1,23 +1,21 @@
 
 import { logOutUser } from "../reducers/authReducer.slice";
-import { userProfile, homePosts, dislikesPost, toggleUSERFollowing, dislikesProfilePost, likesProfilePost, likesPost, setLoadingProfile } from "../reducers/userReducer.slice";
+import { userProfile, homePosts, dislikesPost, toggleUSERFollowing, dislikesProfilePost, likesProfilePost, likesPost, setLoadingProfile, setProfileError } from "../reducers/userReducer.slice";
 import { toggleFollowUser, toggleResponseFollow } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
 import Swal from "sweetalert2";
 
 export const getUserProfile = (id) => async (dispatch) => {
   try {
+    // dispatch(setProfileError(false))
     dispatch(setLoadingProfile(true));
     const { data } = await apiConnection.get(`user/${id}`);
+    console.log(data);
     dispatch(setLoadingProfile(false))
     dispatch(userProfile(data));
-    return { data };
   } catch (err) {
-    dispatch(setLoadingProfile(false))
-    console.log(err);
-    return {
-      error: err.message ?? 'Error GetUserProfile'
-    }
+    console.log(err.message ?? 'Error GetUserProfile');
+    dispatch(setProfileError(true))
   }
 };
 
@@ -32,10 +30,10 @@ export const getHomePosts = (id, page, control) => async (dispatch) => {
 };
 
 
-export const newLikeHomePost = (postId, userId, page) => async (dispatch) => {
+export const newLikeHomePost = (postId, userId) => async (dispatch) => {
   try {
-    const { data: { likes, dislikes } } = await apiConnection.put(`post/like/${postId}/${userId}`);
-    dispatch(likesPost({ likes, dislikes, postId }));
+    apiConnection.put(`post/like/${postId}/${userId}`);
+    dispatch(likesPost({  userId, postId }));
   } catch (err) {
     console.log(err);
   }
@@ -43,9 +41,9 @@ export const newLikeHomePost = (postId, userId, page) => async (dispatch) => {
 
 export const newDislikeHomePost = (postId, userId) => async (dispatch) => {
   try {
-    const { data: { dislikes, likes } } = await apiConnection.put(`post/dislike/${postId}/${userId}`);
+    apiConnection.put(`post/dislike/${postId}/${userId}`);
 
-    dispatch(dislikesPost({ dislikes, likes, postId }));
+    dispatch(dislikesPost({ userId, postId }));
   } catch (err) {
     console.log(err);
   }
@@ -56,7 +54,7 @@ export const newLikeUserProfile = (postId, userId) => async (dispatch) => {
     const {
       data: { likes, dislikes },
     } = await apiConnection.put(`post/like/${postId}/${userId}`);
-    dispatch(likesProfilePost({ likes, dislikes, postId }));
+    dispatch(likesProfilePost({ userId, postId }));
   } catch (err) {
     console.log(err);
   }
@@ -67,7 +65,7 @@ export const newDislikeUserProfile = (postId, userId) => async (dispatch) => {
     const {
       data: { likes, dislikes },
     } = await apiConnection.put(`post/dislike/${postId}/${userId}`);
-    dispatch(dislikesProfilePost({ likes, dislikes, postId }));
+    dispatch(dislikesProfilePost({ userId, postId }));
   } catch (err) {
     console.log(err);
   }
@@ -162,25 +160,3 @@ export const deleteUser = (userId) => async (dispatch) => {
   }
 };
 
-export const makeReport = (userId, reportId, info) => async (dispatch) => {
-  try {
-    const response = await apiConnection.post(`report/${userId}/${reportId}`, info);
-    Swal.fire({
-      icon: "success",
-      title: "Your report was sent successfully",
-      text: response.data.msg,
-      background: "#4c4d4c",
-      color: "white",
-    });
-    return response;
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Ups... Something went wrong",
-      text: error.response.data.msg,
-      background: "#4c4d4c",
-      color: "white",
-    });
-    return error.response.data.msg
-  }
-}

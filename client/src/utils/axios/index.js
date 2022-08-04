@@ -2,9 +2,14 @@ import axios from "axios";
 // import { dummyInterceptor } from "./interceptors";
 
 //const DEV_URL = "https://dreamteamapi.herokuapp.com/"; // DEPLOY
+<<<<<<< HEAD
 //const DEV_URL = "https://www.dream-team-api.social/"; // DEPLOY
 const DEV_URL = "http://localhost:3001/"
 // const DEV_URL = "https://back.socialn.me/"; // DEV
+=======
+//const DEV_URL = "http://localhost:3001/"; // DEPLOY
+const DEV_URL = "https://back.socialn.me/"; // DEV
+>>>>>>> 106db5de0d2666234d9376104f74abc94c29d39f
 const timeout = 5000;
 
 export const apiConnection = axios.create({
@@ -14,6 +19,16 @@ export const apiConnection = axios.create({
     'Authorization': `Bearer ${localStorage.getItem('token') ?? ''}`
   }
 });
+
+apiConnection.interceptors.request.use(
+  config => {
+    config.headers['Authorization'] = `Bearer ${localStorage.getItem('token') ?? ''}`;
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
 
 export const setAuthorization = (token) =>
   (apiConnection.defaults.headers.common["Authorization"] = `Bearer ${token}`);

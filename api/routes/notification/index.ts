@@ -25,7 +25,7 @@ router.post('/:fromId/:toId', passport.authenticate("jwt", {
             const from: IUser | null = await User.findById(`${fromId}`)
             const to: IUser | null = await User.findById(`${toId}`)
             if (!from || !to) return res.status(404).json({ errorMsg: "Missing data !!!!" })
-            if(type !== 'message' || type !== 'comment'){
+            if(type !== 'message' && type !== 'comment'){
                 checkSpam = await Notification.findOne({from: from._id, to:to._id, refId: refId, type:type, content:content})
             }else{
                 checkSpam = await Notification.findOne({from: from._id, to:to._id, refId: refId, type:type, content:content, seen: false})

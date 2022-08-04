@@ -6,6 +6,7 @@ const initialState = {
   control: "true",
   userFollowings: [],
   loadingProfile: true,
+  errorProfile: false,
 };
 
 const userReducer = createSlice({
@@ -50,25 +51,49 @@ const userReducer = createSlice({
       state.userProfileData.followers = action.payload.followers;
       state.userProfileData.followRequest = action.payload.followRequest;
     },
-    likesPost(state, { payload }) {
-      let index = state.homePostsData.findIndex(post => post._id === payload.postId)
-      state.homePostsData[index].dislikes = payload.dislikes;
-      state.homePostsData[index].likes = payload.likes;
+    likesPost({homePostsData}, { payload }) {
+      let index = homePostsData.findIndex(post => post._id === payload.postId)
+      if(homePostsData[index].dislikes.includes(payload.userId)){ 
+        homePostsData[index].dislikes = homePostsData[index].dislikes.filter(_id => _id !== payload.userId);
+     }
+     if(homePostsData[index].likes.includes(payload.userId)){
+        homePostsData[index].likes = homePostsData[index].likes.filter(_id => _id !== payload.userId);
+     }else{
+        homePostsData[index].likes.push(payload.userId);
+     }
     },
-    dislikesPost(state, { payload }) {
-      let index = state.homePostsData.findIndex(post => post._id === payload.postId)
-      state.homePostsData[index].dislikes = payload.dislikes;
-      state.homePostsData[index].likes = payload.likes;
+    dislikesPost({homePostsData}, { payload }) {
+      let index = homePostsData.findIndex(post => post._id === payload.postId)
+      if(homePostsData[index].likes.includes(payload.userId)){ 
+        homePostsData[index].likes = homePostsData[index].likes.filter(_id => _id !== payload.userId);
+     }
+     if(homePostsData[index].dislikes.includes(payload.userId)){
+        homePostsData[index].dislikes = homePostsData[index].dislikes.filter(_id => _id !== payload.userId);
+     }else{
+        homePostsData[index].dislikes.push(payload.userId);
+     }
     },
-    likesProfilePost(state, { payload }) {
-      let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId)
-      state.userProfileData.posts[index].dislikes = payload.dislikes;
-      state.userProfileData.posts[index].likes = payload.likes;
+    likesProfilePost({userProfileData}, { payload }) {
+      let index = userProfileData.posts.findIndex(post => post._id === payload.postId)
+      if(userProfileData.posts[index].dislikes.includes(payload.userId)){ 
+        userProfileData.posts[index].dislikes = userProfileData.posts[index].dislikes.filter(_id => _id !== payload.userId);
+     }
+     if(userProfileData.posts[index].likes.includes(payload.userId)){
+        userProfileData.posts[index].likes = userProfileData.posts[index].likes.filter(_id => _id !== payload.userId);
+     }else{
+        userProfileData.posts[index].likes.push(payload.userId);
+     }
     },
-    dislikesProfilePost(state, { payload }) {
-      let index = state.userProfileData.posts.findIndex(post => post._id === payload.postId)
-      state.userProfileData.posts[index].dislikes = payload.dislikes;
-      state.userProfileData.posts[index].likes = payload.likes;
+    dislikesProfilePost({userProfileData}, { payload }) {
+      let index = userProfileData.posts.findIndex(post => post._id === payload.postId)
+      if(userProfileData.posts[index].likes.includes(payload.userId)){ 
+        userProfileData.posts[index].likes = userProfileData.posts[index].likes.filter(_id => _id !== payload.userId);
+     }
+     if(userProfileData.posts[index].dislikes.includes(payload.userId)){
+        userProfileData.posts[index].dislikes = userProfileData.posts[index].dislikes.filter(_id => _id !== payload.userId);
+     }else{
+        userProfileData.posts[index].dislikes.push(payload.userId);
+     }
     },
     toggleUSERFollowing(state, action) {
       state.userFollowings = action.payload;
@@ -90,6 +115,9 @@ const userReducer = createSlice({
     },
     setLoadingProfile(state, action) {
       state.loadingProfile = action.payload;
+    },
+    setProfileError(state, { payload }) {
+      state.errorProfile = payload
     }
   }
 });
@@ -110,7 +138,8 @@ export const {
   dislikesProfilePost,
   toggleUSERFollowing,
   clearHomePosts,
-  setLoadingProfile
+  setLoadingProfile,
+  setProfileError
 } = userReducer.actions;
 
 export default userReducer.reducer;

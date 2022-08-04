@@ -155,15 +155,19 @@ let handleDeleteUser = (e) =>{
                 <div className='changepass'>Change password</div>
                 <div className='oldpass'>
                     <p>Old password</p>
-                    <input className='oldpassinput' onChange={e=> handleChangeOldPass(e)}></input>
+                    <input className='oldpassinput' 
+                    onChange={e=> handleChangeOldPass(e)}
+                    maxLength='20'
+                    ></input>
                 </div>
                 <div className='newpass'>
                     <p>New password</p>
-                    <input className='newpassinput' onChange={e=> handleChangeNewPass(e)}></input>
+                    <input className='newpassinput' onChange={e=> handleChangeNewPass(e)}maxLength='20'></input>
                 </div>
                 <div className='confirmpass'>
                     <p>Confirm new password</p>
-                    <input className='confirmpassinput' onChange={e=> handleChangeConfirmPass(e)}></input>
+                    <input className='confirmpassinput' onChange={e=> handleChangeConfirmPass(e)}
+                    maxLength='20'></input>
                     <button className='changepassbutton greenbutton'
                     onClick={e => handleSubmitToUpdatePassword(e)}>Change password
                     </button>
@@ -230,7 +234,8 @@ let handleDeleteUser = (e) =>{
                                     New review
                                 </p>
                                 <input className='newreviewinput'
-                                    onChange={e => handleSendReview(e)}></input>
+                                    onChange={e => handleSendReview(e)}
+                                    maxLength='70'></input>
                                  <div className='send-review_container'>
                                     <button className='reviewbutton greenbutton'
                                             onClick={e => handleSubmitReview(e) }
