@@ -55,8 +55,8 @@ const HomePostCard = (props) => {
 
   let index = homePostsData.findIndex((post) => post._id === props.postId);
 
-  console.log(homePostsData);
-  console.log(index);
+  // console.log(homePostsData);
+  // console.log(index);
 
   let renderHeartIcon = () => {  
       if (!homePostsData[index].likes?.includes(user._id)) {

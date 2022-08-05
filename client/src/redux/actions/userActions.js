@@ -108,11 +108,13 @@ export const followOrUnfollowUser = (userId, followUserId) => async (dispatch) =
     console.log(err);
   }
 };
-export const getUserFollowings = (userId) => async (dispatch) => {
+export const getUserFollowings = (userId, query) => async (dispatch) => {
   //recibe Id del usuario y luego id del usuario a seguir por params
+  !query ? query="" : null
   try {
     // devuelve la lista de usuarios que sigen al perfil del seguido 
-    const { data } = await apiConnection.get(`user/following/${userId}`);
+    const { data } = await apiConnection.get(`user/browserFollowing/${userId}?users=${query}`);
+    console.log(data)
     return dispatch(toggleUSERFollowing(data));
 
   } catch (err) {
