@@ -73,9 +73,13 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
         return res.status(400).json(error);
     }
 }));
-router.get('/', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { type } = req.query;
+        const { userId } = req.params;
+        const admin = yield mongoose_1.User.findById(`${userId}`);
+        if (!admin || !admin.isAdmin)
+            return res.status(401).json('Missings permissions');
         let reports = [];
         if (!type) {
             reports = yield mongoose_1.Report.find({})
@@ -139,6 +143,8 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
     try {
         const { userId, reportId } = req.params;
         const { type } = req.body;
+        if (!type)
+            return res.status(400).json('Please send type of report');
         const admin = yield mongoose_1.User.findById(`${userId}`);
         if (!admin || !admin.isAdmin)
             return res.status(401).json('Missings permissions');
@@ -163,7 +169,7 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             yield mongoose_1.Comment.deleteMany({ _id: { $in: commentId } });
             yield report.remove();
             yield post.remove();
-            return res.json('Reported successfully');
+            return res.json('Post reported successfully');
         }
         if (type === 'comment') {
             const comment = yield mongoose_1.Comment.findById(`${report.commentReportedId}`);
@@ -182,7 +188,7 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             yield report.remove();
             yield comment.remove();
             console.log('todo ok');
-            return res.json('Reported successfully');
+            return res.json('Comment reported successfully');
         }
         const user = yield mongoose_1.User.findById(`${report.userReportedId}`);
         if (!user || `${user._id}` === `${admin._id}`)
@@ -190,7 +196,7 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
         // FALTA ELIMINAR TODO LO RELACIONADO AL USER
         user.isDeleted = true;
         yield user.save();
-        return res.json('Reported successfully');
+        return res.json('User reported successfully');
     }
     catch (err) {
         return res.status(400).json('Something went wrong');
