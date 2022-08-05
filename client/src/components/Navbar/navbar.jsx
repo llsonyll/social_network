@@ -29,10 +29,14 @@ const NavBar = ({ openModal, openAdmin }) => {
 
   const [searchInput, setSearchInput] = useState("");
   const [searched, setSearched] = useState(false);
+  const [unseen, setUnseen] = useState(0);
   const { searches } = useSelector((state) => state.browserReducer);
   const userId = useSelector((state) => state.auth.loggedUser._id);
   const isAdmin = useSelector((state) => state.auth.loggedUser.isAdmin);
   const isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
+  const notifications = useSelector(
+    (store) => store.notification.notifications
+  );
 
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -67,6 +71,18 @@ const NavBar = ({ openModal, openAdmin }) => {
       dispatch(browserCleanUp());
     }
   }, [searchInput]);
+
+  useEffect(() => {
+    if (notifications.length) {
+      let checkUnseen = 0;
+      notifications.forEach((notif) => {
+        if (notif.seen === false) {
+          checkUnseen++;
+        }
+      });
+      setUnseen(checkUnseen);
+    }
+  }, [notifications]);
 
   return (
     <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50">
