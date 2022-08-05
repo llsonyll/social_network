@@ -23,6 +23,8 @@ import { postNotification } from "../../redux/actions/notificationActions";
 const PostTile = ({ post }) => {
   const [showInput, setShowInput] = useState(false);
   const [commentInput, setCommentInput] = useState("");
+  const [dislike,setDislike] = useState('')
+  const [like,setLike] = useState('')
   const inputRef = useRef();
   const user = useSelector((store) => store.auth.loggedUser);
   const dispatch = useDispatch();
@@ -40,7 +42,7 @@ const PostTile = ({ post }) => {
   }
 
   const handleLikePost = () => {
-    dispatch(newlikePostTitle(post._id, user._id));
+    dispatch(newlikePostTitle(post._id, user._id, like));
     if(user._id !== post.userId._id){
       dispatch(postNotification({
         type:'postLike',
@@ -54,7 +56,7 @@ const PostTile = ({ post }) => {
   };
 
   const handleDislikesPost = () => {
-    dispatch(newDislikesPostTitle(post._id, user._id));
+    dispatch(newDislikesPostTitle(post._id, user._id, dislike));
   };
 
   const handleCommentPost = async () => {
@@ -88,8 +90,10 @@ const PostTile = ({ post }) => {
 
   let renderHeartIcon = () => {
     if (!likes.includes(user._id)) {
+      like !== "add" && setLike("add")
       return <FaHeart />;
     } else {
+      like !== "" && setLike("")
       return (
         <IconContext.Provider
           value={{ color: "#EA544A", className: "global-heart-class-name" }}
@@ -104,8 +108,10 @@ const PostTile = ({ post }) => {
 
   let renderHeartBrokenIcon = () => {
     if (!dislikes.includes(user._id)) {
+      dislike !== "add" && setDislike("add")
       return <ImHeartBroken />;
     } else {
+      dislike !== "" && setDislike("")
       return (
         <IconContext.Provider
           value={{ color: "#9400D3", className: "global-heart-class-name" }}

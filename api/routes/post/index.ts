@@ -125,7 +125,8 @@ router.put("/dislike/:postId/:userId",passport.authenticate("jwt",{session: fals
 async (req:Request, res:Response) => {
    try {
     let postId = req.params.postId;
-    let userId =req.params.userId;
+    let userId = req.params.userId;
+    let action = req.query.action;
     
     let user:IUser | null = await User.findById(`${userId}`);
 
@@ -147,9 +148,9 @@ async (req:Request, res:Response) => {
        });
      }
 
-     if( ! post.dislikes.includes(user._id)){
+     if( action === "add" ){
           post = await Post.findOneAndUpdate({_id: postId}, {
-            $push:{
+            $addToSet:{
                    dislikes: user._id
                  }
               },{new: true});
@@ -174,7 +175,8 @@ router.put("/like/:postId/:userId",passport.authenticate("jwt",{session: false, 
 async (req:Request, res:Response) => {
    try {
     let postId = req.params.postId;
-    let userId =req.params.userId;
+    let userId = req.params.userId;
+    let action = req.query.action;
     
     let user:IUser | null = await User.findById(`${userId}`);
 
@@ -197,9 +199,9 @@ async (req:Request, res:Response) => {
        });
      }
 
-     if( ! post.likes.includes(user._id)){
+     if( action === "add" ){
         post = await Post.findOneAndUpdate({_id: postId},{
-            $push:{
+            $addToSet:{
                 likes: user._id
             }
         },{new: true})
