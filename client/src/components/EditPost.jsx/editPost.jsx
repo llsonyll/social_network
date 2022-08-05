@@ -17,10 +17,12 @@ const EditPost = ({ userId , postNumber, content, showEditComponent}) => {
 	}
     const handleOnEditPost = () => {
         dispatch(editPost(userId, postNumber, {content:postText}))
+        handleOnCancel()
         console.log('EDITANDO POST');
     }
     const handleDeletePost = () => {
         dispatch(deletePost(userId, postNumber))
+        handleOnCancel()
         console.log('BORRANDO POST');
     }
 
@@ -47,7 +49,7 @@ const EditPost = ({ userId , postNumber, content, showEditComponent}) => {
                     <textarea
                         id='message'
                         className='block outline-none bg-stone-800 p-2.5 w-full text-sm bg-transparent rounded-lg border-gray-300 text-white focus:ring-blue-500 focus:border-blue-500 resize-none'
-                        placeholder={`Edit Comment`}
+                        placeholder={`Edit Post`}
                         defaultValue={content}
                         onChange={(e) => setPostText(e.target.value)}
                         maxLength={2000}

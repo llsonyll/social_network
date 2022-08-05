@@ -8,6 +8,7 @@ import {
   setLoadingPostDetail
 } from "../reducers/postReducer.slice";
 import { apiConnection } from "../../utils/axios";
+import Swal from "sweetalert2";
 
 export const getPost = (postId) => async (dispatch) => {
   try {
@@ -78,6 +79,13 @@ export const deletePost = (userId, postId) => async (dispatch) => {
   try {
     const { data } = await apiConnection.delete(`post/${userId}/${postId}`);
     //console.log(data)
+    Swal.fire({
+      icon: "info",
+      title: ":(",
+      text: 'Post delete successfully',
+      background: "#4c4d4c",
+      color: "white",
+    });
     return dispatch(deletePostsGeneral({ postId }));
   } catch (err) {
     console.log(err);
@@ -88,7 +96,13 @@ export const editPost = (userId, postId, content) => async (dispatch) => {
   try {
     //console.log(userId,postId,content);
     const { data } = await apiConnection.put(`post/${userId}/${postId}`, content);
-
+    Swal.fire({
+      icon: "success",
+      title: "Good job!",
+      text: 'Post edit successfully',
+      background: "#4c4d4c",
+      color: "white",
+    });
     return dispatch(editUserPosts({ post: data, postId }));
   } catch (err) {
     console.log(err);

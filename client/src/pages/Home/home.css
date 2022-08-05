@@ -1,5 +1,9 @@
 #contenedor_home {
   /* padding-right: 20px; */
+  justify-content: center;
+}
+#contenedor_home .infinite-scroll-component__outerdiv{
+  width: 80%;
 }
 .container {
   background-color: #2e2e2e;
@@ -93,6 +97,7 @@
   transition: 0.2s all;
   text-align: left;
   padding: 5px;
+  align-items: center;
 }
 
 /* background-size: 100% !important;

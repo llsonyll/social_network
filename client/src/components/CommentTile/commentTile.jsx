@@ -75,6 +75,8 @@ const CommentTile = ({ data , props }) => {
   };
 
   return data?.userId ? (
+    <div>
+
     <div id="comment_container" className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
       {/* TODO: Avatar should redirect to user profile */}
       <div>
@@ -153,6 +155,7 @@ const CommentTile = ({ data , props }) => {
         : null}
         </div>
       </div>
+    </div>
       {editComents === true && 
         <EditComment
           renderChangeRenderComponents={renderChangeRenderComponents}
@@ -162,7 +165,7 @@ const CommentTile = ({ data , props }) => {
       }
     </div>
   ) : (
-    <></>
+    <>      </>
   );
 };
 
