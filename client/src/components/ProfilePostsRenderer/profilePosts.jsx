@@ -85,7 +85,7 @@ const ProfilePosts = (props) => {
 	  }
 	}
 	const handleDislike = () => {
-		dispatch(newDislikeUserProfile(postNumber,_id));
+		dispatch(newDislikeUserProfile(postNumber,_id,dislike));
 	}
 	      
   let renderHeartBrokenIcon = () => {
