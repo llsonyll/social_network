@@ -2,6 +2,7 @@ import "./navbar.css";
 
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
+import { GiCrownedSkull } from "react-icons/gi";
 
 import NewPostBtn from "../NewPostBtn";
 import logoSN from "../../../assets/LogoSN.png";
@@ -102,7 +103,7 @@ const NavBar = ({ openModal, openAdmin }) => {
           className="flex items-center gap-2"
           style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
         >
-          <FaUserCircle />
+          {isAdmin ? <GiCrownedSkull /> : <FaUserCircle />}
           Me
         </NavLink>
         <NavLink

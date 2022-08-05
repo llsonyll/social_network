@@ -43,6 +43,7 @@ const Profile = () => {
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
   const loading = useSelector((state) => state.user.loadingProfile);
   const error = useSelector((state) => state.user.errorProfile);
+
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
