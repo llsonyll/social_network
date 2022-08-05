@@ -68,6 +68,10 @@ const Home = () => {
       getControl === "true" ? setPage(page + 1) : setPage(page - 1);
     }
   };
+  const handleFollowing = (value) => {
+    dispatch(getUserFollowings(userId, value))
+    console.log("TRAER SEGUIDOS HOME")
+  }
   return (
     <div
       className="flex-1 flex px-4 md:pl-80 md:pr-5 pt-3 md:pt-9 gap-8 bg-[#2e2e2e] relative "
@@ -84,7 +88,7 @@ const Home = () => {
           <h1> - Following -</h1>
           <div className="input-friends_container">
             <AiOutlineSearch className="icon-home-search"/>
-            <input type="text" placeholder="Your friend"/>
+            <input type="text" placeholder="Your friend" onChange={(e) => handleFollowing(e.target.value)}/>
           </div>
         </div>  
             {

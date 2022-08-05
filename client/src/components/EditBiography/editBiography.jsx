@@ -28,7 +28,7 @@ const EditFullname = ({ renderChangeRenderComponents, user }) => {
 	return (
 		<div
 			data-modal-placement='top-middle'
-			className={` absolute inset-0 z-50 bg-black/40 items-center justify-center overflow-y-auto overflow-x-hidden flex`}>
+			className={` fixed inset-0 z-50 bg-black/40 items-center justify-center overflow-y-auto overflow-x-hidden flex`}>
 			<div className='relative p-4 w-full max-w-xl h-full md:h-auto'>
 				<div className='relative rounded-lg shadow bg-[#363636]'>
 					<div className='text-white text-center pt-10 text-xl '> Write a new Biography and submit it</div>
