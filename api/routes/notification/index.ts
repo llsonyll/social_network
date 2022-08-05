@@ -101,4 +101,29 @@ router.put('/seen/:userId', passport.authenticate("jwt", {
 
     })
 
+
+
+router.delete('/:userId/:notificationId',passport.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+    }),
+    async (req: Request, res: Response) => {
+
+        const {userId, notificationId} = req.params
+
+        try{
+            const user = await User.findById(`${userId}`)
+            if(!user) res.status(404).json({errorMsg: "Who r you???!!!"})
+            await Notification.deleteOne({_id: notificationId, to: userId})
+            res.json({msg: "Deleted successfully"})
+
+        } catch(err) {
+            res.status(400).json({errorMsg: err})
+        }
+
+
+
+
+    } )
+
 export default router

@@ -91,4 +91,20 @@ router.put('/seen/:userId', passport_1.default.authenticate("jwt", {
         res.status(400).json({ errorMsg: err });
     }
 }));
+router.delete('/:userId/:notificationId', passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, notificationId } = req.params;
+    try {
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user)
+            res.status(404).json({ errorMsg: "Who r you???!!!" });
+        yield mongoose_1.Notification.deleteOne({ _id: notificationId, to: userId });
+        res.json({ msg: "Deleted successfully" });
+    }
+    catch (err) {
+        res.status(400).json({ errorMsg: err });
+    }
+}));
 exports.default = router;
