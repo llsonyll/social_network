@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
    likesPost:[],
    dislikesPost:[],
-   follow:[],
+   followers:[],
    following:[]
 };
 
@@ -13,16 +13,16 @@ const listOfUsersRenderer = createSlice({
     initialState,
     reducers: {
        LikesPost(state,{payload}){
-           state.likesPost = payload.likes;
+           state.likesPost = payload;
        },
        DislikesPost(state,{payload}){
-        state.dislikesPost = payload.dislikes;
+        state.dislikesPost = payload;
        },
-       clearList(state, action){
-        state.likesPost = [],
-        state.dislikes = [],
-        state.follow = [],
-        state.following = []
+       clearList(state, {payload}){ //no funciona :( 
+        state.likesPost = payload,
+        state.dislikes = payload,
+        state.followers = payload,
+        state.following = payload
        },
     }
   });

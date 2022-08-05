@@ -7,12 +7,13 @@ import { ImHeartBroken } from "react-icons/im";
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
 import { makeReport } from '../../redux/actions/reportActions';
 import Swal from 'sweetalert2';
 import EditPost from '../EditPost.jsx/editPost';
 import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
+import { listLikes, listDislikes } from '../../redux/actions/listOfUsersRendererActions'
+
 
 const ProfilePosts = (props) => {
   const {
@@ -22,9 +23,6 @@ const ProfilePosts = (props) => {
     timeAgo,
     content,
     commentsLength,
-    likesLength,
-    likes,
-    dislikes,
     multimedia,
   } = props;
   const [editPost, setEditPost] = useState(false);
@@ -96,10 +94,13 @@ const ProfilePosts = (props) => {
   };
 
   let renderLikes = () => {
-    setShowLikes(!showLikes);
+    setShowLikes(!showLikes)
+    dispatch(listLikes(postNumber)) 
+    //dispatch(ClearList())      
   };
   let renderDislikes = () => {
     setShowDislikes(!showDislikes);
+    dispatch(listDislikes(postNumber)) 
   };
 
   return (
@@ -120,7 +121,7 @@ const ProfilePosts = (props) => {
             >
               <div className="">{fullname ? fullname : "Dummy username"}</div>
             </Link>
-            <div className="opacity-50">{timeAgo ? timeAgo : "3hr"}</div>
+            <div className=" text-stone-400 ">{timeAgo ? timeAgo : "3hr"}</div>
           </div>
           {loggedUser._id === userId && (
             <button className="user-post-icon_more" onClick={showEditComponent}>
@@ -191,16 +192,14 @@ const ProfilePosts = (props) => {
           ) : null}
         </div>
       </div>
-      {showLikes === true && (
-        <ListOfUsersRenderer arrayOfPeopleToRender={likes} closeRenderFunction={renderLikes}
-        title={'Likes'} />
+      {showLikes === true && ( 
+        <ListOfUsersRenderer titleToRender={'likes'} postId={postNumber} closeRenderFunction={renderLikes} />
       )}
       {showDislikes === true && isPremium === true ? (
         <ListOfUsersRenderer
-          arrayOfPeopleToRender={dislikes}
+          titleToRender={'dislikes'}
+          postId={postNumber}
           closeRenderFunction={renderDislikes}
-          title={'Dislikes'}
-
         />
       ) : null}
     </Fragment>
