@@ -6,14 +6,14 @@ import { User } from "../mongoose";
 export interface ServerToClientEvents {
     noArg: () => void;
     privMessage: (content: String, _id:Types.ObjectId, chatId:Types.ObjectId) => void;
-    call: (_id:Types.ObjectId) => void
+    call: (_id:Types.ObjectId, username: string, profilePicture:string) => void
     closeCall: () => void;
   }
   
 export interface ClientToServerEvents {
     logged: (_id: Types.ObjectId, socketId: string) => void;
     privMessage: (content:string, toId:Types.ObjectId,fromId: Types.ObjectId,  chatId:Types.ObjectId) => void;
-    call: (toId:Types.ObjectId, fromId: Types.ObjectId ) => void;
+    call: (toId:Types.ObjectId, fromId: Types.ObjectId , username: string, profilePicture: string) => void;
     closeCall: (_id: Types.ObjectId) => void
 }
   
@@ -55,11 +55,11 @@ const userHandler = (io: Server<ClientToServerEvents, ServerToClientEvents, Inte
         }
     })
 
-    socket.on('call', async(_id, fromId) => {
+    socket.on('call', async(_id, fromId, username, profilePicture) => {
         try{
             let user = await User.findById(_id)
             if(user){
-                io.to(`${user.socketId}`).emit('call', fromId)
+                io.to(`${user.socketId}`).emit('call', fromId, username, profilePicture)
             }
         }catch(err){
             console.log(err)
