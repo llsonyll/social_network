@@ -8,6 +8,7 @@ export interface ServerToClientEvents {
     privMessage: (content: String, _id:Types.ObjectId, chatId:Types.ObjectId) => void;
     call: (_id:Types.ObjectId, username: string, profilePicture:string) => void
     closeCall: () => void;
+    notification: (type: 'like' | 'follow' | 'comment' | 'message', refId: Types.ObjectId, userId:Types.ObjectId, profilePicture:string, username: string, content: string) => void;
   }
   
 export interface ClientToServerEvents {
@@ -15,6 +16,7 @@ export interface ClientToServerEvents {
     privMessage: (content:string, toId:Types.ObjectId,fromId: Types.ObjectId,  chatId:Types.ObjectId) => void;
     call: (toId:Types.ObjectId, fromId: Types.ObjectId , username: string, profilePicture: string) => void;
     closeCall: (_id: Types.ObjectId) => void
+    notification: (type: 'like' | 'follow' | 'comment' | 'message', refId: Types.ObjectId, userId:Types.ObjectId, toId:Types.ObjectId, content:string , profilePicture:string, username: string) => void
 }
   
 export interface InterServerEvents {
@@ -72,6 +74,17 @@ const userHandler = (io: Server<ClientToServerEvents, ServerToClientEvents, Inte
             if(user){
                 console.log('acallegoTranqui')
                 io.to(`${user.socketId}`).emit('closeCall')
+            }
+        }catch(err){
+            console.log(err)
+        }
+    })
+
+    socket.on('notification', async (type, refId, userId, toId, username, profilePicture, content) => {
+        try{
+            let user = await User.findById(toId)
+            if(user){
+                io.to(`${user.socketId}`).emit('notification', type, refId, userId, profilePicture, username, content)
             }
         }catch(err){
             console.log(err)

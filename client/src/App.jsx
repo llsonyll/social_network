@@ -18,8 +18,9 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 
 //IMPORTS PARA SOCKET IO
 import io from "socket.io-client";
+// export const socket = io("http://localhost:3001");
 export const socket = io("https://back.socialn.me");
-//export const socket = io("https://localhost3001");
+//export const socket = io("https://www.dream-team-api.social");
 
 let peer;
 let call;
@@ -31,6 +32,11 @@ import { useRef, useState } from "react";
 import { FiPhoneMissed } from "react-icons/fi";
 import { AiOutlineAudioMuted, AiOutlineVideoCamera } from "react-icons/ai";
 import IncomingCall from "./components/IncomingCall/IncomingCall";
+
+//iconos
+import Notifications from "./pages/Notifications/Notifications";
+import { getNotifications } from "./redux/actions/notificationActions";
+import { addNotification } from "./redux/reducers/notificationReducer.slice";
 
 function App() {
   const dispatch = useDispatch();
@@ -47,6 +53,8 @@ function App() {
 
   console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
 
+
+
   useEffect(() => {
     if (localStorage.getItem("token") && !loggedUser._id) {
       dispatch(getLoggedUserInfo());
@@ -62,10 +70,11 @@ function App() {
     console.log(location);
   }, [location]);
 
-  //SOCKET useEffect TO REPORT A LOGGED USER, AND HANDLE CALLS
+  //SOCKET useEffect TO REPORT A LOGGED USER, AND HANDLE CALLS, AND GET NOTIFICATIONS
   useEffect(() => {
     if (loggedUser._id) {
       setActuallyLogged(loggedUser._id);
+	  dispatch(getNotifications(loggedUser._id))
     }
   }, [loggedUser]);
 
@@ -120,15 +129,28 @@ function App() {
     };
   }, [actualyLogged]);
 
-  //SOCKET useEFFECT TO LISTEN MESSAGES
+  //SOCKET useEFFECT TO LISTEN MESSAGES AND NOTIFICATIONS
   useEffect(() => {
-    if (!location.pathname.includes("messages")) {
-      socket.on("privMessage", (content, _id, chatId) => {
-        console.log("Escucho mensajes pero no los agrego");
-      });
+	if(!location.pathname.includes('messages')){
+		console.log('hola?')
+		socket.on('privMessage', (content, _id, chatId) =>{
+			console.log('Escucho mensajes pero no los agrego')  
+      })
     }
-    return () => socket.off("privMessage");
-  }, [location]);
+	
+    return (()=> {
+		socket.off('privMessage')
+	})
+  }, [location])
+
+  useEffect(()=>{
+    socket.on('notification', ()=>{
+			dispatch(getNotifications(loggedUser._id))
+		})
+    return (()=> {
+      socket.off('notification')
+    })
+  },[loggedUser])
 
   //SHOWS THE INCOMING VIDEO
   useEffect(() => {
@@ -248,6 +270,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={<DashBoard />}>
           <Route path="settings" element={<Settings />} />
+		  <Route path='notifications' element={<Notifications />} />
           <Route index element={<Home />} />
           <Route path="profile/:id" element={<Profile />} />
           <Route path="premium/:id" element={<PremiumComponent />} />

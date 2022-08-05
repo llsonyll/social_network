@@ -59,6 +59,17 @@ const userHandler = (io, socket) => {
             console.log(err);
         }
     }));
+    socket.on('notification', (type, refId, userId, toId, username, profilePicture, content) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            let user = yield mongoose_1.User.findById(toId);
+            if (user) {
+                io.to(`${user.socketId}`).emit('notification', type, refId, userId, profilePicture, username, content);
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }));
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             let user = yield mongoose_1.User.findOne({ socketId: socket.id });
