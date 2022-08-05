@@ -121,7 +121,7 @@ const ProfilePosts = (props) => {
             >
               <div className="">{fullname ? fullname : "Dummy username"}</div>
             </Link>
-            <div className=" text-stone-400 ">{timeAgo ? timeAgo : "3hr"}</div>
+            <div className=" text-stone-400 ">{timeAgo ? timeAgo : "Some time ago"}</div>
           </div>
           {loggedUser._id === userId && (
             <button className="user-post-icon_more" onClick={showEditComponent}>
