@@ -33,16 +33,16 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 import { AiFillSetting } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { postNotification } from "../../redux/actions/notificationActions";
 
 const Profile = () => {
   const params = useParams();
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
-  const [image, setImage] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
+  const loggedUser = useSelector((state) => state.auth.loggedUser)
   const loading = useSelector((state) => state.user.loadingProfile);
-  const error = useSelector((state) => state.user.errorProfile);
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
@@ -330,7 +330,7 @@ const Profile = () => {
             <div className="w-full h-full flex justify-center items-center pt-5">
               <LoadingSpinner />
             </div>
-          ) : !error ? (
+          ) : (
             <>
               <div className="img-container">
                 {/* <img
@@ -513,6 +513,14 @@ const Profile = () => {
                         className="flex-1 flex justify-center"
                         onClick={() => {
                           dispatch(followOrUnfollowUser(userLoggedId, _id));
+                          dispatch(postNotification({
+                            type:'follow',
+                            refId: loggedUser._id,
+                            fromId: loggedUser._id,
+                            toId: _id,
+                            username: loggedUser.username,
+                            profilePicture: loggedUser.profilePicture
+                          }))
                         }}
                         type="button"
                       >
@@ -532,7 +540,6 @@ const Profile = () => {
                             title: "Submit your Report",
                             input: "textarea",
                             inputAttributes: {
-                              maxlength: 150,
                               autocapitalize: "off",
                             },
                             showCancelButton: true,
@@ -558,10 +565,6 @@ const Profile = () => {
                 
               </div>
             </>
-          ) : (
-            <div className="text-center text-white font-bold">
-              No se pudo cargar el perfil
-            </div>
           )}
         </div>
 

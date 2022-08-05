@@ -9,6 +9,7 @@ import { newLikeHomePost, newDislikeHomePost, followOrUnfollowUser, getUserFollo
 import { makeReport } from "../../redux/actions/reportActions";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
+import { postNotification } from "../../redux/actions/notificationActions";
 import { useState } from "react";
 
 const HomePostCard = (props) => {
@@ -32,6 +33,16 @@ const HomePostCard = (props) => {
 
   const handleLikesPost = () => {
     dispatch(newLikeHomePost(post._id, _id, like));
+    if(loggedUser._id !== props.userId){
+      dispatch(postNotification({
+        type:'postLike',
+        refId: props.postId,
+        fromId: loggedUser._id,
+        toId: props.userId,
+        username: loggedUser.username,
+        profilePicture: loggedUser.profilePicture
+      }))
+    }
   };
 
   const handleDislikesPost = () => {
@@ -133,8 +144,8 @@ const HomePostCard = (props) => {
                   type="button"
                   className="ml-2 text-green-600   outline-1 outline px-1 rounded-md hover:text-green-700 transition-all"
                   onClick={async () => {
-                    console.log("hello");
-                    console.log(props.userId);
+                    // console.log("hello");
+                    // console.log(props.userId);
                     dispatch(
                       followOrUnfollowUser(loggedUser._id, props.userId)
                     ).then(() => dispatch(getUserFollowings(loggedUser._id)));
