@@ -30,6 +30,8 @@ const ProfilePosts = (props) => {
     multimedia,
   } = props;
   const [showMore, setShowMore] = useState('')
+  const [dislike,setDislike] = useState('')
+  const [like,setLike] = useState('')
   
   useEffect(()=> {
     setShowMore(content)
@@ -47,10 +49,10 @@ const ProfilePosts = (props) => {
     setEditPost(!editPost);
   };
   const handleLike = () => {
-    dispatch(newLikeUserProfile(postNumber, _id));
+    dispatch(newLikeUserProfile(postNumber, _id,like));
   };
   const handleDislike = () => {
-    dispatch(newDislikeUserProfile(postNumber, _id));
+    dispatch(newDislikeUserProfile(postNumber, _id,dislike));
   };
  
   const loggedUser = useSelector((state) => state.auth.loggedUser);
@@ -59,8 +61,10 @@ const ProfilePosts = (props) => {
  
   let renderHeartIcon = () => {
     if (!posts[index].likes.includes(_id)) {
+      like !== "add" && setLike("add")
       return <FaHeart />;
     } else {
+      like !== "" && setLike("")
       return (
         <IconContext.Provider
           value={{ color: "red", className: "global-heart-class-name" }}
@@ -75,9 +79,11 @@ const ProfilePosts = (props) => {
   let renderHeartBrokenIcon = () => {
     if (!posts[index].dislikes.includes(_id)) {
       console.log("Entra blanco");
+      dislike !== "add" && setDislike("add")
       return <ImHeartBroken />;
     } else {
       console.log("Entra rojo");
+      dislike !== "" && setDislike("")
       return (
         <IconContext.Provider
           value={{ color: "#9400D3", className: "global-heart-class-name" }}
