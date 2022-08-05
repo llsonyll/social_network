@@ -68,6 +68,11 @@ const PostTile = ({ post }) => {
 
   const handleCommentInput = (e) => {
     setCommentInput(e.target.value);
+  };
+
+  const handleInputSubmit = (e) => {
+    e.preventDefault();
+    dispatch(createComment(user._id, post._id, { content: commentInput }));
     if(user._id !== post.userId._id){
       dispatch(postNotification({
         type:'comment',
@@ -78,11 +83,6 @@ const PostTile = ({ post }) => {
         profilePicture: user.profilePicture
       }))
     }
-  };
-
-  const handleInputSubmit = (e) => {
-    e.preventDefault();
-    dispatch(createComment(user._id, post._id, { content: commentInput }));
     setCommentInput("");
   };
 

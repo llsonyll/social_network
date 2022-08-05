@@ -119,7 +119,7 @@ const NavBar = ({ openModal, openAdmin }) => {
           <MdNotifications className="text-2xl" />
             {unseen?
           <span className="alert_notification">
-            unseen
+            {unseen}
           </span>
             : 
             null
