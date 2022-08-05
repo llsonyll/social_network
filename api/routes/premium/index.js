@@ -78,7 +78,7 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
     catch (error) {
         ((_b = error.raw) === null || _b === void 0 ? void 0 : _b.message)
             ? res.status(400).json((_c = error.raw) === null || _c === void 0 ? void 0 : _c.message)
-            : res.status(400).json({ msg: 'Payment fails' });
+            : res.status(400).json('Payment fails');
     }
 }));
 router.put('/private/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
