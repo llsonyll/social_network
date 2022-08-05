@@ -40,7 +40,6 @@ const Profile = () => {
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
-  const [image, setImage] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
   const loggedUser = useSelector((state) => state.auth.loggedUser)
   const loading = useSelector((state) => state.user.loadingProfile);
