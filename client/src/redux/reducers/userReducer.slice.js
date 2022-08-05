@@ -17,23 +17,22 @@ const userReducer = createSlice({
       state.userProfileData = action.payload;
     },
     homePosts(state, action) {
-      if (action.payload.length === 0) {
-        state.control = ""
-        return state
-      }
-      console.log(action.payload)
-      if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
-        state.homePostsData = state.homePostsData.concat(action.payload);
-        if (action.payload.length < 10 && state.control === "true") {
-          state.control = "false"
+      console.log("HOME POSTS REDUCER", action.payload)
+        if (action.payload.length === 0 && state.control==="false") {
+          state.control = ""
+          return state
+          console.log("CONTROL = VACIO ")
         }
-      } else {
-        state.homePostsData = action.payload;
-      }
+        if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
+          state.homePostsData = state.homePostsData.concat(action.payload);
+          if (action.payload.length < 10 && state.control === "true") {
+            state.control = "false"
+          }
+        }
     },
     clearHomePosts(state, action) {
       state.homePostsData = [],
-        state.control = "true"
+      state.control = "true"
     },
     addNewPost(state, action) {
       state.homePostsData = [action.payload, ...state.homePostsData]

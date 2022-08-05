@@ -28,7 +28,12 @@ const Home = () => {
 
   useEffect(() => {
     if (userId && getControl !== "") {
-      dispatch(getHomePosts(userId, parseInt(page), "true"));
+      var time
+      clearTimeout(time)  
+      time = setTimeout(() => {
+        dispatch(getHomePosts(userId, parseInt(page), "true"));
+      })
+      
     }
     dispatch(getUserFollowings(userId));
     return () => dispatch(clearHomePosts());
