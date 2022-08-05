@@ -57,8 +57,8 @@ const HomePostCard = (props) => {
 
   let index = homePostsData.findIndex((post) => post._id === props.postId);
 
-  console.log(homePostsData);
-  console.log(index);
+  // console.log(homePostsData);
+  // console.log(index);
 
   let renderHeartIcon = () => {  
       if (!homePostsData[index].likes?.includes(user._id)) {
@@ -96,10 +96,10 @@ const HomePostCard = (props) => {
     if (
       !homePostsData[index].dislikes?.includes(user._id)
     ) {
-      console.log("Entra blanco");
+      // console.log("Entra blanco");
       return <ImHeartBroken />;
     } else {
-      console.log("Entra rojo");
+      // console.log("Entra rojo");
       return (
         <IconContext.Provider
           value={{ color: "#9400D3", className: "global-heart-class-name" }}

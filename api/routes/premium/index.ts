@@ -69,7 +69,7 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
     } catch (error: any) {
         error.raw?.message 
         ? res.status(400).json(error.raw?.message)
-        : res.status(400).json({msg: 'Payment fails'});
+        : res.status(400).json('Payment fails');
     }
 });
 
