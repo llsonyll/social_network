@@ -90,3 +90,14 @@ export interface IPayment {
    plan: 'weekly' | 'monthly' | 'yearly';
    paymentDate: Date
 }
+
+export interface INotification {
+   _id: Types.ObjectId;
+   from: Types.ObjectId;
+   to: Types.ObjectId;
+   refId: Types.ObjectId;
+   type: 'like' | 'comment' | 'follow' | 'message';
+   content: string;
+   createdAt: Date;
+   seen: boolean;
+}

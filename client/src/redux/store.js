@@ -5,6 +5,7 @@ import reviewReducer from "./reducers/reviewReducer";
 import postReducerSlice from './reducers/postReducer.slice';
 import userReducerSlice from "./reducers/userReducer.slice";
 import chatReducer from "./reducers/chatReducer";
+import notificationReducerSlice from "./reducers/notificationReducer.slice";
 import reportReducerSlice from "./reducers/reportReducer.slice";
 
 const store = configureStore({
@@ -15,6 +16,7 @@ const store = configureStore({
 	  post: postReducerSlice,
     user: userReducerSlice,
     chat: chatReducer,
+    notification: notificationReducerSlice,
     report: reportReducerSlice
   },
 });

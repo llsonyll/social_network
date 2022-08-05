@@ -35,3 +35,22 @@
 .search-box input:focus ~ #input_navbar__search {
   display: block;
 }
+
+
+/* notificaiones */
+
+.alert_notification{
+  color: white;
+  background-color:#4e864c;
+  outline: 1px solid rgb(0, 255, 0);
+  height: auto;
+  border-radius: 50%;
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  text-align: center;
+  font-size: 15px;
+  line-height: 18px;
+  left: 16px;
+  top: 0px;
+}

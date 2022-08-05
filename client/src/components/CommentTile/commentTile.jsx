@@ -13,6 +13,7 @@ import { useState } from "react";
 import EditComment from "../editComment/editComment";
 import { makeReport } from "../../redux/actions/reportActions";
 import Swal from "sweetalert2";
+import { postNotification } from "../../redux/actions/notificationActions";
 
 
 const CommentTile = ({ data , props }) => {
@@ -30,6 +31,16 @@ const CommentTile = ({ data , props }) => {
 
   const handleLikeComment = () => {
     dispatch(newLikesComment(data._id, _id));
+    if(loggedUser._id !== data.userId._id){
+      dispatch(postNotification({
+        type:'commentLike',
+        refId: data.postId,
+        fromId: loggedUser._id,
+        toId: data.userId._id,
+        username: loggedUser.username,
+        profilePicture: loggedUser.profilePicture
+      }))
+    }
   };
 
   const handleDislikeComment = ()  => {
@@ -75,6 +86,8 @@ const CommentTile = ({ data , props }) => {
   };
 
   return data?.userId ? (
+    <div>
+
     <div id="comment_container" className="bg-[#353535] rounded-md md:p-2 p-1 flex my-3">
       {/* TODO: Avatar should redirect to user profile */}
       <div>
@@ -153,6 +166,7 @@ const CommentTile = ({ data , props }) => {
         : null}
         </div>
       </div>
+    </div>
       {editComents === true && 
         <EditComment
           renderChangeRenderComponents={renderChangeRenderComponents}
@@ -162,7 +176,7 @@ const CommentTile = ({ data , props }) => {
       }
     </div>
   ) : (
-    <></>
+    <>      </>
   );
 };
 
