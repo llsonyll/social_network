@@ -54,10 +54,7 @@ server.use('/comment', commentRoute);
 server.use('/chat', chatRoute);
 server.use('/premium', premiumRoute);
 server.use('/report', reportRoute);
-<<<<<<< HEAD
-server.use('/notification', notificationRoute)
-=======
+server.use('/notification', notificationRoute);
 server.use('/admin', adminRoute);
->>>>>>> 106db5de0d2666234d9376104f74abc94c29d39f
 
 export default server;
