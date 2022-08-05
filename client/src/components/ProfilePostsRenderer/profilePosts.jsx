@@ -7,13 +7,15 @@ import { ImHeartBroken } from "react-icons/im";
 import { Link } from 'react-router-dom'
 import { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
 import { makeReport } from '../../redux/actions/reportActions';
 import Swal from 'sweetalert2';
 import EditPost from '../EditPost.jsx/editPost';
 import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
+import { listLikes, listDislikes } from '../../redux/actions/listOfUsersRendererActions'
+import { postNotification } from '../../redux/actions/notificationActions';
 import { useEffect } from "react";
+
 
 const ProfilePosts = (props) => {
 
@@ -24,9 +26,6 @@ const ProfilePosts = (props) => {
     timeAgo,
     content,
     commentsLength,
-    likesLength,
-    likes,
-    dislikes,
     multimedia,
   } = props;
   const [showMore, setShowMore] = useState('')
@@ -40,27 +39,35 @@ const ProfilePosts = (props) => {
 
   let isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
 
-  const { _id } = useSelector((state) => state.auth.loggedUser);
-  const dispatch = useDispatch();
+	const { _id } = useSelector(state => state.auth.loggedUser);
+	const loggedUser = useSelector(state => state.auth.loggedUser)
+  	const dispatch = useDispatch();
 
-  let showEditComponent = () => {
-    setEditPost(!editPost);
-  };
-  const handleLike = () => {
-    dispatch(newLikeUserProfile(postNumber, _id));
-  };
-  const handleDislike = () => {
-    dispatch(newDislikeUserProfile(postNumber, _id));
-  };
- 
-  const loggedUser = useSelector((state) => state.auth.loggedUser);
-  const posts = useSelector((state) => state.user.userProfileData.posts);
-  let index = posts.findIndex((post) => post._id === postNumber);
- 
-  let renderHeartIcon = () => {
-    if (!posts[index].likes.includes(_id)) {
-      return <FaHeart />;
-    } else {
+	let showEditComponent = () => {
+		setEditPost(!editPost)
+	}
+	const handleLike = () => {
+       dispatch(newLikeUserProfile(postNumber, _id));
+	   if(loggedUser._id !== userId){
+		dispatch(postNotification({
+		  type:'postLike',
+		  refId: postNumber,
+		  fromId: loggedUser._id,
+		  toId: userId,
+		  username: loggedUser.username,
+		  profilePicture: loggedUser.profilePicture
+		}))
+	  }
+	}
+	const handleDislike = () => {
+		dispatch(newDislikeUserProfile(postNumber,_id));
+	}
+	const posts = useSelector(state => state.user.userProfileData.posts);
+	let index = posts.findIndex(post => post._id === postNumber);
+	let renderHeartIcon = () => {
+		if (!posts[index].likes.includes(_id)) {
+			return <FaHeart />
+		}else{
       return (
         <IconContext.Provider
           value={{ color: "red", className: "global-heart-class-name" }}
@@ -103,10 +110,13 @@ const ProfilePosts = (props) => {
   };
 
   let renderLikes = () => {
-    setShowLikes(!showLikes);
+    setShowLikes(!showLikes)
+    dispatch(listLikes(postNumber)) 
+    //dispatch(ClearList())      
   };
   let renderDislikes = () => {
     setShowDislikes(!showDislikes);
+    dispatch(listDislikes(postNumber)) 
   };
 
   return (
@@ -127,8 +137,9 @@ const ProfilePosts = (props) => {
             >
               <div className="">{fullname ? fullname : "Dummy username"}</div>
             </Link>
-            <div className="opacity-50">{timeAgo ? timeAgo : "3hr"}</div>
+            <div className=" text-stone-400 ">{timeAgo ? timeAgo : "Some time ago"}</div>
             
+
           </div>
           {loggedUser._id === userId && renderEditPost()}
         </div>
@@ -211,13 +222,14 @@ const ProfilePosts = (props) => {
             </button>
           )}
       </div>
-      {showLikes === true && (
-        <ListOfUsersRenderer likes={likes} renderLikes={renderLikes} />
+      {showLikes === true && ( 
+        <ListOfUsersRenderer titleToRender={'likes'} postId={postNumber} closeRenderFunction={renderLikes} />
       )}
       {showDislikes === true && isPremium === true ? (
         <ListOfUsersRenderer
-          dislikes={dislikes}
-          renderDislikes={renderDislikes}
+          titleToRender={'dislikes'}
+          postId={postNumber}
+          closeRenderFunction={renderDislikes}
         />
       ) : null}
     </Fragment>

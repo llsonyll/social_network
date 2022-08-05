@@ -2,6 +2,7 @@ import "./navbar.css";
 
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaUserCircle, FaFacebookMessenger } from "react-icons/fa";
+import { MdNotifications } from "react-icons/md";
 import { GiCrownedSkull } from "react-icons/gi";
 
 import NewPostBtn from "../NewPostBtn";
