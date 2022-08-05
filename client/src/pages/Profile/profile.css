@@ -225,13 +225,15 @@
   flex-direction: column;
   border-radius: 5px;
   min-width: 260px;
+  position: relative;
 }
 
 #Profile-posts__container .profile-posts-component .user-post-icon_more {
   color: #fff;
   font-size: 30px;
   position: absolute;
-  right: 13%;
+  right: 10px;
+  top: 20px;
   transition: 0.2s all;
 }
 
@@ -262,10 +264,7 @@
   margin-top: 5px;
   transition: 0.2s all;
 }
-#Profile-posts__container .user-post-profile__content:hover {
-  background-color: rgb(77, 77, 77);
-  cursor: pointer;
-}
+
 
 /* Button para enviar mensajes */
 
