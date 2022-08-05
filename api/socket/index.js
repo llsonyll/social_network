@@ -36,11 +36,11 @@ const userHandler = (io, socket) => {
             console.log(err);
         }
     }));
-    socket.on('call', (_id, fromId) => __awaiter(void 0, void 0, void 0, function* () {
+    socket.on('call', (_id, fromId, username, profilePicture) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             let user = yield mongoose_1.User.findById(_id);
             if (user) {
-                io.to(`${user.socketId}`).emit('call', fromId);
+                io.to(`${user.socketId}`).emit('call', fromId, username, profilePicture);
             }
         }
         catch (err) {

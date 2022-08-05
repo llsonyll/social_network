@@ -125,7 +125,7 @@ const PostTile = ({ post }) => {
           onClick={() => {
             history.back();
           }}
-          className="absolute right-2 text-white"
+          className="transition-all absolute right-2 text-white text-2xl hover:text-green-600"
         >
           <TiArrowBack />
         </button>

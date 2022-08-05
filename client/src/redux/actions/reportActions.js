@@ -32,8 +32,31 @@ export const getReportsAction = (type) => async (dispatch) => {
     !type ? type = "" : null
   try {
     const response = await apiConnection.get(`report?type=${type}`);
-    dispatch(getReports(response.data))
+    return dispatch(getReports(response.data))
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const deleteReported = (userId, reportId, type) => async (dispatch) => {
+  try {
+    const { data } = await apiConnection.delete(`report/${userId}/${reportId}`, type);
+    Swal.fire({
+      icon: "info",
+      title: data,
+      text: 'Thanks!',
+      background: "#4c4d4c",
+      color: "white",
+    });
+    return data;
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Ups... Something went wrong",
+      text: error.response.data,
+      background: "#4c4d4c",
+      color: "white",
+    });
+    return error.response.data;
   }
 };

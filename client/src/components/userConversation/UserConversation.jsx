@@ -48,7 +48,7 @@ const UserConversation = ({mostrarMenu, setmostrarMenu}) => {
     }
 
     const handleCall = () =>{
-      socket.emit('call', chatInfo.users[getIndex(chatInfo.users)]._id, loggedUser._id) 
+      socket.emit('call', chatInfo.users[getIndex(chatInfo.users)]._id, loggedUser._id, loggedUser.username, loggedUser.profilePicture) 
     }
 
   return (

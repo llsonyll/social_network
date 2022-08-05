@@ -31,6 +31,7 @@ import { useRef, useState } from "react";
 // Icons
 import { FiPhoneMissed } from "react-icons/fi";
 import { AiOutlineAudioMuted, AiOutlineVideoCamera } from "react-icons/ai";
+import IncomingCall from "./components/IncomingCall/IncomingCall";
 
 //iconos
 import Notifications from "./pages/Notifications/Notifications";
@@ -48,6 +49,7 @@ function App() {
   const [myVideo, setMyVideo] = useState();
   const [otherVideo, setOtherVideo] = useState();
   const [onCall, setOnCall] = useState(false);
+  const [incomingCalls, setIncomingCalls] = useState([])
 
   console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
 
@@ -92,29 +94,9 @@ function App() {
       //EMITS AN LOGGED ACTION
       socket.emit("logged", actualyLogged, socket.id);
       //DETECTS WHEN SOMEONE CALLS YOU
-      socket.on("call", (_id) => {
+      socket.on("call", (_id, username, profilePicture) => {
         //DISPLAYS THE VIDEOCALL
-        setOnCall(true);
-        //GET CAMERA AND MIC DATA
-        getUserMedia(
-          { video: true, audio: true },
-          function (stream) {
-            //EXECUTE THE CALL
-            call = peer.call(_id, stream);
-            //DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
-            call.on("close", () => {
-              setOnCall(false);
-            });
-            //ON ANSWER SHOWS BOTH VIDEOS
-            call.on("stream", function (remoteStream) {
-              setMyVideo(stream);
-              setOtherVideo(remoteStream);
-            });
-          },
-          (err) => {
-            console.error("Failed to get local stream", err);
-          }
-        );
+        setIncomingCalls([...incomingCalls, {_id, username, profilePicture}])
       });
       //ANSWER THE CALL FUNCTION
       peer.on("call", (calling) => {
@@ -219,6 +201,45 @@ function App() {
       .forEach((track) => (track.enabled = !track.enabled));
   }
 
+  function handeAcceptCall(_id){
+    if(call){
+      if(call.open){
+        socket.emit("closeCall", call.peer)
+        call.close()
+      }
+    }
+    setIncomingCalls(incomingCalls.filter(call => call._id !== _id))
+    setOnCall(true);
+    const getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia;
+        getUserMedia(
+          { video: true, audio: true },
+          function (stream) {
+            //EXECUTE THE CALL
+            call = peer.call(_id, stream);
+            //DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
+            call.on("close", () => {
+              setOnCall(false);
+            });
+            //ON ANSWER SHOWS BOTH VIDEOS
+            call.on("stream", function (remoteStream) {
+              setMyVideo(stream);
+              setOtherVideo(remoteStream);
+            });
+          },
+          (err) => {
+            console.error("Failed to get local stream", err);
+          }
+        );
+  }
+
+  function handleDenyCall(_id){
+    setIncomingCalls(incomingCalls.filter(call => call._id !== _id))
+  }
+
+
   return (
     <>
       {onCall ? (
@@ -242,7 +263,9 @@ function App() {
           </div>
         </Draggable>
       ) : null}
-
+      {
+        incomingCalls.length? incomingCalls.map(call => <IncomingCall data={call} acceptCall={handeAcceptCall} denyCall={handleDenyCall}/>):null
+      }
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={<DashBoard />}>

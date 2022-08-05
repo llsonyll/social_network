@@ -143,7 +143,7 @@ const NavBar = ({ openModal, openAdmin }) => {
           Messages
         </NavLink>
         <button
-          className="bg-red-600 p-2 rounded font-bold text-lg"
+          className="bg-red-500 p-2 rounded font-bold text-lg"
           onClick={handleLogOut}
         >
           <MdOutlineLogout />

@@ -64,10 +64,14 @@ async (req: Request, res: Response) => {
 });
 
 
-router.get('/', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
+router.get('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
 async (req: Request, res: Response) => {
     try{
         const { type } = req.query;
+        const { userId } = req.params
+        
+        const admin = await User.findById(`${userId}`);
+        if(!admin || !admin.isAdmin) return res.status(401).json('Missings permissions');
 
         let reports: any[] = [];
 
@@ -136,6 +140,8 @@ async (req:Request, res:Response) =>{
         const { userId, reportId } = req.params;
         const { type } = req.body;
 
+        if (!type) return res.status(400).json('Please send type of report');
+
         const admin = await User.findById(`${userId}`);
         if(!admin || !admin.isAdmin) return res.status(401).json('Missings permissions');
         
@@ -162,7 +168,7 @@ async (req:Request, res:Response) =>{
             await report.remove();
             await post.remove();
             
-            return res.json('Reported successfully');
+            return res.json('Post reported successfully');
         }
         if (type === 'comment') {
             const comment = await Comment.findById(`${report.commentReportedId}`);
@@ -181,7 +187,7 @@ async (req:Request, res:Response) =>{
             await comment.remove();
             console.log('todo ok')
 
-            return res.json('Reported successfully');
+            return res.json('Comment reported successfully');
         }
 
         const user = await User.findById(`${report.userReportedId}`);
@@ -191,7 +197,7 @@ async (req:Request, res:Response) =>{
         user.isDeleted = true;
         await user.save();
         
-        return res.json('Reported successfully');
+        return res.json('User reported successfully');
     }catch(err){
         return res.status(400).json('Something went wrong');
     }
