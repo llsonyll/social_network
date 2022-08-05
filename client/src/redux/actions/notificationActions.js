@@ -1,6 +1,6 @@
 import { socket } from "../../App";
 import { apiConnection } from "../../utils/axios";
-import { setNotifications } from "../reducers/notificationReducer.slice";
+import { setNotifications, deleteNotificationR } from "../reducers/notificationReducer.slice";
 
 export const getNotifications = (userId) => async (dispatch) => {
     try{
@@ -47,6 +47,18 @@ export const postNotification = ({type, refId, fromId, toId, username, profilePi
         socket.emit('notification', type, refId, fromId, toId, username, profilePicture, content)
         return
     }catch(err){
+        console.log(err)
+    }
+}
+
+
+export const deleteNotification = (userId, notificationId) => async (dispatch) => {
+    try{
+        let {data} = await apiConnection.delete(`notification/${userId}/${notificationId}`)
+        // console.log(data.msg)
+        if(data.msg) return dispatch (deleteNotificationR(notificationId))
+        
+    } catch(err) {
         console.log(err)
     }
 }

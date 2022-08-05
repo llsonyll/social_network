@@ -13,6 +13,10 @@ const notificationsReducer = createSlice({
         },
         setNotifications(state, action){
             state.notifications = action.payload
+        },
+        deleteNotificationR(state, action) {
+            console.log(action.payload)
+            state.notifications = state.notifications.filter((n) => n._id !== action.payload)
         }
     }
 })
@@ -20,7 +24,8 @@ const notificationsReducer = createSlice({
 
 export const {
     addNotification,
-    setNotifications
+    setNotifications,
+    deleteNotificationR
 } = notificationsReducer.actions
 
 export default notificationsReducer.reducer

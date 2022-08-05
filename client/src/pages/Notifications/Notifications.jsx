@@ -3,7 +3,8 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Avatar from '../../components/Avatar'
-import { setSeenNotifications } from '../../redux/actions/notificationActions'
+import { setSeenNotifications, deleteNotification } from '../../redux/actions/notificationActions'
+
 
 import './Notifications.css'
 
@@ -16,10 +17,17 @@ const Notifications = () => {
     let dispatch = useDispatch()
 
     useEffect(()=>{
+
         return (()=> {
             dispatch(setSeenNotifications(loggedUser._id))
         })
     }, [])
+    useEffect(() => {
+
+    }, [notifications])
+    // const handleDelete = (userId, notificationId) {
+        // dispatch
+    // }
 
   return (
     <div className='notifications-father_container'> 
@@ -36,7 +44,7 @@ const Notifications = () => {
                         link = `/home/messages/${notification.refId}`
                     }
                     return(
-                        <Link to={link}>
+                        // <Link to={link} className='position-absolute z-10'>
                         <div className='notify_container'>
                             <div className='notify-avatar_container'>
                                 <Link to={`/home/profile/${notification.from._id}`}>
@@ -49,10 +57,9 @@ const Notifications = () => {
                                 </Link>
                                 <p>{notification.content}</p>
                             </div>  
-                            
-                        <button className='close-notify'><GrFormClose/></button>
+                        <button className='close-notify' onClick={() => dispatch(deleteNotification(loggedUser._id,notification._id))}><GrFormClose/></button>
                         </div>
-                        </Link>
+                        // </Link>
                     )
                 }) : null 
             }
