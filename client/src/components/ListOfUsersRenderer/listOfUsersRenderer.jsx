@@ -7,8 +7,7 @@ import {Link} from 'react-router-dom'
 import { AiFillCloseSquare } from "react-icons/ai";
 //iconos
 import {AiOutlineSearch} from 'react-icons/ai'
-import { listLikes, listDislikes } from '../../redux/actions/listOfUsersRendererActions' 
-import clearList from '../../redux/reducers/listOfUsersRenderer.slice'
+import { clearAll } from '../../redux/actions/listOfUsersRendererActions' 
 //lo llamo desde profilePosts.jsx
 //Este componente renderiza las personas que dieron like/dislike/siguen/son seguidas...
 //Se puede usar para renderizar usuarios dependiendo de lo que uno necesite mostrar.
@@ -41,7 +40,7 @@ const ListOfUsersRenderer = ({arrayOfPeopleToRender = [], postId = '' , closeRen
     people = arr?.map((person) => {
         if (person.username) {
             return(
-                <Link to={`/home/profile/${person._id}`}>
+                <Link key={person._id} to={`/home/profile/${person._id}`}>
                 <div className='persontile'>
                     <div className='friend-contact__avatar'>
                         <Avatar size= 'l'imgUrl={person.profilePicture}/>
@@ -54,8 +53,6 @@ const ListOfUsersRenderer = ({arrayOfPeopleToRender = [], postId = '' , closeRen
             )
         } 
     })
-
-
 
   return (
       <div className='containersiii mx-20 fixed top-0 mt-52 center rounded-2xl shadow-xl shadow-black bg-[#202225] px-4 py-4 text-white items-center w-72 h-96'>
