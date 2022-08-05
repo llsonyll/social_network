@@ -31,7 +31,7 @@ function settings() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const _id = useSelector((state) => state.auth.loggedUser._id);
-  const isAdmin = useSelector((state) => state.auth.loggedUser.isAdmin);
+  const isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
   const userData = useSelector((state) => state.user.userProfileData);
   const arrOfReviews = useSelector((state) => state.review.allReviewes);
   //busco el id del user entre el arr de todos los reviews
@@ -207,7 +207,7 @@ function settings() {
         </div>
 
         <div className="make_container">
-          {isAdmin ? null : (
+          {isPremium ? null : (
             <div className="make-premium_container">
               <div className="make-premium-info_container">
                 <h2> Make account premium</h2>

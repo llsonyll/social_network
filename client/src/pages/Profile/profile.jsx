@@ -41,6 +41,7 @@ const Profile = () => {
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
+  const isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
   const loggedUser = useSelector((state) => state.auth.loggedUser);
   const loading = useSelector((state) => state.user.loadingProfile);
   const error = useSelector((state) => state.user.errorProfile);
@@ -137,7 +138,6 @@ const Profile = () => {
   const [datePublishedAsc, setDatePublishedAsc] = useState(false);
   const [likesAsc, setLikesAsc] = useState(false);
   const [commentsQtyAsc, setCommentsQtyAsc] = useState(false);
-
   const [filtersActive, setFiltersActive] = useState(false);
 
   useEffect(() => {
@@ -399,7 +399,10 @@ const Profile = () => {
                   <div className="user-firstname justify-between">
                     <div className="info_container">
                       <span className="span-info">Full name</span>
-                      <p>{`${userFirstName + " " + userLastName}`}</p>
+                      <p>
+                        {`${userFirstName + " " + userLastName}`}{" "}
+                        {isPremium ? "(Premium)" : null}
+                      </p>
                     </div>
                     {params.id === userLoggedId ? (
                       <button

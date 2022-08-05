@@ -32,6 +32,7 @@ const NavBar = ({ openModal, openAdmin }) => {
   const { searches } = useSelector((state) => state.browserReducer);
   const userId = useSelector((state) => state.auth.loggedUser._id);
   const isAdmin = useSelector((state) => state.auth.loggedUser.isAdmin);
+  const isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
 
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -104,7 +105,7 @@ const NavBar = ({ openModal, openAdmin }) => {
           className="flex items-center gap-2"
           style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
         >
-          {isAdmin ? <GiCrownedSkull /> : <FaUserCircle />}
+          {isPremium ? <GiCrownedSkull /> : <FaUserCircle />}
           Me
         </NavLink>
         <NavLink
