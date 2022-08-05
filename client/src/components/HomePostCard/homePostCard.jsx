@@ -14,9 +14,13 @@ import { useState } from "react";
 
 const HomePostCard = (props) => {
   const [showMore, setShowMore] = useState('')
+  const [dislike,setDislike] = useState('')
+  const [like,setLike] = useState('')
+
   useEffect(()=> {
     setShowMore(props.content)
   }, [props.content])
+ // console.log(showMore);
   let dispatch = useDispatch();
   const loggedUser = useSelector((store) => store.auth.loggedUser);
   let { userFollowings } = useSelector((state) => state.user);
@@ -28,7 +32,7 @@ const HomePostCard = (props) => {
   let post = posts?.find((post) => post._id === props.postId);
 
   const handleLikesPost = () => {
-    dispatch(newLikeHomePost(post._id, _id,props.page));
+    dispatch(newLikeHomePost(post._id, _id, like));
     if(loggedUser._id !== props.userId){
       dispatch(postNotification({
         type:'postLike',
@@ -42,7 +46,7 @@ const HomePostCard = (props) => {
   };
 
   const handleDislikesPost = () => {
-    dispatch(newDislikeHomePost(post._id, _id, props.page));
+    dispatch(newDislikeHomePost(post._id, _id,dislike));
   };
 
   function getTimeOfCreation(date) {
@@ -67,8 +71,10 @@ const HomePostCard = (props) => {
 
   let renderHeartIcon = () => {  
       if (!homePostsData[index].likes?.includes(user._id)) {
+        like !== "add" && setLike("add");
         return <FaHeart />;
       } else {
+        like !== "" && setLike("")
         return (
           <IconContext.Provider
             value={{ color: "red", className: "global-heart-class-name" }}
@@ -101,10 +107,10 @@ const HomePostCard = (props) => {
     if (
       !homePostsData[index].dislikes?.includes(user._id)
     ) {
-      // console.log("Entra blanco");
+      dislike !== "add" && setDislike("add");
       return <ImHeartBroken />;
     } else {
-      // console.log("Entra rojo");
+      dislike !== "" && setDislike("");
       return (
         <IconContext.Provider
           value={{ color: "#9400D3", className: "global-heart-class-name" }}

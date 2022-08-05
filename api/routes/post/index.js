@@ -135,6 +135,7 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
     try {
         let postId = req.params.postId;
         let userId = req.params.userId;
+        let action = req.query.action;
         let user = yield mongoose_1.User.findById(`${userId}`);
         if (!user) {
             return res.status(400).json("algo salio mal");
@@ -150,9 +151,9 @@ router.put("/dislike/:postId/:userId", passport_1.default.authenticate("jwt", { 
                 },
             });
         }
-        if (!post.dislikes.includes(user._id)) {
+        if (action === "add") {
             post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
-                $push: {
+                $addToSet: {
                     dislikes: user._id
                 }
             }, { new: true });
@@ -177,6 +178,7 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
     try {
         let postId = req.params.postId;
         let userId = req.params.userId;
+        let action = req.query.action;
         let user = yield mongoose_1.User.findById(`${userId}`);
         if (!user) {
             return res.status(400).json("algo salio mal");
@@ -193,9 +195,9 @@ router.put("/like/:postId/:userId", passport_1.default.authenticate("jwt", { ses
                 },
             });
         }
-        if (!post.likes.includes(user._id)) {
+        if (action === "add") {
             post = yield mongoose_1.Post.findOneAndUpdate({ _id: postId }, {
-                $push: {
+                $addToSet: {
                     likes: user._id
                 }
             }, { new: true });
