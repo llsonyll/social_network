@@ -151,7 +151,7 @@ router.get("/loginGoogle", passport_1.default.authenticate("google", {
     try {
         const user = req.user;
         const send = user;
-        res.cookie("token", createToken(user), { domain: `.socialn.me` });
+        res.cookie("token", createToken(user), { domain: `.socialn.me`, maxAge: 10000 });
         return res.redirect(`${process.env.URL_FRONT}`);
     }
     catch (err) {
@@ -167,7 +167,7 @@ router.get("/loginFacebook", passport_1.default.authenticate("facebook", {
     try {
         const user = req.user;
         const send = user;
-        res.cookie("token", createToken(user), { domain: `.socialn.me` });
+        res.cookie("token", createToken(user), { domain: `.socialn.me`, maxAge: 10000 });
         return res.redirect(`${process.env.URL_FRONT}`);
     }
     catch (err) {

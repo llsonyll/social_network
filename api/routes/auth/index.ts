@@ -183,7 +183,7 @@ router.get(
 
       const send: IUser = user as IUser;
 
-      res.cookie("token", createToken(user as IUser),{domain:`.socialn.me`});
+      res.cookie("token", createToken(user as IUser),{domain:`.socialn.me`, maxAge: 10000});
       return res.redirect(`${process.env.URL_FRONT}`);
     } catch (err) {
       res.status(400).json({ err: "todo salio mal" });
@@ -205,7 +205,7 @@ router.get(
 
       const send: IUser = user as IUser;
 
-      res.cookie("token", createToken(user as IUser),{domain:`.socialn.me`});
+      res.cookie("token", createToken(user as IUser),{domain:`.socialn.me`, maxAge: 10000});
       return res.redirect(`${process.env.URL_FRONT}`);
     } catch (err) {
       res.status(400).json({ err: "todo salio mal" });
