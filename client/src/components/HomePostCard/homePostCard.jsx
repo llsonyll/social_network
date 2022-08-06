@@ -11,11 +11,17 @@ import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
 import { useState } from "react";
+import { listLikes, listDislikes } from '../../redux/actions/listOfUsersRendererActions'
+import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
+
+
 
 const HomePostCard = (props) => {
   const [showMore, setShowMore] = useState('')
   const [dislike,setDislike] = useState('')
   const [like,setLike] = useState('')
+  const [showLikes, setShowLikes] = useState(false);
+  const [showDislikes, setShowDislikes] = useState(false);
 
   useEffect(()=> {
     setShowMore(props.content)
@@ -123,7 +129,18 @@ const HomePostCard = (props) => {
     }
   };
 
+  let renderLikes = () => {
+    setShowLikes(!showLikes)
+    dispatch(listLikes(props.postId)) 
+    //dispatch(ClearList())      
+  };
+  let renderDislikes = () => {
+    setShowDislikes(!showDislikes);
+    dispatch(listDislikes(props.postId)) 
+  };
+
   return (
+    <>
     <div className="bg-[#252525] w-full rounded-md md:p-4 p-2 flex flex-col text-white">
       <div className="flex  gap-4 md:p-2 rounded-md" id="father__content">
         <div id="Avatar_Username__container">
@@ -196,8 +213,10 @@ const HomePostCard = (props) => {
           onClick={handleLikesPost}
         >
           {post && renderHeartIcon()}
-          {homePostsData && homePostsData[index].likes?.length}
         </button>
+        <button onClick={renderLikes}>
+          {homePostsData && homePostsData[index].likes?.length}
+          </button>
 
         <div className="flex items-center gap-1 hover:text-violet-500">
           <button
@@ -205,6 +224,8 @@ const HomePostCard = (props) => {
             onClick={handleDislikesPost}
           >
             {post && renderHeartBrokenIcon()}
+          </button>
+          <button onClick={renderDislikes}>
             {homePostsData && homePostsData[index].dislikes?.length}
           </button>
         </div>
@@ -240,9 +261,22 @@ const HomePostCard = (props) => {
             <FaExclamation />
           </button>
         ) : null}
-
       </div>
     </div>
+    <div className="items-center">
+
+      {showLikes === true && ( 
+      <ListOfUsersRenderer titleToRender={'likes'} postId={props.postId} closeRenderFunction={renderLikes} />
+      )}
+      {showDislikes === true && loggedUser.isPremium === true ? (
+        <ListOfUsersRenderer
+          titleToRender={'dislikes'}
+          postId={props.postId}
+          closeRenderFunction={renderDislikes}
+        />
+      ) : null}
+    </div>
+      </>
   );
 };
 
