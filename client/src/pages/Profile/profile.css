@@ -6,7 +6,7 @@
 .profile-container {
   max-width: 1000px;
   margin-top: 85px;
-  width: 75%;
+  width: 40%;
   min-width: 313px;
   display: grid;
   grid-template-rows: 100px 1fr;
@@ -318,6 +318,9 @@
   right: 5px;
   font-size: 25px;
   transition: 0.2s all;
+}
+.img-container .settingButton svg {
+  filter: drop-shadow(0px 0px 1px black);
 }
 .img-container .settingButton:hover {
   transform: scale(1.2);

@@ -87,10 +87,10 @@ const NavBar = ({ openModal, openAdmin }) => {
         <Link to="/home">
           <img src={logoSN} alt="logoSN" className="md:h-10 h-6 md:mr-4 mr-2" />
         </Link>
-        <div className="search-box w-full md:w-60 relative">
+        <div className="search-box w-full lg:w-60 relative">
           <form onSubmit={handleSearchSubmit}>
             <input
-              className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full"
+              className=" h-full py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full"
               type="text"
               maxLength="50"
               value={searchInput}
@@ -106,9 +106,9 @@ const NavBar = ({ openModal, openAdmin }) => {
             setSearched={setSearched}
           />
         </div>
-        <div className="text-white md:hidden"> menu </div>
+        <div className="text-white lg:hidden"> menu </div>
       </div>
-      <div className="actions hidden md:flex">
+      <div className="actions hidden lg:flex">
         <NavLink to="" className="flex items-center gap-2">
           <FaHome />
           Home

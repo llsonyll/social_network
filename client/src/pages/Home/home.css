@@ -141,6 +141,7 @@ background-repeat:repeat;
   display: none;
   background-color: rgba(17, 17, 17, 0.658);
   border-radius: 5px;
+  width: 100%;
 }
 .contenedorFriends-responsive_container .contenedorfriend_info{
   display: NONE;

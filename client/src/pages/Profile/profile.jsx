@@ -55,7 +55,6 @@ const Profile = () => {
   const {isPremium} = useSelector(
     (state) => state.user.userProfileData
   );
-  const img = "bg-[url('https://i.ytimg.com/vi/tdc8X9bvmQ8/maxresdefault.jpg')]"
   const {
     _id,
     posts,
@@ -122,9 +121,18 @@ const Profile = () => {
     console.log(picture);
     setChangeProfilePicture(picture);
   };
-
+  const handleChangeCoverCd = async (event) => {
+    const fileUploaded = event.target.files[0];
+    let picture = await uploadPicture(fileUploaded);
+    console.log(picture);
+    setChangeCover(picture);
+  };
+  
   const cancelChangePicture = () => {
     setChangeProfilePicture("");
+  };
+  const cancelChangeCover = () => {
+    setChangeCover("");
   };
 
   const handleSavePicture = () => {
@@ -133,6 +141,14 @@ const Profile = () => {
     );
     dispatch(getLoggedUserInfo());
     setChangeProfilePicture("");
+  };
+
+  const handleSaveCover = () => {
+    dispatch(
+      modifyUser(userLoggedId, { coverPicture: changeCover })
+    );
+    dispatch(getLoggedUserInfo());
+    setChangeCover("");
   };
 
   function getTimeOfCreation(date) {
@@ -353,7 +369,8 @@ const Profile = () => {
     showFollowing !== false && setShowFollowing(false);
     dispatch(clearAll());
   }
-
+  console.log(changeCover);
+  
   return (
     <>
       <div className="p-container">
@@ -364,11 +381,36 @@ const Profile = () => {
             </div>
           ) : (
             <>
-              <div className={`img-container bg-center bg-cover`}> 
+              <div className={`img-container`}>
+                {
+                  isPremium === true && coverPicture ? 
+                  <img className="w-full h-full rounded-md" src={changeCover ? changeCover : coverPicture}  /> 
+                  :
+                  null 
+                }
+                {
+                  changeCover !== '' ? ( <button
+                  type="button"
+                  className="absolute left-1
+                  bg-green-600 rounded-md text-white p-1 bottom-1"
+                  onClick={handleSaveCover}
+                  >
+                    Save &#10004;
+                  </button> ) : null
+                }
+                {
+                  changeCover !== '' ? (<button
+                    className="absolute left-1 bg-red-600 text-white p-1 rounded-md top-1"
+                    type="button"
+                    onClick={cancelChangeCover}
+                  >
+                    Cancel X
+                  </button>) : null 
+                }
               <input
                         type={"file"}
                         ref={coverImageInput}
-                        onChange={handleChangeCover}
+                        onChange={handleChangeCoverCd}
                         accept="image/*"
                         style={{ display: "none" }}
                       />
@@ -379,7 +421,7 @@ const Profile = () => {
               alt='Profile Picture'>
             </img> */}
             {
-              isPremium === true ? 
+              isPremium === true && _id === userLoggedId ? 
               <button 
               onClick={handleChangeCover}
               className="transition-all bg-green-600 absolute right-1 bottom-1 text-white p-1 rounded-md hover:bg-green-800">
