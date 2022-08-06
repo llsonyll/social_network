@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
 import { useState } from "react";
-import { listLikes, listDislikes } from '../../redux/actions/listOfUsersRendererActions'
+import { listLikes, listDislikes, clearAll } from '../../redux/actions/listOfUsersRendererActions'
 import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
 
 
@@ -131,13 +131,18 @@ const HomePostCard = (props) => {
 
   let renderLikes = () => {
     setShowLikes(!showLikes)
-    dispatch(listLikes(props.postId)) 
-    //dispatch(ClearList())      
+    dispatch(listLikes(props.postId))    
   };
   let renderDislikes = () => {
     setShowDislikes(!showDislikes);
     dispatch(listDislikes(props.postId)) 
   };
+  const handleClose = () => {
+    showLikes !== false && setShowLikes(false);
+    showDislikes !== false && setShowDislikes(false);
+    dispatch(clearAll());
+  }
+
 
   return (
     <>
@@ -172,7 +177,7 @@ const HomePostCard = (props) => {
                 </button>
               )}
             </div>
-            <span className="opacity-50">{getTimeOfCreation(props.date)}</span>
+            <span className="text-stone-400">{getTimeOfCreation(props.date)}</span>
           </div>
         </div>
         <Link
@@ -263,19 +268,18 @@ const HomePostCard = (props) => {
         ) : null}
       </div>
     </div>
-    <div className="items-center">
 
       {showLikes === true && ( 
-      <ListOfUsersRenderer titleToRender={'likes'} postId={props.postId} closeRenderFunction={renderLikes} />
+      <ListOfUsersRenderer titleToRender={'likes'} postId={props.postId} closeRenderFunction={handleClose} />
       )}
       {showDislikes === true && loggedUser.isPremium === true ? (
         <ListOfUsersRenderer
           titleToRender={'dislikes'}
           postId={props.postId}
-          closeRenderFunction={renderDislikes}
+          closeRenderFunction={handleClose}
         />
       ) : null}
-    </div>
+
       </>
   );
 };

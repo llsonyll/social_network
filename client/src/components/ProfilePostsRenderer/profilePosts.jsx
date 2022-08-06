@@ -1,4 +1,4 @@
-import { FaComment, FaHeart, FaExclamation, FaBullseye } from "react-icons/fa";
+import { FaComment, FaHeart, FaExclamation } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import Avatar from "../Avatar";
 import MultimediaElement from "../MultimediaElement";
@@ -11,11 +11,10 @@ import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/u
 import { makeReport } from '../../redux/actions/reportActions';
 import Swal from 'sweetalert2';
 import EditPost from '../EditPost/editPost';
-import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
 import { listLikes, listDislikes, clearAll } from '../../redux/actions/listOfUsersRendererActions'
 import { postNotification } from '../../redux/actions/notificationActions';
 import { useEffect } from "react";
-
+import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
 
 const ProfilePosts = (props) => {
 
@@ -121,22 +120,19 @@ const ProfilePosts = (props) => {
   };
 
   let renderLikes = () => {
-    setShowLikes(true)
+    setShowLikes(!showLikes)
     dispatch(listLikes(postNumber)) 
     //dispatch(ClearList())      
   };
-
   let renderDislikes = () => {
-    setShowDislikes(true);
+    setShowDislikes(!showDislikes);
     dispatch(listDislikes(postNumber)) 
   };
-
-  
   const handleClose = () => {
     showLikes !== false && setShowLikes(false);
     showDislikes !== false && setShowDislikes(false);
     dispatch(clearAll());
-   }
+  }
 
   return (
     <Fragment key={postNumber}>

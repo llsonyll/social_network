@@ -7,7 +7,8 @@ import {Link} from 'react-router-dom'
 import { AiFillCloseSquare } from "react-icons/ai";
 //iconos
 import {AiOutlineSearch} from 'react-icons/ai'
-import { clearAll } from '../../redux/actions/listOfUsersRendererActions' 
+import { listLikes, listDislikes } from '../../redux/actions/listOfUsersRendererActions' 
+import clearList from '../../redux/reducers/listOfUsersRenderer.slice'
 //lo llamo desde profilePosts.jsx
 //Este componente renderiza las personas que dieron like/dislike/siguen/son seguidas...
 //Se puede usar para renderizar usuarios dependiendo de lo que uno necesite mostrar.
@@ -40,7 +41,7 @@ const ListOfUsersRenderer = ({arrayOfPeopleToRender = [], postId = '' , closeRen
     people = arr?.map((person) => {
         if (person.username) {
             return(
-                <Link key={person._id} to={`/home/profile/${person._id}`}>
+                <Link to={`/home/profile/${person._id}`}>
                 <div className='persontile'>
                     <div className='friend-contact__avatar'>
                         <Avatar size= 'l'imgUrl={person.profilePicture}/>
@@ -54,8 +55,10 @@ const ListOfUsersRenderer = ({arrayOfPeopleToRender = [], postId = '' , closeRen
         } 
     })
 
+
+
   return (
-      <div className='containersiii mx-0 fixed top-0 mt-52 center rounded-2xl shadow-xl shadow-black bg-[#202225] px-4 py-4 text-white items-center w-72 h-96'>
+      <div className='containersiii self-center z-50 mx-0 fixed top-0 mt-52 center rounded-2xl shadow-xl shadow-black bg-[#202225] px-4 py-4 text-white items-center w-72 h-96'>
               <button className="text-gray-400 absolute top-0 mb-0 right-0 bg-transparent rounded-lg text-sm p-1.5 ml-auto hover:bg-gray-800 " onClick={closeRenderFunction}>
               <span className="text-3xl">
               <AiFillCloseSquare />
