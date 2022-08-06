@@ -175,7 +175,7 @@ router.put(
   async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;
-      const { username, firstname, lastname, biography, profilePicture } =
+      const { username, firstname, lastname, biography, profilePicture, coverPicture } =
         req.body;
 
       if (
@@ -184,7 +184,8 @@ router.put(
         !lastname &&
         !biography &&
         biography !== "" &&
-        !profilePicture
+        !profilePicture &&
+        !coverPicture
       ) {
         return res.status(400).json({ errprMsg: "Please send data" });
       }
