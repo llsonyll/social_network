@@ -14,6 +14,7 @@ import {
 import { logOutUser } from "../../redux/reducers/authReducer.slice";
 import { MdOutlineLogout, MdAdminPanelSettings } from "react-icons/md";
 import SearchResults from "../SearchResults/searchResults";
+import { socket } from "../../App";
 
 const NavBar = ({ openModal, openAdmin }) => {
   let activeStyle = {
@@ -51,6 +52,7 @@ const NavBar = ({ openModal, openAdmin }) => {
   };
 
   const handleLogOut = () => {
+    socket.emit('logout', userId)
     dispatch(logOutUser());
     navigate("/");
   };
