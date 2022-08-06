@@ -18,6 +18,7 @@ const Messages = () => {
   let loggedUser = useSelector(store => store.auth.loggedUser)
   let params = useParams()
   const chatInfo = useSelector(store => store.chat.chatDetails)
+  const chats = useSelector(store => store.chat.allChats)
   const [mostrarMenu, setMostrarMenu] = useState(false)
 
   useEffect(()=> {
@@ -27,6 +28,9 @@ const Messages = () => {
           content,
           from: _id
         }))
+      }
+      if(chats[0]._id !== chatId){
+        dispatch(getChats(loggedUser._id))
       }
     })
     return(() => socket.off('privMessage'))
