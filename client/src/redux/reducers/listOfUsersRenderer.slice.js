@@ -18,8 +18,13 @@ const listOfUsersRenderer = createSlice({
        dislikesPost(state,{payload}){
         state.dislikesPost = payload;
        },
+       followersUser(state,{payload}){
+         state.followers = payload.followers;
+       },
+       followingUser(state,{payload}){
+         state.following = payload.following;
+       },
        clearList(state, {payload}){ //no funciona :( 
-        console.log("limpiar")
         state.likesPost = []
         state.dislikesPost = []
         state.followers = []
@@ -31,7 +36,9 @@ const listOfUsersRenderer = createSlice({
   export const {
      clearList,
      likesPost,
-     dislikesPost
+     dislikesPost,
+     followersUser,
+     followingUser,
   } = listOfUsersRenderer.actions;
   
   export default listOfUsersRenderer.reducer;

@@ -1,4 +1,4 @@
-import { clearList, dislikesPost, likesPost } from "../reducers/listOfUsersRenderer.slice";
+import { clearList, dislikesPost, followersUser, likesPost } from "../reducers/listOfUsersRenderer.slice";
 import { apiConnection } from "../../utils/axios";
 
 
@@ -21,6 +21,25 @@ export const listDislikes = (postId) => async(dispatch) => {
     console.log(err);
   }
 };
+
+
+export const following = (userId) => async(dispatch) => {
+  try {
+     const{ data: { following } } = await apiConnection(`user/following/${userId}`)
+     dispatch(followingUser({following}));
+  } catch (err) {
+    console.log(err);
+  }
+}; 
+
+export const followers = (userId) => async(dispatch) => {
+     try {
+        const{ data: { followers } } = await apiConnection(`user/followers/${userId}`)
+        dispatch(followersUser({followers}));
+     } catch (err) {
+       console.log(err);
+     }
+}; 
 
 export const clearAll = () => (dispatch) => {
    dispatch(clearList())
