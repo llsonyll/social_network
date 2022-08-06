@@ -8,6 +8,7 @@ export interface IUser {
    lastname: string;
    password: string;
    profilePicture: string;
+   coverPicture?: string;
    posts: Types.Array<Types.ObjectId>;
    following: Types.Array<Types.ObjectId>;
    followers: Types.Array<Types.ObjectId>;
