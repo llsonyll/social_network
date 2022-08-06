@@ -425,4 +425,38 @@ router.put("/cancelFollow/:userId/:userRequestingId", passport_1.default.authent
         return res.status(400).json(error);
     }
 }));
+router.get('/following/:userId', passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userId = req.params.userId;
+        let user = yield mongoose_1.User.findById(`${userId}`)
+            .populate("following", ['_id', 'username', 'profilePicture']);
+        if (!user) {
+            return res.status(400).json('not following');
+        }
+        res.status(200).json(user.following);
+    }
+    catch (err) {
+        res.status(400).json(err);
+    }
+}));
+router.get('/followers/:userId', passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/loginjwt",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let userId = req.params.userId;
+        let user = yield mongoose_1.User.findById(`${userId}`)
+            .populate("followers", ['_id', 'username', 'profilePicture']);
+        if (!user) {
+            return res.status(400).json('not followers');
+        }
+        res.status(200).json(user.followers);
+    }
+    catch (err) {
+        res.status(400).json(err);
+    }
+}));
 exports.default = router;

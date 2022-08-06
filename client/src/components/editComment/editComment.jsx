@@ -12,7 +12,7 @@ const EditComment = ({ renderChangeRenderComponents, data , props}) => {
     const[comment, Setcomment] = useState('')
     //redux
     const dispatch = useDispatch()
-    console.log('hola',props);
+    //console.log('hola',props);
     useEffect(() => {
         Setcomment(data.content)
     }, [])

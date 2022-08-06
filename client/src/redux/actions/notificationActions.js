@@ -5,7 +5,7 @@ import { setNotifications, deleteNotificationR } from "../reducers/notificationR
 export const getNotifications = (userId) => async (dispatch) => {
     try{
         let {data} = await apiConnection.get(`notification/${userId}`)
-        console.log(data, 'pidiendo las putas notificaciones')
+        //console.log(data, 'pidiendo las putas notificaciones')
         return dispatch(setNotifications(data))
     }catch(err){
         console.log(err)

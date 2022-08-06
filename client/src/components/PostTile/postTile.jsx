@@ -19,13 +19,20 @@ import { TiArrowBack } from "react-icons/ti";
 import { makeReport } from "../../redux/actions/reportActions";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
+import { listLikes, listDislikes, clearAll } from '../../redux/actions/listOfUsersRendererActions'
+import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
 
 const PostTile = ({ post }) => {
   const [showInput, setShowInput] = useState(false);
   const [commentInput, setCommentInput] = useState("");
+  const [dislike,setDislike] = useState('')
+  const [like,setLike] = useState('')
+  const [showLikes, setShowLikes] = useState(false);
+  const [showDislikes, setShowDislikes] = useState(false);
   const inputRef = useRef();
   const user = useSelector((store) => store.auth.loggedUser);
   const dispatch = useDispatch();
+
 
   function getTimeOfCreation(date) {
     let now = new Date().getTime();
@@ -40,7 +47,7 @@ const PostTile = ({ post }) => {
   }
 
   const handleLikePost = () => {
-    dispatch(newlikePostTitle(post._id, user._id));
+    dispatch(newlikePostTitle(post._id, user._id, like));
     if(user._id !== post.userId._id){
       dispatch(postNotification({
         type:'postLike',
@@ -54,7 +61,7 @@ const PostTile = ({ post }) => {
   };
 
   const handleDislikesPost = () => {
-    dispatch(newDislikesPostTitle(post._id, user._id));
+    dispatch(newDislikesPostTitle(post._id, user._id, dislike));
   };
 
   const handleCommentPost = async () => {
@@ -66,6 +73,11 @@ const PostTile = ({ post }) => {
 
   const handleCommentInput = (e) => {
     setCommentInput(e.target.value);
+  };
+
+  const handleInputSubmit = (e) => {
+    e.preventDefault();
+    dispatch(createComment(user._id, post._id, { content: commentInput }));
     if(user._id !== post.userId._id){
       dispatch(postNotification({
         type:'comment',
@@ -76,11 +88,6 @@ const PostTile = ({ post }) => {
         profilePicture: user.profilePicture
       }))
     }
-  };
-
-  const handleInputSubmit = (e) => {
-    e.preventDefault();
-    dispatch(createComment(user._id, post._id, { content: commentInput }));
     setCommentInput("");
   };
 
@@ -88,8 +95,10 @@ const PostTile = ({ post }) => {
 
   let renderHeartIcon = () => {
     if (!likes.includes(user._id)) {
+      like !== "add" && setLike("add")
       return <FaHeart />;
     } else {
+      like !== "" && setLike("")
       return (
         <IconContext.Provider
           value={{ color: "#EA544A", className: "global-heart-class-name" }}
@@ -104,8 +113,10 @@ const PostTile = ({ post }) => {
 
   let renderHeartBrokenIcon = () => {
     if (!dislikes.includes(user._id)) {
+      dislike !== "add" && setDislike("add")
       return <ImHeartBroken />;
     } else {
+      dislike !== "" && setDislike("")
       return (
         <IconContext.Provider
           value={{ color: "#9400D3", className: "global-heart-class-name" }}
@@ -117,6 +128,21 @@ const PostTile = ({ post }) => {
       );
     }
   };
+
+  let renderLikes = () => {
+    //console.log(post._id)
+    setShowLikes(!showLikes)
+    dispatch(listLikes(post._id))    
+  };
+  let renderDislikes = () => {
+    setShowDislikes(!showDislikes);
+    dispatch(listDislikes(post._id)) 
+  };
+  const handleClose = () => {
+    showLikes !== false && setShowLikes(false);
+    showDislikes !== false && setShowDislikes(false);
+    dispatch(clearAll());
+  }
 
   return (
     <>
@@ -149,7 +175,7 @@ const PostTile = ({ post }) => {
                 </Link>
               ) : null}
             </div>
-            <div className="text-white opacity-50 text-xs">
+            <div className="text-stone-400 opacity-50 ">
               {post && post.createdAt
                 ? getTimeOfCreation(post.createdAt)
                 : "3hr"}
@@ -183,6 +209,8 @@ const PostTile = ({ post }) => {
                 onClick={handleLikePost}
               >
                 {post && post.likes && renderHeartIcon()}
+              </button>
+              <button onClick={renderLikes}>
                 {likes && likes.length}
               </button>
             </div>
@@ -190,8 +218,10 @@ const PostTile = ({ post }) => {
               <button
                 className="flex items-center gap-1"
                 onClick={handleDislikesPost}
-              >
+                >
                 {post && post.dislikes && renderHeartBrokenIcon()}
+            </button>
+              <button onClick={renderDislikes}>
                 {dislikes && dislikes.length}
               </button>
             </div>
@@ -256,6 +286,16 @@ const PostTile = ({ post }) => {
           </div>
         </div>
       </div>
+            {showLikes === true && ( 
+            <ListOfUsersRenderer titleToRender={'likes'} postId={post._id} closeRenderFunction={handleClose} />
+            )}
+            {showDislikes === true && user.isPremium === true ? (
+              <ListOfUsersRenderer
+                titleToRender={'dislikes'}
+                postId={post._id}
+                closeRenderFunction={handleClose}
+              />
+            ) : null}
     </>
   );
 };

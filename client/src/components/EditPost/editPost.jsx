@@ -18,12 +18,12 @@ const EditPost = ({ userId , postNumber, content, showEditComponent}) => {
     const handleOnEditPost = () => {
         dispatch(editPost(userId, postNumber, {content:postText}))
         handleOnCancel()
-        console.log('EDITANDO POST');
+        //console.log('EDITANDO POST');
     }
     const handleDeletePost = () => {
         dispatch(deletePost(userId, postNumber))
         handleOnCancel()
-        console.log('BORRANDO POST');
+        //console.log('BORRANDO POST');
     }
 
   return (

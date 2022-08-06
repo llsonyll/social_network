@@ -10,12 +10,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/userActions'
 import { makeReport } from '../../redux/actions/reportActions';
 import Swal from 'sweetalert2';
-import EditPost from '../EditPost.jsx/editPost';
-import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
-import { listLikes, listDislikes } from '../../redux/actions/listOfUsersRendererActions'
+import EditPost from '../EditPost/editPost';
+import { listLikes, listDislikes, clearAll } from '../../redux/actions/listOfUsersRendererActions'
 import { postNotification } from '../../redux/actions/notificationActions';
 import { useEffect } from "react";
-
+import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
 
 const ProfilePosts = (props) => {
 
@@ -29,6 +28,8 @@ const ProfilePosts = (props) => {
     multimedia,
   } = props;
   const [showMore, setShowMore] = useState('')
+  const [dislike,setDislike] = useState('')
+  const [like,setLike] = useState('')
   
   useEffect(()=> {
     setShowMore(content)
@@ -41,13 +42,34 @@ const ProfilePosts = (props) => {
 
 	const { _id } = useSelector(state => state.auth.loggedUser);
 	const loggedUser = useSelector(state => state.auth.loggedUser)
-  	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-	let showEditComponent = () => {
-		setEditPost(!editPost)
-	}
+  let showEditComponent = () => {
+    setEditPost(!editPost);
+  };
+  const posts = useSelector((state) => state.user.userProfileData.posts);
+  let index = posts.findIndex((post) => post._id === postNumber);
+ 
+  let renderHeartIcon = () => {
+    if (!posts[index].likes.includes(_id)) {
+      like !== "add" && setLike("add")
+      return <FaHeart />;
+    } else {
+      like !== "" && setLike("")
+      return (
+        <IconContext.Provider
+          value={{ color: "red", className: "global-heart-class-name" }}
+        >
+          <div>
+            <FaHeart />
+          </div>
+        </IconContext.Provider>
+      );
+    }
+  };
+
 	const handleLike = () => {
-       dispatch(newLikeUserProfile(postNumber, _id));
+    dispatch(newLikeUserProfile(postNumber, _id,like));
 	   if(loggedUser._id !== userId){
 		dispatch(postNotification({
 		  type:'postLike',
@@ -60,31 +82,17 @@ const ProfilePosts = (props) => {
 	  }
 	}
 	const handleDislike = () => {
-		dispatch(newDislikeUserProfile(postNumber,_id));
+		dispatch(newDislikeUserProfile(postNumber,_id,dislike));
 	}
-	const posts = useSelector(state => state.user.userProfileData.posts);
-	let index = posts.findIndex(post => post._id === postNumber);
-	let renderHeartIcon = () => {
-		if (!posts[index].likes.includes(_id)) {
-			return <FaHeart />
-		}else{
-      return (
-        <IconContext.Provider
-          value={{ color: "red", className: "global-heart-class-name" }}
-        >
-          <div>
-            <FaHeart />
-          </div>
-        </IconContext.Provider>
-      );
-    }
-  };
+	      
   let renderHeartBrokenIcon = () => {
     if (!posts[index].dislikes.includes(_id)) {
-      console.log("Entra blanco");
+      //console.log("Entra blanco");
+      dislike !== "add" && setDislike("add")
       return <ImHeartBroken />;
     } else {
-      console.log("Entra rojo");
+      //console.log("Entra rojo");
+      dislike !== "" && setDislike("")
       return (
         <IconContext.Provider
           value={{ color: "#9400D3", className: "global-heart-class-name" }}
@@ -118,6 +126,11 @@ const ProfilePosts = (props) => {
     setShowDislikes(!showDislikes);
     dispatch(listDislikes(postNumber)) 
   };
+  const handleClose = () => {
+    showLikes !== false && setShowLikes(false);
+    showDislikes !== false && setShowDislikes(false);
+    dispatch(clearAll());
+  }
 
   return (
     <Fragment key={postNumber}>
@@ -223,13 +236,13 @@ const ProfilePosts = (props) => {
           )}
       </div>
       {showLikes === true && ( 
-        <ListOfUsersRenderer titleToRender={'likes'} postId={postNumber} closeRenderFunction={renderLikes} />
+        <ListOfUsersRenderer titleToRender={'likes'} postId={postNumber} closeRenderFunction={handleClose} />
       )}
       {showDislikes === true && isPremium === true ? (
         <ListOfUsersRenderer
           titleToRender={'dislikes'}
           postId={postNumber}
-          closeRenderFunction={renderDislikes}
+          closeRenderFunction={handleClose}
         />
       ) : null}
     </Fragment>
