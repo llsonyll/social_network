@@ -41,7 +41,7 @@ function settings() {
     }
     const handleSubmitReview = (e) => {
         e.preventDefault()
-        console.log('send review button clicked');
+        //console.log('send review button clicked');
         if (!userReview && review.length >= 4 && review.length < 70 && stars > 0) {
              dispatch(createNewReview (_id, {
                 description:  review,

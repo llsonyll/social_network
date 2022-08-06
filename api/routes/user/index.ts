@@ -532,4 +532,40 @@ router.put(
   }
 );
 
+router.get('/following/:userId', passport.authenticate("jwt", {
+  session: false,
+  failureRedirect: "/auth/loginjwt",
+}),
+async (req: Request, res: Response) => {
+  try {
+      let userId = req.params.userId;
+      let user: any = await User.findById(`${userId}`)
+                      .populate("following",['_id','username','profilePicture']);
+       
+      if(!user){ return res.status(400).json('not following')}
+
+      res.status(200).json(user.following);
+  } catch (err) {
+    res.status(400).json(err)
+  }
+})
+
+router.get('/followers/:userId', passport.authenticate("jwt", {
+  session: false,
+  failureRedirect: "/auth/loginjwt",
+}),
+async (req: Request, res: Response) => {
+  try {
+      let userId = req.params.userId;
+      let user: any = await User.findById(`${userId}`)
+                      .populate("followers",['_id','username','profilePicture']);
+       
+      if(!user){ return res.status(400).json('not followers')}
+
+      res.status(200).json(user.followers);
+  } catch (err) {
+    res.status(400).json(err)
+  }
+})
+
 export default router;

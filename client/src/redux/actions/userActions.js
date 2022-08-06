@@ -79,7 +79,7 @@ export const modifyUser = (id, obj) => async (dispatch) => {
 export const restorePassword = async (email) => {
   try {
     const { data } = await apiConnection.post(`user/restorePassword`, { email: email });
-    console.log(data);
+    //console.log(data);
     return data;
   } catch (err) {
     return { error: err.response.data.error ?? 'Email provided does not belong to any registered user' }
@@ -114,7 +114,7 @@ export const getUserFollowings = (userId, query) => async (dispatch) => {
   try {
     // devuelve la lista de usuarios que sigen al perfil del seguido 
     const { data } = await apiConnection.get(`user/browserFollowing/${userId}?users=${query}`);
-    console.log(data)
+    //console.log(data)
     return dispatch(toggleUSERFollowing(data));
 
   } catch (err) {
@@ -149,7 +149,7 @@ export const deleteUser = (userId) => async (dispatch) => {
     // devuelve la lista de usuarios que sigen al perfil del seguido 
     const { data } = await apiConnection.put(`user/deleted/${userId}`);
     //console.log(data)
-    console.log('Your account has been deleted.')
+    //console.log('Your account has been deleted.')
     localStorage.removeItem('token')
     dispatch(logOutUser())
   } catch (err) {
