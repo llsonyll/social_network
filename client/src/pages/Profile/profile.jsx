@@ -183,7 +183,7 @@ const Profile = () => {
             type="checkbox"
             checked={datePublishedAsc}
             onChange={(e) => setDatePublishedAsc(e.target.checked)}
-            disabled={!filtersActive}
+            disabled={!filtersActive || likesAsc || commentsQtyAsc}
           />
         </div>
         <div
@@ -196,7 +196,7 @@ const Profile = () => {
             type="checkbox"
             checked={likesAsc}
             onChange={(e) => setLikesAsc(e.target.checked)}
-            disabled={!filtersActive}
+            disabled={!filtersActive || datePublishedAsc || commentsQtyAsc}
           />
         </div>
         <div
@@ -209,31 +209,12 @@ const Profile = () => {
             type="checkbox"
             checked={commentsQtyAsc}
             onChange={(e) => setCommentsQtyAsc(e.target.checked)}
-            disabled={!filtersActive}
+            disabled={!filtersActive || datePublishedAsc || likesAsc}
           />
         </div>
       </div>
     );
   };
-
-  // const [dummyOptions, setDummyOptions] = useState([
-  //   { name: "with Multimedia", id: 1 },
-  //   { name: "Date Published 2️⃣", id: 2 },
-  //   { name: "Likes 2️⃣", id: 3 },
-  //   { name: "Comments 2️⃣", id: 4 },
-  // ]);
-
-  // const multiSelectFilters = () => {
-  //   return (
-  //     <Multiselect
-  //       options={dummyOptions} // Options to display in the dropdown
-  //       // selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
-  //       onSelect={(e) => console.log(e)} // Function will trigger on select event
-  //       onRemove={(e) => console.log(e)} // Function will trigger on remove event
-  //       displayValue="name" // Property name to display in the dropdown options
-  //     />
-  //   );
-  // };
 
   const postApplyFilters = () => {
     if (!posts) return [];
@@ -245,6 +226,7 @@ const Profile = () => {
     } else {
       dummyPost = dummyPost.filter((post) => !post.multimedia);
     }
+
     if (datePublishedAsc) {
       dummyPost = dummyPost.sort((post, nextPost) => {
         const t1 = new Date(nextPost.createdAt);
@@ -258,6 +240,7 @@ const Profile = () => {
         return t2 - t1;
       });
     }
+
     if (likesAsc) {
       dummyPost = dummyPost.sort((post, nextPost) => {
         return post.likes.length - nextPost.likes.length;
@@ -267,6 +250,7 @@ const Profile = () => {
         return nextPost.likes.length - post.likes.length;
       });
     }
+
     if (commentsQtyAsc) {
       dummyPost = dummyPost.sort((post, nextPost) => {
         return post.commentsId.length - nextPost.commentsId.length;
@@ -277,8 +261,6 @@ const Profile = () => {
       });
     }
 
-    console.log(dummyPost.map((t) => t.createdAt));
-
     return dummyPost;
   };
 
@@ -287,7 +269,6 @@ const Profile = () => {
       return (
         <>
           {filters()}
-          {/* {multiSelectFilters()} */}
           {postApplyFilters().map((p) => {
             return (
               <Fragment key={p._id}>
@@ -335,11 +316,6 @@ const Profile = () => {
           ) : (
             <>
               <div className="img-container">
-                {/* <img
-              className='profile-img'
-              src='https://japanpowered.com/media/images//goku.png'
-              alt='Profile Picture'>
-            </img> */}
                 <div className="imgChange_container">
                   {profilePicture ? (
                     <>
