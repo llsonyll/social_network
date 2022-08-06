@@ -37,7 +37,6 @@ const FriendPostTile = ({ img, username, userId, isConnected }) => {
         </div>
       </NavLink>
       {isConnected && <div className="holaaaa">.</div>}
-      {console.log(isConnected)}
       <NavLink className="linkfriend_message" to={`/home/messages/${userId}`}>
         <button className="mess_friend_section">
           <FaFacebookMessenger />
