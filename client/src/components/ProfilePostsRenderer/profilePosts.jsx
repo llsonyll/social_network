@@ -11,11 +11,10 @@ import { newDislikeUserProfile, newLikeUserProfile } from '../../redux/actions/u
 import { makeReport } from '../../redux/actions/reportActions';
 import Swal from 'sweetalert2';
 import EditPost from '../EditPost/editPost';
-import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
-import { listLikes, listDislikes } from '../../redux/actions/listOfUsersRendererActions'
+import { listLikes, listDislikes, clearAll } from '../../redux/actions/listOfUsersRendererActions'
 import { postNotification } from '../../redux/actions/notificationActions';
 import { useEffect } from "react";
-
+import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
 
 const ProfilePosts = (props) => {
 
@@ -45,11 +44,9 @@ const ProfilePosts = (props) => {
 	const loggedUser = useSelector(state => state.auth.loggedUser)
   const dispatch = useDispatch();
 
-
   let showEditComponent = () => {
     setEditPost(!editPost);
   };
-  
   const posts = useSelector((state) => state.user.userProfileData.posts);
   let index = posts.findIndex((post) => post._id === postNumber);
  
@@ -90,11 +87,11 @@ const ProfilePosts = (props) => {
 	      
   let renderHeartBrokenIcon = () => {
     if (!posts[index].dislikes.includes(_id)) {
-      console.log("Entra blanco");
+      //console.log("Entra blanco");
       dislike !== "add" && setDislike("add")
       return <ImHeartBroken />;
     } else {
-      console.log("Entra rojo");
+      //console.log("Entra rojo");
       dislike !== "" && setDislike("")
       return (
         <IconContext.Provider
@@ -129,6 +126,11 @@ const ProfilePosts = (props) => {
     setShowDislikes(!showDislikes);
     dispatch(listDislikes(postNumber)) 
   };
+  const handleClose = () => {
+    showLikes !== false && setShowLikes(false);
+    showDislikes !== false && setShowDislikes(false);
+    dispatch(clearAll());
+  }
 
   return (
     <Fragment key={postNumber}>
@@ -234,13 +236,13 @@ const ProfilePosts = (props) => {
           )}
       </div>
       {showLikes === true && ( 
-        <ListOfUsersRenderer titleToRender={'likes'} postId={postNumber} closeRenderFunction={renderLikes} />
+        <ListOfUsersRenderer titleToRender={'likes'} postId={postNumber} closeRenderFunction={handleClose} />
       )}
       {showDislikes === true && isPremium === true ? (
         <ListOfUsersRenderer
           titleToRender={'dislikes'}
           postId={postNumber}
-          closeRenderFunction={renderDislikes}
+          closeRenderFunction={handleClose}
         />
       ) : null}
     </Fragment>

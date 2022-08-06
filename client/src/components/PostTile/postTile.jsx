@@ -19,15 +19,20 @@ import { TiArrowBack } from "react-icons/ti";
 import { makeReport } from "../../redux/actions/reportActions";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
+import { listLikes, listDislikes, clearAll } from '../../redux/actions/listOfUsersRendererActions'
+import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
 
 const PostTile = ({ post }) => {
   const [showInput, setShowInput] = useState(false);
   const [commentInput, setCommentInput] = useState("");
   const [dislike,setDislike] = useState('')
   const [like,setLike] = useState('')
+  const [showLikes, setShowLikes] = useState(false);
+  const [showDislikes, setShowDislikes] = useState(false);
   const inputRef = useRef();
   const user = useSelector((store) => store.auth.loggedUser);
   const dispatch = useDispatch();
+
 
   function getTimeOfCreation(date) {
     let now = new Date().getTime();
@@ -124,6 +129,21 @@ const PostTile = ({ post }) => {
     }
   };
 
+  let renderLikes = () => {
+    //console.log(post._id)
+    setShowLikes(!showLikes)
+    dispatch(listLikes(post._id))    
+  };
+  let renderDislikes = () => {
+    setShowDislikes(!showDislikes);
+    dispatch(listDislikes(post._id)) 
+  };
+  const handleClose = () => {
+    showLikes !== false && setShowLikes(false);
+    showDislikes !== false && setShowDislikes(false);
+    dispatch(clearAll());
+  }
+
   return (
     <>
       <div className="flex relative">
@@ -155,7 +175,7 @@ const PostTile = ({ post }) => {
                 </Link>
               ) : null}
             </div>
-            <div className="text-white opacity-50 text-xs">
+            <div className="text-stone-400 opacity-50 ">
               {post && post.createdAt
                 ? getTimeOfCreation(post.createdAt)
                 : "3hr"}
@@ -189,6 +209,8 @@ const PostTile = ({ post }) => {
                 onClick={handleLikePost}
               >
                 {post && post.likes && renderHeartIcon()}
+              </button>
+              <button onClick={renderLikes}>
                 {likes && likes.length}
               </button>
             </div>
@@ -196,8 +218,10 @@ const PostTile = ({ post }) => {
               <button
                 className="flex items-center gap-1"
                 onClick={handleDislikesPost}
-              >
+                >
                 {post && post.dislikes && renderHeartBrokenIcon()}
+            </button>
+              <button onClick={renderDislikes}>
                 {dislikes && dislikes.length}
               </button>
             </div>
@@ -262,6 +286,16 @@ const PostTile = ({ post }) => {
           </div>
         </div>
       </div>
+            {showLikes === true && ( 
+            <ListOfUsersRenderer titleToRender={'likes'} postId={post._id} closeRenderFunction={handleClose} />
+            )}
+            {showDislikes === true && user.isPremium === true ? (
+              <ListOfUsersRenderer
+                titleToRender={'dislikes'}
+                postId={post._id}
+                closeRenderFunction={handleClose}
+              />
+            ) : null}
     </>
   );
 };

@@ -31,8 +31,9 @@ export const sendMessage = (content, userId, chatId, socketId) => async(dispatch
         if(socketId){
             socket.emit('privMessage', content, socketId, userId, chatId)
         }
+
         return dispatch(addMessage(res.data))
     }catch(err){
-
+        console.log(err)
     }
 }
