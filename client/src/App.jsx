@@ -75,14 +75,20 @@ function App() {
     if (loggedUser._id) {
       setActuallyLogged(loggedUser._id);
 	  dispatch(getNotifications(loggedUser._id))
+    }else{
+      setActuallyLogged(loggedUser._id);
     }
-  }, [loggedUser]);
+  }, [loggedUser._id]);
 
   //'PRIMARY' USE EFFECT, LOGS THE USER IN AND CONTROL CALL AND ANSWER
   useEffect(() => {
     if (actualyLogged) {
       //CREATES A PEER AND GIVES THE USERID AS PEERID
+      console.log('loggeado')
+      console.log(peer)
       peer = new Peer(actualyLogged);
+      console.log('siguio')
+      console.log(peer)
       //FUNCTION TO ACCESS TO CAMERA
       const getUserMedia =
         navigator.getUserMedia ||
@@ -123,6 +129,16 @@ function App() {
           }
         );
       });
+    }else{
+      if(peer){
+        if(call){
+          if(call.open){
+            socket.emit("closeCall", call.peer)
+            call.close()
+          }
+        }
+        peer.destroy()
+      }
     }
     return () => {
       socket.off("logged");
