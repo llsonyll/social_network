@@ -9,7 +9,7 @@ import Mensajes from '../Mensajes/Mensajes'
 import {AiOutlineSend, AiOutlinePhone} from 'react-icons/ai'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getChatInfo, sendMessage } from '../../redux/actions/chatActions'
+import { getChatInfo, getChats, sendMessage } from '../../redux/actions/chatActions'
 import { addMessage, clearChatInfo, orderChats } from '../../redux/reducers/chatReducer'
 import { socket } from '../../App'
 import { AiOutlineMore } from "react-icons/ai";
@@ -32,11 +32,20 @@ const UserConversation = ({mostrarMenu, setmostrarMenu}) => {
     }
 
     useEffect(()=>{
-      if(loggedUser._id && params.id && !chatInfo._id){
+      if(loggedUser._id && params.id){
         dispatch(getChatInfo(loggedUser._id, params.id))
       }
       return (()=> dispatch(clearChatInfo()))
     },[loggedUser, params])
+
+    useEffect(()=>{
+      if(chatInfo._id){
+        let checkChat = chats.find(chat => chat._id === chatInfo._id)
+        if(!checkChat){
+          dispatch(getChats(loggedUser._id))
+        }
+      }
+    },[chatInfo._id])
 
     let handleClick = (e) =>{
       e.preventDefault()
