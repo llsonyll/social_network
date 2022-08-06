@@ -118,7 +118,7 @@ const HomePostCard = (props) => {
   };
 
   return (
-    <div className="bg-[#252525] w-full rounded-md md:p-4 p-2 flex flex-col text-white">
+    <div className="bg-[#252525] w-full rounded-md md:p-4 p-2 flex flex-col text-white" id="premium">
       <div className="flex  gap-4 md:p-2 rounded-md" id="father__content">
         <div id="Avatar_Username__container">
           <Link to={`profile/${props.userId}`}>

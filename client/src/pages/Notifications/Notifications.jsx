@@ -28,6 +28,7 @@ const Notifications = () => {
     // const handleDelete = (userId, notificationId) {
         // dispatch
     // }
+    console.log(notifications);
 
   return (
     <div className='notifications-father_container'> 
@@ -45,7 +46,7 @@ const Notifications = () => {
                     }
                     return(
                         // <Link to={link} className='position-absolute z-10'>
-                        <div className='notify_container'>
+                        <div className={`notify_container`} id={notification.seen === true ? 'vista' : null} >
                             <div className='notify-avatar_container'>
                                 <Link to={`/home/profile/${notification.from._id}`}>
                                     <Avatar imgUrl={notification.from.profilePicture} size="xl" />
@@ -61,7 +62,11 @@ const Notifications = () => {
                         </div>
                         // </Link>
                     )
-                }) : null 
+                }) : null
+            
+            }
+            {
+                notifications.length === 0 ? <div className='no_notification'>  <p>You have no notifications to show :(</p></div> : null
             }
         </div>
     </div>

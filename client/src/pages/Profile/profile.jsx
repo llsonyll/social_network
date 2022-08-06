@@ -34,7 +34,7 @@ import { AiFillSetting } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
-
+import {MdModeEditOutline} from 'react-icons/md'
 const Profile = () => {
   const params = useParams();
   const [firstname, setFirstname] = useState(false);
@@ -46,6 +46,10 @@ const Profile = () => {
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
+  const {isPremium} = useSelector(
+    (state) => state.user.userProfileData
+  );
+  const img = "bg-[url('https://i.ytimg.com/vi/tdc8X9bvmQ8/maxresdefault.jpg')]"
   const {
     _id,
     posts,
@@ -61,11 +65,13 @@ const Profile = () => {
   } = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
   const [changeProfilePicture, setChangeProfilePicture] = useState("");
+  const [changeCover, setChangeCover] = useState("");
   const hiddenImageInput = useRef();
+  const coverImageInput = useRef()
 
   const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
     if (nameOfTheComponentToRender === "fullname") {
-      setFirstname(false);
+      setFirstname(false); 
     }
     if (nameOfTheComponentToRender === "username") {
       setUsername(false);
@@ -98,6 +104,9 @@ const Profile = () => {
 
   const handleChangePicture = () => {
     hiddenImageInput.current.click();
+  };
+  const handleChangeCover = () => {
+    coverImageInput.current.click();
   };
 
   const handleChange = async (event) => {
@@ -332,12 +341,29 @@ const Profile = () => {
             </div>
           ) : (
             <>
-              <div className="img-container">
+              <div className={`img-container bg-center bg-cover`}> 
+              <input
+                        type={"file"}
+                        ref={coverImageInput}
+                        onChange={handleChangeCover}
+                        accept="image/*"
+                        style={{ display: "none" }}
+                      />
+              {/* ${isPremium && bg-[url(img)]} */}
                 {/* <img
               className='profile-img'
               src='https://japanpowered.com/media/images//goku.png'
               alt='Profile Picture'>
             </img> */}
+            {
+              isPremium === true ? 
+              <button 
+              onClick={handleChangeCover}
+              className="transition-all bg-green-600 absolute right-1 bottom-1 text-white p-1 rounded-md hover:bg-green-800">
+                <MdModeEditOutline/>
+                </button> 
+                : null
+            }
                 <div className="imgChange_container">
                   {profilePicture ? (
                     <>

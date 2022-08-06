@@ -200,6 +200,12 @@ background-repeat:repeat;
  padding: 5px;
 }
 
+/* styles premium */
+#premium{
+  border: 1px solid #3d8a57
+}
+
+
 @media (max-width:767px) {
   .contenedorFriends-responsive_container{
     display: flex;
