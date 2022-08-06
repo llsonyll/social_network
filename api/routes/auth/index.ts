@@ -144,6 +144,7 @@ router.post(
                 newUser.isPremium = false;
                 newUser.expirationDate = undefined;
                 newUser.plan = undefined;
+                newUser.isPrivate = false;
 
                 await newUser.save();
               }
@@ -259,6 +260,7 @@ router.post(
         const date = new Date();
         if (user.expirationDate) {
           if (date > user.expirationDate) {
+            user.isPrivate = false;
             user.isPremium = false;
             user.expirationDate = undefined;
             user.plan = undefined;

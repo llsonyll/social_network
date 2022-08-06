@@ -417,34 +417,66 @@ router.put(
     }
   }
 );
+
 //ruta para borrar la cuenta de un usuario
-router.put(
-  "/deleted/:userId",
-  passport.authenticate("jwt", {
-    session: false,
-    failureRedirect: "/auth/loginjwt",
-  }),
+router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt", }),
   async (req: Request, res: Response) => {
     try {
-      let userId = req.params.userId;
-      /*    let deletePost = await Post.deleteMany({userId:`${userId}`});
-   let deleteComment = await Comment.deleteMany({userId:`${userId}`});
-    let deleteReview = await Review.deleteMany({userId:`${userId}`});
-    let deleteMessage = await Message.deleteMany({from:`${userId}`});
-    let deleteChat = await Chat.findOneAndUpdate({users:{_id:`${userId}`}}); */
-      let userDeleted = await User.findOneAndUpdate(
-        { _id: `${userId}` },
-        { isDeleted: true },
-        { new: true }
-      );
+      const { userId } = req.params;
+      
+      let user = await User.findOneAndUpdate({_id: `${userId}`}, {
+        $set: {
+          posts: [],
+          following: [],
+          followers: [],
+          followRequest: [],
+          chats: []
+        }
+      }, { new: true });
+      if (!user) return res.status(404).json('User not found');
 
-      if (!userDeleted) {
-        return res.status(400).json("Eror deleting user");
-      }
+      await Post.deleteMany({ userId: user._id });
+      await Comment.deleteMany({ userId: user._id });
+      await Post.updateMany({}, {
+        $pull: {
+          likes: `${user._id}`,
+          dislikes: `${user._id}`,
+          // comments: `${user._id}`
+        }
+      });
+      // await Comment.updateMany({}, {
+      //   $pull: {
+      //     likes: `${user._id}`,
+      //     dislikes: `${user._id}`
+      //   }
+      // });
+      await User.updateMany({}, {
+        $pull: {
+          following: `${user._id}`,
+          followers: `${user._id}`,
+          followRequest: `${user._id}`}
+      });
 
-      return res.status(200).json(userDeleted);
+      await Review.deleteOne({ userId: user._id });
+      await Message.deleteMany({ from: user._id });
+      await Chat.findOneAndDelete({ users: {$in: user._id }});
+
+      user.isDeleted = true;
+      user.isAdmin = false;
+      user.isPremium = false;
+      user.isPrivate = false;
+      user.birthday = undefined;
+      user.biography = undefined;
+      user.review = undefined;
+      user.plan = undefined;
+      user.expirationDate = undefined;
+
+      await user.save();
+
+      return res.status(200).json('Deleted successfully');
     } catch (err) {
-      res.json(err);
+      console.log(err);
+      return res.status(400).json(err);
     }
   }
 );

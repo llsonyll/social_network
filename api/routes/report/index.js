@@ -190,11 +190,51 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             console.log('todo ok');
             return res.json('Comment reported successfully');
         }
-        const user = yield mongoose_1.User.findById(`${report.userReportedId}`);
-        if (!user || `${user._id}` === `${admin._id}`)
+        let user = yield mongoose_1.User.findOneAndUpdate({ _id: `${report.userReportedId}` }, {
+            $set: {
+                posts: [],
+                following: [],
+                followers: [],
+                followRequest: [],
+                chats: []
+            }
+        }, { new: true });
+        if (!user)
             return res.status(404).json('Not posible to proceed');
-        // FALTA ELIMINAR TODO LO RELACIONADO AL USER
+        yield mongoose_1.Post.deleteMany({ userId: user._id });
+        yield mongoose_1.Comment.deleteMany({ userId: user._id });
+        yield mongoose_1.Post.updateMany({}, {
+            $pull: {
+                likes: `${user._id}`,
+                dislikes: `${user._id}`,
+                // comments: `${user._id}`
+            }
+        });
+        // await Comment.updateMany({}, {
+        //   $pull: {
+        //     likes: `${user._id}`,
+        //     dislikes: `${user._id}`
+        //   }
+        // });
+        yield mongoose_1.User.updateMany({}, {
+            $pull: {
+                following: `${user._id}`,
+                followers: `${user._id}`,
+                followRequest: `${user._id}`
+            }
+        });
+        yield mongoose_1.Review.deleteOne({ userId: user._id });
+        yield mongoose_1.Message.deleteMany({ from: user._id });
+        yield mongoose_1.Chat.findOneAndDelete({ users: { $in: user._id } });
         user.isDeleted = true;
+        user.isAdmin = false;
+        user.isPremium = false;
+        user.isPrivate = false;
+        user.birthday = undefined;
+        user.biography = undefined;
+        user.review = undefined;
+        user.plan = undefined;
+        user.expirationDate = undefined;
         yield user.save();
         return res.json('User reported successfully');
     }

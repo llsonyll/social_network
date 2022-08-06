@@ -1,6 +1,6 @@
 import express, { Response, Request } from 'express';
 import passport from 'passport';
-import { Report, User, Comment, Post } from '../../mongoose';
+import { Report, User, Comment, Post, Review, Message, Chat } from '../../mongoose';
 
 const router = express.Router()
 
@@ -190,11 +190,53 @@ async (req:Request, res:Response) =>{
             return res.json('Comment reported successfully');
         }
 
-        const user = await User.findById(`${report.userReportedId}`);
-        if (!user || `${user._id}` === `${admin._id}`) return res.status(404).json('Not posible to proceed');
-
-        // FALTA ELIMINAR TODO LO RELACIONADO AL USER
+        let user = await User.findOneAndUpdate({_id: `${report.userReportedId}`}, {
+          $set: {
+            posts: [],
+            following: [],
+            followers: [],
+            followRequest: [],
+            chats: []
+          }
+        }, { new: true });
+        if (!user) return res.status(404).json('Not posible to proceed');
+    
+        await Post.deleteMany({ userId: user._id });
+        await Comment.deleteMany({ userId: user._id });
+        await Post.updateMany({}, {
+          $pull: {
+            likes: `${user._id}`,
+            dislikes: `${user._id}`,
+            // comments: `${user._id}`
+          }
+        });
+        // await Comment.updateMany({}, {
+        //   $pull: {
+        //     likes: `${user._id}`,
+        //     dislikes: `${user._id}`
+        //   }
+        // });
+        await User.updateMany({}, {
+          $pull: {
+            following: `${user._id}`,
+            followers: `${user._id}`,
+            followRequest: `${user._id}`}
+        });
+    
+        await Review.deleteOne({ userId: user._id });
+        await Message.deleteMany({ from: user._id });
+        await Chat.findOneAndDelete({ users: {$in: user._id }});
+    
         user.isDeleted = true;
+        user.isAdmin = false;
+        user.isPremium = false;
+        user.isPrivate = false;
+        user.birthday = undefined;
+        user.biography = undefined;
+        user.review = undefined;
+        user.plan = undefined;
+        user.expirationDate = undefined;
+    
         await user.save();
         
         return res.json('User reported successfully');

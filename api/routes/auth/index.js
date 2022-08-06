@@ -120,6 +120,7 @@ router.post("/login", passport_1.default.authenticate("local", {
                             newUser.isPremium = false;
                             newUser.expirationDate = undefined;
                             newUser.plan = undefined;
+                            newUser.isPrivate = false;
                             yield newUser.save();
                         }
                     }
@@ -203,6 +204,7 @@ router.post("/", passport_1.default.authenticate("jwt", {
             const date = new Date();
             if (user.expirationDate) {
                 if (date > user.expirationDate) {
+                    user.isPrivate = false;
                     user.isPremium = false;
                     user.expirationDate = undefined;
                     user.plan = undefined;
