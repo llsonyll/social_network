@@ -1,6 +1,6 @@
 import express, { Response, Request } from 'express';
 import passport from 'passport';
-import { Report, User, Comment, Post } from '../../mongoose';
+import { Report, User, Comment, Post, Review, Message, Chat } from '../../mongoose';
 
 const router = express.Router()
 
@@ -152,15 +152,12 @@ async (req:Request, res:Response) =>{
         if (type === 'post') {
             const post = await Post.findById(`${report.postReportedId}`);
             if (!post) return res.status(404).json('Post not found');
-            console.log(post)
             
             const user = await User.findById(`${post.userId}`);
             if (!user) return res.status(404).json('User not found');
-            console.log(user)
             
             const newUser = await User.findOneAndUpdate({_id: user._id}, {$pull: {posts: `${post._id}`}}, {new: true});
             if (!newUser) return res.status(400).json('Not posible to delete');
-            console.log(newUser)
             await newUser.save();
             
             const commentId = post.commentsId;
@@ -173,31 +170,65 @@ async (req:Request, res:Response) =>{
         if (type === 'comment') {
             const comment = await Comment.findById(`${report.commentReportedId}`);
             if (!comment) return res.status(404).json('Comment not found');
-            console.log(comment)
 
             const post = await Post.findById(comment.postId);
             if (!post) return res.status(404).json('Post not found');
-            console.log(post)
 
             const newPost = await Post.findOneAndUpdate({_id: post._id}, {$pull: {commentsId: comment._id}}, {new: true});
             if (!newPost) return res.status(400).json('Not posible to delete');
             await newPost.save();
-            console.log(newPost)
             await report.remove();
             await comment.remove();
-            console.log('todo ok')
 
             return res.json('Comment reported successfully');
         }
 
-        const user = await User.findById(`${report.userReportedId}`);
-        if (!user || `${user._id}` === `${admin._id}`) return res.status(404).json('Not posible to proceed');
-
-        // FALTA ELIMINAR TODO LO RELACIONADO AL USER
+        let user = await User.findOneAndUpdate({_id: `${report.userReportedId}`}, {
+          $set: {
+            posts: [],
+            following: [],
+            followers: [],
+            followRequest: [],
+            chats: []
+          }
+        }, { new: true });
+        if (!user) return res.status(404).json('Not posible to proceed');
+    
+        const posts = await Post.find({userId: user._id});
+        for (let i = 0; i < posts.length; i ++) {
+          await Comment.deleteMany({_id: {$in: posts[i].commentsId}});
+        }
+        await Post.deleteMany({ userId: user._id });
+        await Post.updateMany({}, {
+          $pull: {
+            likes: `${user._id}`,
+            dislikes: `${user._id}`,
+          }
+        });
+        await User.updateMany({}, {
+          $pull: {
+            following: `${user._id}`,
+            followers: `${user._id}`,
+            followRequest: `${user._id}`}
+        });
+        await Review.deleteOne({ userId: user._id });
+    
+        user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
+        user.username = "Banned user";
         user.isDeleted = true;
+        user.isAdmin = false;
+        user.isPremium = false;
+        user.isPrivate = false;
+        user.birthday = undefined;
+        user.biography = undefined;
+        user.review = undefined;
+        user.plan = undefined;
+        user.expirationDate = undefined;
+    
         await user.save();
+        await report.remove();
         
-        return res.json('User reported successfully');
+        return res.json('User banned successfully');
     }catch(err){
         return res.status(400).json('Something went wrong');
     }
