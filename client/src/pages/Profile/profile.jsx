@@ -25,7 +25,7 @@ import { Link } from "react-router-dom";
 import { useRef } from "react";
 import axios from "axios";
 
-import { AiFillCloseCircle } from "react-icons/ai";
+import { AiFillCloseCircle, AiFillMessage, AiFillEdit } from "react-icons/ai";
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
 // import Multiselect from "multiselect-react-dropdown";
@@ -36,9 +36,12 @@ import { FaExclamation } from "react-icons/fa";
 import { GrView } from "react-icons/gr";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
-import { clearAll, listFollowing, listFollowers } from '../../redux/actions/listOfUsersRendererActions'
-import ListOfUsersRenderer from '../../components/ListOfUsersRenderer';
-
+import {
+  clearAll,
+  listFollowing,
+  listFollowers,
+} from "../../redux/actions/listOfUsersRendererActions";
+import ListOfUsersRenderer from "../../components/ListOfUsersRenderer";
 
 const Profile = () => {
   const params = useParams();
@@ -46,11 +49,16 @@ const Profile = () => {
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
-  const loggedUser = useSelector((state) => state.auth.loggedUser)
+  const isPremium = useSelector(
+    (state) => state.user.userProfileData.isPremium
+  );
+  // const loggedUser = useSelector((state) => state.auth.loggedUser);
+  // const error = useSelector((state) => state.user.errorProfile);
   const loading = useSelector((state) => state.user.loadingProfile);
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
+
   const {
     _id,
     posts,
@@ -141,10 +149,10 @@ const Profile = () => {
   const [datePublishedAsc, setDatePublishedAsc] = useState(false);
   const [likesAsc, setLikesAsc] = useState(false);
   const [commentsQtyAsc, setCommentsQtyAsc] = useState(false);
+  const [filtersActive, setFiltersActive] = useState(false);
+
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowing, setShowFollowing] = useState(false);
-
-  const [filtersActive, setFiltersActive] = useState(false);
 
   useEffect(() => {
     if (!filtersActive) {
@@ -189,7 +197,7 @@ const Profile = () => {
             type="checkbox"
             checked={datePublishedAsc}
             onChange={(e) => setDatePublishedAsc(e.target.checked)}
-            disabled={!filtersActive}
+            disabled={!filtersActive || likesAsc || commentsQtyAsc}
           />
         </div>
         <div
@@ -202,7 +210,7 @@ const Profile = () => {
             type="checkbox"
             checked={likesAsc}
             onChange={(e) => setLikesAsc(e.target.checked)}
-            disabled={!filtersActive}
+            disabled={!filtersActive || datePublishedAsc || commentsQtyAsc}
           />
         </div>
         <div
@@ -215,31 +223,12 @@ const Profile = () => {
             type="checkbox"
             checked={commentsQtyAsc}
             onChange={(e) => setCommentsQtyAsc(e.target.checked)}
-            disabled={!filtersActive}
+            disabled={!filtersActive || datePublishedAsc || likesAsc}
           />
         </div>
       </div>
     );
   };
-
-  // const [dummyOptions, setDummyOptions] = useState([
-  //   { name: "with Multimedia", id: 1 },
-  //   { name: "Date Published 2️⃣", id: 2 },
-  //   { name: "Likes 2️⃣", id: 3 },
-  //   { name: "Comments 2️⃣", id: 4 },
-  // ]);
-
-  // const multiSelectFilters = () => {
-  //   return (
-  //     <Multiselect
-  //       options={dummyOptions} // Options to display in the dropdown
-  //       // selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
-  //       onSelect={(e) => console.log(e)} // Function will trigger on select event
-  //       onRemove={(e) => console.log(e)} // Function will trigger on remove event
-  //       displayValue="name" // Property name to display in the dropdown options
-  //     />
-  //   );
-  // };
 
   const postApplyFilters = () => {
     if (!posts) return [];
@@ -251,6 +240,7 @@ const Profile = () => {
     } else {
       dummyPost = dummyPost.filter((post) => !post.multimedia);
     }
+
     if (datePublishedAsc) {
       dummyPost = dummyPost.sort((post, nextPost) => {
         const t1 = new Date(nextPost.createdAt);
@@ -264,6 +254,7 @@ const Profile = () => {
         return t2 - t1;
       });
     }
+
     if (likesAsc) {
       dummyPost = dummyPost.sort((post, nextPost) => {
         return post.likes.length - nextPost.likes.length;
@@ -273,6 +264,7 @@ const Profile = () => {
         return nextPost.likes.length - post.likes.length;
       });
     }
+
     if (commentsQtyAsc) {
       dummyPost = dummyPost.sort((post, nextPost) => {
         return post.commentsId.length - nextPost.commentsId.length;
@@ -283,8 +275,6 @@ const Profile = () => {
       });
     }
 
-    console.log(dummyPost.map((t) => t.createdAt));
-
     return dummyPost;
   };
 
@@ -293,7 +283,6 @@ const Profile = () => {
       return (
         <>
           {filters()}
-          {/* {multiSelectFilters()} */}
           {postApplyFilters().map((p) => {
             return (
               <Fragment key={p._id}>
@@ -330,19 +319,21 @@ const Profile = () => {
     );
   };
 
-  let renderFollowers = () => {
-    setShowFollowers(!showFollowers)
-    dispatch(listFollowers(_id))     
+  const renderFollowers = () => {
+    setShowFollowers(!showFollowers);
+    dispatch(listFollowers(_id));
   };
-  let renderFollowing = () => {
+
+  const renderFollowing = () => {
     setShowFollowing(!showFollowing);
-    dispatch(listFollowing(_id)) 
+    dispatch(listFollowing(_id));
   };
+
   const handleClose = () => {
     showFollowers !== false && setShowFollowers(false);
     showFollowing !== false && setShowFollowing(false);
     dispatch(clearAll());
-  }
+  };
 
   return (
     <>
@@ -355,11 +346,6 @@ const Profile = () => {
           ) : (
             <>
               <div className="img-container">
-                {/* <img
-              className='profile-img'
-              src='https://japanpowered.com/media/images//goku.png'
-              alt='Profile Picture'>
-            </img> */}
                 <div className="imgChange_container">
                   {profilePicture ? (
                     <>
@@ -419,19 +405,22 @@ const Profile = () => {
                   <div className="user-firstname justify-between">
                     <div className="info_container">
                       <span className="span-info">Full name</span>
-                      <p>{`${userFirstName + " " + userLastName}`}</p>
+                      <p>
+                        {`${userFirstName + " " + userLastName}`}{" "}
+                        {isPremium ? "(Premium)" : null}
+                      </p>
                     </div>
                     {params.id === userLoggedId ? (
-                      <div className="button_container">
-                        <button
-                          onClick={() => {
-                            setFirstname(true);
-                          }}
-                          type="button"
-                        >
-                          Edit
-                        </button>
-                      </div>
+                      <button
+                        className="bg-green-600 hover:bg-green-700 my-2 flex items-center justify-center gap-1 font-semibold"
+                        onClick={() => {
+                          setFirstname(true);
+                        }}
+                        type="button"
+                      >
+                        <AiFillEdit />
+                        Edit
+                      </button>
                     ) : null}
                   </div>
                   <div className="user-username justify-between">
@@ -440,36 +429,40 @@ const Profile = () => {
                       {"@" + userUsername}
                     </div>
                     {params.id === userLoggedId ? (
-                      <div className="button_container">
-                        <button
-                          onClick={() => {
-                            setUsername(true);
-                          }}
-                          type="button"
-                        >
-                          Edit
-                        </button>
-                      </div>
+                      <button
+                        className="bg-green-600 hover:bg-green-700 my-2 flex items-center justify-center gap-1 font-semibold"
+                        onClick={() => {
+                          setUsername(true);
+                        }}
+                        type="button"
+                      >
+                        <AiFillEdit />
+                        Edit
+                      </button>
                     ) : null}
                   </div>
                   <div className="user-followers">
                     <div className="info_container ">
-                    
                       <span className="span-info">Followers</span>
-                       {followers ? followers.length : 0}
-                       <span className="followingAndFollowersButton text-white" onClick={renderFollowers}>
-                       <GrView color="white"/>
-                       </span>
-                   
+                      {followers ? followers.length : 0}
+                      <span
+                        className="followingAndFollowersButton text-white"
+                        onClick={renderFollowers}
+                      >
+                        <GrView color="white" />
+                      </span>
                     </div>
                   </div>
                   <div className="user-following">
                     <div className="info_container">
                       <span className="span-info">Following</span>
                       {_id ? following.length : 0}
-                      <span className="followingAndFollowersButton" onClick={renderFollowing}>
-                      <GrView color="white"/>
-                       </span>
+                      <span
+                        className="followingAndFollowersButton"
+                        onClick={renderFollowing}
+                      >
+                        <GrView color="white" />
+                      </span>
                     </div>
                   </div>
                   <div className="user-biography justify-between">
@@ -478,18 +471,19 @@ const Profile = () => {
                       {userBiography ?? "No biography added yet"}
                     </div>
                     {params.id === userLoggedId ? (
-                      <div className="button_container">
-                        <button
-                          onClick={() => {
-                            setBiography(true);
-                          }}
-                          type="button"
-                        >
-                          Edit
-                        </button>
-                      </div>
+                      <button
+                        className="bg-green-600 hover:bg-green-700 my-2 flex items-center justify-center gap-1 font-semibold"
+                        onClick={() => {
+                          setBiography(true);
+                        }}
+                        type="button"
+                      >
+                        <AiFillEdit />
+                        Edit
+                      </button>
                     ) : null}
                   </div>
+
                   <div>
                     {params.id === userLoggedId ? (
                       followRequest ? (
@@ -527,42 +521,31 @@ const Profile = () => {
                       ) : null
                     ) : null}
                   </div>
-                  <div className="user-mess">
-                    <div className="info_container">
-                      <span className="span-info">Send Message </span>
-                    </div>
-                    <div className="button_container">
-                      <Link to={`/home/messages/${params.id}`}>
-                        <button>Send Now</button>
-                      </Link>
-                    </div>
-                  </div>
-                  {userLoggedId !== _id ? (
-                    <div className="user-follow">
+
+                  <div className="my-4">
+                    <Link
+                      to={`/home/messages/${params.id}`}
+                      className="flex gap-2 items-center m-none bg-blue-600 py-1 rounded-md justify-center hover:bg-blue-700 my-2 w-full font-semibold"
+                    >
+                      <AiFillMessage />
+                      Send Now
+                    </Link>
+
+                    {userLoggedId !== _id ? (
                       <button
-                        className="flex-1 flex justify-center"
+                        className="bg-green-600 py-1 rounded-md hover:bg-green-700 my-2 w-full font-semibold"
                         onClick={() => {
                           dispatch(followOrUnfollowUser(userLoggedId, _id));
-                          dispatch(postNotification({
-                            type:'follow',
-                            refId: loggedUser._id,
-                            fromId: loggedUser._id,
-                            toId: _id,
-                            username: loggedUser.username,
-                            profilePicture: loggedUser.profilePicture
-                          }))
                         }}
                         type="button"
                       >
                         {followers && followRenderer()}
                       </button>
-                    </div>
-                  ) : null}
-                  {
-                    params.id != userLoggedId &&
-                    <div className="user-report">
+                    ) : null}
+
+                    {params.id != userLoggedId && (
                       <button
-                        className=" flex-1 flex justify-center items-center gap-1"
+                        className="flex justify-center items-center gap-1 bg-red-600 py-1 rounded-md hover:bg-red-700 my-2 w-full font-semibold"
                         onClick={() => {
                           Swal.fire({
                             background: "#4c4d4c",
@@ -589,10 +572,9 @@ const Profile = () => {
                       >
                         <FaExclamation /> Report user
                       </button>
-                      </div>
-                  }
+                    )}
+                  </div>
                 </div>
-                
               </div>
             </>
           )}
@@ -623,19 +605,20 @@ const Profile = () => {
         />
       )}
       {/* Renderizador de followers */}
-       {showFollowing === true && ( 
-        <ListOfUsersRenderer 
-            titleToRender={'following'} 
-            userId={_id} 
-            closeRenderFunction={handleClose} />
-      )}
-      {showFollowers === true && 
+      {showFollowing === true && (
         <ListOfUsersRenderer
-            titleToRender={'followers'}
-            userId={_id}
-            closeRenderFunction={handleClose}
+          titleToRender={"following"}
+          userId={_id}
+          closeRenderFunction={handleClose}
         />
-      }
+      )}
+      {showFollowers === true && (
+        <ListOfUsersRenderer
+          titleToRender={"followers"}
+          userId={_id}
+          closeRenderFunction={handleClose}
+        />
+      )}
     </>
   );
 };
