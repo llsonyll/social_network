@@ -15,8 +15,9 @@ export interface ClientToServerEvents {
     logged: (_id: Types.ObjectId, socketId: string) => void;
     privMessage: (content:string, toId:Types.ObjectId,fromId: Types.ObjectId,  chatId:Types.ObjectId) => void;
     call: (toId:Types.ObjectId, fromId: Types.ObjectId , username: string, profilePicture: string) => void;
-    closeCall: (_id: Types.ObjectId) => void
-    notification: (type: 'like' | 'follow' | 'comment' | 'message', refId: Types.ObjectId, userId:Types.ObjectId, toId:Types.ObjectId, content:string , profilePicture:string, username: string) => void
+    closeCall: (_id: Types.ObjectId) => void;
+    notification: (type: 'like' | 'follow' | 'comment' | 'message', refId: Types.ObjectId, userId:Types.ObjectId, toId:Types.ObjectId, content:string , profilePicture:string, username: string) => void;
+    logout: (_id: Types.ObjectId) => void
 }
   
 export interface InterServerEvents {
@@ -85,6 +86,19 @@ const userHandler = (io: Server<ClientToServerEvents, ServerToClientEvents, Inte
             let user = await User.findById(toId)
             if(user){
                 io.to(`${user.socketId}`).emit('notification', type, refId, userId, profilePicture, username, content)
+            }
+        }catch(err){
+            console.log(err)
+        }
+    })
+    
+    socket.on('logout', async(_id)=>{
+        try{
+            let user = await User.findById(_id)
+            if(user){
+                user.isConnected = false
+                user.socketId = undefined
+                await user.save()
             }
         }catch(err){
             console.log(err)
