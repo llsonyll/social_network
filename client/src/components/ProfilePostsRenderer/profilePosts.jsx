@@ -1,4 +1,4 @@
-import { FaComment, FaHeart, FaExclamation } from "react-icons/fa";
+import { FaComment, FaHeart, FaExclamation, FaBullseye } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import Avatar from "../Avatar";
 import MultimediaElement from "../MultimediaElement";
@@ -12,7 +12,7 @@ import { makeReport } from '../../redux/actions/reportActions';
 import Swal from 'sweetalert2';
 import EditPost from '../EditPost/editPost';
 import ListOfUsersRenderer from '../ListOfUsersRenderer/listOfUsersRenderer';
-import { listLikes, listDislikes } from '../../redux/actions/listOfUsersRendererActions'
+import { listLikes, listDislikes, clearAll } from '../../redux/actions/listOfUsersRendererActions'
 import { postNotification } from '../../redux/actions/notificationActions';
 import { useEffect } from "react";
 
@@ -121,14 +121,22 @@ const ProfilePosts = (props) => {
   };
 
   let renderLikes = () => {
-    setShowLikes(!showLikes)
+    setShowLikes(true)
     dispatch(listLikes(postNumber)) 
     //dispatch(ClearList())      
   };
+
   let renderDislikes = () => {
-    setShowDislikes(!showDislikes);
+    setShowDislikes(true);
     dispatch(listDislikes(postNumber)) 
   };
+
+  
+  const handleClose = () => {
+    showLikes !== false && setShowLikes(false);
+    showDislikes !== false && setShowDislikes(false);
+    dispatch(clearAll());
+   }
 
   return (
     <Fragment key={postNumber}>
@@ -234,13 +242,13 @@ const ProfilePosts = (props) => {
           )}
       </div>
       {showLikes === true && ( 
-        <ListOfUsersRenderer titleToRender={'likes'} postId={postNumber} closeRenderFunction={renderLikes} />
+        <ListOfUsersRenderer titleToRender={'likes'} postId={postNumber} closeRenderFunction={handleClose} />
       )}
       {showDislikes === true && isPremium === true ? (
         <ListOfUsersRenderer
           titleToRender={'dislikes'}
           postId={postNumber}
-          closeRenderFunction={renderDislikes}
+          closeRenderFunction={handleClose}
         />
       ) : null}
     </Fragment>
