@@ -334,3 +334,7 @@
   position: absolute;
   margin-left: 40px;
 }
+.followingAndFollowersButton{
+  cursor: pointer;
+  width: auto;
+}

@@ -14,15 +14,15 @@ import clearList from '../../redux/reducers/listOfUsersRenderer.slice'
 //Se puede usar para renderizar usuarios dependiendo de lo que uno necesite mostrar.
 //El arr que llega contiene las personas a renderizar. Si no hay arr debe haber id de post, si hay id de post, va y trae la gente que dio likes o dislikes al post.
 
-const ListOfUsersRenderer = ({arrayOfPeopleToRender = [], postId = '' , closeRenderFunction, titleToRender}) => {
+const ListOfUsersRenderer = ({arrayOfPeopleToRender = [], postId = '' , userId = '', closeRenderFunction, titleToRender}) => {
     const dispatch = useDispatch()
 
-    let arr = arrayOfPeopleToRender
+    let arr = []
     
-    if (titleToRender === 'likes' && arrayOfPeopleToRender) {
+    if (titleToRender === 'likes' && arrayOfPeopleToRender.length > 0) {
         arr = arrayOfPeopleToRender
     }
-    if (titleToRender === 'likes' && postId) { 
+    if (titleToRender === 'likes' && postId.length > 0) { 
         arr = useSelector((state) => state.listRenderer.likesPost)
         //console.log(arr);
     }
@@ -30,10 +30,12 @@ const ListOfUsersRenderer = ({arrayOfPeopleToRender = [], postId = '' , closeRen
         arr = useSelector((state) => state.listRenderer.dislikesPost)
         //console.log(arr);
     }
-    /*if (titleToRender === 'dislikes') {
-        
-    } */
-
+    if (titleToRender === 'followers' && userId.length > 0) {
+        arr = useSelector((state) => state.listRenderer.followers)
+    }
+    if (titleToRender === 'following' && userId.length > 0) {
+        arr = useSelector((state) => state.listRenderer.following)
+    }
 
     //esto divide el arr de likes/dislikes/followers/following
 

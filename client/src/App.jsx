@@ -51,7 +51,7 @@ function App() {
   const [onCall, setOnCall] = useState(false);
   const [incomingCalls, setIncomingCalls] = useState([])
 
-  console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
+  //console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
 
 
 

@@ -19,10 +19,10 @@ const listOfUsersRenderer = createSlice({
         state.dislikesPost = payload;
        },
        followersUser(state,{payload}){
-         state.followers = payload.followers;
+         state.followers = payload;
        },
        followingUser(state,{payload}){
-         state.following = payload.following;
+         state.following = payload;
        },
        clearList(state, {payload}){ //no funciona :( 
         state.likesPost = []

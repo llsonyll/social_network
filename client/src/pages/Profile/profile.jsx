@@ -6,6 +6,7 @@ import EditFullname from "../../components/EditFullname";
 import EditUsername from "../../components/EditUsername";
 import EditBiography from "../../components/EditBiography";
 import ProfilePosts from "../../components/ProfilePostsRenderer";
+import { IconContext } from "react-icons";
 // import { mockPost } from "../../data/20DummyPosts";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -32,8 +33,12 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 //iconos
 import { AiFillSetting } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
+import { GrView } from "react-icons/gr";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
+import { clearAll, listFollowing, listFollowers } from '../../redux/actions/listOfUsersRendererActions'
+import ListOfUsersRenderer from '../../components/ListOfUsersRenderer';
+
 
 const Profile = () => {
   const params = useParams();
@@ -135,6 +140,8 @@ const Profile = () => {
   const [datePublishedAsc, setDatePublishedAsc] = useState(false);
   const [likesAsc, setLikesAsc] = useState(false);
   const [commentsQtyAsc, setCommentsQtyAsc] = useState(false);
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
 
   const [filtersActive, setFiltersActive] = useState(false);
 
@@ -322,6 +329,20 @@ const Profile = () => {
     );
   };
 
+  let renderFollowers = () => {
+    setShowFollowers(!showFollowers)
+    dispatch(listFollowers(_id))     
+  };
+  let renderFollowing = () => {
+    setShowFollowing(!showFollowing);
+    dispatch(listFollowing(_id)) 
+  };
+  const handleClose = () => {
+    showFollowers !== false && setShowFollowers(false);
+    showFollowing !== false && setShowFollowing(false);
+    dispatch(clearAll());
+  }
+
   return (
     <>
       <div className="p-container">
@@ -431,15 +452,23 @@ const Profile = () => {
                     ) : null}
                   </div>
                   <div className="user-followers">
-                    <div className="info_container">
+                    <div className="info_container ">
+                    
                       <span className="span-info">Followers</span>
-                      {followers ? followers.length : null}
+                       {followers ? followers.length : 0}
+                       <span className="followingAndFollowersButton text-white" onClick={renderFollowers}>
+                       <GrView color="white"/>
+                       </span>
+                   
                     </div>
                   </div>
                   <div className="user-following">
                     <div className="info_container">
                       <span className="span-info">Following</span>
-                      {_id ? following.length : null}
+                      {_id ? following.length : 0}
+                      <span className="followingAndFollowersButton" onClick={renderFollowing}>
+                      <GrView color="white"/>
+                       </span>
                     </div>
                   </div>
                   <div className="user-biography justify-between">
@@ -592,6 +621,20 @@ const Profile = () => {
           user={username}
         />
       )}
+      {/* Renderizador de followers */}
+       {showFollowing === true && ( 
+        <ListOfUsersRenderer 
+            titleToRender={'following'} 
+            userId={_id} 
+            closeRenderFunction={handleClose} />
+      )}
+      {showFollowers === true && 
+        <ListOfUsersRenderer
+            titleToRender={'followers'}
+            userId={_id}
+            closeRenderFunction={handleClose}
+        />
+      }
     </>
   );
 };

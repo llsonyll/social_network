@@ -33,7 +33,6 @@ const PostTile = ({ post }) => {
   const user = useSelector((store) => store.auth.loggedUser);
   const dispatch = useDispatch();
 
-  console.log(post);
 
   function getTimeOfCreation(date) {
     let now = new Date().getTime();
@@ -131,7 +130,7 @@ const PostTile = ({ post }) => {
   };
 
   let renderLikes = () => {
-    console.log(post._id)
+    //console.log(post._id)
     setShowLikes(!showLikes)
     dispatch(listLikes(post._id))    
   };

@@ -44,11 +44,9 @@ const ProfilePosts = (props) => {
 	const loggedUser = useSelector(state => state.auth.loggedUser)
   const dispatch = useDispatch();
 
-
   let showEditComponent = () => {
     setEditPost(!editPost);
   };
-  
   const posts = useSelector((state) => state.user.userProfileData.posts);
   let index = posts.findIndex((post) => post._id === postNumber);
  
@@ -89,11 +87,11 @@ const ProfilePosts = (props) => {
 	      
   let renderHeartBrokenIcon = () => {
     if (!posts[index].dislikes.includes(_id)) {
-      console.log("Entra blanco");
+      //console.log("Entra blanco");
       dislike !== "add" && setDislike("add")
       return <ImHeartBroken />;
     } else {
-      console.log("Entra rojo");
+      //console.log("Entra rojo");
       dislike !== "" && setDislike("")
       return (
         <IconContext.Provider

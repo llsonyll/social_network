@@ -23,8 +23,8 @@ const CommentTile = ({ data , props }) => {
   const[editComents, setEditComments] = useState(false)
   const loggedUser = useSelector(store => store.auth.loggedUser)
 
-  console.log(editComents);
-  console.log(data);
+  //console.log(editComents);
+  //console.log(data);
 
   const { _id } = useSelector((state) => state.auth.loggedUser);
   const dispatch = useDispatch();
@@ -62,13 +62,13 @@ const CommentTile = ({ data , props }) => {
       );
     }
   };
-   console.log(data);
+   //console.log(data);
   let renderHeartBrokenIcon = () => {
     if (!data.dislikes.find( dislike => dislike._id === _id)) {
-      console.log('Entra blanco');
+      //console.log('Entra blanco');
       return <ImHeartBroken />
     }else{
-      console.log('Entra rojo');
+      //console.log('Entra rojo');
       return (
         <IconContext.Provider value={{ color: "#9400D3", className: 'global-heart-class-name' }}>
           <div>
