@@ -5,7 +5,9 @@ const Avatar = ({
   imgUrl = "https://www.fundacion-affinity.org/sites/default/files/los-10-sonidos-principales-del-perro.jpg",
   size = "s", // 's', 'm', 'l', 'xl', 'xl2' , 'xxl'
 }) => {
-  const isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
+  const isPremium = useSelector(
+    (state) => state.user.userProfileData.isPremium
+  );
 
   return size === "s" ? (
     <div className="rounded-full  p-1 w-8 h-8 relative">

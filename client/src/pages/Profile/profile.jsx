@@ -49,10 +49,12 @@ const Profile = () => {
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
-  const isPremium = useSelector((state) => state.auth.loggedUser.isPremium);
-  const loggedUser = useSelector((state) => state.auth.loggedUser);
+  const isPremium = useSelector(
+    (state) => state.user.userProfileData.isPremium
+  );
+  // const loggedUser = useSelector((state) => state.auth.loggedUser);
+  // const error = useSelector((state) => state.user.errorProfile);
   const loading = useSelector((state) => state.user.loadingProfile);
-  const error = useSelector((state) => state.user.errorProfile);
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
