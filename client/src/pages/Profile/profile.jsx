@@ -61,6 +61,7 @@ const Profile = () => {
     firstname: userFirstName,
     lastname: userLastName,
     profilePicture,
+    coverPicture,
     biography: userBiography,
     username: userUsername,
   } = useSelector((state) => state.user.userProfileData);

@@ -145,13 +145,14 @@ router.put("/:userId", passport_1.default.authenticate("jwt", {
 }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
-        const { username, firstname, lastname, biography, profilePicture } = req.body;
+        const { username, firstname, lastname, biography, profilePicture, coverPicture } = req.body;
         if (!username &&
             !firstname &&
             !lastname &&
             !biography &&
             biography !== "" &&
-            !profilePicture) {
+            !profilePicture &&
+            !coverPicture) {
             return res.status(400).json({ errprMsg: "Please send data" });
         }
         if (req.body.isPremium === false) {
