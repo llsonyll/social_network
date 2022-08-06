@@ -5,7 +5,7 @@ import Avatar from "../../components/Avatar";
 import { NavLink } from "react-router-dom";
 import { FaFacebookMessenger } from "react-icons/fa";
 
-const FriendPostTile = ({ img, username, userId }) => {
+const FriendPostTile = ({ img, username, userId, isConnected }) => {
   // console.log(user);
 
   // const getTimePublished = () => {
@@ -36,6 +36,8 @@ const FriendPostTile = ({ img, username, userId }) => {
         </div> */}
         </div>
       </NavLink>
+      {isConnected && <div className="holaaaa">.</div>}
+      {console.log(isConnected)}
       <NavLink className="linkfriend_message" to={`/home/messages/${userId}`}>
         <button className="mess_friend_section">
           <FaFacebookMessenger />
