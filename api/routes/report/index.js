@@ -155,15 +155,12 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             const post = yield mongoose_1.Post.findById(`${report.postReportedId}`);
             if (!post)
                 return res.status(404).json('Post not found');
-            console.log(post);
             const user = yield mongoose_1.User.findById(`${post.userId}`);
             if (!user)
                 return res.status(404).json('User not found');
-            console.log(user);
             const newUser = yield mongoose_1.User.findOneAndUpdate({ _id: user._id }, { $pull: { posts: `${post._id}` } }, { new: true });
             if (!newUser)
                 return res.status(400).json('Not posible to delete');
-            console.log(newUser);
             yield newUser.save();
             const commentId = post.commentsId;
             yield mongoose_1.Comment.deleteMany({ _id: { $in: commentId } });
@@ -175,19 +172,15 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             const comment = yield mongoose_1.Comment.findById(`${report.commentReportedId}`);
             if (!comment)
                 return res.status(404).json('Comment not found');
-            console.log(comment);
             const post = yield mongoose_1.Post.findById(comment.postId);
             if (!post)
                 return res.status(404).json('Post not found');
-            console.log(post);
             const newPost = yield mongoose_1.Post.findOneAndUpdate({ _id: post._id }, { $pull: { commentsId: comment._id } }, { new: true });
             if (!newPost)
                 return res.status(400).json('Not posible to delete');
             yield newPost.save();
-            console.log(newPost);
             yield report.remove();
             yield comment.remove();
-            console.log('todo ok');
             return res.json('Comment reported successfully');
         }
         let user = yield mongoose_1.User.findOneAndUpdate({ _id: `${report.userReportedId}` }, {
@@ -201,21 +194,17 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
         }, { new: true });
         if (!user)
             return res.status(404).json('Not posible to proceed');
+        const posts = yield mongoose_1.Post.find({ userId: user._id });
+        for (let i = 0; i < posts.length; i++) {
+            yield mongoose_1.Comment.deleteMany({ _id: { $in: posts[i].commentsId } });
+        }
         yield mongoose_1.Post.deleteMany({ userId: user._id });
-        yield mongoose_1.Comment.deleteMany({ userId: user._id });
         yield mongoose_1.Post.updateMany({}, {
             $pull: {
                 likes: `${user._id}`,
                 dislikes: `${user._id}`,
-                // comments: `${user._id}`
             }
         });
-        // await Comment.updateMany({}, {
-        //   $pull: {
-        //     likes: `${user._id}`,
-        //     dislikes: `${user._id}`
-        //   }
-        // });
         yield mongoose_1.User.updateMany({}, {
             $pull: {
                 following: `${user._id}`,
@@ -224,8 +213,8 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             }
         });
         yield mongoose_1.Review.deleteOne({ userId: user._id });
-        yield mongoose_1.Message.deleteMany({ from: user._id });
-        yield mongoose_1.Chat.findOneAndDelete({ users: { $in: user._id } });
+        user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
+        user.username = "Banned user";
         user.isDeleted = true;
         user.isAdmin = false;
         user.isPremium = false;
@@ -236,7 +225,8 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
         user.plan = undefined;
         user.expirationDate = undefined;
         yield user.save();
-        return res.json('User reported successfully');
+        yield report.remove();
+        return res.json('User banned successfully');
     }
     catch (err) {
         return res.status(400).json('Something went wrong');

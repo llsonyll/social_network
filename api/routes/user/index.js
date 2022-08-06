@@ -359,21 +359,17 @@ router.put("/deleted/:userId", passport_1.default.authenticate("jwt", { session:
         }, { new: true });
         if (!user)
             return res.status(404).json('User not found');
+        const posts = yield mongoose_1.Post.find({ userId: user._id });
+        for (let i = 0; i < posts.length; i++) {
+            yield mongoose_1.Comment.deleteMany({ _id: { $in: posts[i].commentsId } });
+        }
         yield mongoose_1.Post.deleteMany({ userId: user._id });
-        yield mongoose_1.Comment.deleteMany({ userId: user._id });
         yield mongoose_1.Post.updateMany({}, {
             $pull: {
                 likes: `${user._id}`,
                 dislikes: `${user._id}`,
-                // comments: `${user._id}`
             }
         });
-        // await Comment.updateMany({}, {
-        //   $pull: {
-        //     likes: `${user._id}`,
-        //     dislikes: `${user._id}`
-        //   }
-        // });
         yield mongoose_1.User.updateMany({}, {
             $pull: {
                 following: `${user._id}`,
@@ -382,8 +378,8 @@ router.put("/deleted/:userId", passport_1.default.authenticate("jwt", { session:
             }
         });
         yield mongoose_1.Review.deleteOne({ userId: user._id });
-        yield mongoose_1.Message.deleteMany({ from: user._id });
-        yield mongoose_1.Chat.findOneAndDelete({ users: { $in: user._id } });
+        user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
+        user.username = 'User eliminated';
         user.isDeleted = true;
         user.isAdmin = false;
         user.isPremium = false;

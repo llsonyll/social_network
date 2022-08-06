@@ -152,15 +152,12 @@ async (req:Request, res:Response) =>{
         if (type === 'post') {
             const post = await Post.findById(`${report.postReportedId}`);
             if (!post) return res.status(404).json('Post not found');
-            console.log(post)
             
             const user = await User.findById(`${post.userId}`);
             if (!user) return res.status(404).json('User not found');
-            console.log(user)
             
             const newUser = await User.findOneAndUpdate({_id: user._id}, {$pull: {posts: `${post._id}`}}, {new: true});
             if (!newUser) return res.status(400).json('Not posible to delete');
-            console.log(newUser)
             await newUser.save();
             
             const commentId = post.commentsId;
@@ -173,19 +170,15 @@ async (req:Request, res:Response) =>{
         if (type === 'comment') {
             const comment = await Comment.findById(`${report.commentReportedId}`);
             if (!comment) return res.status(404).json('Comment not found');
-            console.log(comment)
 
             const post = await Post.findById(comment.postId);
             if (!post) return res.status(404).json('Post not found');
-            console.log(post)
 
             const newPost = await Post.findOneAndUpdate({_id: post._id}, {$pull: {commentsId: comment._id}}, {new: true});
             if (!newPost) return res.status(400).json('Not posible to delete');
             await newPost.save();
-            console.log(newPost)
             await report.remove();
             await comment.remove();
-            console.log('todo ok')
 
             return res.json('Comment reported successfully');
         }
@@ -201,32 +194,27 @@ async (req:Request, res:Response) =>{
         }, { new: true });
         if (!user) return res.status(404).json('Not posible to proceed');
     
+        const posts = await Post.find({userId: user._id});
+        for (let i = 0; i < posts.length; i ++) {
+          await Comment.deleteMany({_id: {$in: posts[i].commentsId}});
+        }
         await Post.deleteMany({ userId: user._id });
-        await Comment.deleteMany({ userId: user._id });
         await Post.updateMany({}, {
           $pull: {
             likes: `${user._id}`,
             dislikes: `${user._id}`,
-            // comments: `${user._id}`
           }
         });
-        // await Comment.updateMany({}, {
-        //   $pull: {
-        //     likes: `${user._id}`,
-        //     dislikes: `${user._id}`
-        //   }
-        // });
         await User.updateMany({}, {
           $pull: {
             following: `${user._id}`,
             followers: `${user._id}`,
             followRequest: `${user._id}`}
         });
-    
         await Review.deleteOne({ userId: user._id });
-        await Message.deleteMany({ from: user._id });
-        await Chat.findOneAndDelete({ users: {$in: user._id }});
     
+        user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
+        user.username = "Banned user";
         user.isDeleted = true;
         user.isAdmin = false;
         user.isPremium = false;
@@ -238,8 +226,9 @@ async (req:Request, res:Response) =>{
         user.expirationDate = undefined;
     
         await user.save();
+        await report.remove();
         
-        return res.json('User reported successfully');
+        return res.json('User banned successfully');
     }catch(err){
         return res.status(400).json('Something went wrong');
     }

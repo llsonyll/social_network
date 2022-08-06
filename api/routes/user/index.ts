@@ -435,32 +435,27 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
       }, { new: true });
       if (!user) return res.status(404).json('User not found');
 
+      const posts = await Post.find({userId: user._id});
+      for (let i = 0; i < posts.length; i ++) {
+        await Comment.deleteMany({_id: {$in: posts[i].commentsId}});
+      }
       await Post.deleteMany({ userId: user._id });
-      await Comment.deleteMany({ userId: user._id });
       await Post.updateMany({}, {
         $pull: {
           likes: `${user._id}`,
           dislikes: `${user._id}`,
-          // comments: `${user._id}`
         }
       });
-      // await Comment.updateMany({}, {
-      //   $pull: {
-      //     likes: `${user._id}`,
-      //     dislikes: `${user._id}`
-      //   }
-      // });
       await User.updateMany({}, {
         $pull: {
           following: `${user._id}`,
           followers: `${user._id}`,
           followRequest: `${user._id}`}
       });
-
       await Review.deleteOne({ userId: user._id });
-      await Message.deleteMany({ from: user._id });
-      await Chat.findOneAndDelete({ users: {$in: user._id }});
 
+      user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
+      user.username = 'User eliminated';
       user.isDeleted = true;
       user.isAdmin = false;
       user.isPremium = false;
