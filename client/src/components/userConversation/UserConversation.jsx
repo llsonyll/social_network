@@ -9,8 +9,8 @@ import Mensajes from '../Mensajes/Mensajes'
 import {AiOutlineSend, AiOutlinePhone} from 'react-icons/ai'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getChatInfo, sendMessage } from '../../redux/actions/chatActions'
-import { addMessage, clearChatInfo } from '../../redux/reducers/chatReducer'
+import { getChatInfo, getChats, sendMessage } from '../../redux/actions/chatActions'
+import { addMessage, clearChatInfo, orderChats } from '../../redux/reducers/chatReducer'
 import { socket } from '../../App'
 import { AiOutlineMore } from "react-icons/ai";
 
@@ -21,6 +21,8 @@ const UserConversation = ({mostrarMenu, setmostrarMenu}) => {
     const params = useParams()
     const loggedUser = useSelector(store => store.auth.loggedUser)
     const chatInfo = useSelector(store => store.chat.chatDetails)
+    const chats = useSelector(store => store.chat.allChats)
+
     let getIndex = (array) => {
       if(array[0]._id === loggedUser._id){
           return 1
@@ -30,20 +32,32 @@ const UserConversation = ({mostrarMenu, setmostrarMenu}) => {
     }
 
     useEffect(()=>{
-      if(loggedUser._id && params.id && !chatInfo._id){
+      if(loggedUser._id && params.id){
         dispatch(getChatInfo(loggedUser._id, params.id))
       }
       return (()=> dispatch(clearChatInfo()))
     },[loggedUser, params])
 
+    useEffect(()=>{
+      if(chatInfo._id){
+        let checkChat = chats.find(chat => chat._id === chatInfo._id)
+        if(!checkChat){
+          dispatch(getChats(loggedUser._id))
+        }
+      }
+    },[chatInfo._id])
+
     let handleClick = (e) =>{
       e.preventDefault()
-      dispatch(sendMessage(text, loggedUser._id, chatInfo._id))
-    
       if(chatInfo.users[0]._id !== chatInfo.users[1]._id){
-        socket.emit('privMessage', text, chatInfo.users[getIndex(chatInfo.users)]._id, loggedUser._id, chatInfo._id)
-        socket.off('privMessage')
+        dispatch(sendMessage(text, loggedUser._id, chatInfo._id, chatInfo.users[getIndex(chatInfo.users)]._id))
+      }else{
+        dispatch(sendMessage(text, loggedUser._id, chatInfo._id))
       }
+      if(chatInfo._id !== chats[0]._id){
+        dispatch(orderChats(chatInfo._id))
+      }
+
       setText('')
     }
 

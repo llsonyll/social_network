@@ -11,7 +11,7 @@ router.get('/:userId', passport.authenticate('jwt', {session:false, failureRedir
         const {userId} = req.params
         let user = await User.findById(userId)
         .select('chats')
-        .populate({path:'chats', populate: {path: 'users', select:['username', 'profilePicture']}})
+        .populate({path:'chats', options:{populate: {path: 'users', select:['username', 'profilePicture'] }, sort:[{updatedAt: -1}]}})
 
         if(!user){
             return res.status(400).json({errorMessage: 'No User Found'})

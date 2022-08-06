@@ -50,11 +50,9 @@ function App() {
   const [myVideo, setMyVideo] = useState();
   const [otherVideo, setOtherVideo] = useState();
   const [onCall, setOnCall] = useState(false);
-  const [incomingCalls, setIncomingCalls] = useState([])
+  const [incomingCalls, setIncomingCalls] = useState([]);
 
-  console.log("SOY EL CONSOLE LOG DE AAAAAAAPPPP");
-
-
+  // console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
 
   useEffect(() => {
     if (localStorage.getItem("token") && !loggedUser._id) {
@@ -75,7 +73,7 @@ function App() {
   useEffect(() => {
     if (loggedUser._id) {
       setActuallyLogged(loggedUser._id);
-	  dispatch(getNotifications(loggedUser._id))
+      dispatch(getNotifications(loggedUser._id));
     }
   }, [loggedUser]);
 
@@ -97,7 +95,7 @@ function App() {
       //DETECTS WHEN SOMEONE CALLS YOU
       socket.on("call", (_id, username, profilePicture) => {
         //DISPLAYS THE VIDEOCALL
-        setIncomingCalls([...incomingCalls, {_id, username, profilePicture}])
+        setIncomingCalls([...incomingCalls, { _id, username, profilePicture }]);
       });
       //ANSWER THE CALL FUNCTION
       peer.on("call", (calling) => {
@@ -132,26 +130,26 @@ function App() {
 
   //SOCKET useEFFECT TO LISTEN MESSAGES AND NOTIFICATIONS
   useEffect(() => {
-	if(!location.pathname.includes('messages')){
-		console.log('hola?')
-		socket.on('privMessage', (content, _id, chatId) =>{
-			console.log('Escucho mensajes pero no los agrego')  
-      })
+    if (!location.pathname.includes("messages")) {
+      console.log("hola?");
+      socket.on("privMessage", (content, _id, chatId) => {
+        console.log("Escucho mensajes pero no los agrego");
+      });
     }
-	
-    return (()=> {
-		socket.off('privMessage')
-	})
-  }, [location])
 
-  useEffect(()=>{
-    socket.on('notification', ()=>{
-			dispatch(getNotifications(loggedUser._id))
-		})
-    return (()=> {
-      socket.off('notification')
-    })
-  },[loggedUser])
+    return () => {
+      socket.off("privMessage");
+    };
+  }, [location]);
+
+  useEffect(() => {
+    socket.on("notification", () => {
+      dispatch(getNotifications(loggedUser._id));
+    });
+    return () => {
+      socket.off("notification");
+    };
+  }, [loggedUser]);
 
   //SHOWS THE INCOMING VIDEO
   useEffect(() => {
@@ -202,44 +200,43 @@ function App() {
       .forEach((track) => (track.enabled = !track.enabled));
   }
 
-  function handeAcceptCall(_id){
-    if(call){
-      if(call.open){
-        socket.emit("closeCall", call.peer)
-        call.close()
+  function handeAcceptCall(_id) {
+    if (call) {
+      if (call.open) {
+        socket.emit("closeCall", call.peer);
+        call.close();
       }
     }
-    setIncomingCalls(incomingCalls.filter(call => call._id !== _id))
+    setIncomingCalls(incomingCalls.filter((call) => call._id !== _id));
     setOnCall(true);
     const getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
-        getUserMedia(
-          { video: true, audio: true },
-          function (stream) {
-            //EXECUTE THE CALL
-            call = peer.call(_id, stream);
-            //DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
-            call.on("close", () => {
-              setOnCall(false);
-            });
-            //ON ANSWER SHOWS BOTH VIDEOS
-            call.on("stream", function (remoteStream) {
-              setMyVideo(stream);
-              setOtherVideo(remoteStream);
-            });
-          },
-          (err) => {
-            console.error("Failed to get local stream", err);
-          }
-        );
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia;
+    getUserMedia(
+      { video: true, audio: true },
+      function (stream) {
+        //EXECUTE THE CALL
+        call = peer.call(_id, stream);
+        //DETECTS THE DISCONECCTION OF THE CALL AND STOP DISPLAY
+        call.on("close", () => {
+          setOnCall(false);
+        });
+        //ON ANSWER SHOWS BOTH VIDEOS
+        call.on("stream", function (remoteStream) {
+          setMyVideo(stream);
+          setOtherVideo(remoteStream);
+        });
+      },
+      (err) => {
+        console.error("Failed to get local stream", err);
+      }
+    );
   }
 
-  function handleDenyCall(_id){
-    setIncomingCalls(incomingCalls.filter(call => call._id !== _id))
+  function handleDenyCall(_id) {
+    setIncomingCalls(incomingCalls.filter((call) => call._id !== _id));
   }
-
 
   return (
     <>
@@ -264,14 +261,20 @@ function App() {
           </div>
         </Draggable>
       ) : null}
-      {
-        incomingCalls.length? incomingCalls.map(call => <IncomingCall data={call} acceptCall={handeAcceptCall} denyCall={handleDenyCall}/>):null
-      }
+      {incomingCalls.length
+        ? incomingCalls.map((call) => (
+            <IncomingCall
+              data={call}
+              acceptCall={handeAcceptCall}
+              denyCall={handleDenyCall}
+            />
+          ))
+        : null}
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={<DashBoard />}>
           <Route path="settings" element={<Settings />} />
-		  <Route path='notifications' element={<Notifications />} />
+          <Route path="notifications" element={<Notifications />} />
           <Route index element={<Home />} />
           <Route path="profile/:id" element={<Profile />} />
           <Route path="premium/:id" element={<PremiumComponent />} />

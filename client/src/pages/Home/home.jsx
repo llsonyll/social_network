@@ -114,7 +114,7 @@ const Home = () => {
         next={handlePage}
         loader={<LoadingSpinner />}
         >
-        <div className="flex-1 flex flex-col gap-5 h-full">
+        <div className="flex-1 flex flex-col gap-5 h-full items-center">
         <div className="contenedorFriends-responsive_container">
           {userFollowings ? (
             userFollowings.map((friend) => (

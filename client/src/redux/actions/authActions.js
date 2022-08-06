@@ -69,7 +69,7 @@ export const registerAction = (obj) => async (dispatch) => {
 
 export const getLoggedUserInfo = () => async (dispatch) => {
   try {
-    console.log('getLoggedUserInfo');
+    //console.log('getLoggedUserInfo');
     const token = localStorage.getItem("token");
     setAuthorization(token);
     const {

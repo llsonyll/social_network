@@ -63,7 +63,8 @@ export interface IReview {
 export interface IChat {
    _id: Types.ObjectId;
    users: Types.Array<Types.ObjectId>;
-   messages: Types.Array<Types.ObjectId>
+   messages: Types.Array<Types.ObjectId>;
+   updatedAt: Date
 }
 
 export interface IMessage {

@@ -100,8 +100,7 @@ function settings() {
     if (userReview) {
       return (
         <div className="currentreview">
-          {" "}
-          {userReview.stars}★ {userReview.description}{" "}
+          {userReview.stars}★ {userReview.description}
         </div>
       );
     }

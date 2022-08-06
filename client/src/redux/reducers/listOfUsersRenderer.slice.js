@@ -12,25 +12,33 @@ const listOfUsersRenderer = createSlice({
     name: "listOfUsersRenderer",
     initialState,
     reducers: {
-       LikesPost(state,{payload}){
+       likesPost(state,{payload}){
            state.likesPost = payload;
        },
-       DislikesPost(state,{payload}){
+       dislikesPost(state,{payload}){
         state.dislikesPost = payload;
        },
+       followersUser(state,{payload}){
+         state.followers = payload;
+       },
+       followingUser(state,{payload}){
+         state.following = payload;
+       },
        clearList(state, {payload}){ //no funciona :( 
-        state.likesPost = payload,
-        state.dislikes = payload,
-        state.followers = payload,
-        state.following = payload
+        state.likesPost = []
+        state.dislikesPost = []
+        state.followers = []
+        state.following = []
        },
     }
   });
   
   export const {
      clearList,
-     LikesPost,
-     DislikesPost
+     likesPost,
+     dislikesPost,
+     followersUser,
+     followingUser,
   } = listOfUsersRenderer.actions;
   
   export default listOfUsersRenderer.reducer;

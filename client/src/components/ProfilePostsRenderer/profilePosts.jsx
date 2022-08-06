@@ -134,6 +134,11 @@ const ProfilePosts = (props) => {
     setShowDislikes(!showDislikes);
     dispatch(listDislikes(postNumber));
   };
+  const handleClose = () => {
+    showLikes !== false && setShowLikes(false);
+    showDislikes !== false && setShowDislikes(false);
+    dispatch(clearAll());
+  };
 
   return (
     <Fragment key={postNumber}>
@@ -247,7 +252,7 @@ const ProfilePosts = (props) => {
         <ListOfUsersRenderer
           titleToRender={"dislikes"}
           postId={postNumber}
-          closeRenderFunction={renderDislikes}
+          closeRenderFunction={handleClose}
         />
       ) : null}
     </Fragment>
