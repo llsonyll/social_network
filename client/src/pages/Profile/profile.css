@@ -148,27 +148,25 @@
   margin-top: 10px;
 }
 .profile-container .shadow-box .user_description div button {
-  background-color: #4e864c;
+  /* background-color: #4e864c; */
   border-radius: 5px;
   padding: 5px 15px;
   transition: 0.3s all;
 }
-.profile-container .shadow-box .user_description div button:hover {
-  background-color: #447543;
-}
-.profile-container .shadow-box .user_description div button:hover {
-  background-color: #447543;
-}
+/* .profile-container .shadow-box .user_description div button:hover { */
+/* background-color: #447543; */
+/* } */
+/* .profile-container .shadow-box .user_description div button:hover { */
+/* background-color: #447543; */
+/* } */
 
-.profile-container .shadow-box .user_description .user-report{
- 
+.profile-container .shadow-box .user_description .user-report {
   margin-top: 20px;
 }
-.profile-container .shadow-box .user_description .user-report button{
+.profile-container .shadow-box .user_description .user-report button {
   background-color: rgb(170, 65, 57);
- 
 }
-.profile-container .shadow-box .user_description .user-report button:hover{
+.profile-container .shadow-box .user_description .user-report button:hover {
   background-color: rgb(131, 51, 45);
 }
 
