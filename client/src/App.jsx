@@ -21,6 +21,7 @@ import io from "socket.io-client";
 //export const socket = io("http://localhost:3001");
 export const socket = io("https://back.socialn.me");
 //export const socket = io("https://www.dream-team-api.social");
+export let messageSound = new Audio('../assets/message.mp3')
 
 let peer;
 let call;
@@ -67,7 +68,6 @@ function App() {
     //   console.log("removeLoggedUser");
     //   navigate("/");
     // }
-    console.log(location);
   }, [location]);
 
   //SOCKET useEffect TO REPORT A LOGGED USER, AND HANDLE CALLS, AND GET NOTIFICATIONS
@@ -148,12 +148,10 @@ function App() {
   //SOCKET useEFFECT TO LISTEN MESSAGES AND NOTIFICATIONS
   useEffect(() => {
 	if(!location.pathname.includes('messages')){
-		console.log('hola?')
 		socket.on('privMessage', (content, _id, chatId) =>{
-			console.log('Escucho mensajes pero no los agrego')  
+      messageSound.play()  
       })
     }
-	
     return (()=> {
 		socket.off('privMessage')
 	})
