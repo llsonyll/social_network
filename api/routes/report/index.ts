@@ -77,6 +77,7 @@ async (req: Request, res: Response) => {
 
         if(!type) {
             reports = await Report.find({})
+            .sort({createdAt: -1})
             .populate({
                 path: 'commentReportedId',
                 select: ['userId', 'content'],
@@ -100,6 +101,7 @@ async (req: Request, res: Response) => {
         }
         if(type === "post") {
             reports = await Report.find({postReportedId: {$exists: true} })
+            .sort({createdAt: -1})
             .populate({
                 path: 'postReportedId',
                 select: ['userId', 'content', 'multimedia'],
@@ -111,6 +113,7 @@ async (req: Request, res: Response) => {
         }
         if(type === "comment") {
             reports = await Report.find({commentReportedId: {$exists: true}})
+            .sort({createdAt: -1})
             .populate({
                 path: 'commentReportedId',
                 select: ['userId', 'content'],
@@ -122,6 +125,7 @@ async (req: Request, res: Response) => {
         }
         if(type === "user") {
             reports = await Report.find({userReportedId: {$exists: true}})
+            .sort({createdAt: -1})
             .populate({
                 path: 'userReportedId',
                 select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],

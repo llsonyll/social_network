@@ -17,18 +17,20 @@ const userReducer = createSlice({
       state.userProfileData = action.payload;
     },
     homePosts(state, action) {
-      console.log("HOME POSTS REDUCER", action.payload)
-        if (action.payload.length === 0 && state.control==="false") {
-          state.control = ""
-          return state
-          console.log("CONTROL = VACIO ")
-        }
-        if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
-          state.homePostsData = state.homePostsData.concat(action.payload);
-          if (action.payload.length < 10 && state.control === "true") {
-            state.control = "false"
+
+        console.log("HOME POSTS REDUCER", action.payload)
+          if (action.payload.length === 0 && state.control==="false") {
+            state.control = ""
+            return state
           }
-        }
+          if(action.payload.length=== 0 && state.control==="true") {
+            state.control = "false"
+          } else if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
+            state.homePostsData = state.homePostsData.concat(action.payload);
+            if (action.payload.length < 10 && state.control === "true") {
+              state.control = "false"
+            }
+          }
     },
     clearHomePosts(state, action) {
       state.homePostsData = [],
@@ -94,8 +96,13 @@ const userReducer = createSlice({
         userProfileData.posts[index].dislikes.push(payload.userId);
      }
     },
+    firstToggleUserFollowing(state, action) {
+      if(action.payload?.length ===0) state.control = "false"
+      state.userFollowings = action.payload; 
+      return state
+    },
     toggleUSERFollowing(state, action) {
-      state.userFollowings = action.payload;
+      state.userFollowings = action.payload; 
     },
     toggleResponseFollow(state, action) {
       state.userProfileData.followRequest = action.payload.followRequest;
@@ -136,6 +143,7 @@ export const {
   dislikesPost,
   dislikesProfilePost,
   toggleUSERFollowing,
+  firstToggleUserFollowing,
   clearHomePosts,
   setLoadingProfile,
   setProfileError
