@@ -60,7 +60,7 @@ router.get(
         $options: "i"
       }, _id: {$in: user.following}} )
       // .select(['-password', '-chats', '-socketId', '-isAdmin', '-chats', '-paymentsId', ''])
-      .select(['_id', 'username', 'profilePicture', 'firstname', 'lastname', 'isPremium'])
+      .select(['_id', 'username', 'profilePicture', 'firstname', 'lastname', 'isPremium', 'isConnected'])
       console.log(foundUsers)
       return res.status(200).json(foundUsers);
     } catch (err) {
@@ -400,9 +400,19 @@ router.put(
 
         await userFollowed.save();
       } else {
-        user.following.push(userFollowed._id);
+        // user.following.push(userFollowed._id);
+        await User.findOneAndUpdate({_id: user._id},{
+          $addToSet:{
+              following: user._id
+          }
+      })
         await user.save();
-        userFollowed.followers.push(user._id);
+        // userFollowed.followers.push(user._id);
+        await User.findOneAndUpdate({_id: userFollowed._id},{
+          $addToSet:{
+              followers: user._id
+          }
+      })
         await userFollowed.save();
       }
 
@@ -418,34 +428,61 @@ router.put(
     }
   }
 );
+
 //ruta para borrar la cuenta de un usuario
-router.put(
-  "/deleted/:userId",
-  passport.authenticate("jwt", {
-    session: false,
-    failureRedirect: "/auth/loginjwt",
-  }),
+router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt", }),
   async (req: Request, res: Response) => {
     try {
-      let userId = req.params.userId;
-      /*    let deletePost = await Post.deleteMany({userId:`${userId}`});
-   let deleteComment = await Comment.deleteMany({userId:`${userId}`});
-    let deleteReview = await Review.deleteMany({userId:`${userId}`});
-    let deleteMessage = await Message.deleteMany({from:`${userId}`});
-    let deleteChat = await Chat.findOneAndUpdate({users:{_id:`${userId}`}}); */
-      let userDeleted = await User.findOneAndUpdate(
-        { _id: `${userId}` },
-        { isDeleted: true },
-        { new: true }
-      );
+      const { userId } = req.params;
+      
+      let user = await User.findOneAndUpdate({_id: `${userId}`}, {
+        $set: {
+          posts: [],
+          following: [],
+          followers: [],
+          followRequest: [],
+          chats: []
+        }
+      }, { new: true });
+      if (!user) return res.status(404).json('User not found');
 
-      if (!userDeleted) {
-        return res.status(400).json("Eror deleting user");
+      const posts = await Post.find({userId: user._id});
+      for (let i = 0; i < posts.length; i ++) {
+        await Comment.deleteMany({_id: {$in: posts[i].commentsId}});
       }
+      await Post.deleteMany({ userId: user._id });
+      await Post.updateMany({}, {
+        $pull: {
+          likes: `${user._id}`,
+          dislikes: `${user._id}`,
+        }
+      });
+      await User.updateMany({}, {
+        $pull: {
+          following: `${user._id}`,
+          followers: `${user._id}`,
+          followRequest: `${user._id}`}
+      });
+      await Review.deleteOne({ userId: user._id });
 
-      return res.status(200).json(userDeleted);
+      user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
+      user.username = 'User eliminated';
+      user.isDeleted = true;
+      user.isAdmin = false;
+      user.isPremium = false;
+      user.isPrivate = false;
+      user.birthday = undefined;
+      user.biography = undefined;
+      user.review = undefined;
+      user.plan = undefined;
+      user.expirationDate = undefined;
+
+      await user.save();
+
+      return res.status(200).json('Deleted successfully');
     } catch (err) {
-      res.json(err);
+      console.log(err);
+      return res.status(400).json(err);
     }
   }
 );

@@ -22,7 +22,7 @@ const Home = () => {
   const homePosts = homePostsData;
   const userId = useSelector((state) => state.auth.loggedUser._id);
   const dispatch = useDispatch();
-  const [control, setControl] = useState(true);
+  const [control, setControl] = useState(false);
   const [page, setPage] = useState(0);
   const [pageFalse, setPageFalse] = useState(0);
 
@@ -31,20 +31,22 @@ const Home = () => {
       var time
       clearTimeout(time)  
       time = setTimeout(() => {
+        dispatch(getUserFollowings(userId, "", true));
         dispatch(getHomePosts(userId, parseInt(page), "true"));
-      })
+        setControl(true)
+      }, 50)
       
     }
-    dispatch(getUserFollowings(userId));
-    return () => dispatch(clearHomePosts());
+    return () => {
+      dispatch(clearHomePosts());
+      setControl(false)
+    }
   }, [userId]);
 
   useEffect(() => {
     if (getControl === "true") {
       dispatch(getHomePosts(userId, parseInt(page), "true"));
-      // console.log(page)
     } else if (getControl === "false") {
-      // if(page > 0 ) setPageFalse(0)
       console.log("GETCONTROL ES FALSE");
 
       dispatch(getHomePosts(userId, parseInt(pageFalse), "false"));
@@ -57,7 +59,7 @@ const Home = () => {
     if (getControl === "") {
       setControl(false);
     } else {
-    }
+    
     page === 0 ? setPage(1) : null;
     console.log("HANDLE PAGE");
     if (
@@ -67,6 +69,7 @@ const Home = () => {
     ) {
       getControl === "true" ? setPage(page + 1) : setPage(page - 1);
     }
+  }
   };
   const handleFollowing = (value) => {
     dispatch(getUserFollowings(userId, value))
@@ -100,6 +103,7 @@ const Home = () => {
                 username={friend.username}
                 key={friend._id}
                 userId={friend._id}
+                isConnected={friend.isConnected}
                 />
                 ))
                 ) 

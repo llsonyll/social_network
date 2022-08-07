@@ -11,7 +11,7 @@ router.get('/:userId', passport.authenticate('jwt', {session:false, failureRedir
         const {userId} = req.params
         let user = await User.findById(userId)
         .select('chats')
-        .populate({path:'chats', options:{populate: {path: 'users', select:['username', 'profilePicture'] }, sort:[{updatedAt: -1}]}})
+        .populate({path:'chats', options:{populate: [{path: 'users', select:['username', 'profilePicture'] },{path:'messages', select:['seen']}], sort:[{updatedAt: -1}]}})
 
         if(!user){
             return res.status(400).json({errorMessage: 'No User Found'})
@@ -22,6 +22,23 @@ router.get('/:userId', passport.authenticate('jwt', {session:false, failureRedir
         res.status(400).json(err)
     }
 })
+
+router.get('/unseen/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async(req:Request, res:Response) =>{
+    try{
+        const {userId} = req.params
+
+        let user = await User.findById(`${userId}`)
+        if(!user){
+            return res.status(400).json({errorMessage: 'This is not a valid user'})
+        }
+        let unseenMessages = await Message.find({chatId: {$in: user.chats} ,from: {$nin: [userId]}, seen:false}).count()
+        
+        return res.json({unseenMessages})
+    }catch(err){
+        res.status(400).json(err)
+    }
+})
+
 
 router.get('/:userId/:chatUserId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async(req:Request, res:Response) => {
     try{
@@ -107,10 +124,23 @@ router.post('/message/:userId/:chatId', passport.authenticate('jwt', {session:fa
     }
 })
 
-//62dedb98ec4e56b835a48601
 
-//62dedbe19dcff657146231a5
+router.put('/:userId/:chatId',passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async(req:Request, res:Response) =>{
+    try{
+        const {userId, chatId} = req.params
 
+        let user = await User.findById(`${userId}`)
+        if(!user){
+            return res.status(400).json({errorMessage: 'User not found'})
+        }
+        
+        await Message.updateMany({chatId: chatId, from: {$nin: [userId]}},{seen:true})
+        
+        return res.json({message: 'ok'})
+    }catch(err){
+        res.status(400).json(err)
+    }
+})
 
 
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { socket } from "../../App";
+import { messageSound, socket } from "../../App";
 import UserChats from "../../components/userChats/UserChats";
 import UserConversation from "../../components/userConversation/UserConversation";
 import { getChats } from "../../redux/actions/chatActions";
@@ -28,6 +28,8 @@ const Messages = () => {
           content,
           from: _id
         }))
+      }else{
+        messageSound.play()
       }
       if(chats[0]._id !== chatId){
         dispatch(getChats(loggedUser._id))

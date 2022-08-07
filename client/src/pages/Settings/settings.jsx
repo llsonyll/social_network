@@ -161,8 +161,6 @@ function settings() {
     e.preventDefault();
     dispatch(deleteUser(_id));
     goodAlerts("You successfully deleted your account, see you next time <3");
-    dispatch(logOutUser());
-    navigate(`/`);
   };
 
   return (
