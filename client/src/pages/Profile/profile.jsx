@@ -364,15 +364,6 @@ const Profile = () => {
     dispatch(clearAll());
   };
 
-  useEffect(() => {
-    console.log('Escuchando desmonte de profile');
-  
-    return () => {
-      handleClose()
-    }
-  }, [])
-  
-
   const handleClickOnMostrarPendientes=(e) =>{
     e.preventDefault(); 
     setShowFollowRequests(!showFollowRequests)
