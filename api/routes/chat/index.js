@@ -21,7 +21,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         const { userId } = req.params;
         let user = yield mongoose_1.User.findById(userId)
             .select('chats')
-            .populate({ path: 'chats', options: { populate: [{ path: 'users', select: ['username', 'profilePicture'] }, { path: 'messages', select: ['seen'] }], sort: [{ updatedAt: -1 }] } });
+            .populate({ path: 'chats', options: { populate: [{ path: 'users', select: ['username', 'profilePicture'] }, { path: 'messages', select: ['seen', 'from'] }], sort: [{ updatedAt: -1 }] } });
         if (!user) {
             return res.status(400).json({ errorMessage: 'No User Found' });
         }
