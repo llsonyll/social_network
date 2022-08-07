@@ -7,6 +7,8 @@ import jwt from "jsonwebtoken";
 
 import { createTransport } from "nodemailer";
 import { mailInfo, sendMail } from "../../utils/nodemailer";
+// @ts-ignore-error
+import emailExistence from 'email-existence'
 
 let router = express.Router();
 
@@ -50,23 +52,58 @@ const middlewareNewUser = async (
     let salt = await bcrypt.genSalt(10);
     let hash = await bcrypt.hash(password, salt);
 
+    //verify email existence uwu
+    await emailExistence.check(`${email}`, async(err: any, response: any) => {
+      console.log(response)
+      if(response===false) {
+        return res.status(400).json({message: "Email doesn't exists"})
+      }
+      else {
+        let newUser = new User({
+          ...req.body,
+          password: hash,
+          profilePicture: profileArray[Math.floor(Math.random() * 5)],
+        });
+    
+        await newUser.save();
+        next()
+      }
+    })
+    
     //create new User
-    let newUser = new User({
-      ...req.body,
-      password: hash,
-      profilePicture: profileArray[Math.floor(Math.random() * 5)],
-    });
 
-    await newUser.save();
 
     //res.status(201).json(newUser);
-    next();
+    // next();
   } catch (error) {
     res.json(error);
   }
 };
 
 //------------rute register-----------------------------
+
+router.post("/nashe", async(req: Request, res: Response) => {
+  try{
+      let { email } = req.body;
+      console.log(email)
+  // emailExistence.check(`${email}`, function(error: any, response: any){
+      // if(response === true) return res.send("EXISTE CAPO")
+      // else return res.send("TOMATELA")
+      // return res.send('res: '+response);
+      const result = await emailExistence.check(`${email}`, async function(error: any, response: any) {
+        console.log()
+       await response
+      })
+      if(result===true) return res.send("prosiga")
+      else return res.send("alto ahi")
+  
+  } catch(err) {
+      console.log(err)
+      return res.status(400).json({errMsg: err})
+  }
+  })
+
+
 router.post(
   "/register",
   middlewareNewUser,
