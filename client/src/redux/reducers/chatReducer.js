@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     allChats: [],
-    chatDetails: {}
+    chatDetails: {},
+    unseenMessages: 0
 }
 
 const chatReducer = createSlice({
@@ -29,6 +30,12 @@ const chatReducer = createSlice({
             let chat = state.allChats.find(chat => chat._id === action.payload)
             let oldChats = state.allChats.filter(chat => chat._id !== action.payload)
             state.allChats = [chat, ...oldChats]
+        },
+        setUnseenMessages(state, action){
+            state.unseenMessages = action.payload
+        },
+        addUnseenMessage(state, action){
+            state.unseenMessages++
         }
     }
 })
@@ -39,7 +46,9 @@ export const {
     clearChats,
     clearChatInfo,
     addMessage,
-    orderChats
+    orderChats,
+    setUnseenMessages,
+    addUnseenMessage
 } = chatReducer.actions
 
 export default chatReducer.reducer
