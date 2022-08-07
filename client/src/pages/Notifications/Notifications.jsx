@@ -45,8 +45,8 @@ const Notifications = () => {
                         link = `/home/messages/${notification.refId}`
                     }
                     return(
-                        // <Link to={link} className='position-absolute z-10'>
                         <div className={`notify_container`} id={notification.seen === true ? 'vista' : null} >
+                            <Link to={link} className='z-0 flex w-full'>
                             <div className='notify-avatar_container'>
                                 <Link to={`/home/profile/${notification.from._id}`}>
                                     <Avatar imgUrl={notification.from.profilePicture} size="xl" />
@@ -57,10 +57,12 @@ const Notifications = () => {
                                     <span>{notification.from.username}</span>
                                 </Link>
                                 <p>{notification.content}</p>
-                            </div>  
-                        <button className='close-notify' onClick={() => dispatch(deleteNotification(loggedUser._id,notification._id))}><GrFormClose/></button>
+                            </div> 
+                            </Link>
+                            <div className='close_container absolute right-2'>
+                                <button className='close-notify z-10' onClick={() => dispatch(deleteNotification(loggedUser._id,notification._id))}><GrFormClose/></button>
+                            </div> 
                         </div>
-                        // </Link>
                     )
                 }) : null
             

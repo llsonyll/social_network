@@ -70,6 +70,19 @@ const userHandler = (io, socket) => {
             console.log(err);
         }
     }));
+    socket.on('logout', (_id) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            let user = yield mongoose_1.User.findById(_id);
+            if (user) {
+                user.isConnected = false;
+                user.socketId = undefined;
+                yield user.save();
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }));
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             let user = yield mongoose_1.User.findOne({ socketId: socket.id });

@@ -37,15 +37,13 @@
     flex-direction: column;
     margin-left: 15px;
     position: relative;
+    width: 100%;
 }
 .notifications-father_container .notify_container .notify-info_container span{
     font-size: 20px;
 }
 
 .close-notify{
-    position: absolute;
-    right: 7px;
-    top: 5px;
     color: white;
     font-size: 20px;
     background-color: gray;
