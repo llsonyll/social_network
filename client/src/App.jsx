@@ -29,6 +29,10 @@ let call;
 import { Peer } from "peerjs";
 
 import { useRef, useState } from "react";
+//SOUND ON MESSAGES IMPORTS
+
+import useSound from 'use-sound';
+import mySound from '../assets/message.mp3';
 
 // Icons
 import { FiPhoneMissed } from "react-icons/fi";
@@ -53,8 +57,9 @@ function App() {
   const [otherVideo, setOtherVideo] = useState();
   const [onCall, setOnCall] = useState(false);
   const [incomingCalls, setIncomingCalls] = useState([]);
-  let messageSound = new Audio('../assets/message.mp3')
+  const [playMessageSound] = useSound(mySound)
   // console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
+  
 
   useEffect(() => {
     if (localStorage.getItem("token") && !loggedUser._id) {
@@ -152,13 +157,13 @@ function App() {
 		socket.on('privMessage', (content, _id, chatId) =>{
       // console.log('sonar sonido? xD', messageSound)
       dispatch(addUnseenMessage())
-      messageSound.play()
+      playMessageSound()
       })
     }
     return (()=> {
 		socket.off('privMessage')
 	})
-  }, [location, messageSound])
+  }, [location])
 
 
 
