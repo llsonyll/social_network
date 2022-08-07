@@ -400,9 +400,19 @@ router.put(
 
         await userFollowed.save();
       } else {
-        user.following.push(userFollowed._id);
+        // user.following.push(userFollowed._id);
+        await User.findOneAndUpdate({_id: user._id},{
+          $addToSet:{
+              following: user._id
+          }
+      })
         await user.save();
-        userFollowed.followers.push(user._id);
+        // userFollowed.followers.push(user._id);
+        await User.findOneAndUpdate({_id: userFollowed._id},{
+          $addToSet:{
+              followers: user._id
+          }
+      })
         await userFollowed.save();
       }
 

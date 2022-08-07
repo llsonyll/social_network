@@ -328,9 +328,19 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
             yield userFollowed.save();
         }
         else {
-            user.following.push(userFollowed._id);
+            // user.following.push(userFollowed._id);
+            yield mongoose_1.User.findOneAndUpdate({ _id: user._id }, {
+                $addToSet: {
+                    following: user._id
+                }
+            });
             yield user.save();
-            userFollowed.followers.push(user._id);
+            // userFollowed.followers.push(user._id);
+            yield mongoose_1.User.findOneAndUpdate({ _id: userFollowed._id }, {
+                $addToSet: {
+                    followers: user._id
+                }
+            });
             yield userFollowed.save();
         }
         const userFollowedUpdated = yield mongoose_1.User.findById(userFollowed._id);
