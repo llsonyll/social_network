@@ -3,7 +3,7 @@
     border-radius: 1000px;
     max-height: 12px;
     min-width: 12px;
-    position: absolute;
-    right: 25%;
-    margin-top: 6%;
+    position: relative;
+    right: -15px;
+    top: 18px
 }
