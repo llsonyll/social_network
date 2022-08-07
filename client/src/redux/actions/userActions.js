@@ -4,6 +4,8 @@ import { userProfile, homePosts, dislikesPost, toggleUSERFollowing, dislikesProf
 import { toggleFollowUser, toggleResponseFollow } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
 import Swal from "sweetalert2";
+import { socket } from "../../App";
+import { Navigate } from "react-router-dom";
 
 export const getUserProfile = (id) => async (dispatch) => {
   try {
@@ -150,8 +152,9 @@ export const deleteUser = (userId) => async (dispatch) => {
     const { data } = await apiConnection.put(`user/deleted/${userId}`);
     //console.log(data)
     //console.log('Your account has been deleted.')
-    localStorage.removeItem('token')
-    dispatch(logOutUser())
+    localStorage.removeItem('token');
+    socket.emit('logout', userId);
+    dispatch(logOutUser());
   } catch (err) {
     console.log(err);
   }
