@@ -21,11 +21,25 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         const { userId } = req.params;
         let user = yield mongoose_1.User.findById(userId)
             .select('chats')
-            .populate({ path: 'chats', options: { populate: { path: 'users', select: ['username', 'profilePicture'] }, sort: [{ updatedAt: -1 }] } });
+            .populate({ path: 'chats', options: { populate: [{ path: 'users', select: ['username', 'profilePicture'] }, { path: 'messages', select: ['seen'] }], sort: [{ updatedAt: -1 }] } });
         if (!user) {
             return res.status(400).json({ errorMessage: 'No User Found' });
         }
         return res.json(user);
+    }
+    catch (err) {
+        res.status(400).json(err);
+    }
+}));
+router.get('/unseen/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        let user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user) {
+            return res.status(400).json({ errorMessage: 'This is not a valid user' });
+        }
+        let unseenMessages = yield mongoose_1.Message.find({ chatId: { $in: user.chats }, from: { $nin: [userId] }, seen: false }).count();
+        return res.json({ unseenMessages });
     }
     catch (err) {
         res.status(400).json(err);
@@ -106,6 +120,18 @@ router.post('/message/:userId/:chatId', passport_1.default.authenticate('jwt', {
         res.status(400).json(err);
     }
 }));
-//62dedb98ec4e56b835a48601
-//62dedbe19dcff657146231a5
+router.put('/:userId/:chatId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId, chatId } = req.params;
+        let user = yield mongoose_1.User.findById(`${userId}`);
+        if (!user) {
+            return res.status(400).json({ errorMessage: 'User not found' });
+        }
+        yield mongoose_1.Message.updateMany({ chatId: chatId, from: { $nin: [userId] } }, { seen: true });
+        return res.json({ message: 'ok' });
+    }
+    catch (err) {
+        res.status(400).json(err);
+    }
+}));
 exports.default = router;

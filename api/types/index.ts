@@ -73,6 +73,7 @@ export interface IMessage {
    from: Types.ObjectId;
    chatId: Types.ObjectId;
    content: string;
+   seen: boolean
 }
 
 export interface IReport {
