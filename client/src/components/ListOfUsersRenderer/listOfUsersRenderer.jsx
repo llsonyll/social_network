@@ -60,7 +60,7 @@ const ListOfUsersRenderer = ({arrayOfPeopleToRender = [], postId = '' , userId =
 
 
   return (
-      <div className='containersiii self-center z-50 mx-0 fixed top-0 mt-52 center rounded-2xl shadow-xl shadow-black bg-[#202225] px-4 py-4 text-white items-center w-72 h-96'>
+      <div className='containersiii self-center z-50 mx-0 fixed top-0  center rounded-2xl shadow-xl shadow-black bg-[#202225] px-4 py-4 text-white items-center w-72 h-96'>
               <button className="text-gray-400 absolute top-0 mb-0 right-0 bg-transparent rounded-lg text-sm p-1.5 ml-auto hover:bg-gray-800 " onClick={closeRenderFunction}>
               <span className="text-3xl">
               <AiFillCloseSquare />

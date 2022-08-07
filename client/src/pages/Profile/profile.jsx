@@ -33,15 +33,17 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 //iconos
 import { AiFillSetting } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
-import { GrView } from "react-icons/gr";
+import { AiFillEye } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
-import {
-  clearAll,
-  listFollowing,
-  listFollowers,
-} from "../../redux/actions/listOfUsersRendererActions";
-import ListOfUsersRenderer from "../../components/ListOfUsersRenderer";
+import {MdModeEditOutline} from 'react-icons/md'
+import { clearAll, listFollowing, listFollowers } from '../../redux/actions/listOfUsersRendererActions'
+import ListOfUsersRenderer from '../../components/ListOfUsersRenderer';
+
+
+
+
+
 
 const Profile = () => {
   const params = useParams();
@@ -49,15 +51,16 @@ const Profile = () => {
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
-  const isPremium = useSelector(
-    (state) => state.user.userProfileData.isPremium
-  );
   // const loggedUser = useSelector((state) => state.auth.loggedUser);
   // const error = useSelector((state) => state.user.errorProfile);
   const loading = useSelector((state) => state.user.loadingProfile);
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
+  const {isPremium} = useSelector(
+    (state) => state.user.userProfileData
+  );
+
 
   const {
     _id,
@@ -76,11 +79,13 @@ const Profile = () => {
   } = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
   const [changeProfilePicture, setChangeProfilePicture] = useState("");
+  const [changeCover, setChangeCover] = useState("");
   const hiddenImageInput = useRef();
+  const coverImageInput = useRef()
 
   const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
     if (nameOfTheComponentToRender === "fullname") {
-      setFirstname(false);
+      setFirstname(false); 
     }
     if (nameOfTheComponentToRender === "username") {
       setUsername(false);
@@ -114,6 +119,9 @@ const Profile = () => {
   const handleChangePicture = () => {
     hiddenImageInput.current.click();
   };
+  const handleChangeCover = () => {
+    coverImageInput.current.click();
+  };
 
   const handleChange = async (event) => {
     const fileUploaded = event.target.files[0];
@@ -121,9 +129,18 @@ const Profile = () => {
     console.log(picture);
     setChangeProfilePicture(picture);
   };
-
+  const handleChangeCoverCd = async (event) => {
+    const fileUploaded = event.target.files[0];
+    let picture = await uploadPicture(fileUploaded);
+    console.log(picture);
+    setChangeCover(picture);
+  };
+  
   const cancelChangePicture = () => {
     setChangeProfilePicture("");
+  };
+  const cancelChangeCover = () => {
+    setChangeCover("");
   };
 
   const handleSavePicture = () => {
@@ -132,6 +149,14 @@ const Profile = () => {
     );
     dispatch(getLoggedUserInfo());
     setChangeProfilePicture("");
+  };
+
+  const handleSaveCover = () => {
+    dispatch(
+      modifyUser(userLoggedId, { coverPicture: changeCover })
+    );
+    dispatch(getLoggedUserInfo());
+    setChangeCover("");
   };
 
   function getTimeOfCreation(date) {
@@ -346,7 +371,54 @@ const Profile = () => {
             </div>
           ) : (
             <>
-              <div className="img-container">
+              <div className={`img-container`}>
+                {
+                  isPremium === true && coverPicture || changeCover? 
+                  <img className="w-full h-full rounded-md" src={changeCover ? changeCover : coverPicture}  /> 
+                  :
+                  null 
+                }
+                {
+                  changeCover !== '' ? ( <button
+                  type="button"
+                  className="absolute left-1
+                  bg-green-600 rounded-md text-white p-1 bottom-1"
+                  onClick={handleSaveCover}
+                  >
+                    Save &#10004;
+                  </button> ) : null
+                }
+                {
+                  changeCover !== '' ? (<button
+                    className="absolute left-1 bg-red-600 text-white p-1 rounded-md top-1"
+                    type="button"
+                    onClick={cancelChangeCover}
+                  >
+                    Cancel X
+                  </button>) : null 
+                }
+              <input
+                        type={"file"}
+                        ref={coverImageInput}
+                        onChange={handleChangeCoverCd}
+                        accept="image/*"
+                        style={{ display: "none" }}
+                      />
+              {/* ${isPremium && bg-[url(img)]} */}
+                {/* <img
+              className='profile-img'
+              src='https://japanpowered.com/media/images//goku.png'
+              alt='Profile Picture'>
+            </img> */}
+            {
+              isPremium === true && _id === userLoggedId ? 
+              <button 
+              onClick={handleChangeCover}
+              className="transition-all bg-green-600 absolute right-1 bottom-1 text-white p-1 rounded-md hover:bg-green-800">
+                <MdModeEditOutline/>
+                </button> 
+                : null
+            }
                 <div className="imgChange_container">
                   {profilePicture ? (
                     <>
@@ -446,25 +518,24 @@ const Profile = () => {
                   <div className="user-followers">
                     <div className="info_container ">
                       <span className="span-info">Followers</span>
-                      {followers ? followers.length : 0}
-                      <span
-                        className="followingAndFollowersButton text-white"
-                        onClick={renderFollowers}
-                      >
-                        <GrView color="white" />
-                      </span>
+
+                      <section className="flex items-center">
+                       {followers ? followers.length : 0}
+                       <span className="followingAndFollowersButton ml-1 text-lg" onClick={renderFollowers}>
+                       <AiFillEye className="transition-all text-white hover:text-green-600"/>
+                       </span>
+                      </section>
                     </div>
                   </div>
                   <div className="user-following">
                     <div className="info_container">
                       <span className="span-info">Following</span>
+                      <section className="flex items-center">
                       {_id ? following.length : 0}
-                      <span
-                        className="followingAndFollowersButton"
-                        onClick={renderFollowing}
-                      >
-                        <GrView color="white" />
-                      </span>
+                      <span className="followingAndFollowersButton ml-1 text-lg" onClick={renderFollowing}>
+                      <AiFillEye className="transition-all text-white hover:text-green-600"/>
+                        </span>
+                      </section>
                     </div>
                   </div>
                   <div className="user-biography justify-between">
