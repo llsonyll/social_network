@@ -8,6 +8,7 @@ import chatReducer from "./reducers/chatReducer";
 import notificationReducerSlice from "./reducers/notificationReducer.slice";
 import reportReducerSlice from "./reducers/reportReducer.slice";
 import listOfUsersRendererSlice from "./reducers/listOfUsersRenderer.slice";
+import adminReducerSlice from "./reducers/adminReducer.slice";
 
 const store = configureStore({
   reducer: {
@@ -19,7 +20,8 @@ const store = configureStore({
     chat: chatReducer,
     listRenderer: listOfUsersRendererSlice,
     notification: notificationReducerSlice,
-    report: reportReducerSlice
+    report: reportReducerSlice,
+    admin: adminReducerSlice
   },
 });
 

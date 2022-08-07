@@ -344,7 +344,6 @@
   background-color: green;
   border-radius: 1000px;
   max-height: 12px;
-  min-width: 12px;
-  position: absolute;
-  left: 25%;
+  max-width: 12px;
+  position: relative;
 }
