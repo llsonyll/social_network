@@ -7,6 +7,8 @@ import jwt from "jsonwebtoken";
 
 import { createTransport } from "nodemailer";
 import { mailInfo, sendMail } from "../../utils/nodemailer";
+// @ts-ignore-error
+import emailExistence from 'email-existence'
 
 let router = express.Router();
 
@@ -50,17 +52,29 @@ const middlewareNewUser = async (
     let salt = await bcrypt.genSalt(10);
     let hash = await bcrypt.hash(password, salt);
 
+    //verify email existence uwu
+    await emailExistence.check(`${email}`, async(err: any, response: any) => {
+      console.log(response)
+      if(response===false) {
+        return res.status(400).json({message: "Email doesn't exists"})
+      }
+      else {
+        let newUser = new User({
+          ...req.body,
+          password: hash,
+          profilePicture: profileArray[Math.floor(Math.random() * 5)],
+        });
+    
+        await newUser.save();
+        next()
+      }
+    })
+    
     //create new User
-    let newUser = new User({
-      ...req.body,
-      password: hash,
-      profilePicture: profileArray[Math.floor(Math.random() * 5)],
-    });
 
-    await newUser.save();
 
     //res.status(201).json(newUser);
-    next();
+    // next();
   } catch (error) {
     res.json(error);
   }
