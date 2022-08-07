@@ -83,6 +83,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         let reports = [];
         if (!type) {
             reports = yield mongoose_1.Report.find({})
+                .sort({ createdAt: -1 })
                 .populate({
                 path: 'commentReportedId',
                 select: ['userId', 'content'],
@@ -106,6 +107,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         }
         if (type === "post") {
             reports = yield mongoose_1.Report.find({ postReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
                 .populate({
                 path: 'postReportedId',
                 select: ['userId', 'content', 'multimedia'],
@@ -117,6 +119,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         }
         if (type === "comment") {
             reports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
                 .populate({
                 path: 'commentReportedId',
                 select: ['userId', 'content'],
@@ -128,6 +131,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         }
         if (type === "user") {
             reports = yield mongoose_1.Report.find({ userReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
                 .populate({
                 path: 'userReportedId',
                 select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],

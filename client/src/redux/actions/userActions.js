@@ -1,6 +1,6 @@
 
 import { logOutUser } from "../reducers/authReducer.slice";
-import { userProfile, homePosts, dislikesPost, toggleUSERFollowing, dislikesProfilePost, likesProfilePost, likesPost, setLoadingProfile, setProfileError } from "../reducers/userReducer.slice";
+import { userProfile, homePosts, dislikesPost, toggleUSERFollowing, firstToggleUserFollowing, dislikesProfilePost, likesProfilePost, likesPost, setLoadingProfile, setProfileError } from "../reducers/userReducer.slice";
 import { toggleFollowUser, toggleResponseFollow } from "../reducers/userReducer.slice";
 import { apiConnection } from "../../utils/axios";
 import Swal from "sweetalert2";
@@ -110,21 +110,25 @@ export const followOrUnfollowUser = (userId, followUserId) => async (dispatch) =
     console.log(err);
   }
 };
-export const getUserFollowings = (userId, query) => async (dispatch) => {
+export const getUserFollowings = (userId, query, control) => async (dispatch) => {
   //recibe Id del usuario y luego id del usuario a seguir por params
   !query ? query="" : null
   try {
     // devuelve la lista de usuarios que sigen al perfil del seguido 
     const { data } = await apiConnection.get(`user/browserFollowing/${userId}?users=${query}`);
     //console.log(data)
-    return dispatch(toggleUSERFollowing(data));
+    if(control) {
+      return dispatch(firstToggleUserFollowing(data))
+    } else {
+      return dispatch(toggleUSERFollowing(data));
+    }
 
   } catch (err) {
     console.log(err);
   }
 };
 
-// -------------- Action para aceptar solicitud de seguimiento ------------------
+// -------------- Action para aceptar solicitud de seguimiento -----------------
 export const acceptFollowRequest = (userId, userRequestingId) => async (dispatch) => {
   //recibe Id del usuario y luego id del usuario a aceptar por params
   try {
