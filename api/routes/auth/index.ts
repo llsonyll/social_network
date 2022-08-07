@@ -81,29 +81,6 @@ const middlewareNewUser = async (
 };
 
 //------------rute register-----------------------------
-
-router.post("/nashe", async(req: Request, res: Response) => {
-  try{
-      let { email } = req.body;
-      console.log(email)
-  // emailExistence.check(`${email}`, function(error: any, response: any){
-      // if(response === true) return res.send("EXISTE CAPO")
-      // else return res.send("TOMATELA")
-      // return res.send('res: '+response);
-      const result = await emailExistence.check(`${email}`, async function(error: any, response: any) {
-        console.log()
-       await response
-      })
-      if(result===true) return res.send("prosiga")
-      else return res.send("alto ahi")
-  
-  } catch(err) {
-      console.log(err)
-      return res.status(400).json({errMsg: err})
-  }
-  })
-
-
 router.post(
   "/register",
   middlewareNewUser,

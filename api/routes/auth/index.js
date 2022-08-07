@@ -70,30 +70,6 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     }
 });
 //------------rute register-----------------------------
-router.post("/nashe", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let { email } = req.body;
-        console.log(email);
-        // emailExistence.check(`${email}`, function(error: any, response: any){
-        // if(response === true) return res.send("EXISTE CAPO")
-        // else return res.send("TOMATELA")
-        // return res.send('res: '+response);
-        const result = yield email_existence_1.default.check(`${email}`, function (error, response) {
-            return __awaiter(this, void 0, void 0, function* () {
-                console.log();
-                yield response;
-            });
-        });
-        if (result === true)
-            return res.send("prosiga");
-        else
-            return res.send("alto ahi");
-    }
-    catch (err) {
-        console.log(err);
-        return res.status(400).json({ errMsg: err });
-    }
-}));
 router.post("/register", middlewareNewUser, passport_1.default.authenticate("local", {
     session: false,
     failureRedirect: "/auth/login",
