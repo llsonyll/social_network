@@ -6,7 +6,7 @@
 .profile-container {
   max-width: 1000px;
   margin-top: 85px;
-  width: 75%;
+  width: 40%;
   min-width: 313px;
   display: grid;
   grid-template-rows: 100px 1fr;
@@ -148,27 +148,25 @@
   margin-top: 10px;
 }
 .profile-container .shadow-box .user_description div button {
-  background-color: #4e864c;
+  /* background-color: #4e864c; */
   border-radius: 5px;
   padding: 5px 15px;
   transition: 0.3s all;
 }
-.profile-container .shadow-box .user_description div button:hover {
-  background-color: #447543;
-}
-.profile-container .shadow-box .user_description div button:hover {
-  background-color: #447543;
-}
+/* .profile-container .shadow-box .user_description div button:hover { */
+/* background-color: #447543; */
+/* } */
+/* .profile-container .shadow-box .user_description div button:hover { */
+/* background-color: #447543; */
+/* } */
 
-.profile-container .shadow-box .user_description .user-report{
- 
+.profile-container .shadow-box .user_description .user-report {
   margin-top: 20px;
 }
-.profile-container .shadow-box .user_description .user-report button{
+.profile-container .shadow-box .user_description .user-report button {
   background-color: rgb(170, 65, 57);
- 
 }
-.profile-container .shadow-box .user_description .user-report button:hover{
+.profile-container .shadow-box .user_description .user-report button:hover {
   background-color: rgb(131, 51, 45);
 }
 
@@ -319,6 +317,9 @@
   font-size: 25px;
   transition: 0.2s all;
 }
+.img-container .settingButton svg {
+  filter: drop-shadow(0px 0px 1px black);
+}
 .img-container .settingButton:hover {
   transform: scale(1.2);
   color: #666666;
@@ -337,4 +338,13 @@
 .followingAndFollowersButton{
   cursor: pointer;
   width: auto;
+}
+
+.connected {
+  background-color: green;
+  border-radius: 1000px;
+  max-height: 12px;
+  min-width: 12px;
+  position: absolute;
+  left: 25%;
 }

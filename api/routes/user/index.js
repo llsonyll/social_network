@@ -53,7 +53,7 @@ router.get("/browserFollowing/:userId", passport_1.default.authenticate("jwt", {
                 $options: "i"
             }, _id: { $in: user.following } })
             // .select(['-password', '-chats', '-socketId', '-isAdmin', '-chats', '-paymentsId', ''])
-            .select(['_id', 'username', 'profilePicture', 'firstname', 'lastname', 'isPremium']);
+            .select(['_id', 'username', 'profilePicture', 'firstname', 'lastname', 'isPremium', 'isConnected']);
         console.log(foundUsers);
         return res.status(200).json(foundUsers);
     }
@@ -346,25 +346,56 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
     }
 }));
 //ruta para borrar la cuenta de un usuario
-router.put("/deleted/:userId", passport_1.default.authenticate("jwt", {
-    session: false,
-    failureRedirect: "/auth/loginjwt",
-}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put("/deleted/:userId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt", }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let userId = req.params.userId;
-        /*    let deletePost = await Post.deleteMany({userId:`${userId}`});
-     let deleteComment = await Comment.deleteMany({userId:`${userId}`});
-      let deleteReview = await Review.deleteMany({userId:`${userId}`});
-      let deleteMessage = await Message.deleteMany({from:`${userId}`});
-      let deleteChat = await Chat.findOneAndUpdate({users:{_id:`${userId}`}}); */
-        let userDeleted = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, { isDeleted: true }, { new: true });
-        if (!userDeleted) {
-            return res.status(400).json("Eror deleting user");
+        const { userId } = req.params;
+        let user = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, {
+            $set: {
+                posts: [],
+                following: [],
+                followers: [],
+                followRequest: [],
+                chats: []
+            }
+        }, { new: true });
+        if (!user)
+            return res.status(404).json('User not found');
+        const posts = yield mongoose_1.Post.find({ userId: user._id });
+        for (let i = 0; i < posts.length; i++) {
+            yield mongoose_1.Comment.deleteMany({ _id: { $in: posts[i].commentsId } });
         }
-        return res.status(200).json(userDeleted);
+        yield mongoose_1.Post.deleteMany({ userId: user._id });
+        yield mongoose_1.Post.updateMany({}, {
+            $pull: {
+                likes: `${user._id}`,
+                dislikes: `${user._id}`,
+            }
+        });
+        yield mongoose_1.User.updateMany({}, {
+            $pull: {
+                following: `${user._id}`,
+                followers: `${user._id}`,
+                followRequest: `${user._id}`
+            }
+        });
+        yield mongoose_1.Review.deleteOne({ userId: user._id });
+        user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
+        user.username = 'User eliminated';
+        user.isDeleted = true;
+        user.isAdmin = false;
+        user.isPremium = false;
+        user.isPrivate = false;
+        user.birthday = undefined;
+        user.biography = undefined;
+        user.review = undefined;
+        user.plan = undefined;
+        user.expirationDate = undefined;
+        yield user.save();
+        return res.status(200).json('Deleted successfully');
     }
     catch (err) {
-        res.json(err);
+        console.log(err);
+        return res.status(400).json(err);
     }
 }));
 // -------------- PUT /acceptFollow/:userId/:userRequestingId --- Aceptar solicitud de seguimiento ------------------

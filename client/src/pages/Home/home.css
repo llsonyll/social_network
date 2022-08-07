@@ -141,6 +141,7 @@ background-repeat:repeat;
   display: none;
   background-color: rgba(17, 17, 17, 0.658);
   border-radius: 5px;
+  width: 100%;
 }
 .contenedorFriends-responsive_container .contenedorfriend_info{
   display: NONE;
@@ -199,6 +200,12 @@ background-repeat:repeat;
  outline: none;
  padding: 5px;
 }
+
+/* styles premium */
+#premium{
+  border: 1px solid #3d8a57
+}
+
 
 @media (max-width:767px) {
   .contenedorFriends-responsive_container{
