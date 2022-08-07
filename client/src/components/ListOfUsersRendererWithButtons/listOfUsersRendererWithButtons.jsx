@@ -1,7 +1,7 @@
 import React from 'react'
 import Avatar from '../Avatar'
 import './listOfUsersRendererWithButtons.css'
-import { useDispatch} from 'react-redux'
+import { useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 import { AiFillCloseSquare } from "react-icons/ai";
 //iconos
@@ -18,11 +18,12 @@ const ListOfUsersRenderer = ({arrayOfPeopleToRender = [], userId = '', closeRend
     const dispatch = useDispatch()
 
     //console.log(arrayOfPeopleToRender)
-    let arr = arrayOfPeopleToRender
+    let arr = []
 
-    if (titleToRender === 'followRequests') {
-        console.log(arr);
-    }
+
+        arr = useSelector((state) => state.user.userProfileData.followRequest)
+        console.log(arr)
+    
 
 
     let people = null;

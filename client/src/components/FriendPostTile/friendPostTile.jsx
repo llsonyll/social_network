@@ -4,6 +4,8 @@ import Avatar from "../../components/Avatar";
 
 import { NavLink } from "react-router-dom";
 import { FaFacebookMessenger } from "react-icons/fa";
+import { FaFirstOrderAlt } from "react-icons/fa";
+
 
 const FriendPostTile = ({ img, username, userId, isConnected }) => {
   // console.log(user);
@@ -36,8 +38,8 @@ const FriendPostTile = ({ img, username, userId, isConnected }) => {
         </div> */}
         </div>
       </NavLink>
-      {isConnected && <div className="holaaaa">.</div>}
       <NavLink className="linkfriend_message" to={`/home/messages/${userId}`}>
+      {isConnected && <FaFirstOrderAlt className="mt-4" color="green"/>}
         <button className="mess_friend_section">
           <FaFacebookMessenger />
         </button>

@@ -34,6 +34,7 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 import { AiFillSetting } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
 import { AiFillEye } from "react-icons/ai";
+import { FaFirstOrderAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
 import {MdModeEditOutline} from 'react-icons/md'
@@ -514,10 +515,12 @@ const Profile = () => {
                   </div>
                   <div className="user-username justify-between">
                     <div className="info_container">
-                      <span className="span-info">Username</span>
-                      {isConnected && <span className="connected">.</span>}
-                      {"@" + userUsername}
-                    </div>
+    <span className="span-info">Username</span>
+    <Fragment >
+    {isConnected && <FaFirstOrderAlt color="green"/>}
+    {"@" + userUsername}
+    </Fragment>
+  </div>
                     {params.id === userLoggedId ? (
                       <button
                         className="bg-green-600 hover:bg-green-700 my-2 flex items-center justify-center gap-1 font-semibold"
@@ -576,7 +579,7 @@ const Profile = () => {
                     {/* Boton que se renderiza cuando hay follow requests */}
              { followRequest?.length > 0 && params.id === userLoggedId ?
              <button className="bg-[#4E864C] rounded-md mr-3 p-1 pl-3 pr-3 ml-3"
-                     onClick={handleClickOnMostrarPendientes}> Mostrar pendientes </button>: null}
+                     onClick={handleClickOnMostrarPendientes}> Follow Requests </button>: null}
                   
 
                   <div className="my-4">
