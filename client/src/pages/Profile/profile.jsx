@@ -40,19 +40,27 @@ import {MdModeEditOutline} from 'react-icons/md'
 import { clearAll, listFollowing, listFollowers } from '../../redux/actions/listOfUsersRendererActions'
 import ListOfUsersRenderer from '../../components/ListOfUsersRenderer';
 
+
+
+
+
+
 const Profile = () => {
   const params = useParams();
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
-  const isPremium = useSelector((state) => state.user.userProfileData.isPremium);
   // const loggedUser = useSelector((state) => state.auth.loggedUser);
   // const error = useSelector((state) => state.user.errorProfile);
   const loading = useSelector((state) => state.user.loadingProfile);
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
+  const {isPremium} = useSelector(
+    (state) => state.user.userProfileData
+  );
+
 
   const {
     _id,
@@ -351,7 +359,6 @@ const Profile = () => {
     showFollowing !== false && setShowFollowing(false);
     dispatch(clearAll());
   };
-
 
   return (
     <>
