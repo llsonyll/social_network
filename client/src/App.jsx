@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getLoggedUserInfo } from "./redux/actions/authActions";
 import { removeLoggedUser } from "./redux/reducers/authReducer.slice";
-import { addMessage } from "./redux/reducers/chatReducer";
+import { addMessage, addUnseenMessage } from "./redux/reducers/chatReducer";
 import Draggable from "react-draggable";
 import PremiumComponent from "./pages/Premium/PremiumComponent";
 
@@ -22,7 +22,7 @@ import io from "socket.io-client";
 //export const socket = io("http://localhost:3001");
 export const socket = io("https://back.socialn.me");
 //export const socket = io("https://www.dream-team-api.social");
-export let messageSound = new Audio('../assets/message.mp3')
+ 
 
 let peer;
 let call;
@@ -39,6 +39,7 @@ import IncomingCall from "./components/IncomingCall/IncomingCall";
 import Notifications from "./pages/Notifications/Notifications";
 import { getNotifications } from "./redux/actions/notificationActions";
 import { addNotification } from "./redux/reducers/notificationReducer.slice";
+import { getUnseenMessagesAmount } from "./redux/actions/chatActions";
 
 function App() {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ function App() {
   const [otherVideo, setOtherVideo] = useState();
   const [onCall, setOnCall] = useState(false);
   const [incomingCalls, setIncomingCalls] = useState([]);
-
+  let messageSound = new Audio('../assets/message.mp3')
   // console.log('SOY EL CONSOLE LOG DE AAAAAAAPPPP')
 
   useEffect(() => {
@@ -74,6 +75,7 @@ function App() {
     if (loggedUser._id) {
       setActuallyLogged(loggedUser._id);
       dispatch(getNotifications(loggedUser._id));
+      dispatch(getUnseenMessagesAmount(loggedUser._id))
     } else {
       setActuallyLogged(loggedUser._id);
     }
@@ -148,13 +150,15 @@ function App() {
   useEffect(() => {
 	if(!location.pathname.includes('messages')){
 		socket.on('privMessage', (content, _id, chatId) =>{
-      messageSound.play()  
+      // console.log('sonar sonido? xD', messageSound)
+      dispatch(addUnseenMessage())
+      messageSound.play()
       })
     }
     return (()=> {
 		socket.off('privMessage')
 	})
-  }, [location])
+  }, [location, messageSound])
 
 
 

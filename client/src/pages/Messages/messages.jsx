@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { messageSound, socket } from "../../App";
+import { socket } from "../../App";
 import UserChats from "../../components/userChats/UserChats";
 import UserConversation from "../../components/userConversation/UserConversation";
 import { getChats } from "../../redux/actions/chatActions";
-import { addMessage, clearChats } from "../../redux/reducers/chatReducer";
+import { addMessage, addUnseenMessage, clearChats } from "../../redux/reducers/chatReducer";
 
 import "./messages.css";
 
@@ -20,7 +20,7 @@ const Messages = () => {
   const chatInfo = useSelector(store => store.chat.chatDetails)
   const chats = useSelector(store => store.chat.allChats)
   const [mostrarMenu, setMostrarMenu] = useState(false)
-
+  let messageSound = new Audio('../../../assets/message.mp3')
   useEffect(()=> {
     socket.on('privMessage', (content, _id, chatId) => {
       if(chatInfo._id === chatId){
@@ -29,10 +29,9 @@ const Messages = () => {
           from: _id
         }))
       }else{
-        messageSound.play()
-      }
-      if(chats[0]._id !== chatId){
+        dispatch(addUnseenMessage())
         dispatch(getChats(loggedUser._id))
+        messageSound.play()
       }
     })
     return(() => socket.off('privMessage'))
