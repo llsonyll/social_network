@@ -372,7 +372,7 @@ const Profile = () => {
             <>
               <div className={`img-container`}>
                 {
-                  isPremium === true && coverPicture ? 
+                  isPremium === true && coverPicture || changeCover? 
                   <img className="w-full h-full rounded-md" src={changeCover ? changeCover : coverPicture}  /> 
                   :
                   null 
