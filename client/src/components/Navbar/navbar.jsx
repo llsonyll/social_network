@@ -27,7 +27,8 @@ const NavBar = ({ openModal, openAdmin }) => {
     fontWeight: "normal",
     color: "grey",
   };
-
+   
+  const [blur, setBlur] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searched, setSearched] = useState(false);
   const [unseen, setUnseen] = useState(0);
@@ -86,6 +87,15 @@ const NavBar = ({ openModal, openAdmin }) => {
     }
   }, [notifications]);
 
+  const handlerBlur = (action) => {
+     if(action !== 'blur'){
+      setBlur(false)
+     }else{
+       setSearchInput("");
+       setBlur(true);
+     }
+  };
+
   return (
     <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50">
       <div className="flex items-center gap-4 flex-1 justify-between md:justify-start">
@@ -100,16 +110,21 @@ const NavBar = ({ openModal, openAdmin }) => {
               maxLength="50"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
+              onBlur={() => handlerBlur("blur")}
+              onFocus={handlerBlur}
               placeholder="Search a friend"
             />
           </form>
-          <SearchResults
+          {
+            !blur && 
+            <SearchResults
             input={searchInput}
             setInput={setSearchInput}
             selectRecent={handleSelectRecent}
             searched={searched}
             setSearched={setSearched}
-          />
+            />
+          }
         </div>
         <div className="text-white lg:hidden"> menu </div>
       </div>
