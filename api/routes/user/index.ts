@@ -60,7 +60,7 @@ router.get(
         $options: "i"
       }, _id: {$in: user.following}} )
       // .select(['-password', '-chats', '-socketId', '-isAdmin', '-chats', '-paymentsId', ''])
-      .select(['_id', 'username', 'profilePicture', 'firstname', 'lastname', 'isPremium'])
+      .select(['_id', 'username', 'profilePicture', 'firstname', 'lastname', 'isPremium', 'isConnected'])
       console.log(foundUsers)
       return res.status(200).json(foundUsers);
     } catch (err) {

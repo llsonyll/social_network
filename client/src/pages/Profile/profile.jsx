@@ -75,6 +75,7 @@ const Profile = () => {
     coverPicture,
     biography: userBiography,
     username: userUsername,
+    isConnected
   } = useSelector((state) => state.user.userProfileData);
   const dispatch = useDispatch();
   const [changeProfilePicture, setChangeProfilePicture] = useState("");
@@ -499,6 +500,7 @@ const Profile = () => {
                     <div className="info_container">
                       <span className="span-info">Username</span>
                       {"@" + userUsername}
+                      {isConnected && <div className="connected">.</div>}
                     </div>
                     {params.id === userLoggedId ? (
                       <button

@@ -100,6 +100,7 @@ const Home = () => {
                 username={friend.username}
                 key={friend._id}
                 userId={friend._id}
+                isConnected={friend.isConnected}
                 />
                 ))
                 ) 
