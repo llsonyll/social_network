@@ -499,8 +499,8 @@ const Profile = () => {
                   <div className="user-username justify-between">
                     <div className="info_container">
                       <span className="span-info">Username</span>
+                      {isConnected && <span className="connected">.</span>}
                       {"@" + userUsername}
-                      {isConnected && <div className="connected">.</div>}
                     </div>
                     {params.id === userLoggedId ? (
                       <button
