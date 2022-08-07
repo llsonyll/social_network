@@ -510,10 +510,9 @@ router.put(
           },
         },
         { new: true }
-      );
+      ).populate('followRequest',['username','profilePicture']);
       if (!user) return res.status(404).json({ msg: "User not found" });
       user.followers.push(`${userRequesting._id}`);
-
       await user.save();
 
       userRequesting.following.push(user._id);
@@ -555,7 +554,7 @@ router.put(
           },
         },
         { new: true }
-      );
+      ).populate('followRequest',['username','profilePicture']);
       if (!user) return res.status(404).json({ msg: "User not found" });
 
       await user.save();

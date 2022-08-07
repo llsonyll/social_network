@@ -422,7 +422,7 @@ router.put("/acceptFollow/:userId/:userRequestingId", passport_1.default.authent
             $pull: {
                 followRequest: `${userRequesting._id}`,
             },
-        }, { new: true });
+        }, { new: true }).populate('followRequest', ['username', 'profilePicture']);
         if (!user)
             return res.status(404).json({ msg: "User not found" });
         user.followers.push(`${userRequesting._id}`);
@@ -454,7 +454,7 @@ router.put("/cancelFollow/:userId/:userRequestingId", passport_1.default.authent
             $pull: {
                 followRequest: `${userRequesting._id}`,
             },
-        }, { new: true });
+        }, { new: true }).populate('followRequest', ['username', 'profilePicture']);
         if (!user)
             return res.status(404).json({ msg: "User not found" });
         yield user.save();
