@@ -31,15 +31,15 @@ const Home = () => {
       var time
       clearTimeout(time)  
       time = setTimeout(() => {
+        dispatch(getUserFollowings(userId, "", true));
         dispatch(getHomePosts(userId, parseInt(page), "true"));
         setControl(true)
       }, 50)
       
     }
-    dispatch(getUserFollowings(userId));
     return () => {
       dispatch(clearHomePosts());
-    setControl(false)
+      setControl(false)
     }
   }, [userId]);
 
