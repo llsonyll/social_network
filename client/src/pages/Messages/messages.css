@@ -18,9 +18,10 @@
         padding-left: 0px;
     }
     .userconversation__container{
-        padding-top: 205px;
+        padding-top: 0px;
         padding-right: 0px;
-        
+        position: static;
+        height:calc(100vh - 205px);
     }
     #chats-user__container {
         display: flex;
@@ -37,7 +38,7 @@
         align-items: center;
         justify-content: center;
       }
-      #chats-user__container .friend-contact .friend-contact__avatar{
+      .friend-contact__avatar{
         margin-right: 0px;
       }
 }
