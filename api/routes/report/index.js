@@ -147,8 +147,6 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
     try {
         const { userId, reportId } = req.params;
         const { type } = req.body;
-        if (!type)
-            return res.status(400).json('Please send type of report');
         const admin = yield mongoose_1.User.findById(`${userId}`);
         if (!admin || !admin.isAdmin)
             return res.status(401).json('Missings permissions');
@@ -170,7 +168,17 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             yield mongoose_1.Comment.deleteMany({ _id: { $in: commentId } });
             yield mongoose_1.Report.deleteMany({ postReportedId: { _id: post._id } });
             yield post.remove();
-            return res.json('Post reported successfully');
+            const newReports = yield mongoose_1.Report.find({ postReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
+                .populate({
+                path: 'postReportedId',
+                select: ['userId', 'content', 'multimedia'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            });
+            return res.json(newReports);
         }
         if (type === 'comment') {
             const comment = yield mongoose_1.Comment.findById(`${report.commentReportedId}`);
@@ -185,7 +193,17 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             yield newPost.save();
             yield mongoose_1.Report.deleteMany({ postReportedId: { _id: comment._id } });
             yield comment.remove();
-            return res.json('Comment reported successfully');
+            const newReports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
+                .populate({
+                path: 'commentReportedId',
+                select: ['userId', 'content'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname']
+                }
+            });
+            return res.json(newReports);
         }
         let user = yield mongoose_1.User.findOneAndUpdate({ _id: `${report.userReportedId}` }, {
             $set: {
@@ -230,7 +248,13 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
         user.expirationDate = undefined;
         yield user.save();
         yield mongoose_1.Report.deleteMany({ userReportedId: { _id: user._id } });
-        return res.json('User banned successfully');
+        const newReports = yield mongoose_1.Report.find({ userReportedId: { $exists: true } })
+            .sort({ createdAt: -1 })
+            .populate({
+            path: 'userReportedId',
+            select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+        });
+        return res.json(newReports);
     }
     catch (err) {
         return res.status(400).json('Something went wrong');
