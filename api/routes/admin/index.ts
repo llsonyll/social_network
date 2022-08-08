@@ -50,18 +50,15 @@ async (req: Request, res: Response) => {
 
 });
 
-router.get('/payments/:adminId/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
+router.get('/payments/:adminId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
 async (req: Request, res: Response) => {
     try {
-        const { adminId, userId } = req.params;
+        const { adminId } = req.params;
 
         const admin = await User.findById(`${adminId}`);
         if (!admin || !admin.isAdmin) return res.status(401).json('Missing permissions')
 
-        const user = await User.findById(`${userId}`);
-        if (!user) return res.status(404).json('User not found');
-
-        const payments = await Payment.find({userId: user._id});
+        const payments = await Payment.find({});
         
         return res.json(payments);
     } catch (error) {
