@@ -39,17 +39,42 @@ try {
 }
 };
 
+// ------------- ELIMINA COMENTARIO, POST O USUARIO REPORTADO ----------------------
 export const deleteReported = (userId, reportId, type) => async (dispatch) => {
   try {
-    const { data } = await apiConnection.delete(`report/${userId}/${reportId}`, type);
+    const { data } = await apiConnection.put(`report/${userId}/${reportId}`, type);
     Swal.fire({
       icon: "info",
-      title: data,
+      title: 'Report deleted successfully',
       text: 'Thanks!',
       background: "#4c4d4c",
       color: "white",
     });
-    return data;
+    return dispatch(getReports(data));
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Ups... Something went wrong",
+      text: error.response.data,
+      background: "#4c4d4c",
+      color: "white",
+    });
+    return error.response.data;
+  }
+};
+
+// --------------- CIERRA EL REPORTE Y ELIMINA A LOS ASOCIADOS ----------------------
+export const closeReport = (userId, reportId, type) => async (dispatch) => {
+  try {
+    const { data } = await apiConnection.delete(`report/${userId}/${reportId}`, type);
+    Swal.fire({
+      icon: "info",
+      title: 'Report close',
+      text: 'Thanks!',
+      background: "#4c4d4c",
+      color: "white",
+    });
+    return dispatch(getReports(data));
   } catch (error) {
     Swal.fire({
       icon: "error",

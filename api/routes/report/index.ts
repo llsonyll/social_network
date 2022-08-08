@@ -78,12 +78,13 @@ async (req: Request, res: Response) => {
         if(!type) {
             reports = await Report.find({})
             .sort({createdAt: -1})
+            .populate('userId', 'username')
             .populate({
                 path: 'commentReportedId',
                 select: ['userId', 'content'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
             })
             .populate({
@@ -91,7 +92,7 @@ async (req: Request, res: Response) => {
                 select: ['userId', 'content', 'multimedia'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
             })
             .populate({
@@ -102,30 +103,33 @@ async (req: Request, res: Response) => {
         if(type === "post") {
             reports = await Report.find({postReportedId: {$exists: true} })
             .sort({createdAt: -1})
+            .populate('userId', 'username')
             .populate({
                 path: 'postReportedId',
                 select: ['userId', 'content', 'multimedia'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
             })
         }
         if(type === "comment") {
             reports = await Report.find({commentReportedId: {$exists: true}})
             .sort({createdAt: -1})
+            .populate('userId', 'username')
             .populate({
                 path: 'commentReportedId',
                 select: ['userId', 'content'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
             })
         }
         if(type === "user") {
             reports = await Report.find({userReportedId: {$exists: true}})
             .sort({createdAt: -1})
+            .populate('userId', 'username')
             .populate({
                 path: 'userReportedId',
                 select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
@@ -138,17 +142,18 @@ async (req: Request, res: Response) => {
     }
 });
 
-router.delete('/:userId/:reportId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
+router.put('/:userId/:reportId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
 async (req:Request, res:Response) =>{
     try{
         const { userId, reportId } = req.params;
         const { type } = req.body;
 
+        if (!type) return res.status(400).json('Please send type of report');
+
         const admin = await User.findById(`${userId}`);
         if(!admin || !admin.isAdmin) return res.status(401).json('Missings permissions');
-        
+
         const report = await Report.findById(`${reportId}`);
-        
         if(!report) return res.status(404).json('Report not found');
         
         if (type === 'post') {
@@ -169,14 +174,15 @@ async (req:Request, res:Response) =>{
 
             const newReports = await Report.find({postReportedId: {$exists: true} })
             .sort({createdAt: -1})
+            .populate('userId', 'username')
             .populate({
                 path: 'postReportedId',
                 select: ['userId', 'content', 'multimedia'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
-            })
+            });
             
             return res.json(newReports);
         }
@@ -195,18 +201,19 @@ async (req:Request, res:Response) =>{
 
             const newReports = await Report.find({commentReportedId: {$exists: true}})
             .sort({createdAt: -1})
+            .populate('userId', 'username')
             .populate({
                 path: 'commentReportedId',
                 select: ['userId', 'content'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
-            })
+            });
 
             return res.json(newReports);
         }
-        
+
         let user = await User.findOneAndUpdate({_id: `${report.userReportedId}`}, {
             $set: {
               posts: [],
@@ -254,15 +261,84 @@ async (req:Request, res:Response) =>{
 
         const newReports = await Report.find({userReportedId: {$exists: true}})
         .sort({createdAt: -1})
+        .populate('userId', 'username')
         .populate({
             path: 'userReportedId',
             select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
-        })
+        });
           
         return res.json(newReports);
     }catch(err){
         return res.status(400).json('Something went wrong');
     }
+});
+
+router.delete('/:userId/:reportId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
+async (req:Request, res:Response) =>{
+    try {
+        const { userId, reportId } = req.params;
+        const { type } = req.body;
+
+        if (!type) return res.status(400).json('Please send type of report');
+
+        const admin = await User.findById(`${userId}`);
+        if(!admin || !admin.isAdmin) return res.status(401).json('Missings permissions');
+        
+        const report = await Report.findById(`${reportId}`);
+        if(!report) return res.status(404).json('Report not found');
+
+        if(!report) return res.status(404).json('Report not found');
+        
+        if (type === 'post') {
+            await Report.deleteMany({postReportedId: {_id: report.postReportedId}});
+
+            const newReports = await Report.find({postReportedId: {$exists: true} })
+            .sort({createdAt: -1})
+            .populate('userId', 'username')
+            .populate({
+                path: 'postReportedId',
+                select: ['userId', 'content', 'multimedia'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname', 'username']
+                }
+            });
+            
+            return res.json(newReports);
+        }
+        if (type === 'comment') {
+            await Report.deleteMany({commentReportedId: {_id: report.commentReportedId}});
+
+            const newReports = await Report.find({commentReportedId: {$exists: true}})
+            .sort({createdAt: -1})
+            .populate('userId', 'username')
+            .populate({
+                path: 'commentReportedId',
+                select: ['userId', 'content'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname', 'username']
+                }
+            });
+
+            return res.json(newReports);
+        }
+        await Report.deleteMany({userReportedId: {_id: report.userReportedId}});
+
+        const newReports = await Report.find({userReportedId: {$exists: true}})
+        .sort({createdAt: -1})
+        .populate('userId', 'username')
+        .populate({
+            path: 'userReportedId',
+            select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+        });
+          
+        return res.json(newReports);
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json(error);
+    }
+
 });
 
 export default router;
