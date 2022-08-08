@@ -1,7 +1,7 @@
 import { IUser, IPost } from './../../types/index';
 import express, {Request,Response} from 'express';
 import passport from 'passport';
-import { Comment, Post, User } from '../../mongoose';
+import { Comment, Post, Report, User } from '../../mongoose';
 
 const router = express.Router()
 
@@ -82,6 +82,9 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
         //Delete comments done at this post
         let comments = post.commentsId
         await Comment.deleteMany({_id: {$in: comments}})
+
+        //Delete reports of the post
+        await Report.deleteMany({postReportedId: {_id: postId} })
         //Remove post and send response
         await post.remove();
         

@@ -93,6 +93,8 @@ router.delete('/:userId/:postId', passport_1.default.authenticate('jwt', { sessi
         //Delete comments done at this post
         let comments = post.commentsId;
         yield mongoose_1.Comment.deleteMany({ _id: { $in: comments } });
+        //Delete reports of the post
+        yield mongoose_1.Report.deleteMany({ postReportedId: { _id: postId } });
         //Remove post and send response
         yield post.remove();
         res.json('Eliminated from the world');
