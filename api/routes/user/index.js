@@ -251,6 +251,35 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
         return res.status(404).json({ errorMsg: err });
     }
 }));
+//-------------------query ?email="user.email"
+router.get("/restorePassWord", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.query;
+        if (!email) {
+            return res.status(400).json({ error: "Email not provided" });
+        }
+        const user = yield mongoose_1.User.findOne({ email: email });
+        if (!user) {
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        }
+        const mailMessage = {
+            title: "Password Restored",
+            subject: "Password Restoration",
+            message: `<li>Follow this link to restore your password: </li>
+        <li><a href="" target="_blank"> here </a></li>`,
+            link: "https://www.socialn.me/"
+        };
+        yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        return res.status(200).json({
+            message: "User's password successfully restored",
+        });
+    }
+    catch (err) {
+        res.json(err);
+    }
+}));
 // POST "/restorePassword"
 router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -270,8 +299,8 @@ router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, 
         const mailMessage = {
             title: "Password Restored",
             subject: "Password Restoration",
-            message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
-      <li>New Password: <strong>${dummyPassword}</strong></li>`,
+            message: `<li>Your password was restored!</li>
+      <li>Your new Password is: <strong>${dummyPassword}</strong></li>`,
         };
         const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
         console.log(message);
@@ -281,7 +310,7 @@ router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, 
         user.password = hash;
         yield user.save();
         return res.status(200).json({
-            message: "Successfully user's password restored",
+            message: "User's password successfully restored",
         });
     }
     catch (err) {

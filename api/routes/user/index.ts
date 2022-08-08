@@ -311,15 +311,15 @@ router.get("/restorePassWord", async (req:Request, res:Response) => {
       const mailMessage: mailInfo = {
         title: "Password Restored",
         subject: "Password Restoration",
-        message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
-        <li>New Password: <a href="" target="_blank"> here </a></li>`,
+        message: `<li>Follow this link to restore your password: </li>
+        <li><a href="" target="_blank"> here </a></li>`,
         link:"https://www.socialn.me/"
       };
     
       await sendMail(mailMessage, user.email);
 
       return res.status(200).json({
-        message: "Successfully user's password restored",
+        message: "User's password successfully restored",
       });
    } catch (err) {
       res.json(err);
@@ -348,8 +348,8 @@ router.post("/restorePassword", async (req: Request, res: Response) => {
     const mailMessage: mailInfo = {
       title: "Password Restored",
       subject: "Password Restoration",
-      message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
-      <li>New Password: <strong>${dummyPassword}</strong></li>`,
+      message: `<li>Your password was restored!</li>
+      <li>Your new Password is: <strong>${dummyPassword}</strong></li>`,
     };
 
     const { message } = await sendMail(mailMessage, user.email);
@@ -363,7 +363,7 @@ router.post("/restorePassword", async (req: Request, res: Response) => {
     await user.save();
 
     return res.status(200).json({
-      message: "Successfully user's password restored",
+      message: "User's password successfully restored",
     });
   } catch (err) {
     return res.status(400).json(err);
