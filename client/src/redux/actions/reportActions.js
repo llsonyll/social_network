@@ -28,14 +28,15 @@ export const makeReport = (userId, reportId, info) => async (dispatch) => {
   }
 };
 
-export const getReportsAction = (type) => async (dispatch) => {
-    !type ? type = "" : null
-  try {
-    const response = await apiConnection.get(`report?type=${type}`);
-    return dispatch(getReports(response.data))
-  } catch (err) {
-    console.log(err);
-  }
+//lA RUTA NECESITA UN ID DE UN ADMIN, SI NO SE LE PASA ASI NO FUNCIONA
+export const getReportsAction = (type, adminId) => async (dispatch) => {
+  !type ? type = "" : null
+try {
+  const response = await apiConnection.get(`report/${adminId}?type=${type}`);
+  return dispatch(getReports(response.data))
+} catch (err) {
+  console.log(err);
+}
 };
 
 export const deleteReported = (userId, reportId, type) => async (dispatch) => {
