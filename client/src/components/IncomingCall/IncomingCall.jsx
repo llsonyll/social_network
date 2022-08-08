@@ -17,16 +17,16 @@ const IncomingCall = (props) => {
     }
 
     return (
-        <Draggable bounds="parent">
-            <div className="absolute z-50 bottom-0">
+        <Draggable bounds="parent ">
+            <div className="absolute z-50  ">
             <div className="flex flex-col">
-            <div>
-            <Avatar imgUrl={data.profilePicture} size='xl'/>
+            <div className="text-white text-center flex flex-col items-center">
+            <Avatar imgUrl={data.profilePicture} size='xl' className='m-0'/>
             {data.username}
             </div>
             <div>
-                <button onClick={handleAcceptCall} className='bg-green-300'><AiOutlinePhone/></button>
-                <button className='bg-red-300' onClick={handleDenyCall}><FiPhoneMissed/></button>
+                <button onClick={handleAcceptCall} className='bg-green-600 text-white p-2 rounded-md mx-1'><AiOutlinePhone/></button>
+                <button className='bg-red-600 text-white p-2 rounded-md mx-1' onClick={handleDenyCall}><FiPhoneMissed/></button>
             </div>
             </div>
             </div>

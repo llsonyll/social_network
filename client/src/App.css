@@ -29,6 +29,18 @@ body {
   text-align: center;
   
 }
+.react-draggable{
+  background-color: rgb(68, 68, 68);
+  border-radius: 5px;
+  padding: 10px;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 80px;
+  right: 10px;
+  border: 1px solid green;
+}
 
 .buttons_video_container button {
   margin: 0px 10px;
