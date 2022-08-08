@@ -37,9 +37,9 @@ const FriendPostTile = ({ img, username, userId, isConnected }) => {
           {getTimePublished()}
         </div> */}
         </div>
+      {isConnected && <FaFirstOrderAlt className="mt-4" color="green"/>}
       </NavLink>
       <NavLink className="linkfriend_message" to={`/home/messages/${userId}`}>
-      {isConnected && <FaFirstOrderAlt className="mt-4" color="green"/>}
         <button className="mess_friend_section">
           <FaFacebookMessenger />
         </button>

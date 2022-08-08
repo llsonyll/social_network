@@ -12,6 +12,7 @@ import "./messages.css";
 
 
 
+
 const Messages = () => {
 
   let dispatch = useDispatch()
@@ -47,6 +48,7 @@ const Messages = () => {
 
   return (
     <div className="messages__father">
+         
       <div className="messages_container">
       
           <UserChats setMostrarMenu={setMostrarMenu}/>
