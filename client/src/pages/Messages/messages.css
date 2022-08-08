@@ -18,9 +18,9 @@
         padding-left: 0px;
     }
     .userconversation__container{
-        padding-top: 0px;
+        padding-top: 205px;
         padding-right: 0px;
-        position: static;
+        
     }
     #chats-user__container {
         display: flex;
