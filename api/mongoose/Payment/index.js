@@ -9,7 +9,7 @@ exports.paymentSchema = new mongoose_1.Schema({
     amount: { type: Number, required: true },
     plan: { type: String, enum: ['weekly', 'monthly', 'yearly'], required: true },
     paymentDate: { type: Date, require: true },
-    paymentStatus: { type: String, required: true }
+    paymentStatus: String
 }, {
     versionKey: false
 });

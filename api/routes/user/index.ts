@@ -102,7 +102,7 @@ router.get(
         })
         .populate('followRequest', ['username', 'profilePicture'])
         .populate({
-          path: 'paymentsId',
+          path: 'paymentsId.paymentId',
           select: [
             'paymentId',
             'amount',

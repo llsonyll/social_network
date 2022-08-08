@@ -9,7 +9,7 @@ export let paymentSchema = new Schema<IPayment>({
     amount: {type: Number, required: true},
     plan: {type: String, enum: ['weekly', 'monthly', 'yearly'], required: true},
     paymentDate: {type: Date, require: true},
-    paymentStatus: {type: String, required: true}
+    paymentStatus: String
 }, {
 	versionKey: false
 })

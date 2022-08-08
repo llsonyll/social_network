@@ -89,7 +89,7 @@ router.get("/:userId", passport_1.default.authenticate("jwt", {
         })
             .populate('followRequest', ['username', 'profilePicture'])
             .populate({
-            path: 'paymentsId',
+            path: 'paymentsId.paymentId',
             select: [
                 'paymentId',
                 'amount',

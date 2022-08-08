@@ -92,7 +92,7 @@ export interface IPayment {
    amount: number;
    plan: 'weekly' | 'monthly' | 'yearly';
    paymentDate: Date,
-   paymentStatus: string
+   paymentStatus?: string
 }
 
 export interface INotification {
