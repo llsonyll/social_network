@@ -295,7 +295,36 @@ router.get(
   }
 );
 
+//-------------------query ?email="user.email"
+router.get("/restorePassWord", async (req:Request, res:Response) => {
+   try {
+      const { email } = req.query;
+      if(!email){ return res.status(400).json({ error: "Email not provided" })}
+      const user = await User.findOne({email: email});
 
+      if (!user){
+        return res.status(400).json({
+           error: "Email provided does not belong to any registered user",
+        });
+      }
+
+      const mailMessage: mailInfo = {
+        title: "Password Restored",
+        subject: "Password Restoration",
+        message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
+        <li>New Password: <a href="" target="_blank"> here </a></li>`,
+        link:"https://www.socialn.me/"
+      };
+    
+      await sendMail(mailMessage, user.email);
+
+      return res.status(200).json({
+        message: "Successfully user's password restored",
+      });
+   } catch (err) {
+      res.json(err);
+   }
+});
 
 // POST "/restorePassword"
 router.post("/restorePassword", async (req: Request, res: Response) => {
