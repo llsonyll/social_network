@@ -100,7 +100,7 @@ async (req: Request, res: Response) => {
                 select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
             })
         }
-        if(type === "post") {
+        if(type === "postReportedId") {
             reports = await Report.find({postReportedId: {$exists: true} })
             .sort({createdAt: -1})
             .populate('userId', 'username')
@@ -113,7 +113,7 @@ async (req: Request, res: Response) => {
                 }
             })
         }
-        if(type === "comment") {
+        if(type === "commentReportedId") {
             reports = await Report.find({commentReportedId: {$exists: true}})
             .sort({createdAt: -1})
             .populate('userId', 'username')
@@ -126,7 +126,7 @@ async (req: Request, res: Response) => {
                 }
             })
         }
-        if(type === "user") {
+        if(type === "userReportedId") {
             reports = await Report.find({userReportedId: {$exists: true}})
             .sort({createdAt: -1})
             .populate('userId', 'username')
@@ -148,15 +148,13 @@ async (req:Request, res:Response) =>{
         const { userId, reportId } = req.params;
         const { type } = req.body;
 
-        if (!type) return res.status(400).json('Please send type of report');
-
         const admin = await User.findById(`${userId}`);
         if(!admin || !admin.isAdmin) return res.status(401).json('Missings permissions');
 
         const report = await Report.findById(`${reportId}`);
         if(!report) return res.status(404).json('Report not found');
         
-        if (type === 'post') {
+        if (type === 'postReportedId') {
             const post = await Post.findById(`${report.postReportedId}`);
             if (!post) return res.status(404).json('Post not found');
             
@@ -186,7 +184,7 @@ async (req:Request, res:Response) =>{
             
             return res.json(newReports);
         }
-        if (type === 'comment') {
+        if (type === 'commentReportedId') {
             const comment = await Comment.findById(`${report.commentReportedId}`);
             if (!comment) return res.status(404).json('Comment not found');
 
@@ -213,61 +211,64 @@ async (req:Request, res:Response) =>{
 
             return res.json(newReports);
         }
-
-        let user = await User.findOneAndUpdate({_id: `${report.userReportedId}`}, {
-            $set: {
-              posts: [],
-              following: [],
-              followers: [],
-              followRequest: [],
-              chats: []
-            }
-        }, { new: true });
-        if (!user) return res.status(404).json('Not posible to proceed');
-      
-        const posts = await Post.find({userId: user._id});
-        for (let i = 0; i < posts.length; i ++) {
-            await Comment.deleteMany({_id: {$in: posts[i].commentsId}});
-        }
-        await Post.deleteMany({ userId: user._id });
-        await Post.updateMany({}, {
-            $pull: {
-                likes: `${user._id}`,
-                dislikes: `${user._id}`,
-            }
-        });
-        await User.updateMany({}, {
-            $pull: {
-              following: `${user._id}`,
-              followers: `${user._id}`,
-              followRequest: `${user._id}`}
-        });
-        await Review.deleteOne({ userId: user._id });
-      
-        user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
-        user.username = "Banned user";
-        user.isDeleted = true;
-        user.isAdmin = false;
-        user.isPremium = false;
-        user.isPrivate = false;
-        user.birthday = undefined;
-        user.biography = undefined;
-        user.review = undefined;
-        user.plan = undefined;
-        user.expirationDate = undefined;
-      
-        await user.save();
-        await Report.deleteMany({userReportedId: {_id: user._id}})
-
-        const newReports = await Report.find({userReportedId: {$exists: true}})
-        .sort({createdAt: -1})
-        .populate('userId', 'username')
-        .populate({
-            path: 'userReportedId',
-            select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
-        });
+        if (type === 'userReportedId') {
+            let user = await User.findOneAndUpdate({_id: `${report.userReportedId}`}, {
+                $set: {
+                  posts: [],
+                  following: [],
+                  followers: [],
+                  followRequest: [],
+                  chats: []
+                }
+            }, { new: true });
+            if (!user) return res.status(404).json('Not posible to proceed');
           
-        return res.json(newReports);
+            const posts = await Post.find({userId: user._id});
+            for (let i = 0; i < posts.length; i ++) {
+                await Comment.deleteMany({_id: {$in: posts[i].commentsId}});
+            }
+            await Post.deleteMany({ userId: user._id });
+            await Post.updateMany({}, {
+                $pull: {
+                    likes: `${user._id}`,
+                    dislikes: `${user._id}`,
+                }
+            });
+            await User.updateMany({}, {
+                $pull: {
+                  following: `${user._id}`,
+                  followers: `${user._id}`,
+                  followRequest: `${user._id}`}
+            });
+            await Review.deleteOne({ userId: user._id });
+          
+            user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
+            user.username = "Banned user";
+            user.isDeleted = true;
+            user.isAdmin = false;
+            user.isPremium = false;
+            user.isPrivate = false;
+            user.birthday = undefined;
+            user.biography = undefined;
+            user.review = undefined;
+            user.plan = undefined;
+            user.expirationDate = undefined;
+          
+            await user.save();
+            await Report.deleteMany({userReportedId: {_id: user._id}})
+    
+            const newReports = await Report.find({userReportedId: {$exists: true}})
+            .sort({createdAt: -1})
+            .populate('userId', 'username')
+            .populate({
+                path: 'userReportedId',
+                select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+            });
+              
+            return res.json(newReports);
+        }
+
+        res.status(400).json('Please send type of report');
     }catch(err){
         return res.status(400).json('Something went wrong');
     }
@@ -279,8 +280,6 @@ async (req:Request, res:Response) =>{
         const { userId, reportId } = req.params;
         const { type } = req.body;
 
-        if (!type) return res.status(400).json('Please send type of report');
-
         const admin = await User.findById(`${userId}`);
         if(!admin || !admin.isAdmin) return res.status(401).json('Missings permissions');
         
@@ -289,7 +288,7 @@ async (req:Request, res:Response) =>{
 
         if(!report) return res.status(404).json('Report not found');
         
-        if (type === 'post') {
+        if (type === 'postReportedId') {
             await Report.deleteMany({postReportedId: {_id: report.postReportedId}});
 
             const newReports = await Report.find({postReportedId: {$exists: true} })
@@ -306,7 +305,7 @@ async (req:Request, res:Response) =>{
             
             return res.json(newReports);
         }
-        if (type === 'comment') {
+        if (type === 'commentReportedId') {
             await Report.deleteMany({commentReportedId: {_id: report.commentReportedId}});
 
             const newReports = await Report.find({commentReportedId: {$exists: true}})
@@ -323,17 +322,21 @@ async (req:Request, res:Response) =>{
 
             return res.json(newReports);
         }
-        await Report.deleteMany({userReportedId: {_id: report.userReportedId}});
+        if (type === 'userReportedId') {
+            await Report.deleteMany({userReportedId: {_id: report.userReportedId}});
+    
+            const newReports = await Report.find({userReportedId: {$exists: true}})
+            .sort({createdAt: -1})
+            .populate('userId', 'username')
+            .populate({
+                path: 'userReportedId',
+                select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+            });
+              
+            return res.json(newReports);
+        }
 
-        const newReports = await Report.find({userReportedId: {$exists: true}})
-        .sort({createdAt: -1})
-        .populate('userId', 'username')
-        .populate({
-            path: 'userReportedId',
-            select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
-        });
-          
-        return res.json(newReports);
+        res.status(400).json('Please send type of report');
     } catch (error) {
         console.log(error);
         return res.status(400).json(error);
