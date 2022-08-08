@@ -29,7 +29,7 @@ export const makeReport = (userId, reportId, info) => async (dispatch) => {
 };
 
 //lA RUTA NECESITA UN ID DE UN ADMIN, SI NO SE LE PASA ASI NO FUNCIONA
-export const getReportsAction = (type, adminId) => async (dispatch) => {
+export const getReportsAction = (adminId, type) => async (dispatch) => {
   !type ? type = "" : null
 try {
   const response = await apiConnection.get(`report/${adminId}?type=${type}`);

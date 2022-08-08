@@ -4,6 +4,7 @@ import './listOfReportsRenderer.css'
 import { useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 import { getReportsAction } from '../../redux/actions/reportActions'
+import { useEffect, useState } from 'react'
 
 //lo llamo desde adminReports
 //Sirve para renderizar la lista de reportes y eliminar la basura de una vez.
@@ -19,68 +20,56 @@ import { getReportsAction } from '../../redux/actions/reportActions'
 */
 
 
-const ListOfReportsRenderer = (typeOfReport = '') => {
-
-    let arrayPrueba =  [{
-        _id: "62f0218c9247c013d23247a2",
-        userId: "62e80a1240e56ae280107b26",
-        commentReportedId: {
-          _id: "62ef100bfe603e4be6ae62f2",
-          userId: {
-            _id: "62dedd26ff1f6d86c08ca214",
-            firstname: "carlos",
-            lastname: "perejil"
-          },
-          content: "bueno ahora te voy a pegar un tiro"
-        },
-        reason: "CARLITOS VIOLENCIA AAAAAA",
-        createdAt: "2022-08-07T20:33:16.328Z"
-    } ,
-    {
-        _id: "62f0218c9247c013d23247a2",
-        userId: "62e80a1240e56ae280107b26",
-        commentReportedId: {
-          _id: "62ef100bfe603e4be6ae62f2",
-          userId: {
-            _id: "62dedd26ff1f6d86c08ca214",
-            firstname: "carlos",
-            lastname: "perejil"
-          },
-          content: "bueno ahora te voy a pegar un tiro"
-        },
-        reason: "CARLITOS VIOLENCIA AAAAAAAA",
-        createdAt: "2022-08-07T20:33:16.328Z"
-    } ]
+const ListOfReportsRenderer = ({type}) => {
 
 
-    
-    /*
-    Aqui me estaba trayendo las cosas de redux pero creo que va a ser mejor que el dispatch lo hagan los 3 botones en el componente adminReports. 
+  const {reports} = useSelector((state) => state.report)
+  const userId = useSelector((state) => state.auth.loggedUser._id);
+  const dispatch = useDispatch()
+  const [tipo, setTipo] = useState("")
 
-    const dispatch = useDispatch()
-    
-    let admin = useSelector((state) => state.auth.loggedUser)
-    
-     let arr = null
 
-    if (typeOfReport === 'comment' && arr === null) {
-        //lA RUTA NECESITA UN ID DE UN ADMIN, SI NO SE LE PASA ASI NO FUNCIONA
-        dispatch(getReportsAction(typeOfReport, admin._id))
-         arr = useSelector((state) => state.report.reports)
-         console.log(arr)
-    } */
+  useEffect(() => {
+    console.log(type)
+   dispatch(getReportsAction(userId, type))
+   if(type === "post") setTipo("postReportedId") 
+   if(type === "comment") setTipo("commentReportedId") 
+   if(type === "user") setTipo("userReportedId") 
+ }, [type])
+
+console.log(reports)
     
 
     let reportCounter = 1
 
-    let reports = null;
-    if (/* typeOfReport === 'comment' ESTA EVALUACION NO SIRVE Y NO SE PORQUE AAAAAAAAAAAAAAAAAAA*/ true) {
-        reports = arrayPrueba?.map((r) => {
-            if (r._id) {
+    if(tipo === "") {
 
-                const {_id, commentReportedId, reason} = r 
-                const {firstname, lastname} = commentReportedId.userId
-                const {content} = commentReportedId
+    }
+     var reportsTest = reports?.map((r) => {
+            if (r._id) {
+                var tipoprueba
+                // var type
+                 if(r.commentReportedId) tipoprueba = 'commentReportedId'
+                 else if(r.postReportedId) tipoprueba = 'postReportedId'
+                 else if(r.userReportedId) tipoprueba = 'userReportedId'
+                //  console.log(type, r)
+                //  if(r.type === null) console.log("lol", r)
+                // console.log(tipoprueba)
+                console.log(r[tipoprueba].userId)
+                const {_id, reason} = r 
+                let content
+                let firstname
+                let lastname
+                if(tipoprueba === "userReportedId") {
+                   firstname = r[tipoprueba].firstname
+                   lastname= r[tipoprueba].lastname
+                  content = null
+                } else {
+                  firstname = r[tipoprueba].userId.firstname
+                  lastname= r[tipoprueba].userId.lastname
+                  content = r[tipoprueba].content
+
+                }
 
                 return(
                     <li className='flex items-center justify-center text-slate-100 bg-[#2E2E2E]  shadow-xl rounded-lg '>
@@ -90,7 +79,7 @@ const ListOfReportsRenderer = (typeOfReport = '') => {
                                     <div className='w-72 h-20 self-center flex-wrap'>{reason}</div>
                                     <div className='w-40'>{content}</div>
                                     
-                    
+
                     <div className='flex items-center justify-center mb-8'>
                         <button className=' bg-[#9B423D] ml-0 mr-2 mt-3 mb-3 p-1 pl-3 pr-3 rounded-md'
                                 onClick={() => {
@@ -112,14 +101,14 @@ const ListOfReportsRenderer = (typeOfReport = '') => {
                 )
             } 
         })
-    }
+    
 
     
   return (
     <>
         <div className='flex-row' key={Math.random()}>
                 <ol>
-                {reports}
+                {reportsTest}
                 </ol>
         </div>
      </>
