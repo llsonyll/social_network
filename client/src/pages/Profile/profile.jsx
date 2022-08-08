@@ -1,15 +1,19 @@
 import "./profile.css";
-// import { UsersDummy } from "../../data/20UsersDummy";
-import { Fragment, useState } from "react";
-import { useParams } from "react-router-dom";
+
+import { Fragment, useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams, Link } from "react-router-dom";
+
+// Components
 import EditFullname from "../../components/EditFullname";
 import EditUsername from "../../components/EditUsername";
 import EditBiography from "../../components/EditBiography";
 import ProfilePosts from "../../components/ProfilePostsRenderer";
-import { IconContext } from "react-icons";
-// import { mockPost } from "../../data/20DummyPosts";
-import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import Avatar from "../../components/Avatar";
+import ListOfUsersRenderer from "../../components/ListOfUsersRenderer";
+
+// Actions
 import {
   acceptFollowRequest,
   cancelFollowRequest,
@@ -18,32 +22,31 @@ import {
 } from "../../redux/actions/userActions";
 import { makeReport } from "../../redux/actions/reportActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
-import { Link } from "react-router-dom";
-import { useRef } from "react";
-import axios from "axios";
-
-import { AiFillCloseCircle, AiFillMessage, AiFillEdit } from "react-icons/ai";
-import { getLoggedUserInfo } from "../../redux/actions/authActions";
-
-// import Multiselect from "multiselect-react-dropdown";
-
-//iconos
-import { AiFillSetting } from "react-icons/ai";
-import { FaExclamation } from "react-icons/fa";
-import { AiFillEye } from "react-icons/ai";
-import Swal from "sweetalert2";
+import {
+  clearAll,
+  listFollowing,
+  listFollowers,
+} from "../../redux/actions/listOfUsersRendererActions";
 import { postNotification } from "../../redux/actions/notificationActions";
-import {MdModeEditOutline} from 'react-icons/md'
-import { clearAll, listFollowing, listFollowers } from '../../redux/actions/listOfUsersRendererActions'
-import ListOfUsersRenderer from '../../components/ListOfUsersRenderer';
 
+// Icons
+import {
+  AiFillEye,
+  AiFillCloseCircle,
+  AiFillMessage,
+  AiFillEdit,
+  AiFillSetting,
+} from "react-icons/ai";
+import { FaExclamation } from "react-icons/fa";
+import { MdModeEditOutline } from "react-icons/md";
 
+// Composables
 
+import Filters from "../../composables/filters";
 
-
+import Swal from "sweetalert2";
+import axios from "axios";
 
 const Profile = () => {
   const params = useParams();
@@ -57,10 +60,7 @@ const Profile = () => {
   const usersFollowing = useSelector(
     (state) => state.user.userProfileData.followers
   );
-  const {isPremium} = useSelector(
-    (state) => state.user.userProfileData
-  );
-
+  const { isPremium } = useSelector((state) => state.user.userProfileData);
 
   const {
     _id,
@@ -75,17 +75,18 @@ const Profile = () => {
     coverPicture,
     biography: userBiography,
     username: userUsername,
-    isConnected
+    isConnected,
   } = useSelector((state) => state.user.userProfileData);
+
   const dispatch = useDispatch();
   const [changeProfilePicture, setChangeProfilePicture] = useState("");
   const [changeCover, setChangeCover] = useState("");
   const hiddenImageInput = useRef();
-  const coverImageInput = useRef()
+  const coverImageInput = useRef();
 
   const renderChangeRenderComponents = (nameOfTheComponentToRender) => {
     if (nameOfTheComponentToRender === "fullname") {
-      setFirstname(false); 
+      setFirstname(false);
     }
     if (nameOfTheComponentToRender === "username") {
       setUsername(false);
@@ -135,7 +136,7 @@ const Profile = () => {
     console.log(picture);
     setChangeCover(picture);
   };
-  
+
   const cancelChangePicture = () => {
     setChangeProfilePicture("");
   };
@@ -152,9 +153,7 @@ const Profile = () => {
   };
 
   const handleSaveCover = () => {
-    dispatch(
-      modifyUser(userLoggedId, { coverPicture: changeCover })
-    );
+    dispatch(modifyUser(userLoggedId, { coverPicture: changeCover }));
     dispatch(getLoggedUserInfo());
     setChangeCover("");
   };
@@ -171,6 +170,20 @@ const Profile = () => {
     return `${Math.round(minutes / 60)} hours ago`;
   }
 
+  const {
+    currentContent,
+    restoreContent,
+    setCurrentContent,
+    handleMultimediaFilter,
+    handleDatePublishedFilter,
+    handleLikesFilter,
+    handleCommentsFilter,
+  } = Filters(posts);
+
+  useEffect(() => {
+    setCurrentContent(posts);
+  }, [posts]);
+
   const [withMultimedia, setWithMultimedia] = useState(false);
   const [datePublishedAsc, setDatePublishedAsc] = useState(false);
   const [likesAsc, setLikesAsc] = useState(false);
@@ -181,12 +194,29 @@ const Profile = () => {
   const [showFollowing, setShowFollowing] = useState(false);
 
   useEffect(() => {
+    handleMultimediaFilter(withMultimedia);
+  }, [withMultimedia]);
+
+  useEffect(() => {
+    handleDatePublishedFilter(datePublishedAsc);
+  }, [datePublishedAsc]);
+
+  useEffect(() => {
+    handleLikesFilter(likesAsc);
+  }, [likesAsc]);
+
+  useEffect(() => {
+    handleCommentsFilter(commentsQtyAsc);
+  }, [commentsQtyAsc]);
+
+  useEffect(() => {
     if (!filtersActive) {
       setWithMultimedia(false);
       setDatePublishedAsc(false);
       setLikesAsc(false);
       setCommentsQtyAsc(false);
     }
+    restoreContent();
   }, [filtersActive]);
 
   const filters = () => {
@@ -305,11 +335,11 @@ const Profile = () => {
   };
 
   let renderer = () => {
-    if (posts && posts.length > 0) {
+    if (currentContent && currentContent.length > 0) {
       return (
         <>
           {filters()}
-          {postApplyFilters().map((p) => {
+          {currentContent.map((p) => {
             return (
               <Fragment key={p._id}>
                 <ProfilePosts
@@ -372,53 +402,52 @@ const Profile = () => {
           ) : (
             <>
               <div className={`img-container`}>
-                {
-                  isPremium === true && coverPicture || changeCover? 
-                  <img className="w-full h-full rounded-md" src={changeCover ? changeCover : coverPicture}  /> 
-                  :
-                  null 
-                }
-                {
-                  changeCover !== '' ? ( <button
-                  type="button"
-                  className="absolute left-1
+                {(isPremium === true && coverPicture) || changeCover ? (
+                  <img
+                    className="w-full h-full rounded-md"
+                    src={changeCover ? changeCover : coverPicture}
+                  />
+                ) : null}
+                {changeCover !== "" ? (
+                  <button
+                    type="button"
+                    className="absolute left-1
                   bg-green-600 rounded-md text-white p-1 bottom-1"
-                  onClick={handleSaveCover}
+                    onClick={handleSaveCover}
                   >
                     Save &#10004;
-                  </button> ) : null
-                }
-                {
-                  changeCover !== '' ? (<button
+                  </button>
+                ) : null}
+                {changeCover !== "" ? (
+                  <button
                     className="absolute left-1 bg-red-600 text-white p-1 rounded-md top-1"
                     type="button"
                     onClick={cancelChangeCover}
                   >
                     Cancel X
-                  </button>) : null 
-                }
-              <input
-                        type={"file"}
-                        ref={coverImageInput}
-                        onChange={handleChangeCoverCd}
-                        accept="image/*"
-                        style={{ display: "none" }}
-                      />
-              {/* ${isPremium && bg-[url(img)]} */}
+                  </button>
+                ) : null}
+                <input
+                  type={"file"}
+                  ref={coverImageInput}
+                  onChange={handleChangeCoverCd}
+                  accept="image/*"
+                  style={{ display: "none" }}
+                />
+                {/* ${isPremium && bg-[url(img)]} */}
                 {/* <img
               className='profile-img'
               src='https://japanpowered.com/media/images//goku.png'
               alt='Profile Picture'>
             </img> */}
-            {
-              isPremium === true && _id === userLoggedId ? 
-              <button 
-              onClick={handleChangeCover}
-              className="transition-all bg-green-600 absolute right-1 bottom-1 text-white p-1 rounded-md hover:bg-green-800">
-                <MdModeEditOutline/>
-                </button> 
-                : null
-            }
+                {isPremium === true && _id === userLoggedId ? (
+                  <button
+                    onClick={handleChangeCover}
+                    className="transition-all bg-green-600 absolute right-1 bottom-1 text-white p-1 rounded-md hover:bg-green-800"
+                  >
+                    <MdModeEditOutline />
+                  </button>
+                ) : null}
                 <div className="imgChange_container">
                   {profilePicture ? (
                     <>
@@ -520,10 +549,13 @@ const Profile = () => {
                       <span className="span-info">Followers</span>
 
                       <section className="flex items-center">
-                       {followers ? followers.length : 0}
-                       <span className="followingAndFollowersButton ml-1 text-lg" onClick={renderFollowers}>
-                       <AiFillEye className="transition-all text-white hover:text-green-600"/>
-                       </span>
+                        {followers ? followers.length : 0}
+                        <span
+                          className="followingAndFollowersButton ml-1 text-lg"
+                          onClick={renderFollowers}
+                        >
+                          <AiFillEye className="transition-all text-white hover:text-green-600" />
+                        </span>
                       </section>
                     </div>
                   </div>
@@ -531,9 +563,12 @@ const Profile = () => {
                     <div className="info_container">
                       <span className="span-info">Following</span>
                       <section className="flex items-center">
-                      {_id ? following.length : 0}
-                      <span className="followingAndFollowersButton ml-1 text-lg" onClick={renderFollowing}>
-                      <AiFillEye className="transition-all text-white hover:text-green-600"/>
+                        {_id ? following.length : 0}
+                        <span
+                          className="followingAndFollowersButton ml-1 text-lg"
+                          onClick={renderFollowing}
+                        >
+                          <AiFillEye className="transition-all text-white hover:text-green-600" />
                         </span>
                       </section>
                     </div>

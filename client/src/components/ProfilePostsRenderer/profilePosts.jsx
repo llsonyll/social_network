@@ -95,11 +95,11 @@ const ProfilePosts = (props) => {
 
   let renderHeartBrokenIcon = () => {
     if (!posts[index].dislikes.includes(_id)) {
-      console.log("Entra blanco");
+      // console.log("Entra blanco");
       dislike !== "add" && setDislike("add");
       return <ImHeartBroken />;
     } else {
-      console.log("Entra rojo");
+      // console.log("Entra rojo");
       dislike !== "" && setDislike("");
       return (
         <IconContext.Provider
