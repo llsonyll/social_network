@@ -19,7 +19,7 @@ const stripe_1 = __importDefault(require("stripe"));
 const stripe = new stripe_1.default('sk_test_51LPwrkFSz33wG2Vonf5yG4W2lDY1xk3pQk08tmCKG3mXzNsxSBWvnvGnDGPZgb2daRoqzS4k55dMC6iJVK3OccF600zQOQvySl', { apiVersion: '2020-08-27' });
 const router = express_1.default.Router();
 router.post('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+    var _a, _b;
     try {
         let { id, amount, plan } = req.body; // AGREGAR PLAN EN FRONT
         const { userId } = req.params;
@@ -62,8 +62,6 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
             user.isPremium = true;
             user.expirationDate = expirationDate;
             user.plan = plan;
-            (_a = user.paymentsId) === null || _a === void 0 ? void 0 : _a.push(payment.id);
-            yield user.save();
             const transaction = new mongoose_1.Payment({
                 paymentId: payment.id,
                 userId: user._id,
@@ -73,12 +71,24 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
                 paymentStatus: payment.status
             });
             yield transaction.save();
+            console.log(transaction);
+            if (user.paymentsId === undefined) {
+                yield mongoose_1.User.updateOne({ _id: user._id }, {
+                    $set: { paymentsId: [transaction._id] }
+                });
+                console.log(user);
+                yield user.save();
+                return res.status(201).json({ msg: "Successfull payment" });
+            }
+            user.paymentsId.push(transaction._id);
+            yield user.save();
             return res.status(201).json({ msg: "Successfull payment" });
         }
     }
     catch (error) {
-        ((_b = error.raw) === null || _b === void 0 ? void 0 : _b.message)
-            ? res.status(400).json((_c = error.raw) === null || _c === void 0 ? void 0 : _c.message)
+        console.log(error);
+        ((_a = error.raw) === null || _a === void 0 ? void 0 : _a.message)
+            ? res.status(400).json((_b = error.raw) === null || _b === void 0 ? void 0 : _b.message)
             : res.status(400).json('Payment fails');
     }
 }));

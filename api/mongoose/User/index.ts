@@ -24,7 +24,7 @@ export let userSchema = new Schema<IUser>({
     review: {type: Schema.Types.ObjectId, ref: 'Review'},
     socketId: String,
     chats: [{type: Schema.Types.ObjectId, ref: 'Chat', required: true}],
-    paymentsId: [{type: String, ref: 'Payment'}],
+    paymentsId: [{type: Schema.Types.ObjectId, ref: 'Payment'}],
     plan: {type: String, enum: ['weekly', 'monthly', 'yearly']},
     expirationDate: Date,
     isDeleted: {type: Boolean, default: false, required: true}
