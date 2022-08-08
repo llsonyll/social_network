@@ -53,6 +53,6 @@
         justify-content: center;
       }
       .friend-contact__avatar{
-        margin-right: 0px;
+        margin-right: 0px !important;
       }
 }

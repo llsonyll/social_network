@@ -14,6 +14,7 @@ const IncomingCall = (props) => {
     }
     function handleDenyCall(){
         denyCall(data._id)
+        console.log('colgue');
     }
 
     return (
