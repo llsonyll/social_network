@@ -2,8 +2,22 @@
     padding-left: 340px;
 }
 
+.no-view_chats img{
+    animation: logo360 5s ;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+    animation-timing-function:linear;
+}
 
-
+@keyframes logo360 {
+    from{
+        transform: rotateY(0deg);
+    }
+    to{
+        
+        transform: rotateY(360deg);
+    }
+}
 
 @media (max-width:685px) {
     /* .chats__user-father_responsive{

@@ -3,6 +3,7 @@
 @tailwind utilities;
 html{
   height: 100vh;
+  scroll-behavior: smooth;
 }
 #root{
   height: 100%;

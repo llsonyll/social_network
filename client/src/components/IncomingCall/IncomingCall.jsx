@@ -17,7 +17,7 @@ const IncomingCall = (props) => {
     }
 
     return (
-        <Draggable bounds="parent ">
+        <Draggable bounds="parent">
             <div className="absolute z-50  ">
             <div className="flex flex-col">
             <div className="text-white text-center flex flex-col items-center">

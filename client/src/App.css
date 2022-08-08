@@ -3,10 +3,11 @@ body {
 }
 
 #video_container{
-  position: absolute;
+  position: fixed;
+  height: 400px;
   display: flex;
   flex-direction: column;
-  width: 500px;
+  width: 600px;
   border: 1px solid #4e864c;
   bottom: 30px;
   left: 200px;
