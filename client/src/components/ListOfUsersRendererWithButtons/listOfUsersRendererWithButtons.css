@@ -1,0 +1,29 @@
+
+
+.persontile{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: last baseline;
+    margin: 2%;
+    width: 90%;
+    height: 70%;
+    border-radius: 2%;
+    border-color: #333333;
+    border-style: solid;
+    border-width: 1px;
+    color: aliceblue;
+    display: flex;
+    transition: .2s all;
+} 
+
+.containersiii{
+    margin-top: 10%;
+}
+
+/* .borde{
+    border-radius: 2%;
+    border-color: #333333;
+    border-style: solid;
+    border-width: 1px;
+} */

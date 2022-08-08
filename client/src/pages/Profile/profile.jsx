@@ -12,6 +12,7 @@ import ProfilePosts from "../../components/ProfilePostsRenderer";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
 import ListOfUsersRenderer from "../../components/ListOfUsersRenderer";
+import ListOfUsersRendererWithButtons from "../../components/ListOfUsersRendererWithButtons";
 
 // Actions
 import {
@@ -22,31 +23,32 @@ import {
 } from "../../redux/actions/userActions";
 import { makeReport } from "../../redux/actions/reportActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
+import { getLoggedUserInfo } from "../../redux/actions/authActions";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
+import { Link } from "react-router-dom";
+import { useRef } from "react";
+import axios from "axios";
+
+// import Multiselect from "multiselect-react-dropdown";
+
+//iconos
+import {
+  AiFillSetting,
+  AiFillCloseCircle,
+  AiFillMessage,
+  AiFillEdit,
+} from "react-icons/ai";
+import { FaExclamation, FaFirstOrderAlt } from "react-icons/fa";
+import { AiFillEye } from "react-icons/ai";
+import Swal from "sweetalert2";
+import { postNotification } from "../../redux/actions/notificationActions";
+import { MdModeEditOutline } from "react-icons/md";
 import {
   clearAll,
   listFollowing,
   listFollowers,
 } from "../../redux/actions/listOfUsersRendererActions";
-import { postNotification } from "../../redux/actions/notificationActions";
-
-// Icons
-import {
-  AiFillEye,
-  AiFillCloseCircle,
-  AiFillMessage,
-  AiFillEdit,
-  AiFillSetting,
-} from "react-icons/ai";
-import { FaExclamation } from "react-icons/fa";
-import { MdModeEditOutline } from "react-icons/md";
-
-// Composables
-
-import Filters from "../../composables/filters";
-
-import Swal from "sweetalert2";
-import axios from "axios";
+import ListOfUsersRenderer from "../../components/ListOfUsersRenderer";
 
 const Profile = () => {
   const params = useParams();
@@ -189,25 +191,8 @@ const Profile = () => {
   const [likesAsc, setLikesAsc] = useState(false);
   const [commentsQtyAsc, setCommentsQtyAsc] = useState(false);
   const [filtersActive, setFiltersActive] = useState(false);
-
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowing, setShowFollowing] = useState(false);
-
-  useEffect(() => {
-    handleMultimediaFilter(withMultimedia);
-  }, [withMultimedia]);
-
-  useEffect(() => {
-    handleDatePublishedFilter(datePublishedAsc);
-  }, [datePublishedAsc]);
-
-  useEffect(() => {
-    handleLikesFilter(likesAsc);
-  }, [likesAsc]);
-
-  useEffect(() => {
-    handleCommentsFilter(commentsQtyAsc);
-  }, [commentsQtyAsc]);
 
   useEffect(() => {
     if (!filtersActive) {
@@ -366,9 +351,7 @@ const Profile = () => {
   const followRenderer = () => {
     return usersFollowing.includes(userLoggedId) ? (
       <Fragment key={Math.random()}>Unfollow</Fragment>
-    ) : followRequest.length &&
-      (followRequest?.includes(userLoggedId) ||
-        followRequest?.map((u) => u._id?.includes(userLoggedId))) ? (
+    ) : followRequest.length && followRequest?.includes(userLoggedId) ? (
       <Fragment key={Math.random()}>Pending</Fragment>
     ) : (
       <Fragment key={Math.random()}>Follow</Fragment>
@@ -388,7 +371,13 @@ const Profile = () => {
   const handleClose = () => {
     showFollowers !== false && setShowFollowers(false);
     showFollowing !== false && setShowFollowing(false);
+    showFollowRequests !== false && setShowFollowRequests(false);
     dispatch(clearAll());
+  };
+
+  const handleClickOnMostrarPendientes = (e) => {
+    e.preventDefault();
+    setShowFollowRequests(!showFollowRequests);
   };
 
   return (
@@ -528,8 +517,10 @@ const Profile = () => {
                   <div className="user-username justify-between">
                     <div className="info_container">
                       <span className="span-info">Username</span>
-                      {isConnected && <span className="connected">.</span>}
-                      {"@" + userUsername}
+                      <Fragment>
+                        {isConnected && <FaFirstOrderAlt color="green" />}
+                        {"@" + userUsername}
+                      </Fragment>
                     </div>
                     {params.id === userLoggedId ? (
                       <button
@@ -592,43 +583,16 @@ const Profile = () => {
                     ) : null}
                   </div>
 
-                  <div>
-                    {params.id === userLoggedId ? (
-                      followRequest ? (
-                        <div className="button_container">
-                          {followRequest.map((r) => {
-                            return (
-                              <div key={r._id}>
-                                <img
-                                  src={r.profilePicture}
-                                  className="img-follow-request"
-                                />
-                                <p className="username-follow-request">
-                                  {r.username}
-                                </p>
-                                <button
-                                  onClick={() => {
-                                    dispatch(cancelFollowRequest(_id, r._id));
-                                  }}
-                                  type="button"
-                                >
-                                  Cancel
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    dispatch(acceptFollowRequest(_id, r._id));
-                                  }}
-                                  type="button"
-                                >
-                                  Acept
-                                </button>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      ) : null
-                    ) : null}
-                  </div>
+                  {/* Boton que se renderiza cuando hay follow requests */}
+                  {followRequest?.length > 0 && params.id === userLoggedId ? (
+                    <button
+                      className="bg-[#4E864C] rounded-md mr-3 p-1 pl-3 pr-3 ml-3"
+                      onClick={handleClickOnMostrarPendientes}
+                    >
+                      {" "}
+                      Follow Requests{" "}
+                    </button>
+                  ) : null}
 
                   <div className="my-4">
                     <Link
@@ -723,6 +687,14 @@ const Profile = () => {
       {showFollowers === true && (
         <ListOfUsersRenderer
           titleToRender={"followers"}
+          userId={_id}
+          closeRenderFunction={handleClose}
+        />
+      )}
+      {showFollowRequests === true && (
+        <ListOfUsersRendererWithButtons
+          arrayOfPeopleToRender={followRequest}
+          titleToRender={"followRequests"}
           userId={_id}
           closeRenderFunction={handleClose}
         />

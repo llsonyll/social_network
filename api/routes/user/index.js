@@ -233,7 +233,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
                     .sort({ createdAt: -1 })
                     .skip(page * 10)
                     .limit(10)
-                    .populate("userId", ["username", "profilePicture"]);
+                    .populate("userId", ["username", "profilePicture", "isPrivate"]);
             }
         }
         if (user.following.length === 0) {
@@ -331,7 +331,7 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
             // user.following.push(userFollowed._id);
             yield mongoose_1.User.findOneAndUpdate({ _id: user._id }, {
                 $addToSet: {
-                    following: user._id
+                    following: userFollowed._id
                 }
             });
             yield user.save();
@@ -422,7 +422,7 @@ router.put("/acceptFollow/:userId/:userRequestingId", passport_1.default.authent
             $pull: {
                 followRequest: `${userRequesting._id}`,
             },
-        }, { new: true });
+        }, { new: true }).populate('followRequest', ['username', 'profilePicture']);
         if (!user)
             return res.status(404).json({ msg: "User not found" });
         user.followers.push(`${userRequesting._id}`);
@@ -454,7 +454,7 @@ router.put("/cancelFollow/:userId/:userRequestingId", passport_1.default.authent
             $pull: {
                 followRequest: `${userRequesting._id}`,
             },
-        }, { new: true });
+        }, { new: true }).populate('followRequest', ['username', 'profilePicture']);
         if (!user)
             return res.status(404).json({ msg: "User not found" });
         yield user.save();

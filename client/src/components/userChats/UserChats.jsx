@@ -21,6 +21,16 @@ const UserChats = ({setMostrarMenu}) => {
         }
     }
 
+    let unseenMessagesCounter = (messages) => {
+        let returnUnseen = 0
+        messages.forEach(message => {
+            if(message.from !== loggedUser._id && message.seen === false){
+                returnUnseen++
+            }
+        })
+        return returnUnseen
+    }
+
 
   return (
     <div className='chats__user-father'>
@@ -38,6 +48,7 @@ const UserChats = ({setMostrarMenu}) => {
                             <div className='friend-contact'>
                                 <div className='friend-contact__avatar'>
                                     <Avatar  size= 'l'imgUrl={chat.users[getIndex(chat.users)].profilePicture}/>
+                                    {unseenMessagesCounter(chat.messages)? unseenMessagesCounter(chat.messages): null}
                                 </div>
                                 <div className='friend-contact__info'>
                                     <span>{chat.users[getIndex(chat.users)].username}</span>
