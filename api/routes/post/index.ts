@@ -85,6 +85,9 @@ router.delete('/:userId/:postId', passport.authenticate('jwt', {session:false, f
 
         //Delete reports of the post
         await Report.deleteMany({postReportedId: {_id: postId} })
+
+        //Delete report of the posts comments
+
         //Remove post and send response
         await post.remove();
         

@@ -84,12 +84,13 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         if (!type) {
             reports = yield mongoose_1.Report.find({})
                 .sort({ createdAt: -1 })
+                .populate('userId', 'username')
                 .populate({
                 path: 'commentReportedId',
                 select: ['userId', 'content'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
             })
                 .populate({
@@ -97,7 +98,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
                 select: ['userId', 'content', 'multimedia'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
             })
                 .populate({
@@ -105,33 +106,36 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
                 select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
             });
         }
-        if (type === "post") {
+        if (type === "postReportedId") {
             reports = yield mongoose_1.Report.find({ postReportedId: { $exists: true } })
                 .sort({ createdAt: -1 })
+                .populate('userId', 'username')
                 .populate({
                 path: 'postReportedId',
                 select: ['userId', 'content', 'multimedia'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
             });
         }
-        if (type === "comment") {
+        if (type === "commentReportedId") {
             reports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } })
                 .sort({ createdAt: -1 })
+                .populate('userId', 'username')
                 .populate({
                 path: 'commentReportedId',
                 select: ['userId', 'content'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname']
+                    select: ['firstname', 'lastname', 'username']
                 }
             });
         }
-        if (type === "user") {
+        if (type === "userReportedId") {
             reports = yield mongoose_1.Report.find({ userReportedId: { $exists: true } })
                 .sort({ createdAt: -1 })
+                .populate('userId', 'username')
                 .populate({
                 path: 'userReportedId',
                 select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
@@ -143,19 +147,17 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         return res.status(400).json({ errMsg: err });
     }
 }));
-router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put('/:userId/:reportId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId, reportId } = req.params;
         const { type } = req.body;
-        if (!type)
-            return res.status(400).json('Please send type of report');
         const admin = yield mongoose_1.User.findById(`${userId}`);
         if (!admin || !admin.isAdmin)
             return res.status(401).json('Missings permissions');
         const report = yield mongoose_1.Report.findById(`${reportId}`);
         if (!report)
             return res.status(404).json('Report not found');
-        if (type === 'post') {
+        if (type === 'postReportedId') {
             const post = yield mongoose_1.Post.findById(`${report.postReportedId}`);
             if (!post)
                 return res.status(404).json('Post not found');
@@ -168,11 +170,22 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             yield newUser.save();
             const commentId = post.commentsId;
             yield mongoose_1.Comment.deleteMany({ _id: { $in: commentId } });
-            yield report.remove();
+            yield mongoose_1.Report.deleteMany({ postReportedId: { _id: post._id } });
             yield post.remove();
-            return res.json('Post reported successfully');
+            const newReports = yield mongoose_1.Report.find({ postReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
+                .populate('userId', 'username')
+                .populate({
+                path: 'postReportedId',
+                select: ['userId', 'content', 'multimedia'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname', 'username']
+                }
+            });
+            return res.json(newReports);
         }
-        if (type === 'comment') {
+        if (type === 'commentReportedId') {
             const comment = yield mongoose_1.Comment.findById(`${report.commentReportedId}`);
             if (!comment)
                 return res.status(404).json('Comment not found');
@@ -183,57 +196,138 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             if (!newPost)
                 return res.status(400).json('Not posible to delete');
             yield newPost.save();
-            yield report.remove();
+            yield mongoose_1.Report.deleteMany({ postReportedId: { _id: comment._id } });
             yield comment.remove();
-            return res.json('Comment reported successfully');
+            const newReports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
+                .populate('userId', 'username')
+                .populate({
+                path: 'commentReportedId',
+                select: ['userId', 'content'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname', 'username']
+                }
+            });
+            return res.json(newReports);
         }
-        let user = yield mongoose_1.User.findOneAndUpdate({ _id: `${report.userReportedId}` }, {
-            $set: {
-                posts: [],
-                following: [],
-                followers: [],
-                followRequest: [],
-                chats: []
+        if (type === 'userReportedId') {
+            let user = yield mongoose_1.User.findOneAndUpdate({ _id: `${report.userReportedId}` }, {
+                $set: {
+                    posts: [],
+                    following: [],
+                    followers: [],
+                    followRequest: [],
+                    chats: []
+                }
+            }, { new: true });
+            if (!user)
+                return res.status(404).json('Not posible to proceed');
+            const posts = yield mongoose_1.Post.find({ userId: user._id });
+            for (let i = 0; i < posts.length; i++) {
+                yield mongoose_1.Comment.deleteMany({ _id: { $in: posts[i].commentsId } });
             }
-        }, { new: true });
-        if (!user)
-            return res.status(404).json('Not posible to proceed');
-        const posts = yield mongoose_1.Post.find({ userId: user._id });
-        for (let i = 0; i < posts.length; i++) {
-            yield mongoose_1.Comment.deleteMany({ _id: { $in: posts[i].commentsId } });
+            yield mongoose_1.Post.deleteMany({ userId: user._id });
+            yield mongoose_1.Post.updateMany({}, {
+                $pull: {
+                    likes: `${user._id}`,
+                    dislikes: `${user._id}`,
+                }
+            });
+            yield mongoose_1.User.updateMany({}, {
+                $pull: {
+                    following: `${user._id}`,
+                    followers: `${user._id}`,
+                    followRequest: `${user._id}`
+                }
+            });
+            yield mongoose_1.Review.deleteOne({ userId: user._id });
+            user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
+            user.username = "Banned user";
+            user.isDeleted = true;
+            user.isAdmin = false;
+            user.isPremium = false;
+            user.isPrivate = false;
+            user.birthday = undefined;
+            user.biography = undefined;
+            user.review = undefined;
+            user.plan = undefined;
+            user.expirationDate = undefined;
+            yield user.save();
+            yield mongoose_1.Report.deleteMany({ userReportedId: { _id: user._id } });
+            const newReports = yield mongoose_1.Report.find({ userReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
+                .populate('userId', 'username')
+                .populate({
+                path: 'userReportedId',
+                select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+            });
+            return res.json(newReports);
         }
-        yield mongoose_1.Post.deleteMany({ userId: user._id });
-        yield mongoose_1.Post.updateMany({}, {
-            $pull: {
-                likes: `${user._id}`,
-                dislikes: `${user._id}`,
-            }
-        });
-        yield mongoose_1.User.updateMany({}, {
-            $pull: {
-                following: `${user._id}`,
-                followers: `${user._id}`,
-                followRequest: `${user._id}`
-            }
-        });
-        yield mongoose_1.Review.deleteOne({ userId: user._id });
-        user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
-        user.username = "Banned user";
-        user.isDeleted = true;
-        user.isAdmin = false;
-        user.isPremium = false;
-        user.isPrivate = false;
-        user.birthday = undefined;
-        user.biography = undefined;
-        user.review = undefined;
-        user.plan = undefined;
-        user.expirationDate = undefined;
-        yield user.save();
-        yield report.remove();
-        return res.json('User banned successfully');
+        res.status(400).json('Please send type of report');
     }
     catch (err) {
         return res.status(400).json('Something went wrong');
+    }
+}));
+router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId, reportId } = req.params;
+        const { type } = req.body;
+        const admin = yield mongoose_1.User.findById(`${userId}`);
+        if (!admin || !admin.isAdmin)
+            return res.status(401).json('Missings permissions');
+        const report = yield mongoose_1.Report.findById(`${reportId}`);
+        if (!report)
+            return res.status(404).json('Report not found');
+        if (!report)
+            return res.status(404).json('Report not found');
+        if (type === 'postReportedId') {
+            yield mongoose_1.Report.deleteMany({ postReportedId: { _id: report.postReportedId } });
+            const newReports = yield mongoose_1.Report.find({ postReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
+                .populate('userId', 'username')
+                .populate({
+                path: 'postReportedId',
+                select: ['userId', 'content', 'multimedia'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname', 'username']
+                }
+            });
+            return res.json(newReports);
+        }
+        if (type === 'commentReportedId') {
+            yield mongoose_1.Report.deleteMany({ commentReportedId: { _id: report.commentReportedId } });
+            const newReports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
+                .populate('userId', 'username')
+                .populate({
+                path: 'commentReportedId',
+                select: ['userId', 'content'],
+                populate: {
+                    path: 'userId',
+                    select: ['firstname', 'lastname', 'username']
+                }
+            });
+            return res.json(newReports);
+        }
+        if (type === 'userReportedId') {
+            yield mongoose_1.Report.deleteMany({ userReportedId: { _id: report.userReportedId } });
+            const newReports = yield mongoose_1.Report.find({ userReportedId: { $exists: true } })
+                .sort({ createdAt: -1 })
+                .populate('userId', 'username')
+                .populate({
+                path: 'userReportedId',
+                select: ['firstname', 'lastname', 'biography', 'profilePicture', 'username'],
+            });
+            return res.json(newReports);
+        }
+        res.status(400).json('Please send type of report');
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json(error);
     }
 }));
 exports.default = router;
