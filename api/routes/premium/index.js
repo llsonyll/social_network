@@ -69,7 +69,8 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
                 userId: user._id,
                 amount,
                 paymentDate: new Date(),
-                plan
+                plan,
+                paymentStatus: payment.status
             });
             yield transaction.save();
             return res.status(201).json({ msg: "Successfull payment" });

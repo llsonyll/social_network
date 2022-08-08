@@ -91,7 +91,8 @@ export interface IPayment {
    userId: Types.ObjectId;
    amount: number;
    plan: 'weekly' | 'monthly' | 'yearly';
-   paymentDate: Date
+   paymentDate: Date,
+   paymentStatus: string
 }
 
 export interface INotification {

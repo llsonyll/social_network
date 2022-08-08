@@ -60,7 +60,8 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
                 userId: user._id,
                 amount,
                 paymentDate: new Date(),
-                plan
+                plan,
+                paymentStatus: payment.status
             });
             await transaction.save();
 
