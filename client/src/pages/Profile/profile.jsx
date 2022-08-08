@@ -34,11 +34,14 @@ import { getLoggedUserInfo } from "../../redux/actions/authActions";
 import { AiFillSetting } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
 import { AiFillEye } from "react-icons/ai";
+import { FaFirstOrderAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
 import {MdModeEditOutline} from 'react-icons/md'
 import { clearAll, listFollowing, listFollowers } from '../../redux/actions/listOfUsersRendererActions'
 import ListOfUsersRenderer from '../../components/ListOfUsersRenderer';
+import ListOfUsersRendererWithButtons from '../../components/ListOfUsersRendererWithButtons';
+
 
 
 
@@ -176,9 +179,10 @@ const Profile = () => {
   const [likesAsc, setLikesAsc] = useState(false);
   const [commentsQtyAsc, setCommentsQtyAsc] = useState(false);
   const [filtersActive, setFiltersActive] = useState(false);
-
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowing, setShowFollowing] = useState(false);
+  const [showFollowRequests, setShowFollowRequests] = useState(false);
+
 
   useEffect(() => {
     if (!filtersActive) {
@@ -336,9 +340,7 @@ const Profile = () => {
   const followRenderer = () => {
     return usersFollowing.includes(userLoggedId) ? (
       <Fragment key={Math.random()}>Unfollow</Fragment>
-    ) : followRequest.length &&
-      (followRequest?.includes(userLoggedId) ||
-        followRequest?.map((u) => u._id?.includes(userLoggedId))) ? (
+    ) : (followRequest.length && (followRequest?.includes(userLoggedId))) ? (
       <Fragment key={Math.random()}>Pending</Fragment>
     ) : (
       <Fragment key={Math.random()}>Follow</Fragment>
@@ -358,8 +360,14 @@ const Profile = () => {
   const handleClose = () => {
     showFollowers !== false && setShowFollowers(false);
     showFollowing !== false && setShowFollowing(false);
+    showFollowRequests !== false && setShowFollowRequests(false);
     dispatch(clearAll());
   };
+
+  const handleClickOnMostrarPendientes=(e) =>{
+    e.preventDefault(); 
+    setShowFollowRequests(!showFollowRequests)
+  }
 
   return (
     <>
@@ -498,10 +506,12 @@ const Profile = () => {
                   </div>
                   <div className="user-username justify-between">
                     <div className="info_container">
-                      <span className="span-info">Username</span>
-                      {isConnected && <span className="connected">.</span>}
-                      {"@" + userUsername}
-                    </div>
+    <span className="span-info">Username</span>
+    <Fragment >
+    {isConnected && <FaFirstOrderAlt color="green"/>}
+    {"@" + userUsername}
+    </Fragment>
+  </div>
                     {params.id === userLoggedId ? (
                       <button
                         className="bg-green-600 hover:bg-green-700 my-2 flex items-center justify-center gap-1 font-semibold"
@@ -555,45 +565,13 @@ const Profile = () => {
                         Edit
                       </button>
                     ) : null}
-                  </div>
-
-                  <div>
-                    {params.id === userLoggedId ? (
-                      followRequest ? (
-                        <div className="button_container">
-                          {followRequest.map((r) => {
-                            return (
-                              <div key={r._id}>
-                                <img
-                                  src={r.profilePicture}
-                                  className="img-follow-request"
-                                />
-                                <p className="username-follow-request">
-                                  {r.username}
-                                </p>
-                                <button
-                                  onClick={() => {
-                                    dispatch(cancelFollowRequest(_id, r._id));
-                                  }}
-                                  type="button"
-                                >
-                                  Cancel
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    dispatch(acceptFollowRequest(_id, r._id));
-                                  }}
-                                  type="button"
-                                >
-                                  Acept
-                                </button>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      ) : null
-                    ) : null}
-                  </div>
+                  </div>                  
+                    
+                    {/* Boton que se renderiza cuando hay follow requests */}
+             { followRequest?.length > 0 && params.id === userLoggedId ?
+             <button className="bg-[#4E864C] rounded-md mr-3 p-1 pl-3 pr-3 ml-3"
+                     onClick={handleClickOnMostrarPendientes}> Follow Requests </button>: null}
+                  
 
                   <div className="my-4">
                     <Link
@@ -688,6 +666,14 @@ const Profile = () => {
       {showFollowers === true && (
         <ListOfUsersRenderer
           titleToRender={"followers"}
+          userId={_id}
+          closeRenderFunction={handleClose}
+        />
+      )}
+      {showFollowRequests === true && (
+        <ListOfUsersRendererWithButtons
+          arrayOfPeopleToRender={followRequest}
+          titleToRender={"followRequests"}
           userId={_id}
           closeRenderFunction={handleClose}
         />

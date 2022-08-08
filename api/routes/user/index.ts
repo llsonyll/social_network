@@ -272,10 +272,10 @@ router.get(
             createdAt: { $gte: new Date(date - 259200000) },
             userId: { $nin: [...user.following, user._id] },
           })
-            .sort({ createdAt: -1 })
-            .skip(page * 10)
-            .limit(10)
-            .populate("userId", ["username", "profilePicture"]);
+          .sort({ createdAt: -1 })
+          .skip(page * 10)
+          .limit(10)
+          .populate("userId", ["username", "profilePicture", "isPrivate"]);
         }
       }
 
@@ -403,14 +403,14 @@ router.put(
         // user.following.push(userFollowed._id);
         await User.findOneAndUpdate({_id: user._id},{
           $addToSet:{
-              following: user._id
+              following: userFollowed._id
           }
       })
         await user.save();
         // userFollowed.followers.push(user._id);
         await User.findOneAndUpdate({_id: userFollowed._id},{
           $addToSet:{
-              followers: user._id
+            followers: user._id
           }
       })
         await userFollowed.save();
@@ -510,10 +510,9 @@ router.put(
           },
         },
         { new: true }
-      );
+      ).populate('followRequest',['username','profilePicture']);
       if (!user) return res.status(404).json({ msg: "User not found" });
       user.followers.push(`${userRequesting._id}`);
-
       await user.save();
 
       userRequesting.following.push(user._id);
@@ -555,7 +554,7 @@ router.put(
           },
         },
         { new: true }
-      );
+      ).populate('followRequest',['username','profilePicture']);
       if (!user) return res.status(404).json({ msg: "User not found" });
 
       await user.save();

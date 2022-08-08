@@ -40,6 +40,7 @@ const NavBar = ({ openModal, openAdmin }) => {
   const notifications = useSelector(
     (store) => store.notification.notifications
   );
+  const unseenMessages = useSelector((state) => state.chat.unseenMessages)
 
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -163,6 +164,7 @@ const NavBar = ({ openModal, openAdmin }) => {
           style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
         >
           <FaFacebookMessenger />
+          {unseenMessages ? unseenMessages : null}
           Messages
         </NavLink>
         <button

@@ -9,7 +9,7 @@ import Mensajes from '../Mensajes/Mensajes'
 import {AiOutlineSend, AiOutlinePhone} from 'react-icons/ai'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { getChatInfo, getChats, sendMessage } from '../../redux/actions/chatActions'
+import { getChatInfo, getChats, sendMessage, setSeenMessages } from '../../redux/actions/chatActions'
 import { addMessage, clearChatInfo, orderChats } from '../../redux/reducers/chatReducer'
 import { socket } from '../../App'
 import { AiOutlineMore } from "react-icons/ai";
@@ -40,10 +40,8 @@ const UserConversation = ({mostrarMenu, setmostrarMenu}) => {
 
     useEffect(()=>{
       if(chatInfo._id){
-        let checkChat = chats.find(chat => chat._id === chatInfo._id)
-        if(!checkChat){
-          dispatch(getChats(loggedUser._id))
-        }
+        dispatch(setSeenMessages(loggedUser._id, chatInfo._id))
+        dispatch(getChats(loggedUser._id))
       }
     },[chatInfo._id])
 
