@@ -7,7 +7,7 @@ import { GiCrownedSkull } from "react-icons/gi";
 
 import NewPostBtn from "../NewPostBtn";
 import logoSN from "../../../assets/LogoSN.png";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   browserAction,
@@ -29,6 +29,7 @@ const NavBar = ({ openModal, openAdmin }) => {
   };
    
   const [blur, setBlur] = useState(false);
+  let input = useRef();
   const [searchInput, setSearchInput] = useState("");
   const [searched, setSearched] = useState(false);
   const [unseen, setUnseen] = useState(0);
@@ -64,8 +65,11 @@ const NavBar = ({ openModal, openAdmin }) => {
   };
 
   const handleSelectRecent = (recentName) => {
-    setSearchInput(recentName);
-    handleSearchAction(recentName);
+    setTimeout(()=>{
+      setSearchInput(recentName);
+      handleSearchAction(recentName);
+      input.current.focus();
+    },500);
   };
 
   useEffect(() => {
@@ -91,8 +95,10 @@ const NavBar = ({ openModal, openAdmin }) => {
      if(action !== 'blur'){
       setBlur(false)
      }else{
-       setSearchInput("");
-       setBlur(true);
+       setTimeout(()=>{
+         setSearchInput("");
+         setBlur(true);
+       },500);
      }
   };
 
@@ -110,8 +116,9 @@ const NavBar = ({ openModal, openAdmin }) => {
               maxLength="50"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              onBlur={() => handlerBlur("blur")}
+              ref={input}
               onFocus={handlerBlur}
+              onBlur={()=>handlerBlur('blur')}
               placeholder="Search a friend"
             />
           </form>
