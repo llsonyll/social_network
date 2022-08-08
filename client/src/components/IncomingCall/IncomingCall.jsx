@@ -18,7 +18,7 @@ const IncomingCall = (props) => {
     }
 
     return (
-        <Draggable bounds="parent">
+        <Draggable bounds="parent" cancel='.btn'>
             <div className="absolute z-50  ">
             <div className="flex flex-col">
             <div className="text-white text-center flex flex-col items-center">
@@ -26,8 +26,8 @@ const IncomingCall = (props) => {
             {data.username}
             </div>
             <div>
-                <button onClick={handleAcceptCall} className='bg-green-600 text-white p-2 rounded-md mx-1'><AiOutlinePhone/></button>
-                <button className='bg-red-600 text-white p-2 rounded-md mx-1' onClick={handleDenyCall}><FiPhoneMissed/></button>
+                <button onClick={handleAcceptCall} className='btn bg-green-600 text-white p-2 rounded-md mx-1'><AiOutlinePhone/></button>
+                <button className='btn bg-red-600 text-white p-2 rounded-md mx-1' onClick={handleDenyCall}><FiPhoneMissed/></button>
             </div>
             </div>
             </div>

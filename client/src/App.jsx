@@ -266,20 +266,20 @@ function App() {
   return (
     <>
       {onCall ? (
-        <Draggable bounds="parent">
+        <Draggable bounds="parent" cancel='.btn'>
           <div id="video_container">
             <div className="user_videos_container">
               <video ref={remoteVideoRef} autoPlay />
               <video ref={localVideoRef} autoPlay muted />
             </div>
             <div className="buttons_video_container">
-              <button onClick={handleCloseChat}>
+              <button onClick={handleCloseChat} className='btn'>
                 <FiPhoneMissed />
               </button>
-              <button onClick={handleStopCamera}>
+              <button onClick={handleStopCamera}className='btn'>
                 <AiOutlineVideoCamera />
               </button>
-              <button onClick={handleMuteMic}>
+              <button onClick={handleMuteMic}  className='btn'>
                 <AiOutlineAudioMuted />
               </button>
             </div>

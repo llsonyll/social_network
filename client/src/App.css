@@ -7,7 +7,8 @@ body {
   height: 400px;
   display: flex;
   flex-direction: column;
-  width: 600px;
+  width: 80%;
+  max-width: 600px;
   border: 1px solid #4e864c;
   bottom: 30px;
   left: 200px;
@@ -85,4 +86,13 @@ body::-webkit-scrollbar-thumb{
   background:#4e864c;
   border-radius: 10px;
 
+}
+
+@media (max-width:685px) {
+  .user_videos_container{
+    flex-direction: column;
+  }
+  video{
+    width: 100%;
+  }
 }
