@@ -168,7 +168,7 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             yield newUser.save();
             const commentId = post.commentsId;
             yield mongoose_1.Comment.deleteMany({ _id: { $in: commentId } });
-            yield report.remove();
+            yield mongoose_1.Report.deleteMany({ postReportedId: { _id: post._id } });
             yield post.remove();
             return res.json('Post reported successfully');
         }
@@ -183,7 +183,7 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
             if (!newPost)
                 return res.status(400).json('Not posible to delete');
             yield newPost.save();
-            yield report.remove();
+            yield mongoose_1.Report.deleteMany({ postReportedId: { _id: comment._id } });
             yield comment.remove();
             return res.json('Comment reported successfully');
         }
@@ -229,7 +229,7 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
         user.plan = undefined;
         user.expirationDate = undefined;
         yield user.save();
-        yield report.remove();
+        yield mongoose_1.Report.deleteMany({ userReportedId: { _id: user._id } });
         return res.json('User banned successfully');
     }
     catch (err) {

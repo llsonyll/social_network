@@ -166,7 +166,7 @@ async (req:Request, res:Response) =>{
             
             const commentId = post.commentsId;
             await Comment.deleteMany({_id: {$in: commentId}});
-            await report.remove();
+            await Report.deleteMany({postReportedId: {_id: post._id}})
             await post.remove();
             
             return res.json('Post reported successfully');
@@ -181,7 +181,7 @@ async (req:Request, res:Response) =>{
             const newPost = await Post.findOneAndUpdate({_id: post._id}, {$pull: {commentsId: comment._id}}, {new: true});
             if (!newPost) return res.status(400).json('Not posible to delete');
             await newPost.save();
-            await report.remove();
+            await Report.deleteMany({postReportedId: {_id: comment._id}})
             await comment.remove();
 
             return res.json('Comment reported successfully');
@@ -230,7 +230,7 @@ async (req:Request, res:Response) =>{
         user.expirationDate = undefined;
     
         await user.save();
-        await report.remove();
+        await Report.deleteMany({userReportedId: {_id: user._id}})
         
         return res.json('User banned successfully');
     }catch(err){

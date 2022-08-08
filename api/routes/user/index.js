@@ -401,6 +401,7 @@ router.put("/deleted/:userId", passport_1.default.authenticate("jwt", { session:
         user.plan = undefined;
         user.expirationDate = undefined;
         yield user.save();
+        yield mongoose_1.Report.deleteMany({ userReportedId: { _id: user._id } });
         return res.status(200).json('Deleted successfully');
     }
     catch (err) {

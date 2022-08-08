@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { Comment, Post, User, Review, Chat, Message } from "../../mongoose";
+import { Comment, Post, User, Review, Chat, Message, Report } from "../../mongoose";
 import passport from "passport";
 import bcrypt from "bcrypt";
 
@@ -478,6 +478,7 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
       user.expirationDate = undefined;
 
       await user.save();
+      await Report.deleteMany({userReportedId: {_id: user._id}});
 
       return res.status(200).json('Deleted successfully');
     } catch (err) {
