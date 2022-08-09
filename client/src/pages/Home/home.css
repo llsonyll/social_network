@@ -15,7 +15,6 @@
   box-shadow: inset 0px 0px 20px rgb(26, 26, 26);
 }
 #contenedor_friends .contenedorfriend .contenedorfriend_info {
-  width: 60%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -142,6 +141,17 @@ background-repeat:repeat;
   background-color: rgba(17, 17, 17, 0.658);
   border-radius: 5px;
   width: 100%;
+}
+.contenedorFriends-responsive_container::-webkit-scrollbar{
+  width: 10px;
+  background-color: #2e2e2e;
+
+}
+
+.contenedorFriends-responsive_container::-webkit-scrollbar-thumb{
+  background:#4e864c;
+  border-radius: 10px;
+
 }
 .contenedorFriends-responsive_container .contenedorfriend_info{
   display: NONE;

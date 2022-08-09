@@ -507,9 +507,8 @@ const Profile = () => {
                   <div className="user-username justify-between">
                     <div className="info_container">
     <span className="span-info">Username</span>
-    <Fragment >
-    {isConnected && <FaFirstOrderAlt color="green"/>}
-    {"@" + userUsername}
+    <Fragment>
+    <div className="username_conected">{isConnected && <FaFirstOrderAlt color="green" className="mr-1"/>} {"@" + userUsername}  </div>
     </Fragment>
   </div>
                     {params.id === userLoggedId ? (
