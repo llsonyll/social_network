@@ -25,8 +25,6 @@ import { makeReport } from "../../redux/actions/reportActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
-import { Link } from "react-router-dom";
-import { useRef } from "react";
 import axios from "axios";
 
 // import Multiselect from "multiselect-react-dropdown";
@@ -48,13 +46,15 @@ import {
   listFollowing,
   listFollowers,
 } from "../../redux/actions/listOfUsersRendererActions";
-import ListOfUsersRenderer from "../../components/ListOfUsersRenderer";
+
+import useFilters from "../../composables/filters";
 
 const Profile = () => {
   const params = useParams();
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
+  const [showFollowRequests, setShowFollowRequests] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
   // const loggedUser = useSelector((state) => state.auth.loggedUser);
   // const error = useSelector((state) => state.user.errorProfile);
@@ -180,7 +180,7 @@ const Profile = () => {
     handleDatePublishedFilter,
     handleLikesFilter,
     handleCommentsFilter,
-  } = Filters(posts);
+  } = useFilters(posts);
 
   useEffect(() => {
     setCurrentContent(posts);
@@ -201,8 +201,25 @@ const Profile = () => {
       setLikesAsc(false);
       setCommentsQtyAsc(false);
     }
+
     restoreContent();
   }, [filtersActive]);
+
+  useEffect(() => {
+    handleMultimediaFilter(withMultimedia);
+  }, [withMultimedia]);
+
+  useEffect(() => {
+    handleDatePublishedFilter(datePublishedAsc);
+  }, [datePublishedAsc]);
+
+  useEffect(() => {
+    handleLikesFilter(likesAsc);
+  }, [likesAsc]);
+
+  useEffect(() => {
+    handleCommentsFilter(commentsQtyAsc);
+  }, [commentsQtyAsc]);
 
   const filters = () => {
     return (
@@ -269,54 +286,6 @@ const Profile = () => {
         </div>
       </div>
     );
-  };
-
-  const postApplyFilters = () => {
-    if (!posts) return [];
-    if (!filtersActive) return posts;
-    let dummyPost = posts;
-
-    if (withMultimedia) {
-      dummyPost = dummyPost.filter((post) => !!post.multimedia);
-    } else {
-      dummyPost = dummyPost.filter((post) => !post.multimedia);
-    }
-
-    if (datePublishedAsc) {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        const t1 = new Date(nextPost.createdAt);
-        const t2 = new Date(post.createdAt);
-        return t1 - t2;
-      });
-    } else {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        const t1 = new Date(nextPost.createdAt);
-        const t2 = new Date(post.createdAt);
-        return t2 - t1;
-      });
-    }
-
-    if (likesAsc) {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        return post.likes.length - nextPost.likes.length;
-      });
-    } else {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        return nextPost.likes.length - post.likes.length;
-      });
-    }
-
-    if (commentsQtyAsc) {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        return post.commentsId.length - nextPost.commentsId.length;
-      });
-    } else {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        return nextPost.commentsId.length - post.commentsId.length;
-      });
-    }
-
-    return dummyPost;
   };
 
   let renderer = () => {

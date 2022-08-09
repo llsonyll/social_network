@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const Filters = (initialValue = []) => {
+const useFilters = (initialValue = []) => {
   const [currentContent, setCurrentContent] = useState(initialValue);
 
   useEffect(() => {
@@ -85,4 +85,4 @@ const Filters = (initialValue = []) => {
   };
 };
 
-export default Filters;
+export default useFilters;
