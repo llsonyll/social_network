@@ -7,6 +7,41 @@ import { mailInfo, sendMail } from "../../utils/nodemailer";
 import { IUser } from "../../types";
 
 const router = express.Router();
+
+//-------------------query ?email="user.email"
+router.get("/restorePassWord", async (req:Request, res:Response) => {
+   try {
+      const { email } = req.query;
+      if(!email){ return res.status(400).json({ error: "Email not provided" })}
+      
+      const user: IUser | null = await User.findOne({email: email});
+
+      if (!user){
+        return res.status(400).json({
+           error: "Email provided does not belong to any registered user",
+        });
+      }
+
+      const { _id } = user;
+
+      const mailMessage: mailInfo = {
+        title: "Password Restored",
+        subject: "Password Restoration",
+        message: `<li>Follow this link to restore your password: </li>
+        <li><a href="http://localhost:3000/${ _id }" target="_top" > here </a></li>`,
+        link:"https://www.socialn.me/"
+      };
+    
+      await sendMail(mailMessage, user.email);
+
+      return res.status(200).json({
+        message: "User's email successfully restored",
+      });
+   } catch (err) {
+      res.json(err);
+   }
+});
+
 // GET "/browser/:username"
 router.get(
   "/browser/:username",
@@ -295,47 +330,23 @@ router.get(
   }
 );
 
-//-------------------query ?email="user.email"
-router.get("/restorePassWord", async (req:Request, res:Response) => {
-   try {
-      const { email } = req.query;
-      if(!email){ return res.status(400).json({ error: "Email not provided" })}
-      const user = await User.findOne({email: email});
-
-      if (!user){
-        return res.status(400).json({
-           error: "Email provided does not belong to any registered user",
-        });
-      }
-
-      const mailMessage: mailInfo = {
-        title: "Password Restored",
-        subject: "Password Restoration",
-        message: `<li>Follow this link to restore your password: </li>
-        <li><a href="" target="_blank"> here </a></li>`,
-        link:"https://www.socialn.me/"
-      };
-    
-      await sendMail(mailMessage, user.email);
-
-      return res.status(200).json({
-        message: "User's password successfully restored",
-      });
-   } catch (err) {
-      res.json(err);
-   }
-});
 
 // POST "/restorePassword"
 router.post("/restorePassword", async (req: Request, res: Response) => {
   try {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ error: "Email not provided" });
-    const [user] = await User.find({ email: email });
+    const { userId  } = req.query;
+   
+    if (!userId) return res.status(400).json({ error: "userId not provided" });
+    
+    console.log('entre')
+
+    const user = await User.findById(`${userId}`);
+   
+    console.log("sali")
 
     if (!user)
       return res.status(400).json({
-        error: "Email provided does not belong to any registered user",
+        error: "userId  does not registered user",
       });
 
     const  generateRandomString = (num: number) => {

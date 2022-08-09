@@ -19,8 +19,8 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 
 //IMPORTS PARA SOCKET IO
 import io from "socket.io-client";
-//export const socket = io("http://localhost:3001");
-export const socket = io("https://back.socialn.me");
+export const socket = io("http://localhost:3001");
+//export const socket = io("https://back.socialn.me");
 //export const socket = io("https://www.dream-team-api.social");
  
 
@@ -296,7 +296,9 @@ function App() {
           ))
         : null}
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Landing />}>
+             <Route path=":id"/>
+        </Route>
         <Route path="/home" element={<DashBoard />}>
           <Route path="settings" element={<Settings />} />
           <Route path="notifications" element={<Notifications />} />

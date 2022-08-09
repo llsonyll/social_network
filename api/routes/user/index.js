@@ -18,6 +18,36 @@ const passport_1 = __importDefault(require("passport"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const nodemailer_1 = require("../../utils/nodemailer");
 const router = express_1.default.Router();
+//-------------------query ?email="user.email"
+router.get("/restorePassWord", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.query;
+        if (!email) {
+            return res.status(400).json({ error: "Email not provided" });
+        }
+        const user = yield mongoose_1.User.findOne({ email: email });
+        if (!user) {
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        }
+        const { _id } = user;
+        const mailMessage = {
+            title: "Password Restored",
+            subject: "Password Restoration",
+            message: `<li>Follow this link to restore your password: </li>
+        <li><a target="_self" href="http://localhost:3000/${_id}" > here </a></li>`,
+            link: "https://www.socialn.me/"
+        };
+        yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        return res.status(200).json({
+            message: "User's email successfully restored",
+        });
+    }
+    catch (err) {
+        res.json(err);
+    }
+}));
 // GET "/browser/:username"
 router.get("/browser/:username", passport_1.default.authenticate("jwt", {
     session: false,
@@ -251,45 +281,18 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
         return res.status(404).json({ errorMsg: err });
     }
 }));
-//-------------------query ?email="user.email"
-router.get("/restorePassWord", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { email } = req.query;
-        if (!email) {
-            return res.status(400).json({ error: "Email not provided" });
-        }
-        const user = yield mongoose_1.User.findOne({ email: email });
-        if (!user) {
-            return res.status(400).json({
-                error: "Email provided does not belong to any registered user",
-            });
-        }
-        const mailMessage = {
-            title: "Password Restored",
-            subject: "Password Restoration",
-            message: `<li>Follow this link to restore your password: </li>
-        <li><a href="" target="_blank"> here </a></li>`,
-            link: "https://www.socialn.me/"
-        };
-        yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
-        return res.status(200).json({
-            message: "User's password successfully restored",
-        });
-    }
-    catch (err) {
-        res.json(err);
-    }
-}));
 // POST "/restorePassword"
 router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email } = req.body;
-        if (!email)
-            return res.status(400).json({ error: "Email not provided" });
-        const [user] = yield mongoose_1.User.find({ email: email });
+        const { userId } = req.query;
+        if (!userId)
+            return res.status(400).json({ error: "userId not provided" });
+        console.log('entre');
+        const user = yield mongoose_1.User.findById(`${userId}`);
+        console.log("sali");
         if (!user)
             return res.status(400).json({
-                error: "Email provided does not belong to any registered user",
+                error: "userId  does not registered user",
             });
         const generateRandomString = (num) => {
             let result = Math.random().toString(36).substring(0, num);
