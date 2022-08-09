@@ -24,6 +24,11 @@ import {
 import { makeReport } from "../../redux/actions/reportActions";
 import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
+import {
+  clearAll,
+  listFollowing,
+  listFollowers,
+} from "../../redux/actions/listOfUsersRendererActions";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
 import axios from "axios";
 
@@ -41,13 +46,8 @@ import { AiFillEye } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { postNotification } from "../../redux/actions/notificationActions";
 import { MdModeEditOutline } from "react-icons/md";
-import {
-  clearAll,
-  listFollowing,
-  listFollowers,
-} from "../../redux/actions/listOfUsersRendererActions";
-import ListOfUsersRenderer from "../../components/ListOfUsersRenderer";
-import ListOfUsersRendererWithButtons from "../../components/ListOfUsersRendererWithButtons";
+
+import useFilters from "../../composables/filters";
 
 const Profile = () => {
   const params = useParams();
@@ -225,7 +225,9 @@ const Profile = () => {
     return (
       <div className="bg-[#202225] flex md:flex-row flex-col justify-center items-center p-4 md:gap-8 gap-4 text-white font-semibold md:text-base text-xs">
         <div className="flex flex-row-reverse gap-1">
-          <label htmlFor=""> Filters </label>
+          <label htmlFor="">
+            {filtersActive ? "Reset Filters" : "Use filters"}
+          </label>
           <input
             type="checkbox"
             checked={filtersActive}
@@ -237,7 +239,9 @@ const Profile = () => {
             filtersActive ? "" : "opacity-75"
           }`}
         >
-          <label htmlFor=""> With Multimedia </label>
+          <label htmlFor="">
+            {!withMultimedia ? "With Multimedia" : "No Multimedia"}
+          </label>
           <input
             type="checkbox"
             checked={withMultimedia}
@@ -250,7 +254,9 @@ const Profile = () => {
             filtersActive ? "" : "opacity-75"
           }`}
         >
-          <label htmlFor="">Date {datePublishedAsc ? "ASC" : "DESC"}</label>
+          <label htmlFor="">
+            {!datePublishedAsc ? "Most recent" : "Most older"}
+          </label>
           <input
             type="checkbox"
             checked={datePublishedAsc}
@@ -263,7 +269,7 @@ const Profile = () => {
             filtersActive ? "" : "opacity-75"
           }`}
         >
-          <label htmlFor=""> Likes {likesAsc ? "ASC" : "DESC"} </label>
+          <label htmlFor=""> {likesAsc ? "Most likes" : "Least likes"} </label>
           <input
             type="checkbox"
             checked={likesAsc}
@@ -276,7 +282,9 @@ const Profile = () => {
             filtersActive ? "" : "opacity-75"
           }`}
         >
-          <label htmlFor="">Comments {commentsQtyAsc ? "ASC" : "DESC"}</label>
+          <label htmlFor="">
+            {commentsQtyAsc ? "Most comments" : "Least commented"}
+          </label>
           <input
             type="checkbox"
             checked={commentsQtyAsc}

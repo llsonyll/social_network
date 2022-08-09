@@ -7,9 +7,9 @@ const useFilters = (initialValue = []) => {
     setCurrentContent(initialValue);
   }, []);
 
-  useEffect(() => {
-    console.log("CurrentContent", currentContent);
-  }, [currentContent]);
+  // useEffect(() => {
+  //   console.log("CurrentContent", currentContent);
+  // }, [currentContent]);
 
   const handleMultimediaFilter = (checkValue = true) => {
     if (currentContent.length === 0) return;
