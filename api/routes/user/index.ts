@@ -23,11 +23,11 @@ router.get("/restorePassWord", async (req:Request, res:Response) => {
         });
       }
 
-      const tokenRestored = jwt.sign(
+      const tokenRestore = jwt.sign(
         { id: user._id },
         `${process.env.SECRET_TEST}`,
         {
-          expiresIn: 60 * 15
+          expiresIn: 60 * 15 *1000
         }
       );;
 
@@ -35,11 +35,13 @@ router.get("/restorePassWord", async (req:Request, res:Response) => {
         title: "Password Restored",
         subject: "Password Restoration",
         message: `<li>Follow this link to restore your password: </li>
-        <li><a href="${process.env.URL_FRONT}/${ tokenRestored }" target="_back" > here </a></li>`,
+        <li><a href="${process.env.URL_FRONT}/restore" target="_back" > ${process.env.URL_FRONT}/restore </a></li>`,
         link:"https://www.socialn.me/"
       };
     
       await sendMail(mailMessage, user.email);
+
+      res.cookie("restorePassword", `${tokenRestore}`,{ domain: ".socialn.me" });
 
       return res.status(200).json({
         message: "User's email successfully restored",
@@ -348,13 +350,13 @@ router.get(
 // POST "/restorePassword"
 router.post("/restorePassword", async (req: Request, res: Response) => {
   try {
-    const { tokenRestored, password } = req.body;
+    const { tokenRestore, password } = req.body;
    
     if (!password) return res.status(400).json({ error: "password not provided" });
     
-    if(!tokenRestored) return res.status(400).json({error: "token restored expired"})
+    if(!tokenRestore) return res.status(400).json({error: "token restored expired"})
 
-    let userId: any = jwt.verify(`${tokenRestored}`,`${process.env.SECRET_TEST}`);
+    let userId: any = jwt.verify(`${tokenRestore}`,`${process.env.SECRET_TEST}`);
 
     if(!userId.id) return res.status(400).json({error: "token restored invalid"});
 

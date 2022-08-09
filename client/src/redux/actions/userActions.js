@@ -81,12 +81,19 @@ export const modifyUser = (id, obj) => async (dispatch) => {
 export const restorePassword = async (email) => {
   try {
     const { data } = await apiConnection(`user/restorePassword?email=${email}`);
-    console.log(data);
     return data;
   } catch (err) {
     return { error: err.response.data.error ?? 'Email provided does not belong to any registered user' }
   }
 };
+
+export const restoredNewPassword = async(tokenRestore, password) => {
+   try {
+       await apiConnection.post(`user/restorePassword`,{ tokenRestore, password }); 
+   } catch (err) {
+     console.log(err);
+   }
+}
 
 export const changePassword = (current, newPassword, userId) => async (dispatch) => {
   try {

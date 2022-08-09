@@ -18,7 +18,6 @@ import { loginAction } from "../../redux/actions/authActions";
 
 
 if(cookie.get("token")){
-	console.log(cookie.get("token"));
 	localStorage.setItem("token",cookie.get("token"))
 	cookie.remove("token",{path:"",domain:`.socialn.me`});
   cookie.remove("token",{path:"",domain:`www.socialn.me`});

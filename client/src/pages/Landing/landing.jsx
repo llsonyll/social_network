@@ -5,38 +5,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllReviewes } from "../../redux/actions/reviewAction";
 //iconos
 import { AiFillStar } from "react-icons/ai";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 //logo
 import Logo from "../../../assets/LogoSN.png";
 //componentes
 import Register from "../../components/LandingRegister";
 import Signin from "../../components/LandingSignIn";
-import axios from "axios";
 
 const Landing = () => {
   const dispatch = useDispatch();
   const loggedUser = useSelector((store) => store.auth.loggedUser);
   const arrOfReviews = useSelector((state) => state.review.allReviewes);
   const navigate = useNavigate();
-  let { id } = useParams();
-  
-  const restoredPassword = async() =>{
-    try {
-      const res = await axios.post(`http://localhost:3001/user/restorePassword?userId=${id}`,{});
-      console.log(res);
-      navigate("/")
-    } catch (err) {
-      console.log(restored)
-      navigate("/")
-    }
-  } 
-  useEffect(()=>{
-     if(id){
-       restoredPassword();
-     }
-  },[])
-  
+    
   const [form, setForm] = useState("Sign in");
   //const [reviewToShow, setReviewToShow] = useState();
 

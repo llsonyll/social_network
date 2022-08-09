@@ -298,9 +298,7 @@ function App() {
           ))
         : null}
       <Routes>
-        <Route path="/" element={<Landing />}>
-             <Route path=":id"/>
-        </Route>
+        <Route path="/" element={<Landing />}/>
         <Route path="/home" element={<DashBoard />}>
           <Route path="settings" element={<Settings />} />
           <Route path="notifications" element={<Notifications />} />

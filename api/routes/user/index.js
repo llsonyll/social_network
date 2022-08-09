@@ -32,18 +32,19 @@ router.get("/restorePassWord", (req, res) => __awaiter(void 0, void 0, void 0, f
                 error: "Email provided does not belong to any registered user",
             });
         }
-        const tokenRestored = jsonwebtoken_1.default.sign({ id: user._id }, `${process.env.SECRET_TEST}`, {
-            expiresIn: 60 * 15
+        const tokenRestore = jsonwebtoken_1.default.sign({ id: user._id }, `${process.env.SECRET_TEST}`, {
+            expiresIn: 60 * 15 * 1000
         });
         ;
         const mailMessage = {
             title: "Password Restored",
             subject: "Password Restoration",
             message: `<li>Follow this link to restore your password: </li>
-        <li><a href="${process.env.URL_FRONT}/${tokenRestored}" target="_back" > here </a></li>`,
+        <li><a href="${process.env.URL_FRONT}/restore" target="_back" > ${process.env.URL_FRONT}/restore </a></li>`,
             link: "https://www.socialn.me/"
         };
         yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        res.cookie("restorePassword", `${tokenRestore}`, { domain: ".socialn.me" });
         return res.status(200).json({
             message: "User's email successfully restored",
         });
@@ -295,12 +296,12 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
 // POST "/restorePassword"
 router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { tokenRestored, password } = req.body;
+        const { tokenRestore, password } = req.body;
         if (!password)
             return res.status(400).json({ error: "password not provided" });
-        if (!tokenRestored)
+        if (!tokenRestore)
             return res.status(400).json({ error: "token restored expired" });
-        let userId = jsonwebtoken_1.default.verify(`${tokenRestored}`, `${process.env.SECRET_TEST}`);
+        let userId = jsonwebtoken_1.default.verify(`${tokenRestore}`, `${process.env.SECRET_TEST}`);
         if (!userId.id)
             return res.status(400).json({ error: "token restored invalid" });
         //password encryption
