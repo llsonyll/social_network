@@ -138,11 +138,11 @@ const NavBar = ({ openModal, openAdmin }) => {
         </NavLink>
         <NavLink
           to="messages"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 relative"
           style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
         >
           <FaFacebookMessenger />
-          {unseenMessages ? unseenMessages : null}
+          {unseenMessages ? <span className="alert_notification w-3 h-3 top-1"></span>  : null}
           Messages
         </NavLink>
         <button

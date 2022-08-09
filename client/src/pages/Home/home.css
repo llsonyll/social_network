@@ -15,7 +15,6 @@
   box-shadow: inset 0px 0px 20px rgb(26, 26, 26);
 }
 #contenedor_friends .contenedorfriend .contenedorfriend_info {
-  width: 60%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -13,9 +13,9 @@ export const getUsersInfo = (userId) => async (dispatch) => {
   }
 };
 
-export const getPaymentsInfo = (adminId, userId) => async (dispatch) => {
+export const getPaymentsInfo = (adminId) => async (dispatch) => {
   try {
-    const { data } = await apiConnection.get(`admin//payments/${adminId}/${userId}`);
+    const { data } = await apiConnection.get(`admin//payments/${adminId}`);
     return dispatch(getPayments(data));
   } catch (err) {
     console.log(err);

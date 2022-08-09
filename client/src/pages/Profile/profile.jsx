@@ -46,8 +46,8 @@ import {
   listFollowing,
   listFollowers,
 } from "../../redux/actions/listOfUsersRendererActions";
-
-import useFilters from "../../composables/filters";
+import ListOfUsersRenderer from "../../components/ListOfUsersRenderer";
+import ListOfUsersRendererWithButtons from "../../components/ListOfUsersRendererWithButtons";
 
 const Profile = () => {
   const params = useParams();
@@ -487,8 +487,12 @@ const Profile = () => {
                     <div className="info_container">
                       <span className="span-info">Username</span>
                       <Fragment>
-                        {isConnected && <FaFirstOrderAlt color="green" />}
-                        {"@" + userUsername}
+                        <div className="username_conected">
+                          {"@" + userUsername}
+                          {isConnected && (
+                            <FaFirstOrderAlt color="green" className="ml-2" />
+                          )}
+                        </div>
                       </Fragment>
                     </div>
                     {params.id === userLoggedId ? (
