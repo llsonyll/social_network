@@ -8,6 +8,7 @@ import PostDetail from "./pages/PostDetail";
 import DashBoard from "./layout/Dashboard";
 import Settings from "./pages/Settings";
 import Administrator from "./pages/Admin";
+import RestorePassword from "./pages/RestorePassword";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,6 +45,7 @@ import Notifications from "./pages/Notifications/Notifications";
 import { getNotifications } from "./redux/actions/notificationActions";
 import { addNotification } from "./redux/reducers/notificationReducer.slice";
 import { getUnseenMessagesAmount } from "./redux/actions/chatActions";
+import restorePassword from "./pages/RestorePassword/restorePassword";
 
 function App() {
   const dispatch = useDispatch();
@@ -310,6 +312,7 @@ function App() {
           <Route path="post/:id" element={<PostDetail />} />
           <Route path="administrator" element={<Administrator />} />
         </Route>
+          <Route path="/restore" element={<RestorePassword />} />
       </Routes>
     </>
   );
