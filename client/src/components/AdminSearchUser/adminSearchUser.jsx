@@ -8,6 +8,7 @@ import { AiFillStar, AiFillInfoCircle } from "react-icons/ai";
 import { useState, useEffect } from "react";
 import { apiConnection } from "../../utils/axios";
 import Swal from "sweetalert2";
+import ListOfUserPaymentsRenderer from "../ListOfUserPaymentsRenderer/listOfUserPaymentsRenderer";
 
 const AdminSearchUser = () => {
   const [userInfo, setUserInfo] = useState({
@@ -21,11 +22,14 @@ const AdminSearchUser = () => {
     isPremium: false,
     isPrivate: false,
     review: {},
+    paymentsId: []
   });
 
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loadingSearchResults, setLoadingSearchResults] = useState(true);
+  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+  
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -147,6 +151,11 @@ const AdminSearchUser = () => {
     }
   }, [searchText]);
 
+
+  let handleShowPaymentDetails = () => {
+    setShowPaymentDetails(!showPaymentDetails)
+  }
+
   return (
     <>
       <form onSubmit={handleSearch} className="flex items-center gap-8">
@@ -262,6 +271,8 @@ const AdminSearchUser = () => {
               ></textarea>
             </div>
           </div>
+          {/* BOTON PARA VER EL DETALLE DE LOS PAGOS*/}
+          <button onClick={handleShowPaymentDetails} className="bg-green-700  py-1 font-semibold rounded-sm">See payments</button>
           {/* <InputText label="Biography" value={''} /> */}
           <div className="info_row flex gap-4">
             <div className="basis-1/4 font-light"> isAdmin </div>
@@ -338,6 +349,12 @@ const AdminSearchUser = () => {
           </div>
         </div>
       </div>
+      {showPaymentDetails === true && (
+        <ListOfUserPaymentsRenderer
+          arrayOfPaymentsToRender={userInfo?.paymentsId}
+          closeRenderFunction={handleShowPaymentDetails}
+        />
+      )}
     </>
   );
 };
