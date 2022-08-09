@@ -18,7 +18,7 @@ const Landing = () => {
   const loggedUser = useSelector((store) => store.auth.loggedUser);
   const arrOfReviews = useSelector((state) => state.review.allReviewes);
   const navigate = useNavigate();
-
+    
   const [form, setForm] = useState("Sign in");
   //const [reviewToShow, setReviewToShow] = useState();
 
@@ -69,7 +69,7 @@ const Landing = () => {
       </div>
     ) : null;
   };
-
+  
   return (
     <div className="landing_container">
       {form === "recovery" ? (

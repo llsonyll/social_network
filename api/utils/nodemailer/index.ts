@@ -4,6 +4,7 @@ import { MailOptions } from "nodemailer/lib/sendmail-transport";
 export interface mailInfo {
   title: String;
   message: String;
+  link?: String;
   subject: String;
 }
 
@@ -35,7 +36,7 @@ export const sendMail = async (
         ${mailInfo.message}        
       </ul>
       <br/>
-      <p>Visit us <a href="https://finaldeploy-tau.vercel.app" target="_blank"> here </a></p>
+      <p>Visit us <a href="${mailInfo.link}" target="_blank"> here </a></p>
       `;
 
   const mailOptions: MailOptions = {

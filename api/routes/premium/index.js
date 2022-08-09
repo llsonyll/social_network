@@ -71,12 +71,10 @@ router.post('/:userId', passport_1.default.authenticate('jwt', { session: false,
                 paymentStatus: payment.status
             });
             yield transaction.save();
-            console.log(transaction);
             if (user.paymentsId === undefined) {
                 yield mongoose_1.User.updateOne({ _id: user._id }, {
                     $set: { paymentsId: [transaction._id] }
                 });
-                console.log(user);
                 yield user.save();
                 return res.status(201).json({ msg: "Successfull payment" });
             }

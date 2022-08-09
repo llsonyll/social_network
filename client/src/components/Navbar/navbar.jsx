@@ -7,7 +7,7 @@ import { GiCrownedSkull } from "react-icons/gi";
 
 import NewPostBtn from "../NewPostBtn";
 import logoSN from "../../../assets/LogoSN.png";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   browserAction,
@@ -17,7 +17,6 @@ import { logOutUser } from "../../redux/reducers/authReducer.slice";
 import { MdOutlineLogout, MdAdminPanelSettings } from "react-icons/md";
 import SearchResults from "../SearchResults/searchResults";
 import { socket } from "../../App";
-import { useRef } from "react";
 
 const NavBar = ({ openModal, openAdmin }) => {
   let activeStyle = {
@@ -28,6 +27,9 @@ const NavBar = ({ openModal, openAdmin }) => {
     fontWeight: "normal",
     color: "grey",
   };
+   
+  const [blur, setBlur] = useState(false);
+  let input = useRef();
   const [menuActivo ,setmenuActivo] = useState(false)
   const [mostrarMenu , setMostrarMenu] = useState(false)
   const [searchInput, setSearchInput] = useState("");
@@ -66,8 +68,11 @@ const NavBar = ({ openModal, openAdmin }) => {
   };
 
   const handleSelectRecent = (recentName) => {
-    setSearchInput(recentName);
-    handleSearchAction(recentName);
+    setTimeout(()=>{
+      setSearchInput(recentName);
+      handleSearchAction(recentName);
+      input.current.focus();
+    },500);
   };
 
   useEffect(() => {
@@ -89,10 +94,22 @@ const NavBar = ({ openModal, openAdmin }) => {
     }
   }, [notifications]);
 
+  const handlerBlur = (action) => {
+     if(action !== 'blur'){
+      setBlur(false)
+     }else{
+       setTimeout(()=>{
+         setSearchInput("");
+         setBlur(true);
+       },500);
+     }
+  };
+
   const MenuAnimation = () => {
     setmenuActivo(state => !state)
     setMostrarMenu(state => !state)
   }
+
   return (
     <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50 relative">
       <div className="flex items-center gap-4 flex-1 justify-between md:justify-start">
@@ -107,16 +124,22 @@ const NavBar = ({ openModal, openAdmin }) => {
               maxLength="50"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
+              ref={input}
+              onFocus={handlerBlur}
+              onBlur={()=>handlerBlur('blur')}
               placeholder="Search a friend"
             />
           </form>
-          <SearchResults
+          {
+            !blur && 
+            <SearchResults
             input={searchInput}
             setInput={setSearchInput}
             selectRecent={handleSelectRecent}
             searched={searched}
             setSearched={setSearched}
-          />
+            />
+          }
         </div>
         <div className="text-white lg:hidden">
           <div className="icon__menu" onClick={MenuAnimation}>
