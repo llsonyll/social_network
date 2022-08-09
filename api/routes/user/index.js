@@ -44,7 +44,7 @@ router.get("/restorePassWord", (req, res) => __awaiter(void 0, void 0, void 0, f
             link: "https://www.socialn.me/"
         };
         yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
-        res.cookie("restorePassword", `${tokenRestore}`, { domain: ".socialn.me" });
+        res.cookie("restorePassword", `${tokenRestore}`, { domain: '.socialn.me' });
         return res.status(200).json({
             message: "User's email successfully restored",
         });
