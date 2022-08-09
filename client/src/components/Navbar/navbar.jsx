@@ -161,8 +161,9 @@ const NavBar = ({ openModal, openAdmin }) => {
                   </NavLink>
                   {isAdmin && (
                     <NavLink
-                      className="bg-blue-700 p-2 rounded font-bold text-lg"
+                      className="bg-blue-700 p-2 rounded font-bold text-xl w-5/6 flex justify-center"
                       to="administrator"
+                      onClick={MenuAnimation}
                     >
                       <MdAdminPanelSettings />
                     </NavLink>
