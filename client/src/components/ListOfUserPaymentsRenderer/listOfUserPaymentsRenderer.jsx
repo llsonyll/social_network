@@ -1,6 +1,6 @@
 import React from 'react'
 import Avatar from '../Avatar'
-import './ListOfUserPaymentsRenderer.css'
+//import './ListOfUserPaymentsRenderer.css'
 import {useSelector, useDispatch} from 'react-redux'
 import {Link} from 'react-router-dom'
 import { AiFillCloseSquare } from "react-icons/ai";
