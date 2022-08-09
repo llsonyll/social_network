@@ -30,7 +30,7 @@ const handleType = (value) => {
           className=" bg-[#b5b5b5] ml-0 mr-2 mt-3 mb-3 p-1 pl-3 pr-3 rounded-md"
           onClick={(e) => handleType(e)}
           type="button"
-          name="comment"
+          name="commentReportedId"
         >
           Comments
         </button>
@@ -38,7 +38,7 @@ const handleType = (value) => {
           className="bg-[#b5b5b5] rounded-md mr-3 p-1 pl-3 pr-3 ml-6"
           onClick={(e) => handleType(e)}
           type="button"
-          name="post"
+          name="postReportedId"
         >
           Posts
         </button>
@@ -46,7 +46,7 @@ const handleType = (value) => {
           className="bg-[#b5b5b5] rounded-md mr-3 p-1 pl-3 pr-3 ml-6"
           onClick={(e) => handleType(e)}
           type="button"
-          name="user"
+          name="userReportedId"
         >
           Users
         </button>

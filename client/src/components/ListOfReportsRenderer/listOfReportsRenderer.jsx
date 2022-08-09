@@ -55,19 +55,23 @@ console.log(reports)
                 //  console.log(type, r)
                 //  if(r.type === null) console.log("lol", r)
                 // console.log(tipoprueba)
-                console.log(r[tipoprueba].userId)
+                // console.log(r[tipoprueba].userId)
                 const {_id, reason} = r 
                 let content
                 let firstname
                 let lastname
+                let username
                 if(tipoprueba === "userReportedId") {
                    firstname = r[tipoprueba].firstname
                    lastname= r[tipoprueba].lastname
+                   username= r[tipoprueba].username
                   content = null
                 } else {
                   firstname = r[tipoprueba].userId.firstname
                   lastname= r[tipoprueba].userId.lastname
+                  username= r[tipoprueba].userId.username
                   content = r[tipoprueba].content
+
 
                 }
 
@@ -75,7 +79,7 @@ console.log(reports)
                     <li className='flex items-center justify-center text-slate-100 bg-[#2E2E2E]  shadow-xl rounded-lg '>
                                     <div className='w-10'>{reportCounter++}</div>
                                     
-                                    <div className='w-40'>{firstname + ' ' + lastname}</div>
+                                    <div className='w-40'>{firstname + ' ' + lastname} - {username}</div>
                                     <div className='w-72 h-20 self-center flex-wrap'>{reason}</div>
                                     <div className='w-40'>{content}</div>
                                     
