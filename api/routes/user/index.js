@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const passport_1 = __importDefault(require("passport"));
@@ -31,12 +32,15 @@ router.get("/restorePassWord", (req, res) => __awaiter(void 0, void 0, void 0, f
                 error: "Email provided does not belong to any registered user",
             });
         }
-        const { _id } = user;
+        const tokenRestored = jsonwebtoken_1.default.sign({ id: user._id }, `${process.env.SECRET_TEST}`, {
+            expiresIn: 60 * 15
+        });
+        ;
         const mailMessage = {
             title: "Password Restored",
             subject: "Password Restoration",
             message: `<li>Follow this link to restore your password: </li>
-        <li><a target="_self" href="http://localhost:3000/${_id}" > here </a></li>`,
+        <li><a href="${process.env.URL_FRONT}/${tokenRestored}" target="_back" > here </a></li>`,
             link: "https://www.socialn.me/"
         };
         yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
@@ -284,34 +288,31 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
 // POST "/restorePassword"
 router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId } = req.query;
-        if (!userId)
-            return res.status(400).json({ error: "userId not provided" });
-        console.log('entre');
-        const user = yield mongoose_1.User.findById(`${userId}`);
-        console.log("sali");
+        const { tokenRestored, password } = req.body;
+        if (!password)
+            return res.status(400).json({ error: "password not provided" });
+        if (!tokenRestored)
+            return res.status(400).json({ error: "token restored expired" });
+        let userId = jsonwebtoken_1.default.verify(`${tokenRestored}`, `${process.env.SECRET_TEST}`);
+        if (!userId.id)
+            return res.status(400).json({ error: "token restored invalid" });
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(`${password}`, salt);
+        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId.id}`, {
+            password: hash
+        }, { new: true });
         if (!user)
             return res.status(400).json({
                 error: "userId  does not registered user",
             });
-        const generateRandomString = (num) => {
-            let result = Math.random().toString(36).substring(0, num);
-            return result;
-        };
-        const dummyPassword = generateRandomString(Math.random() * 10 + 6);
         const mailMessage = {
             title: "Password Restored",
             subject: "Password Restoration",
             message: `<li>Your password was restored!</li>
-      <li>Your new Password is: <strong>${dummyPassword}</strong></li>`,
+      <li>Your new Password is: <strong>${password}</strong></li>`,
         };
-        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
-        console.log(message);
-        //password encryption
-        let salt = yield bcrypt_1.default.genSalt(10);
-        let hash = yield bcrypt_1.default.hash(dummyPassword, salt);
-        user.password = hash;
-        yield user.save();
+        yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
         return res.status(200).json({
             message: "User's password successfully restored",
         });

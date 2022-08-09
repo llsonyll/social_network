@@ -1,3 +1,4 @@
+import  jwt  from 'jsonwebtoken';
 import express, { Request, Response } from "express";
 import { Comment, Post, User, Review, Chat, Message } from "../../mongoose";
 import passport from "passport";
@@ -22,13 +23,19 @@ router.get("/restorePassWord", async (req:Request, res:Response) => {
         });
       }
 
-      const { _id } = user;
+      const tokenRestored = jwt.sign(
+        { id: user._id },
+        `${process.env.SECRET_TEST}`,
+        {
+          expiresIn: 60 * 15
+        }
+      );;
 
       const mailMessage: mailInfo = {
         title: "Password Restored",
         subject: "Password Restoration",
         message: `<li>Follow this link to restore your password: </li>
-        <li><a href="http://localhost:3000/${ _id }" target="_top" > here </a></li>`,
+        <li><a href="${process.env.URL_FRONT}/${ tokenRestored }" target="_back" > here </a></li>`,
         link:"https://www.socialn.me/"
       };
     
@@ -334,45 +341,39 @@ router.get(
 // POST "/restorePassword"
 router.post("/restorePassword", async (req: Request, res: Response) => {
   try {
-    const { userId  } = req.query;
+    const { tokenRestored, password } = req.body;
    
-    if (!userId) return res.status(400).json({ error: "userId not provided" });
+    if (!password) return res.status(400).json({ error: "password not provided" });
     
-    console.log('entre')
+    if(!tokenRestored) return res.status(400).json({error: "token restored expired"})
 
-    const user = await User.findById(`${userId}`);
+    let userId: any = jwt.verify(`${tokenRestored}`,`${process.env.SECRET_TEST}`);
+
+    if(!userId.id) return res.status(400).json({error: "token restored invalid"});
+
+    //password encryption
+    let salt =  await bcrypt.genSalt(10);
+    let hash =  await bcrypt.hash(`${password}`, salt);
+
+    const user = await User.findByIdAndUpdate(`${userId.id}`,{
+        password: hash
+    },{new: true});
    
-    console.log("sali")
-
     if (!user)
       return res.status(400).json({
         error: "userId  does not registered user",
       });
 
-    const  generateRandomString = (num: number) => {
-      let result = Math.random().toString(36).substring(0, num);             
-      return result;
-    };
-
-    const dummyPassword = generateRandomString(Math.random() * 10 + 6);
 
     const mailMessage: mailInfo = {
       title: "Password Restored",
       subject: "Password Restoration",
       message: `<li>Your password was restored!</li>
-      <li>Your new Password is: <strong>${dummyPassword}</strong></li>`,
+      <li>Your new Password is: <strong>${password}</strong></li>`,
     };
 
-    const { message } = await sendMail(mailMessage, user.email);
-    console.log(message);
-
-    //password encryption
-    let salt = await bcrypt.genSalt(10);
-    let hash = await bcrypt.hash(dummyPassword, salt);
-
-    user.password = hash;
-    await user.save();
-
+    await sendMail(mailMessage, user.email);
+ 
     return res.status(200).json({
       message: "User's password successfully restored",
     });
