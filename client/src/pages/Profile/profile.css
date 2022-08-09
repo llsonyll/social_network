@@ -347,3 +347,9 @@
   max-width: 12px;
   position: relative;
 }
+
+.username_conected{
+  flex-direction: row !important;
+  margin-left: 0px !important;
+  align-items: center;
+}

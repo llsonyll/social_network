@@ -13,6 +13,7 @@ import "./messages.css";
 
 
 
+
 const Messages = () => {
 
   let dispatch = useDispatch()
@@ -48,10 +49,11 @@ const Messages = () => {
 
   return (
     <div className="messages__father">
+         
       <div className="messages_container">
       
           <UserChats setMostrarMenu={setMostrarMenu}/>
-          {params.id? <UserConversation mostrarMenu={mostrarMenu} setmostrarMenu={setMostrarMenu}/> :null}
+          {params.id? <UserConversation mostrarMenu={mostrarMenu} setmostrarMenu={setMostrarMenu}/> : <div className="select-none no-view_chats flex flex-col text-white h-full items-center mt-28"> <img src="../../../assets/LogoSN.png" alt="" /> <h1 className="text-2xl mt-3 text-green-600">Social Network &#128154;</h1> <p className="text-lg text-gray-400">We protect your information &#128272;</p> <p className="text-md text-gray-400">You can send and receive messages &#128187; &#128241;</p> </div>}
         
       </div>
     </div>
