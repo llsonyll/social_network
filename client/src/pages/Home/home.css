@@ -222,3 +222,8 @@ background-repeat:repeat;
     display: flex;
   }
 }
+@media (max-width:358px) {
+  .follow-button_container{
+    flex-wrap: wrap;
+  }
+}
