@@ -41,12 +41,8 @@ router.get("/restorePassWord", async (req:Request, res:Response) => {
     
       await sendMail(mailMessage, user.email);
 
-      res.cookie("restorePassword", `${tokenRestore}`,{ domain: '.socialn.me'});
-
-      return res.status(200).json({
-        message: "User's email successfully restored",
-      });
-   } catch (err) {
+      return res.cookie("restorePassword", `${tokenRestore}`,{domain:`.socialn.me`});
+     } catch (err) {
       res.json(err);
    }
 });
