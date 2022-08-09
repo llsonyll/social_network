@@ -124,7 +124,7 @@ const NavBar = ({ openModal, openAdmin }) => {
             <span className={menuActivo === true ? 'active-line2' : null} ></span>
             <span className={menuActivo === true ? 'active-line3' : null}></span>
           </div>
-          <div className={`menu_responsive actions flex flex-col absolute pt-5 ${mostrarMenu === true ? 'menu_responsive-mostrar' : null }`}>
+          <div className={`menu_responsive actions  flex-col absolute pt-5 ${mostrarMenu === true ? 'menu_responsive-mostrar' : null }`}>
                   <NewPostBtn action={openModal} onClick={MenuAnimation}/>
                   <NavLink to="" className="flex items-center gap-2" onClick={MenuAnimation}>
                     <FaHome />
