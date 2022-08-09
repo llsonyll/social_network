@@ -508,7 +508,7 @@ const Profile = () => {
                     <div className="info_container">
     <span className="span-info">Username</span>
     <Fragment>
-    <div className="username_conected"> {"@" + userUsername} {isConnected && <FaFirstOrderAlt color="green" className="ml-2"/>} </div>
+    <div className="username_conected">{isConnected && <FaFirstOrderAlt color="green" className="mr-1"/>} {"@" + userUsername}  </div>
     </Fragment>
   </div>
                     {params.id === userLoggedId ? (

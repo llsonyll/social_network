@@ -4,14 +4,14 @@ body {
 
 #video_container{
   position: fixed;
-  height: 400px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   width: 80%;
   max-width: 600px;
   border: 1px solid #4e864c;
   bottom: 30px;
-  left: 200px;
+  left: 25%;
   background-color: rgba(0, 0, 0, 0.63);
   border-radius: 5px;
   z-index: 1;
@@ -19,7 +19,7 @@ body {
   justify-content: center;
   cursor: move;
   padding: 10px;
-  overflow: hidden;
+
 }
 .user_videos_container{
   width: auto;
@@ -91,8 +91,21 @@ body::-webkit-scrollbar-thumb{
 @media (max-width:685px) {
   .user_videos_container{
     flex-direction: column;
+    align-items: center;
+    height: 100%;
   }
   video{
     width: 100%;
+    margin: 0px;
+    height: 100% !important;
+  }
+  #video_container{
+    height: 50%;
+    padding: 10px;
+  }
+  .buttons_video_container button {
+  
+    padding: 2px 20px;
+    
   }
 }
