@@ -8,7 +8,8 @@ export let paymentSchema = new Schema<IPayment>({
     userId: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     amount: {type: Number, required: true},
     plan: {type: String, enum: ['weekly', 'monthly', 'yearly'], required: true},
-    paymentDate: {type: Date, require: true}
+    paymentDate: {type: Date, require: true},
+    paymentStatus: String
 }, {
 	versionKey: false
 })

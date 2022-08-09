@@ -143,9 +143,16 @@ router.get(
           path: "review",
         })
         .populate('followRequest', ['username', 'profilePicture'])
-        // .populate('followRequest', 'username')
-        // .populate('following', 'username')
-        // .populate('followers', 'username')
+        .populate({
+          path: 'paymentsId',
+          select: [
+            'paymentId',
+            'amount',
+            'plan',
+            'paymentDate',
+            'paymentStatus',
+          ]
+        })
         .select("-password");
       if (!user) return res.status(404).json({ errorMsg: "who are you?" });
       return res.status(201).json(user);
