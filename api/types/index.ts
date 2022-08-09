@@ -22,7 +22,7 @@ export interface IUser {
    review?: Types.ObjectId;
    socketId?: string;
    chats: Types.Array<Types.ObjectId>;
-   paymentsId?: string[];
+   paymentsId?: Types.Array<Types.ObjectId>;
    plan?: 'weekly' | 'monthly' | 'yearly';
    expirationDate?: Date;
    isDeleted: boolean;
@@ -91,7 +91,8 @@ export interface IPayment {
    userId: Types.ObjectId;
    amount: number;
    plan: 'weekly' | 'monthly' | 'yearly';
-   paymentDate: Date
+   paymentDate: Date,
+   paymentStatus?: string
 }
 
 export interface INotification {

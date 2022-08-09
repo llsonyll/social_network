@@ -18,6 +18,8 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const passport_1 = __importDefault(require("passport"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const nodemailer_1 = require("../../utils/nodemailer");
+// @ts-ignore-error
+const email_existence_1 = __importDefault(require("email-existence"));
 let router = express_1.default.Router();
 //---------------function create Token--------------------
 const createToken = (user) => {
@@ -47,11 +49,21 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         //password encryption
         let salt = yield bcrypt_1.default.genSalt(10);
         let hash = yield bcrypt_1.default.hash(password, salt);
+        //verify email existence uwu
+        yield email_existence_1.default.check(`${email}`, (err, response) => __awaiter(void 0, void 0, void 0, function* () {
+            console.log(response);
+            if (response === false) {
+                return res.status(400).json({ message: "Email doesn't exists" });
+            }
+            else {
+                let newUser = new mongoose_1.User(Object.assign(Object.assign({}, req.body), { password: hash, profilePicture: profileArray[Math.floor(Math.random() * 5)] }));
+                yield newUser.save();
+                next();
+            }
+        }));
         //create new User
-        let newUser = new mongoose_1.User(Object.assign(Object.assign({}, req.body), { password: hash, profilePicture: profileArray[Math.floor(Math.random() * 5)] }));
-        yield newUser.save();
         //res.status(201).json(newUser);
-        next();
+        // next();
     }
     catch (error) {
         res.json(error);

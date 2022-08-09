@@ -52,21 +52,32 @@ router.post('/:userId', passport.authenticate('jwt', {session:false, failureRedi
             user.isPremium = true;
             user.expirationDate = expirationDate;
             user.plan = plan;
-            user.paymentsId?.push(payment.id);
-            await user.save();
 
             const transaction = new Payment({
                 paymentId: payment.id,
                 userId: user._id,
                 amount,
                 paymentDate: new Date(),
-                plan
+                plan,
+                paymentStatus: payment.status
             });
             await transaction.save();
 
-            return res.status(201).json({msg: "Successfull payment"})
+            if (user.paymentsId === undefined) {
+                await User.updateOne({_id: user._id}, {
+                    $set: {paymentsId: [transaction._id]}
+                });
+                await user.save();
+    
+                return res.status(201).json({msg: "Successfull payment"});
+            }
+            user.paymentsId.push(transaction._id);
+            await user.save();
+    
+            return res.status(201).json({msg: "Successfull payment"});
         }
     } catch (error: any) {
+        console.log(error)
         error.raw?.message 
         ? res.status(400).json(error.raw?.message)
         : res.status(400).json('Payment fails');

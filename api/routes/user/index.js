@@ -88,9 +88,16 @@ router.get("/:userId", passport_1.default.authenticate("jwt", {
             path: "review",
         })
             .populate('followRequest', ['username', 'profilePicture'])
-            // .populate('followRequest', 'username')
-            // .populate('following', 'username')
-            // .populate('followers', 'username')
+            .populate({
+            path: 'paymentsId',
+            select: [
+                'paymentId',
+                'amount',
+                'plan',
+                'paymentDate',
+                'paymentStatus',
+            ]
+        })
             .select("-password");
         if (!user)
             return res.status(404).json({ errorMsg: "who are you?" });
@@ -233,7 +240,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
                     .sort({ createdAt: -1 })
                     .skip(page * 10)
                     .limit(10)
-                    .populate("userId", ["username", "profilePicture"]);
+                    .populate("userId", ["username", "profilePicture", "isPrivate"]);
             }
         }
         if (user.following.length === 0) {
@@ -331,7 +338,7 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
             // user.following.push(userFollowed._id);
             yield mongoose_1.User.findOneAndUpdate({ _id: user._id }, {
                 $addToSet: {
-                    following: user._id
+                    following: userFollowed._id
                 }
             });
             yield user.save();
