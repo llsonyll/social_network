@@ -3,13 +3,15 @@ body {
 }
 
 #video_container{
-  position: absolute;
+  position: fixed;
+  height: 300px;
   display: flex;
   flex-direction: column;
-  width: 500px;
+  width: 80%;
+  max-width: 600px;
   border: 1px solid #4e864c;
   bottom: 30px;
-  left: 200px;
+  left: 25%;
   background-color: rgba(0, 0, 0, 0.63);
   border-radius: 5px;
   z-index: 1;
@@ -17,7 +19,7 @@ body {
   justify-content: center;
   cursor: move;
   padding: 10px;
-  overflow: hidden;
+
 }
 .user_videos_container{
   width: auto;
@@ -28,6 +30,18 @@ body {
   width: 100%;
   text-align: center;
   
+}
+.react-draggable{
+  background-color: rgb(68, 68, 68);
+  border-radius: 5px;
+  padding: 10px;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 80px;
+  right: 10px;
+  border: 1px solid green;
 }
 
 .buttons_video_container button {
@@ -72,4 +86,26 @@ body::-webkit-scrollbar-thumb{
   background:#4e864c;
   border-radius: 10px;
 
+}
+
+@media (max-width:685px) {
+  .user_videos_container{
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+  }
+  video{
+    width: 100%;
+    margin: 0px;
+    height: 100% !important;
+  }
+  #video_container{
+    height: 50%;
+    padding: 10px;
+  }
+  .buttons_video_container button {
+  
+    padding: 2px 20px;
+    
+  }
 }

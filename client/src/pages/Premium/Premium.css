@@ -119,3 +119,21 @@
       opacity: 1;
     }
   }
+
+/* media queries */
+
+@media (max-width:692px) {
+    .premium_container{
+        flex-wrap: wrap;
+    }
+    .premium_container .payments_container{
+        width: 100%;
+       flex-direction: row;
+       overflow-x: auto;
+       padding-left: 0px;
+    }
+    .plan-escogido{
+        width: 99%;
+        padding: 0px 5px;
+    }
+}

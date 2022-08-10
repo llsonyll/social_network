@@ -66,3 +66,26 @@
     color:white;
     margin: 20px auto;
 }
+
+.chats-user_number{
+    background-color: #4e864c;
+    border-radius: 50%;
+    padding:  1px 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 25px;
+    line-height: 25px;
+}
+
+#chats-user__container::-webkit-scrollbar{
+    width: 10px;
+    background-color: #2e2e2e;
+  
+  }
+  
+#chats-user__container::-webkit-scrollbar-thumb{
+    background:#4e864c;
+    border-radius: 10px;
+  
+  }

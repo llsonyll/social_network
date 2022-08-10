@@ -17,6 +17,7 @@ import { logOutUser } from "../../redux/reducers/authReducer.slice";
 import { MdOutlineLogout, MdAdminPanelSettings } from "react-icons/md";
 import SearchResults from "../SearchResults/searchResults";
 import { socket } from "../../App";
+import { useRef } from "react";
 
 const NavBar = ({ openModal, openAdmin }) => {
   let activeStyle = {
@@ -27,7 +28,8 @@ const NavBar = ({ openModal, openAdmin }) => {
     fontWeight: "normal",
     color: "grey",
   };
-
+  const [menuActivo ,setmenuActivo] = useState(false)
+  const [mostrarMenu , setMostrarMenu] = useState(false)
   const [searchInput, setSearchInput] = useState("");
   const [searched, setSearched] = useState(false);
   const [unseen, setUnseen] = useState(0);
@@ -87,8 +89,12 @@ const NavBar = ({ openModal, openAdmin }) => {
     }
   }, [notifications]);
 
+  const MenuAnimation = () => {
+    setmenuActivo(state => !state)
+    setMostrarMenu(state => !state)
+  }
   return (
-    <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50">
+    <div className="navbar flex bg-[#252525] shadow-md justify-between px-4 md:px-12 py-3 items-center  sticky top-0 left-0 right-0 z-50 relative">
       <div className="flex items-center gap-4 flex-1 justify-between md:justify-start">
         <Link to="/home">
           <img src={logoSN} alt="logoSN" className="md:h-10 h-6 md:mr-4 mr-2" />
@@ -112,7 +118,64 @@ const NavBar = ({ openModal, openAdmin }) => {
             setSearched={setSearched}
           />
         </div>
-        <div className="text-white lg:hidden"> menu </div>
+        <div className="text-white lg:hidden">
+          <div className="icon__menu" onClick={MenuAnimation}>
+            <span className={menuActivo === true ? 'active-line1' : null} ></span>
+            <span className={menuActivo === true ? 'active-line2' : null} ></span>
+            <span className={menuActivo === true ? 'active-line3' : null}></span>
+          </div>
+          <div className={`menu_responsive actions  flex-col absolute pt-5 ${mostrarMenu === true ? 'menu_responsive-mostrar' : null }`}>
+                  <NewPostBtn action={openModal} onClick={MenuAnimation}/>
+                  <NavLink to="" className="flex items-center gap-2" onClick={MenuAnimation}>
+                    <FaHome />
+                    Home
+                  </NavLink>
+                  <NavLink
+                    to={`/home/notifications`}
+                    className="flex items-center gap-2 relative "
+                    style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
+                    onClick={MenuAnimation}
+                  >
+                    <MdNotifications className="text-2xl" />
+                    {unseen ? <span className="alert_notification">{unseen}</span> : null}
+                    Notifications
+                  </NavLink>
+                  <NavLink
+                    to={`profile/${userId}`}
+                    className="flex items-center gap-2"
+                    style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
+                    onClick={MenuAnimation}
+                  >
+                    {isPremium ? <GiCrownedSkull /> : <FaUserCircle />}
+                    Me
+                  </NavLink>
+                  <NavLink
+                    to="messages"
+                    className="flex items-center gap-2 relative"
+                    style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
+                    onClick={MenuAnimation}
+                  >
+                    <FaFacebookMessenger />
+                    {unseenMessages ? <span className="alert_notification w-3 h-3 top-1"></span>  : null}
+                    Messages
+                  </NavLink>
+                  {isAdmin && (
+                    <NavLink
+                      className="bg-blue-700 p-2 rounded font-bold text-xl w-5/6 flex justify-center"
+                      to="administrator"
+                      onClick={MenuAnimation}
+                    >
+                      <MdAdminPanelSettings />
+                    </NavLink>
+                  )}
+                  <button
+                    className="bg-red-500 p-2 rounded font-bold text-xl w-5/6 flex justify-center mt-16"
+                    onClick={handleLogOut}
+                  >
+                    <MdOutlineLogout />
+                  </button>
+          </div>
+        </div>
       </div>
       <div className="actions hidden lg:flex">
         <NavLink to="" className="flex items-center gap-2">
@@ -138,11 +201,11 @@ const NavBar = ({ openModal, openAdmin }) => {
         </NavLink>
         <NavLink
           to="messages"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 relative"
           style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
         >
           <FaFacebookMessenger />
-          {unseenMessages ? unseenMessages : null}
+          {unseenMessages ? <span className="alert_notification w-3 h-3 top-1"></span>  : null}
           Messages
         </NavLink>
         <button

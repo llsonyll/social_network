@@ -61,6 +61,18 @@
     background-color: #3d693c;
 }
 
+#coversation__container::-webkit-scrollbar{
+    width: 10px;
+    background-color: #2e2e2e;
+  
+  }
+  
+  #coversation__container::-webkit-scrollbar-thumb{
+    background:#4e864c;
+    border-radius: 10px;
+  
+  }
+
 
 .more_chat{
     position: absolute;
