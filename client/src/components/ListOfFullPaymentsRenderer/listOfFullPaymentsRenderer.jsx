@@ -1,6 +1,6 @@
 import React from 'react'
 import Avatar from '../Avatar'
-import './ListOfFullPaymentsRenderer.css'
+//import './ListOfFullPaymentsRenderer.css'
 import { useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 import { getReportsAction } from '../../redux/actions/reportActions'
