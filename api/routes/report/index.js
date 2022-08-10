@@ -56,12 +56,12 @@ router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessi
             const existReport = yield mongoose_1.Report.findOne({ userReportedId: `${reportId}` });
             if (existReport && `${existReport.userId}` === `${userId}`)
                 return res.status(400).json({ msg: 'Report already exist' });
-            const user = yield mongoose_1.User.findById(`${reportId}`);
-            if (!user)
+            const userReported = yield mongoose_1.User.findById(`${reportId}`);
+            if (!userReported)
                 return res.status(404).json({ msg: 'User not found' });
             var report = new mongoose_1.Report({
                 userId: user._id,
-                userReportedId: user._id,
+                userReportedId: userReported._id,
                 reason
             });
         }

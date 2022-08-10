@@ -22,7 +22,7 @@ router.get('/:userId', passport.authenticate('jwt', {session:false, failureRedir
         }
 
         if(users){
-            user.chats = user.chats.filter((chat:any) => chat.users[getIndex(chat.users, userId)].username.includes(users))
+            user.chats = user.chats.filter((chat:any) => chat.users[getIndex(chat.users, userId)].username.toLowerCase().includes(`${users}`.toLowerCase()))
         }
         return res.json(user)
 

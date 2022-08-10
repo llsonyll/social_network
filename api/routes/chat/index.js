@@ -29,7 +29,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
             return res.status(400).json({ errorMessage: 'No User Found' });
         }
         if (users) {
-            user.chats = user.chats.filter((chat) => chat.users[(0, browserFollowers_1.getIndex)(chat.users, userId)].username.includes(users));
+            user.chats = user.chats.filter((chat) => chat.users[(0, browserFollowers_1.getIndex)(chat.users, userId)].username.toLowerCase().includes(`${users}`.toLowerCase()));
         }
         return res.json(user);
     }

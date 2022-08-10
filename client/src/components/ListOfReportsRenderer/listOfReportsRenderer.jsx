@@ -63,32 +63,32 @@ const ListOfReportsRenderer = ({type}) => {
                 let idOfReporter          //del que reportó
                 let thingReportedId       //de la cosa que se reportó (solo puede ser comment | post)
                 if(tipoprueba === "userReportedId") {
-                   firstname = r[tipoprueba].firstname
-                   lastname= r[tipoprueba].lastname
-                   usernameOfReported= r[tipoprueba].username
-                   usernameOfReporter= r.userId.username
-                   idOfReported = r[tipoprueba]._id
-                   idOfReporter = r.userId._id
+                   firstname = r[tipoprueba]?.firstname
+                   lastname= r[tipoprueba]?.lastname
+                   usernameOfReported= r[tipoprueba]?.username
+                   usernameOfReporter= r.userId?.username
+                   idOfReported = r[tipoprueba]?._id
+                   idOfReporter = r.userId?._id
                    content = null
                 } else {
                   console.log('aaaa',r);
-                  firstname = r.userId.firstname
-                  lastname= r.userId.lastname
-                  usernameOfReported=  r.postReportedId ? r.postReportedId.userId.username  : null
-                  usernameOfReporter = r.userId.username
-                  idOfReported = r.postReportedId ? r.postReportedId.userId._id : null
-                  idOfReporter = r.userId._id
-                  thingReportedId = r.postReportedId ? r.postReportedId._id : null
-                  content = r.postReportedId ? r.postReportedId.content : null
+                  firstname = r.userId?.firstname
+                  lastname= r.userId?.lastname
+                  usernameOfReported=  r.postReportedId ? r.postReportedId.userId?.username  : null
+                  usernameOfReporter = r.userId?.username
+                  idOfReported = r.postReportedId ? r.postReportedId.userId?._id : null
+                  idOfReporter = r.userId?._id
+                  thingReportedId = r.postReportedId ? r.postReportedId?._id : null
+                  content = r.postReportedId ? r.postReportedId?.content : null
                 }
                 if(tipoprueba === "commentReportedId")
                 {
-                  thingReportedId = r.commentReportedId ? r.commentReportedId._id : null
-                  usernameOfReported = r.commentReportedId ? r.commentReportedId.userId.username : null
-                  thingReportedId=r[tipoprueba].postId
-                  content = r.commentReportedId ? r.commentReportedId.content : null
-                  idOfReported = r.commentReportedId ? r.commentReportedId.userId._id : null
-                  idOfReporter = r.userId._id
+                  thingReportedId = r.commentReportedId ? r.commentReportedId?._id : null
+                  usernameOfReported = r.commentReportedId ? r.commentReportedId.userId?.username : null
+                  thingReportedId=r[tipoprueba]?.postId
+                  content = r.commentReportedId ? r.commentReportedId?.content : null
+                  idOfReported = r.commentReportedId ? r.commentReportedId.userId?._id : null
+                  idOfReporter = r.userId?._id
                 } 
 
                 return(
@@ -122,7 +122,7 @@ const ListOfReportsRenderer = ({type}) => {
                                   handleCloseCase(userId, _id, tipoprueba)
                                 }}
                                 type="button"
-                            >Close Case</button>
+                            >Dismiss</button>
                     </div> 
                     </li>
                     </div>

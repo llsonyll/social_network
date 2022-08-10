@@ -45,11 +45,11 @@ async (req: Request, res: Response) => {
             if (existReport && `${existReport.userId}` === `${userId}`)
             return res.status(400).json({msg: 'Report already exist'});
 
-            const user = await User.findById(`${reportId}`);
-            if (!user) return res.status(404).json({msg: 'User not found'});
+            const userReported = await User.findById(`${reportId}`);
+            if (!userReported) return res.status(404).json({msg: 'User not found'});
             var report = new Report({
                 userId: user._id,
-                userReportedId: user._id,
+                userReportedId: userReported._id,
                 reason
             });
         }
