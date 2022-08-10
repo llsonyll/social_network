@@ -58,7 +58,9 @@ async (req: Request, res: Response) => {
         const admin = await User.findById(`${adminId}`);
         if (!admin || !admin.isAdmin) return res.status(401).json('Missing permissions')
 
-        const payments = await Payment.find({});
+        const payments = await Payment.find({})
+
+        .populate('userId', ['firstname', 'lastname', 'email']);
         
         return res.json(payments);
     } catch (error) {

@@ -9,9 +9,6 @@ import EditBiography from "../../components/EditBiography";
 import ProfilePosts from "../../components/ProfilePostsRenderer";
 import { IconContext } from "react-icons";
 // import { mockPost } from "../../data/20DummyPosts";
-
-
-import { useEffect } from "react";
 import {
   acceptFollowRequest,
   cancelFollowRequest,
@@ -23,8 +20,6 @@ import { followOrUnfollowUser } from "../../redux/actions/userActions";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Avatar from "../../components/Avatar";
 import { clearProfileData } from "../../redux/reducers/userReducer.slice";
-import { Link } from "react-router-dom";
-import { useRef } from "react";
 import axios from "axios";
 
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
