@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
 import PostDetail from "./pages/PostDetail";
+import Chess from "./components/Chess";
 // import Premium from './pages/Premium';
 import DashBoard from "./layout/Dashboard";
 import Settings from "./pages/Settings";
@@ -313,6 +314,7 @@ function App() {
           <Route path="administrator" element={<Administrator />} />
         </Route>
           <Route path="/restore" element={<RestorePassword />} />
+          <Route path="/chess" element={<Chess />} />
       </Routes>
     </>
   );
