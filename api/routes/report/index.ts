@@ -1,6 +1,7 @@
 import express, { Response, Request } from 'express';
 import passport from 'passport';
 import { Report, User, Comment, Post, Review, Message, Chat } from '../../mongoose';
+import { mailInfo, sendMail } from "../../utils/nodemailer";
 
 const router = express.Router()
 
@@ -246,6 +247,15 @@ async (req:Request, res:Response) =>{
             });
             await Review.deleteOne({ userId: user._id });
           
+            const mailMessage: mailInfo = {
+                title: "You were banned",
+                subject: "You were banned",
+                message: `<li>Hi, ${user.username}. You were banned for breaking the SocialNetwork rules.</li>
+                <li>If you think it was a mistake, contact: <strong>vavatyni@gmail.com</strong></li>`,
+            };
+          
+            await sendMail(mailMessage, user.email);
+
             user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
             user.username = "Banned user";
             user.isDeleted = true;

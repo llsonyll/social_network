@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const passport_1 = __importDefault(require("passport"));
 const mongoose_1 = require("../../mongoose");
+const nodemailer_1 = require("../../utils/nodemailer");
 const router = express_1.default.Router();
 router.post('/:userId/:reportId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -244,6 +245,13 @@ router.put('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessio
                 }
             });
             yield mongoose_1.Review.deleteOne({ userId: user._id });
+            const mailMessage = {
+                title: "You were banned",
+                subject: "You were banned",
+                message: `<li>Hi, ${user.username}. You were banned for breaking the SocialNetwork rules.</li>
+                <li>If you think it was a mistake, contact: <strong>vavatyni@gmail.com</strong></li>`,
+            };
+            yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
             user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
             user.username = "Banned user";
             user.isDeleted = true;
