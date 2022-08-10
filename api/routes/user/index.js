@@ -406,8 +406,7 @@ router.put("/deleted/:userId", passport_1.default.authenticate("jwt", { session:
                 posts: [],
                 following: [],
                 followers: [],
-                followRequest: [],
-                chats: []
+                followRequest: []
             }
         }, { new: true });
         if (!user)

@@ -491,8 +491,7 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
           posts: [],
           following: [],
           followers: [],
-          followRequest: [],
-          chats: []
+          followRequest: []
         }
       }, { new: true });
       if (!user) return res.status(404).json('User not found');

@@ -202,7 +202,7 @@ async (req:Request, res:Response) =>{
             .populate('userId', 'username')
             .populate({
                 path: 'commentReportedId',
-                select: ['userId', 'content'],
+                select: ['userId', 'content', 'postId'],
                 populate: {
                     path: 'userId',
                     select: ['firstname', 'lastname', 'username']
@@ -217,8 +217,7 @@ async (req:Request, res:Response) =>{
                   posts: [],
                   following: [],
                   followers: [],
-                  followRequest: [],
-                  chats: []
+                  followRequest: []
                 }
             }, { new: true });
             if (!user) return res.status(404).json('Not posible to proceed');
@@ -313,7 +312,7 @@ async (req:Request, res:Response) =>{
             .populate('userId', 'username')
             .populate({
                 path: 'commentReportedId',
-                select: ['userId', 'content'],
+                select: ['userId', 'content', 'postId'],
                 populate: {
                     path: 'userId',
                     select: ['firstname', 'lastname', 'username']

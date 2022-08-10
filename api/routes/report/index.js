@@ -203,7 +203,7 @@ router.put('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessio
                 .populate('userId', 'username')
                 .populate({
                 path: 'commentReportedId',
-                select: ['userId', 'content'],
+                select: ['userId', 'content', 'postId'],
                 populate: {
                     path: 'userId',
                     select: ['firstname', 'lastname', 'username']
@@ -217,8 +217,7 @@ router.put('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessio
                     posts: [],
                     following: [],
                     followers: [],
-                    followRequest: [],
-                    chats: []
+                    followRequest: []
                 }
             }, { new: true });
             if (!user)
@@ -304,7 +303,7 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
                 .populate('userId', 'username')
                 .populate({
                 path: 'commentReportedId',
-                select: ['userId', 'content'],
+                select: ['userId', 'content', 'postId'],
                 populate: {
                     path: 'userId',
                     select: ['firstname', 'lastname', 'username']
