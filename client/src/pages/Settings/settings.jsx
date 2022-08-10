@@ -187,12 +187,14 @@ function settings() {
               ></input>
             </div>
             <div className="confirmpass">
+             
               <p>Confirm new password</p>
               <input
                 className="confirmpassinput"
                 onChange={(e) => handleChangeConfirmPass(e)}
                 maxLength="20"
               ></input>
+             
               <button
                 className="changepassbutton greenbutton"
                 onClick={(e) => handleSubmitToUpdatePassword(e)}

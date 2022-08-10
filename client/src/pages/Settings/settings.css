@@ -217,3 +217,70 @@
    border-radius: 10px;
    font-size: 20px;
 }
+
+/* media queries */
+
+@media (max-width: 966px) {
+    .confirmpass{
+        display: grid !important;
+        grid-template-columns: .3fr 1fr;
+        grid-auto-rows: 1fr 1fr;
+    }
+    .confirmpass p , .newpass p ,
+    .oldpass p{
+       font-size: 15px !important;
+       margin-right: 2px !important;
+       width: 78px !important;
+    }
+    .confirmpass button {
+       grid-column: 1 / 3;
+       margin-left: 0px;
+    }
+    .confirmpass input {
+        width: 100% !important;
+    }
+}
+@media (max-width: 460px) {
+    .settings{
+       width: 99%;
+    }
+
+    .make-private_container , .make-premium_container{
+        flex-wrap: wrap;
+    }
+    .make-private_container p ,  .make-premium_container p  {
+       text-align: center;
+    }
+    .make-private_container .make-private-button_container , .make-private-button_container
+    button , .make-premium-button_container , .make-premium-button_container .buypremiumbutton{
+        margin-top: 2px;
+        width: 100%;
+        margin-left: 0px;
+    }
+   .currentreviewtext , .new-review-input_container {
+    flex-wrap: wrap;
+   }
+   .edit-review-button_container ,  .send-review_container ,
+   .edit-review-button_container button ,  .send-review_container button {
+        width: 100% !important;
+        margin-left: 0px;
+        margin-top: 2px;
+   }
+
+   .newreviewinput , .now_review{
+        width: 100% !important;
+   }
+   .currentreviewtext, .newreview{
+    margin: 0px;
+   }
+   .stars p{
+        width: auto !important;
+   }
+   .stars{
+        justify-content: space-between;
+   }
+   .delete-review-button_container{
+    margin-top: 10px ;
+   }
+}
+

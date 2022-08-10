@@ -166,7 +166,7 @@ const PostTile = ({ post }) => {
             </Link>
           ) : null}
         </div>
-        <div className="flex-1 px-4 overflow-y-auto">
+        <div className="flex-1 px-4 ">
           <div className="userInfo mb-3">
             <div className="text-white font-medium">
               {post && post.userId ? (
@@ -267,7 +267,7 @@ const PostTile = ({ post }) => {
               : null}
 
             {showInput && (
-              <form className="flex items-center" onSubmit={handleInputSubmit}>
+              <form className="flex items-center w-full" onSubmit={handleInputSubmit}>
                 {user.profilePicture ? (
                   <Avatar imgUrl={user.profilePicture} />
                 ) : (
@@ -278,7 +278,7 @@ const PostTile = ({ post }) => {
                   ref={inputRef}
                   value={commentInput}
                   onChange={handleCommentInput}
-                  className="flex-1 focus:ring-indigo-500 focus:border-indigo-500 h-full py-1 pl-2 pr-7 border-transparent bg-gray-700 text-white sm:text-sm rounded-md ml-3"
+                  className="w-full flex-1 focus:ring-indigo-500 focus:border-indigo-500 h-full py-1 pl-2 pr-7 border-transparent bg-gray-700 text-white sm:text-sm rounded-md ml-3"
                   type="text"
                 />
               </form>
