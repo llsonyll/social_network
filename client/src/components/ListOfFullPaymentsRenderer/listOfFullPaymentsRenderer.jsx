@@ -21,7 +21,7 @@ const ListOfReportsRenderer = ({arrayOfPayments}) => {
                 return(
                     <li className='flex items-center justify-center text-slate-100 bg-[#2E2E2E]  shadow-xl rounded-lg mb-2' key={Math.random()}>
                                     <div className='w-10 ml-2'>{reportCounter++}</div>
-                                    <div className='w-32'>{firstname + ' ' + lastname}</div>
+                                    <div className='w-32'><Link to={`/home/profile/${userId._id}`}>{firstname + ' ' + lastname}</Link></div>
                                     <div className='w-36 ml-4 text-xs mt-2 mb-2'>Payment:{' '}{_id},{' '}Stripe:{' '} {paymentId}</div> 
                                     <div className='w-20 ml-16'>${amount/100}</div> 
                                     <div className='w-16 ml-10'>{plan}</div> 
