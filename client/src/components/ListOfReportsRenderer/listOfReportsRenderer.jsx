@@ -5,6 +5,7 @@ import { useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 import { getReportsAction } from '../../redux/actions/reportActions'
 import { useEffect, useState } from 'react'
+import { deleteReported, closeReport } from '../../redux/actions/reportActions'
 
 //lo llamo desde adminReports
 //Sirve para renderizar la lista de reportes y eliminar la basura de una vez.
@@ -32,54 +33,65 @@ const ListOfReportsRenderer = ({type}) => {
   useEffect(() => {
     console.log(type)
    dispatch(getReportsAction(userId, type))
-   if(type === "post") setTipo("postReportedId") 
-   if(type === "comment") setTipo("commentReportedId") 
-   if(type === "user") setTipo("userReportedId") 
  }, [type])
 
-console.log(reports)
-    
+    const handlePunish = (userId, reportId, type) => {
+      // dispatch(deleteReported(userId, reportId, type))
+      console.log(userId, reportId, type)
+    }
+    const handleCloseCase = (userId, reportId, type) => {
+      // dispatch(closeReport(userId, reportId, type))
+      console.log(userId, reportId, type)
+    }
 
     let reportCounter = 1
 
-    if(tipo === "") {
-
-    }
      var reportsTest = reports?.map((r) => {
             if (r._id) {
                 var tipoprueba
-                // var type
                  if(r.commentReportedId) tipoprueba = 'commentReportedId'
                  else if(r.postReportedId) tipoprueba = 'postReportedId'
                  else if(r.userReportedId) tipoprueba = 'userReportedId'
-                //  console.log(type, r)
-                //  if(r.type === null) console.log("lol", r)
-                // console.log(tipoprueba)
-                // console.log(r[tipoprueba].userId)
                 const {_id, reason} = r 
-                let content
-                let firstname
-                let lastname
-                let username
+                let content   
+                let firstname            //del reportado
+                let lastname              //del reportado
+                let usernameOfReporter     //del que reportó
+                let usernameOfReported    //del reportado
+                let idOfReported         ///del reportado
+                let idOfReporter          //del que reportó
+                let thingReportedId       //de la cosa que se reportó (solo puede ser comment | post)
                 if(tipoprueba === "userReportedId") {
                    firstname = r[tipoprueba].firstname
                    lastname= r[tipoprueba].lastname
-                   username= r[tipoprueba].username
+                   usernameOfReported= r[tipoprueba].username
+                   usernameOfReporter= r.userId.username
+                   idOfReported = r[tipoprueba]._id
+                   idOfReporter = r.userId._id
                   content = null
                 } else {
                   firstname = r[tipoprueba].userId.firstname
                   lastname= r[tipoprueba].userId.lastname
-                  username= r[tipoprueba].userId.username
+                  usernameOfReported= r[tipoprueba].userId.username
+                  usernameOfReporter = r.userId.username
+                  idOfReported = r[tipoprueba].userId._id
+                  idOfReporter = r.userId._id
+                  thingReportedId = r[tipoprueba]._id
                   content = r[tipoprueba].content
-
-
                 }
+                if(tipoprueba === "commentReportedId") thingReportedId=r[tipoprueba].postId
 
                 return(
+                  // <Link to={`/home/post/${thingReportedId}`}>
+                  <div>
                     <li className='flex items-center justify-center text-slate-100 bg-[#2E2E2E]  shadow-xl rounded-lg '>
                                     <div className='w-10'>{reportCounter++}</div>
-                                    
-                                    <div className='w-40'>{firstname + ' ' + lastname} - {username}</div>
+                                    <Link to={`/home/profile/${idOfReported}`}>
+                                    <div className='w-40'>{firstname + ' ' + lastname} - {usernameOfReported}</div>
+                                    </Link>
+                                    <Link to={`/home/profile/${idOfReporter}`}>
+                                    <div className='w-45'>reported by {usernameOfReporter}</div>
+                                    </Link>
                                     <div className='w-72 h-20 self-center flex-wrap'>{reason}</div>
                                     <div className='w-40'>{content}</div>
                                     
@@ -87,21 +99,22 @@ console.log(reports)
                     <div className='flex items-center justify-center mb-8'>
                         <button className=' bg-[#9B423D] ml-0 mr-2 mt-3 mb-3 p-1 pl-3 pr-3 rounded-md'
                                 onClick={() => {
-                                //Debe eliminar el comentario, la publicación o eliminar a la persona
+                                handlePunish(userId, _id, tipoprueba)
                                 }}
                                 type="button"
                             >
-                                Delete
+                                Punish
                             </button>
                             <button className='bg-[#4E864C] rounded-md mr-3 p-1 pl-3 pr-3 ml-6'
                                 onClick={() => {
-                                //Debe cerrar el reporte, pero todavia no entiendo si hay o no ruta de eliminar reportes. 
+                                  handleCloseCase(userId, _id, tipoprueba)
                                 }}
                                 type="button"
                             >Close Case</button>
                     </div> 
                     </li>
-                    
+                    {/* </Link> */}
+                    </div>
                 )
             } 
         })
