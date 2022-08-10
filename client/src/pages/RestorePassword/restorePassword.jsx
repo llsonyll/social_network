@@ -43,7 +43,6 @@ function RestorePassword() {
          if(closeTime){
            timer();
          }else{
-            console.log(timer);
            clearTimeout(timer);
          }
      },[closeTime])
@@ -74,7 +73,7 @@ function RestorePassword() {
             windowsClose(); 
         }
     }
-    console.log(closeTime);
+
   return (
     <div>
     <div className='h-screen w-auto mt-0 sm:p-24 px-0 pb-32  bg-[#212121] '>
