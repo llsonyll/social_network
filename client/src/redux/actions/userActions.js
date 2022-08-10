@@ -87,7 +87,7 @@ export const restorePassword = async (email) => {
   }
 };
 
-export const restoredNewPassword = async(tokenRestore, password) => {
+export const restoredNewPassword = (tokenRestore, password) => async (dispatch) => {
    try {
        await apiConnection.post(`user/restorePassword`,{ tokenRestore, password }); 
    } catch (err) {
