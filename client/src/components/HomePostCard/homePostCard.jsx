@@ -157,7 +157,7 @@ const HomePostCard = (props) => {
             )}
           </Link>
           <div className="user_post__info">
-            <div className="flex">
+            <div className="follow-button_container flex">
               <Link to={`profile/${props.userId}`}>
                 <h2>{props.username}</h2>
               </Link>

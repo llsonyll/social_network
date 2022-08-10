@@ -71,7 +71,12 @@ const Premium = () => {
             planPay === 'Weekly' ? 
             <div className='plan-escogido'>
                 <h1>3$</h1>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit perspiciatis Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit perspiciatis</p>
+                <p>
+                *Cover photo
+                *See dislikes
+                *Private profile
+                *Exclusive profile
+                </p>
                 <Elements stripe={stripePromise}>
                     <CheckoutForm amount={3} plan={'weekly'}/>
                 </Elements>
@@ -82,7 +87,12 @@ const Premium = () => {
             planPay === 'Monthly' ? 
             <div className='plan-escogido'>
                 <h1>10$</h1>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit perspiciatis</p>
+                <p>
+                *Cover photo
+                *See dislikes
+                *Private profile
+                *Exclusive profile
+                </p>
                 <Elements stripe={stripePromise}>
                     <CheckoutForm amount={10} plan={'monthly'}/>
                 </Elements>
@@ -93,7 +103,12 @@ const Premium = () => {
             planPay === 'Annual' ? 
             <div className='plan-escogido'>
                  <h1>31$</h1>
-                 <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugit perspiciatis</p>
+                 <p>
+                 *Cover photo
+                 *See dislikes
+                 *Private profile
+                 *Exclusive profile
+                 </p>
                  <Elements stripe={stripePromise}>
                     <CheckoutForm amount={31} plan={'yearly'}/>
                 </Elements>

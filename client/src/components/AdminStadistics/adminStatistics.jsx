@@ -3,7 +3,7 @@ import { apiConnection } from "../../utils/axios";
 import './adminStatistics.css'
 import { useSelector, useDispatch } from "react-redux";
 import { getUsersInfo } from "../../redux/actions/adminActions";
-
+import Avatar from "../../components/Avatar";
 
 const AdminStatistics = () => {
 
@@ -16,29 +16,57 @@ const AdminStatistics = () => {
   });
   const info = useSelector(store => store.admin.info);
 
-
   return (
     <div className="statisticscontainer">
 
-      <h1>Registered users: {info?.registeredUsers}</h1>
-      <h1>Users connected: {info?.usersConnected}</h1>
-      <h1>Active posts: {info?.activePosts}</h1>
-      <h1>Premium users: {info?.premiumUsers}</h1>
-      <h1>Admin users: {info?.adminUsers}</h1>
-      <h1>Reports: {info?.reports}</h1>
-      <h1>Desactivated users: {info?.desactivatedUsers}</h1>
-      <h1>Most popular user: @{info.popularUser?.username}</h1>
-      <h1>Fullname: {info.popularUser?.firstname} {info.popularUser?.lastname}</h1>
-      <h1>Email: {info.popularUser?.email}</h1>
-      <h1>Following: {info.popularUser?.following?.length}</h1>
-      <h1>Followers: {info.popularUser?.followers?.length}</h1>
-      <h1>
-        Features: {info.popularUser?.isAdmin ? 'Administrator, ' : null}
-        {info.popularUser?.isPremium ? 'Premium, ': null}
-        {info.popularUser?.isPrivate ? 'Private profile' : null}
-      </h1>
-      <h1>Biography: {info.popularUser?.biography ? info.popularUser?.biography : null}</h1>
-      <h1>Review: {info.popularUser?.review ? `${info.popularUser.review?.description}, ${info.popularUser.review?.stars} stars` : null}</h1>
+      <div>
+        <p className="inline">Registered users:</p> <span className="text-green-600">{info?.registeredUsers}</span> 
+      </div>
+      <div>
+        <p className="inline">Users connected:</p> <span className="text-green-600">{info?.usersConnected}</span> 
+      </div>
+      <div>
+        <p className="inline">Active posts:</p> <span className="text-green-600">{info?.activePosts}</span> 
+      </div>
+      <div>
+        <p className="inline">Premium users:</p> <span className="text-green-600">{info?.premiumUsers}</span> 
+      </div>
+      <div>
+        <p className="inline">Admin users:</p> <span className="text-green-600">{info?.adminUsers}</span> 
+      </div>
+      <div>
+        <p className="inline">Reports:</p> <span className="text-red-600">{info?.reports}</span> 
+      </div>
+      <div>
+        <p className="inline">Desactivated users:</p> <span className="text-red-600">{info?.desactivatedUsers}</span> 
+      </div>
+      <h1>Most popular user:</h1>
+      <div>
+        <div className="flex bg-neutral-700 rounded-md p-1"> 
+        <Avatar size="m" imgUrl={info.popularUser?.profilePicture} className='self-center'/>
+        <section className="flex flex-col">
+          <p>@{info.popularUser?.username}</p>
+          <span className="text-sm text-gray-500"> {info.popularUser?.firstname} {info.popularUser?.lastname}</span>
+          <span className="text-sm text-gray-500">{info.popularUser?.email} </span>
+        </section>
+        
+        </div>
+      </div>
+      <div>
+        <p className="inline">Following:</p> <span className="text-green-600">{info.popularUser?.following?.length}</span> 
+      </div>
+      <div>
+        <p className="inline">Followers:</p> <span className="text-green-600">{info.popularUser?.followers?.length}</span> 
+      </div>
+      <div>
+        <p className="inline"> Features:</p> <span className="text-green-600">{info.popularUser?.isAdmin ? 'Administrator, ' : null}{info.popularUser?.isPremium ? 'Premium, ': null} {info.popularUser?.isPrivate ? 'Private profile' : null}</span> 
+      </div>
+      <div>
+        <p className="inline">Biography:</p> <span className="text-green-600">{info.popularUser?.biography ? info.popularUser?.biography : null}</span> 
+      </div>
+      <div>
+        <p className="inline">Review: </p> <span className="text-green-600">{info.popularUser?.review ? `${info.popularUser.review?.description}, ${info.popularUser.review?.stars} stars` : null}</span> 
+      </div>
     </div>
   );
 };
