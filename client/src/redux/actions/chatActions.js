@@ -1,16 +1,19 @@
 import axios from "axios"
 import { socket } from "../../App"
 import { apiConnection } from "../../utils/axios"
-import { addMessage, setChatInfo, setChats, setUnseenMessages } from "../reducers/chatReducer"
+import { addMessage, addSearchedChats, setChatInfo, setChats, setUnseenMessages } from "../reducers/chatReducer"
 
 
 
-export const getChats = (userId) => async(dispatch) => {
+export const getChats = (userId, query) => async(dispatch) => {
     try{
-        let {data} = await apiConnection.get(`chat/${userId}`)
+        !query? query='' : null
+        let {data} = await apiConnection.get(`chat/${userId}?users=${query}`)
 
-        return dispatch(setChats(data.chats))
-
+        if(!query){
+            return dispatch(setChats(data.chats))
+        }
+        return dispatch(addSearchedChats(data.chats))
     }catch(err){
         console.log(err)
     }
