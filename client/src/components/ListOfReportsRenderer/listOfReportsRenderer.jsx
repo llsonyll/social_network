@@ -76,14 +76,13 @@ console.log(reports)
                 }
 
                 return(
-                    <li className='flex items-center justify-center text-slate-100 bg-[#2E2E2E]  shadow-xl rounded-lg '>
-                                    <div className='w-10'>{reportCounter++}</div>
-                                    
-                                    <div className='w-40'>{firstname + ' ' + lastname} - {username}</div>
-                                    <div className='w-72 h-20 self-center flex-wrap'>{reason}</div>
-                                    <div className='w-40'>{content}</div>
-                                    
-
+                    <li className='  '>
+                                    <div className='w-10 h-full justify-center bg-neutral-900'>
+                                      {reportCounter++}
+                                    </div>
+                                    <div className='username__report  h-full w-full justify-center'>{username}</div>
+                                    <div className='report__reason w-full h-full flex-wrap justify-center bg-neutral-900'>{reason}</div>
+                                    <div className='report_content w-full h-auto justify-center bg-neutral-800'>{content}</div>
                     <div className='flex items-center justify-center mb-8'>
                         <button className=' bg-[#9B423D] ml-0 mr-2 mt-3 mb-3 p-1 pl-3 pr-3 rounded-md'
                                 onClick={() => {
@@ -110,8 +109,8 @@ console.log(reports)
     
   return (
     <>
-        <div className='flex-row' key={Math.random()}>
-                <ol>
+        <div className='flex-row h-96'  key={Math.random()}>
+                <ol className='h-full'>
                 {reportsTest}
                 </ol>
         </div>

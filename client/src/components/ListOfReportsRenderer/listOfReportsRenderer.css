@@ -20,6 +20,37 @@
 .containersiii{
     margin-top: 10%;
 }
+ol{
+    list-style: none;
+    height: 40%;
+    overflow-y: auto;
+}
+li  {
+    display: grid;
+    grid-template-columns: 40px 200px repeat(3,1fr);
+    border-bottom: 1px solid gray;
+    list-style: none;
+}
+li div {
+    float: right;
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+}
+
+.report_content{
+    border-right: 1px solid gray ;
+    overflow-y: auto;
+}
+.report__reason{
+    max-height: 100px;
+    overflow-y: auto;
+    border-right: 1px solid gray;
+}
+.username__report{
+    width: 100px;
+    border-right: 1px solid gray;
+}
 
 /* .borde{
     border-radius: 2%;
