@@ -401,13 +401,14 @@ router.put("/follow/:userId/:userIdFollowed", passport_1.default.authenticate("j
 router.put("/deleted/:userId", passport_1.default.authenticate("jwt", { session: false, failureRedirect: "/auth/loginjwt", }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
+        // let userr = await User.findById(`${userId}`);
+        // await Report.deleteMany({ postReportedId: { $in: userr?.posts }});
         let user = yield mongoose_1.User.findOneAndUpdate({ _id: `${userId}` }, {
             $set: {
                 posts: [],
                 following: [],
                 followers: [],
-                followRequest: [],
-                chats: []
+                followRequest: []
             }
         }, { new: true });
         if (!user)
@@ -449,6 +450,7 @@ router.put("/deleted/:userId", passport_1.default.authenticate("jwt", { session:
         user.plan = undefined;
         user.expirationDate = undefined;
         yield user.save();
+        yield mongoose_1.Report.deleteMany({ userReportedId: { _id: user._id } });
         return res.status(200).json('Deleted successfully');
     }
     catch (err) {

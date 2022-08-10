@@ -6,6 +6,7 @@ import AdminReports from "../AdminReports";
 import AdminStadistics from "../AdminStadistics";
 
 import { useState, useEffect } from "react";
+import AdminPayments from "../AdminPayments";
 
 const AdminBoard = () => {
   const [tab, setTab] = useState("search"); // search, reports, stadistics
@@ -37,6 +38,15 @@ const AdminBoard = () => {
           </button>
           <button
             className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ${
+              tab === "reports" ? "opacity-100 underline" : ""
+            }`}
+            onClick={() => setTab("payments")}
+          >
+            <TbReportSearch />
+            Payments
+          </button>
+          <button
+            className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ${
               tab === "stadistics" ? "opacity-100 underline" : ""
             }`}
             onClick={() => setTab("stadistics")}
@@ -50,7 +60,9 @@ const AdminBoard = () => {
             <AdminSearchUser />
           ) : tab === "reports" ? (
             <AdminReports />
-          ) : (
+          ) : tab === "payments" ? (
+            <AdminPayments /> 
+          ) :(
             <AdminStadistics />
           )}
         </div>

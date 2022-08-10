@@ -56,7 +56,8 @@ router.get('/payments/:adminId', passport_1.default.authenticate('jwt', { sessio
         const admin = yield mongoose_1.User.findById(`${adminId}`);
         if (!admin || !admin.isAdmin)
             return res.status(401).json('Missing permissions');
-        const payments = yield mongoose_1.Payment.find({});
+        const payments = yield mongoose_1.Payment.find({})
+            .populate('userId', ['firstname', 'lastname', 'email']);
         return res.json(payments);
     }
     catch (error) {

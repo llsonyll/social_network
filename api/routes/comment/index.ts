@@ -1,6 +1,6 @@
 import passport from "passport";
 import express, { Request, Response } from "express";
-import { Comment, Post, User } from "../../mongoose";
+import { Comment, Post, Report, User } from "../../mongoose";
 import { IComments } from "../../types";
 
 const router = express.Router();
@@ -179,6 +179,8 @@ async (req: Request, res: Response) => {
       await post?.save();
       
       await Comment.deleteOne({_id: comment._id});
+
+      await Report.deleteMany({commentReportedId: {_id: comment._id}});
 
       const newPost = await Post.findById(comment.postId)
       .populate('userId', ['username', 'profilePicture'])
