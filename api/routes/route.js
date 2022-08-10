@@ -32,7 +32,7 @@ const options = {
         'Authorization'
     ],
     credentials: true,
-    origin: `${process.env.URL_FRONT}`,
+    origin: `${process.env.URL_FRONT}` || '.vercel.app',
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
 };
