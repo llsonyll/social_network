@@ -14,16 +14,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const passport_1 = __importDefault(require("passport"));
+const browserFollowers_1 = require("../../controllers/browserFollowers");
 const mongoose_1 = require("../../mongoose");
 const router = express_1.default.Router();
 router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, failureRedirect: '/auth/loginjwt' }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
+        let { users } = req.query;
         let user = yield mongoose_1.User.findById(userId)
             .select('chats')
-            .populate({ path: 'chats', options: { populate: [{ path: 'users', select: ['username', 'profilePicture'] }, { path: 'messages', select: ['seen', 'from'] }], sort: [{ updatedAt: -1 }] } });
+            .populate({ path: 'chats', options: { populate: [{ path: 'users', select: ['username', 'profilePicture'] }, { path: 'messages', select: ['seen', 'from'] }], sort: [{ updatedAt: -1 }] } })
+            .exec();
         if (!user) {
             return res.status(400).json({ errorMessage: 'No User Found' });
+        }
+        console.log(user);
+        if (users) {
+            user.chats = user.chats.filter((chat) => chat.users[(0, browserFollowers_1.getIndex)(chat.users, userId)].username.includes(users));
         }
         return res.json(user);
     }
