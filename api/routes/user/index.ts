@@ -516,8 +516,15 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
       });
       await Review.deleteOne({ userId: user._id });
 
+      const generateRandomString = (num: number) => {
+        let result: string = Math.random().toString(36).substring(0, num);
+        return result;
+      };
+      const trashEmail = generateRandomString(Math.random() * 10 + 6);
+
       user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
       user.username = 'User eliminated';
+      user.email = trashEmail + '/ ' + user.email; // SE AGREGA BASURA AL EMAIL. EL USUARIO PODRÁ VOLVER A HACERSE UNA CUENTA CON EL MISMO EMAIL EN EL FUTURO
       user.isDeleted = true;
       user.isAdmin = false;
       user.isPremium = false;
