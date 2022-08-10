@@ -1,6 +1,7 @@
 import express, {Request,Response} from 'express'
 import { ObjectId, Types } from 'mongoose';
 import passport from 'passport';
+import { getIndex } from '../../controllers/browserFollowers';
 import { Chat, Message, User } from '../../mongoose';
 
 const router = express.Router()
@@ -9,12 +10,19 @@ const router = express.Router()
 router.get('/:userId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}), async(req:Request, res:Response) => {
     try{
         const {userId} = req.params
-        let user = await User.findById(userId)
+        let { users } = req.query;
+
+        let user:any = await User.findById(userId)
         .select('chats')
         .populate({path:'chats', options:{populate: [{path: 'users', select:['username', 'profilePicture'] },{path:'messages', select:['seen','from']}], sort:[{updatedAt: -1}]}})
+        .exec()
 
         if(!user){
             return res.status(400).json({errorMessage: 'No User Found'})
+        }
+
+        if(users){
+            user.chats = user.chats.filter((chat:any) => chat.users[getIndex(chat.users, userId)].username.includes(users))
         }
         return res.json(user)
 

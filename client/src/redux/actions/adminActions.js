@@ -9,7 +9,7 @@ export const getUsersInfo = (userId) => async (dispatch) => {
     const { data } = await apiConnection.get(`admin/${userId}`);
     return dispatch(getInfo(data));
   } catch (error) {
-    console.log(error.response.data);
+    console.log(error);
   }
 };
 

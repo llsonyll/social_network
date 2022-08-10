@@ -28,7 +28,7 @@ const sendMail = (mailInfo, mailTo) => __awaiter(void 0, void 0, void 0, functio
         ${mailInfo.message}        
       </ul>
       <br/>
-      <p>Visit us <a href="https://finaldeploy-tau.vercel.app" target="_blank"> here </a></p>
+      <p>Visit us <a href="${mailInfo.link}" target="_blank"> here </a></p>
       `;
     const mailOptions = {
         from: "Social Network <vavatyni@gmail.com>",

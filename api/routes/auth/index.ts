@@ -153,13 +153,15 @@ router.post(
           const date = new Date();
           if (send.expirationDate) {
             if (date > send.expirationDate) {
-              const newUser = await User.findById(send._id);
+              const newUser: any = await User.findById(send._id);
               if (newUser) {
+                newUser.followers = newUser.followers.concat(newUser.followRequest);
                 newUser.isPremium = false;
                 newUser.expirationDate = undefined;
                 newUser.plan = undefined;
                 newUser.isPrivate = false;
-
+                newUser.set({followRequest: []});
+                
                 await newUser.save();
               }
             }
@@ -274,10 +276,12 @@ router.post(
         const date = new Date();
         if (user.expirationDate) {
           if (date > user.expirationDate) {
+            user.followers = user.followers.concat(user.followRequest);
             user.isPrivate = false;
             user.isPremium = false;
             user.expirationDate = undefined;
             user.plan = undefined;
+            user.set({followRequest: []});
 
             await user.save();
           }
