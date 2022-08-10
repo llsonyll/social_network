@@ -20,7 +20,7 @@ router.get('/:userId', passport.authenticate('jwt', {session:false, failureRedir
         if(!user){
             return res.status(400).json({errorMessage: 'No User Found'})
         }
-        
+
         if(users){
             user.chats = user.chats.filter((chat:any) => chat.users[getIndex(chat.users, userId)].username.includes(users))
         }

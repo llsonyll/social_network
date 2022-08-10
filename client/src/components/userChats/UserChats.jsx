@@ -9,6 +9,7 @@ import {AiOutlineSearch} from 'react-icons/ai'
 import { useEffect } from 'react'
 import { getChats } from '../../redux/actions/chatActions'
 import { clearSearchedChats } from '../../redux/reducers/chatReducer'
+import LoadingSpinner from '../LoadingSpinner'
 
 const UserChats = ({setMostrarMenu}) => {
 
@@ -17,10 +18,16 @@ const UserChats = ({setMostrarMenu}) => {
     let searchedChats = useSelector(store => store.chat.searchedChats)
     let dispatch = useDispatch()
     const[searchChat , setSearchChat] = useState('')
+    const [searching, setSearching] = useState(false)
 
     useEffect(()=> {
+        let search = async() => {
+            setSearching(true)
+            await dispatch(getChats(loggedUser._id, searchChat))
+            setSearching(false)
+        }
         if(searchChat){
-            dispatch(getChats(loggedUser._id, searchChat))
+            search()
         }
     }, [searchChat])
 
@@ -75,6 +82,10 @@ const UserChats = ({setMostrarMenu}) => {
                         </Link>
                     )
                 }): 
+                searchChat && searching? 
+                <LoadingSpinner/>:
+                searchChat && !searching?
+                <span className='no_friends'>No chats Found</span>:
                 chats.length ? 
                 chats.map((chat) => {
                     return(
