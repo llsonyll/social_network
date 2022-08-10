@@ -254,6 +254,8 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
             return res.status(404).json({ errorMsg: "who are you?" });
         const date = new Date().getTime();
         let result = [];
+        const privateUsers = yield mongoose_1.User.find({ isPrivate: true }).select('_id')
+        console.log(privateUsers)
         if (user.following.length > 0) {
             if (control === "true") {
                 result = yield mongoose_1.Post.find({
@@ -269,7 +271,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
             else {
                 result = yield mongoose_1.Post.find({
                     createdAt: { $gte: new Date(date - 259200000) },
-                    userId: { $nin: [...user.following, user._id] },
+                    userId: { $nin: [...user.following, ...privateUsers, user._id] },
                 })
                     .sort({ createdAt: -1 })
                     .skip(page * 10)
@@ -280,6 +282,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
         if (user.following.length === 0) {
             result = yield mongoose_1.Post.find({
                 createdAt: { $gte: new Date(date - 259200000) },
+                userId: { $nin: [...privateUsers] }
             })
                 .sort({ createdAt: -1 })
                 .skip(page * 10)
