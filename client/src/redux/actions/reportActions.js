@@ -66,7 +66,8 @@ export const deleteReported = (userId, reportId, type) => async (dispatch) => {
 // --------------- CIERRA EL REPORTE Y ELIMINA A LOS ASOCIADOS ----------------------
 export const closeReport = (userId, reportId, type) => async (dispatch) => {
   try {
-    const { data } = await apiConnection.delete(`report/${userId}/${reportId}`, type);
+    console.log('ola',type);
+    const { data } = await apiConnection.delete(`report/${userId}/${reportId}`, {data: {type}});
     Swal.fire({
       icon: "info",
       title: 'Report close',

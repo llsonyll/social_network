@@ -45,12 +45,12 @@ const UserChats = ({setMostrarMenu}) => {
                 chats.map((chat) => {
                     return(
                         <Link to={`/home/messages/${chat.users[getIndex(chat.users)]._id}`} onClick={() => setMostrarMenu(false)}>
-                            <div className='friend-contact'>
-                                <div className='friend-contact__avatar'>
+                            <div className='friend-contact relative items-center'>
+                                <div className='friend-contact__avatar '>
                                     <Avatar  size= 'l'imgUrl={chat.users[getIndex(chat.users)].profilePicture}/>
-                                    {unseenMessagesCounter(chat.messages)? unseenMessagesCounter(chat.messages): null}
+                                        {unseenMessagesCounter(chat.messages)?<span className='chats-user_number absolute right-3'> {unseenMessagesCounter(chat.messages)}  </span>: null}
                                 </div>
-                                <div className='friend-contact__info'>
+                                <div className='friend-contact__info '>
                                     <span>{chat.users[getIndex(chat.users)].username}</span>
                                 </div>
                             </div>

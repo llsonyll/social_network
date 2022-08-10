@@ -52,11 +52,12 @@ const handleType = (value) => {
         </button>
       </div>
 
-      <li className="">
-        <div className="">#</div>
-        <div className="">Fullname</div>
-        <div className="">Reason</div>
-        <div className="">Content</div>
+      <li className="li-header text-white bg-neutral-600 ">
+        <div className="flex justify-center">#</div>
+        <div className="flex justify-center">Username</div>
+        <div className="flex justify-center ">Reported By</div>
+        <div className="flex justify-center">Reason</div>
+        <div className="li-header-content flex justify-center">Content</div>
       </li>
       <div className="flex items-center justify-center text-slate-100 bg-[#2E2E2E]  shadow-xl rounded-lg '">
         <div>

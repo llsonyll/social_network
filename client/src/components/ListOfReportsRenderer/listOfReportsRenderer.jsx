@@ -5,6 +5,7 @@ import { useDispatch, useSelector} from 'react-redux'
 import {Link} from 'react-router-dom'
 import { getReportsAction } from '../../redux/actions/reportActions'
 import { useEffect, useState } from 'react'
+import { deleteReported, closeReport } from '../../redux/actions/reportActions'
 
 //lo llamo desde adminReports
 //Sirve para renderizar la lista de reportes y eliminar la basura de una vez.
@@ -32,75 +33,96 @@ const ListOfReportsRenderer = ({type}) => {
   useEffect(() => {
     console.log(type)
    dispatch(getReportsAction(userId, type))
-   if(type === "post") setTipo("postReportedId") 
-   if(type === "comment") setTipo("commentReportedId") 
-   if(type === "user") setTipo("userReportedId") 
  }, [type])
 
-console.log(reports)
-    
+    const handlePunish = (userId, reportId, type) => {
+      dispatch(deleteReported(userId, reportId, {type:type}))
+      console.log(userId, reportId, type)
+    }
+    const handleCloseCase = (userId, reportId, type) => {
+      dispatch(closeReport(userId, reportId, type))
+      console.log(userId, reportId, type)
+    }
 
     let reportCounter = 1
 
-    if(tipo === "") {
-
-    }
      var reportsTest = reports?.map((r) => {
+              console.log('r',r);
             if (r._id) {
                 var tipoprueba
-                // var type
                  if(r.commentReportedId) tipoprueba = 'commentReportedId'
                  else if(r.postReportedId) tipoprueba = 'postReportedId'
                  else if(r.userReportedId) tipoprueba = 'userReportedId'
-                //  console.log(type, r)
-                //  if(r.type === null) console.log("lol", r)
-                // console.log(tipoprueba)
-                // console.log(r[tipoprueba].userId)
                 const {_id, reason} = r 
-                let content
-                let firstname
-                let lastname
-                let username
+                let content   
+                let firstname            //del reportado
+                let lastname              //del reportado
+                let usernameOfReporter     //del que reportó
+                let usernameOfReported    //del reportado
+                let idOfReported         ///del reportado
+                let idOfReporter          //del que reportó
+                let thingReportedId       //de la cosa que se reportó (solo puede ser comment | post)
                 if(tipoprueba === "userReportedId") {
                    firstname = r[tipoprueba].firstname
                    lastname= r[tipoprueba].lastname
-                   username= r[tipoprueba].username
+                   usernameOfReported= r[tipoprueba].username
+                   usernameOfReporter= r.userId.username
+                   idOfReported = r[tipoprueba]._id
+                   idOfReporter = r.userId._id
                   content = null
                 } else {
-                  firstname = r[tipoprueba].userId.firstname
-                  lastname= r[tipoprueba].userId.lastname
-                  username= r[tipoprueba].userId.username
-                  content = r[tipoprueba].content
-
-
+                  console.log('aaaa',r);
+                  firstname = r.userId.firstname
+                  lastname= r.userId.lastname
+                  usernameOfReported=  r.postReportedId ? r.postReportedId.userId.username  : null
+                  usernameOfReporter = r.userId.username
+                  idOfReported = r.postReportedId ? r.postReportedId.userId._id : null
+                  idOfReporter = r.userId._id
+                  thingReportedId = r._id
+                  content = r.postReportedId ? r.postReportedId.content : null
                 }
+                if(tipoprueba === "commentReportedId")
+                {
+                  thingReportedId=r[tipoprueba].postId
+                  content = r.commentReportedId ? r.commentReportedId.content : null
+                } 
 
                 return(
-                    <li className='  '>
-                                    <div className='w-10 h-full justify-center bg-neutral-900'>
-                                      {reportCounter++}
-                                    </div>
-                                    <div className='username__report  h-full w-full justify-center'>{username}</div>
+
+                  <div>
+                    <li className='li-reportes'>
+                                    <div className=' h-full justify-center bg-neutral-900'>{reportCounter++}</div>
+                                    <Link to={`/home/profile/${idOfReported}`}>
+                                    <div className='username__report  h-full w-full justify-center text-center'>{usernameOfReported}</div>
+                                    </Link>
+                                    <Link to={`/home/profile/${idOfReporter}`}>
+                                    <div className='w-full h-full justify-center bg-neutral-700'>{usernameOfReporter}</div>
+                                    </Link>
+                                    <Link to={`/home/post/${thingReportedId}`}>
                                     <div className='report__reason w-full h-full flex-wrap justify-center bg-neutral-900'>{reason}</div>
-                                    <div className='report_content w-full h-auto justify-center bg-neutral-800'>{content}</div>
-                    <div className='flex items-center justify-center mb-8'>
+                                     </Link>
+                                    <Link className='a_content' to={`/home/post/${thingReportedId}`}>
+                                    <div className='report_content grid w-full h-full justify-center bg-neutral-800 text-center'>{content === '' && r.postReportedId.multimedia ? <img  src={r.postReportedId.multimedia}></img> : content}</div>
+                                     </Link>
+                    <div className='button-container-li flex items-center justify-center mb-8'>
                         <button className=' bg-[#9B423D] ml-0 mr-2 mt-3 mb-3 p-1 pl-3 pr-3 rounded-md'
                                 onClick={() => {
-                                //Debe eliminar el comentario, la publicación o eliminar a la persona
+                                handlePunish(userId, _id, tipoprueba)
                                 }}
                                 type="button"
                             >
-                                Delete
+                                Punish
                             </button>
                             <button className='bg-[#4E864C] rounded-md mr-3 p-1 pl-3 pr-3 ml-6'
                                 onClick={() => {
-                                //Debe cerrar el reporte, pero todavia no entiendo si hay o no ruta de eliminar reportes. 
+                                  handleCloseCase(userId, _id, tipoprueba)
                                 }}
                                 type="button"
                             >Close Case</button>
                     </div> 
                     </li>
-                    
+                    </div>
+                   
                 )
             } 
         })

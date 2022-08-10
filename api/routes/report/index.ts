@@ -81,10 +81,10 @@ async (req: Request, res: Response) => {
             .populate('userId', 'username')
             .populate({
                 path: 'commentReportedId',
-                select: ['userId', 'content'],
+                select: ['userId', 'content', 'postId'],                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname', 'username']
+                    select: ['firstname', 'lastname', 'username', ]
                 }
             })
             .populate({
@@ -101,7 +101,7 @@ async (req: Request, res: Response) => {
             })
         }
         if(type === "postReportedId") {
-            reports = await Report.find({postReportedId: {$exists: true} })
+            reports = await Report.find({postReportedId: {$exists: true} }) 
             .sort({createdAt: -1})
             .populate('userId', 'username')
             .populate({
@@ -119,7 +119,7 @@ async (req: Request, res: Response) => {
             .populate('userId', 'username')
             .populate({
                 path: 'commentReportedId',
-                select: ['userId', 'content'],
+                select: ['userId', 'content', 'postId'],
                 populate: {
                     path: 'userId',
                     select: ['firstname', 'lastname', 'username']
@@ -276,10 +276,10 @@ async (req:Request, res:Response) =>{
 
 router.delete('/:userId/:reportId', passport.authenticate('jwt', {session:false, failureRedirect: '/auth/loginjwt'}),
 async (req:Request, res:Response) =>{
-    try {
+    try {      
         const { userId, reportId } = req.params;
         const { type } = req.body;
-
+        
         const admin = await User.findById(`${userId}`);
         if(!admin || !admin.isAdmin) return res.status(401).json('Missings permissions');
         
