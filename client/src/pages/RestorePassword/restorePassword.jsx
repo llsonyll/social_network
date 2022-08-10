@@ -10,8 +10,19 @@ function RestorePassword() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [tokenRestore, setTokenRestore] = useState(false); 
+    const [ closeTime, setCloseTime ] = useState(0);
 
     const dispatch = useDispatch();
+    
+    let timer = () => setTimeout(()=>{
+            setCloseTime(closeTime - 1)
+         },1000)
+    ;
+
+    let  windowsClose = () => setTimeout(()=>{
+            window.close("http://localhost:3000/");
+        },20000)
+    ;
 
     useEffect(()=>{
        if(Cookie.get("restorePassword")){
@@ -21,7 +32,21 @@ function RestorePassword() {
        }else{
          console.log('no hay restoreToken')
        }
+       return () => {
+        clearTimeout(windowsClose)
+        clearTimeout(timer)
+       }
     },[])
+
+
+     useEffect(()=>{
+         if(closeTime){
+           timer();
+         }else{
+            console.log(timer);
+           clearTimeout(timer);
+         }
+     },[closeTime])
 
 
     const handlePasswordChange = (e) => {
@@ -45,13 +70,18 @@ function RestorePassword() {
             //despachar accion para cambiar password
             goodAlerts("Nice! Your password changed.")
             dispatch( restoredNewPassword(tokenRestore,password));
+            setCloseTime(20);
+            windowsClose(); 
         }
     }
-
+    console.log(closeTime);
   return (
     <div>
-    <div className='h-auto w-auto mt-0 sm:mt-28 p-24 px-0 pb-32  bg-[#212121] '>
+    <div className='h-screen w-auto mt-0 sm:p-24 px-0 pb-32  bg-[#212121] '>
     <div className='text-gray-200 flex flex-col items-center'>
+    {
+      closeTime ? <div>Timer:{closeTime}</div> : <></>
+    }
                 <img className='w-48 h-20 center mt-0' src={logo} alt='aaaaaaaa'></img>
                     <div className='text-xl mt-5 mb-10'>Restore your password</div>
                         <input onChange={(e)=>handlePasswordChange(e)} className='focus:ring-indigo-500 max-w-md focus:border-indigo-500 h-12 py-1 pl-2 pr-7 border-transparent bg-[#363636] text-white sm:text-sm rounded-md w-full mb-5 mx-3' maxLength='20' placeholder="Type new password"></input>
