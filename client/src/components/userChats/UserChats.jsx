@@ -1,17 +1,34 @@
 import React from 'react'
 import Avatar from '../Avatar'
 import './userChats.css'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import { useState } from 'react'
 import {Link} from 'react-router-dom'
 //iconos
 import {AiOutlineSearch} from 'react-icons/ai'
+import { useEffect } from 'react'
+import { getChats } from '../../redux/actions/chatActions'
+import { clearSearchedChats } from '../../redux/reducers/chatReducer'
 
 const UserChats = ({setMostrarMenu}) => {
 
     let loggedUser = useSelector(store => store.auth.loggedUser)
     let chats = useSelector(store => store.chat.allChats)
+    let searchedChats = useSelector(store => store.chat.searchedChats)
+    let dispatch = useDispatch()
     const[searchChat , setSearchChat] = useState('')
+
+    useEffect(()=> {
+        if(searchChat){
+            dispatch(getChats(loggedUser._id, searchChat))
+        }
+    }, [searchChat])
+
+    useEffect(()=>{
+        if(!searchChat && searchedChats.length){
+            dispatch(clearSearchedChats())
+        }
+    }, [searchChat, searchedChats])
 
     let getIndex = (array) => {
         if(array[0]._id === loggedUser._id){
@@ -31,6 +48,7 @@ const UserChats = ({setMostrarMenu}) => {
         return returnUnseen
     }
 
+    
 
   return (
     <div className='chats__user-father'>
@@ -41,6 +59,22 @@ const UserChats = ({setMostrarMenu}) => {
         </div>
         <div id='chats-user__container'>
             {
+                searchedChats.length ?
+                searchedChats.map((chat) => {
+                    return(
+                        <Link to={`/home/messages/${chat.users[getIndex(chat.users)]._id}`} onClick={() => setMostrarMenu(false)}>
+                            <div className='friend-contact relative items-center'>
+                                <div className='friend-contact__avatar '>
+                                    <Avatar  size= 'l'imgUrl={chat.users[getIndex(chat.users)].profilePicture}/>
+                                        {unseenMessagesCounter(chat.messages)?<span className='chats-user_number absolute right-3'> {unseenMessagesCounter(chat.messages)}  </span>: null}
+                                </div>
+                                <div className='friend-contact__info '>
+                                    <span>{chat.users[getIndex(chat.users)].username}</span>
+                                </div>
+                            </div>
+                        </Link>
+                    )
+                }): 
                 chats.length ? 
                 chats.map((chat) => {
                     return(
