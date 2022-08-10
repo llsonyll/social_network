@@ -13,21 +13,22 @@ import { AiFillCloseSquare } from "react-icons/ai";
 const ListOfUserPaymentsRenderer = ({arrayOfPaymentsToRender=[], closeRenderFunction}) => {
     const dispatch = useDispatch()
 
+    console.log(arrayOfPaymentsToRender[0])
 
     let payments = null;
     if (arrayOfPaymentsToRender.length > 0) {
         payments = arrayOfPaymentsToRender?.map((p) => {
     
                 return(
-                    <div className='flex flex-col w-94 mb-10'>
+                    <div className='flex flex-col w-94 mb-10' key={p._id}>
                                 <div className=' flex flex-col'>
-                                <div className='font-extrabold'>User Id:<span className='ml-20 font-thin'>{p._id}</span></div>
-                                <div className='font-extrabold'>Amount:<span className='ml-20 font-thin'>{p.amount}</span></div>    
+                                <div className='font-extrabold'>Payment Id:<span className='ml-12 font-thin'>{p._id}</span></div>
+                                <div className='font-extrabold'>Amount:<span className='ml-20 font-thin'>${p.amount/100}</span></div>    
                                 <div className='font-extrabold'>Plan:<span className='ml-28 font-thin'>{p.plan}</span></div>
-                                <div className='font-extrabold whitespace-nowrap'>Payment Id:<span className='ml-12 font-thin'>{p.paymentId}</span></div>
-                                <div className='font-extrabold'>Payment date:<span className='ml-8 font-thin'>{p.paymentDate}</span></div>
+                                <div className='font-extrabold whitespace-nowrap'> Transaction Id:<span className='ml-8 font-thin'>{p.paymentId}</span></div>
+                                <div className='font-extrabold'>Payment date:<span className='ml-8 font-thin'>{p.paymentDate.slice(0,16)}</span></div>
                     </div>
-                        </div>
+                </div>
                 )
         })
     }
