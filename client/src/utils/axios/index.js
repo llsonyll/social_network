@@ -12,12 +12,14 @@ export const apiConnection = axios.create({
   timeout,
   headers: {
     'Authorization': `Bearer ${localStorage.getItem('token') ?? ''}`
-  }
+  },
+   withCredentials: true
 });
 
 apiConnection.interceptors.request.use(
   config => {
     config.headers['Authorization'] = `Bearer ${localStorage.getItem('token') ?? ''}`;
+    config.withCredentials = true;
     return config;
   },
   error => {
