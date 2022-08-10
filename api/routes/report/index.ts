@@ -213,6 +213,10 @@ async (req:Request, res:Response) =>{
             return res.json(newReports);
         }
         if (type === 'userReportedId') {
+
+            let userr = await User.findById(`${userId}`);
+            // await Report.deleteMany({ postReportedId: { $in: userr?.posts }});
+
             let user = await User.findOneAndUpdate({_id: `${report.userReportedId}`}, {
                 $set: {
                   posts: [],
@@ -338,7 +342,6 @@ async (req:Request, res:Response) =>{
 
         res.status(400).json('Please send type of report');
     } catch (error) {
-        console.log(error);
         return res.status(400).json(error);
     }
 

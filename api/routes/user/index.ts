@@ -485,6 +485,9 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
   async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;
+
+      // let userr = await User.findById(`${userId}`);
+      // await Report.deleteMany({ postReportedId: { $in: userr?.posts }});
       
       let user = await User.findOneAndUpdate({_id: `${userId}`}, {
         $set: {

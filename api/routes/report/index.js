@@ -213,6 +213,8 @@ router.put('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessio
             return res.json(newReports);
         }
         if (type === 'userReportedId') {
+            let userr = yield mongoose_1.User.findById(`${userId}`);
+            // await Report.deleteMany({ postReportedId: { $in: userr?.posts }});
             let user = yield mongoose_1.User.findOneAndUpdate({ _id: `${report.userReportedId}` }, {
                 $set: {
                     posts: [],
@@ -326,7 +328,6 @@ router.delete('/:userId/:reportId', passport_1.default.authenticate('jwt', { ses
         res.status(400).json('Please send type of report');
     }
     catch (error) {
-        console.log(error);
         return res.status(400).json(error);
     }
 }));
