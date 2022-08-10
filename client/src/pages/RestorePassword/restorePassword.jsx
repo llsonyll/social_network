@@ -1,12 +1,28 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import  logo from '../../../assets/LogoSN.png'
 import { errorAlerts, goodAlerts } from '../../utils/SweetAlertTypes/SweetAlerts'
+import Cookie from 'js-cookie'
+import { useDispatch } from 'react-redux'
+import { restoredNewPassword } from '../../redux/actions/userActions'
 
 function RestorePassword() {
-    
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [tokenRestore, setTokenRestore] = useState(false); 
+
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+       if(Cookie.get("restorePassword")){
+        setTokenRestore(Cookie.get("restorePassword"));
+        Cookie.remove("restorePassword",{path:"",domain:`.socialn.me`});
+        Cookie.remove("restorePassword",{path:"",domain:`www.socialn.me`});
+       }else{
+         console.log('no hay restoreToken')
+       }
+    },[])
+
 
     const handlePasswordChange = (e) => {
         e.preventDefault()
@@ -25,9 +41,10 @@ function RestorePassword() {
         if (password.length <= 6 || confirmPassword.length <= 6) {
             errorAlerts("Your password can't have less than 6 characters.")
         }
-        if (password.length > 6 && confirmPassword.length > 6 && password === confirmPassword) {
+        if (password.length > 6 && confirmPassword.length > 6 && password === confirmPassword && tokenRestore) {
             //despachar accion para cambiar password
             goodAlerts("Nice! Your password changed.")
+            dispatch( restoredNewPassword(tokenRestore,password));
         }
     }
 

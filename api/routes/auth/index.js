@@ -129,10 +129,12 @@ router.post("/login", passport_1.default.authenticate("local", {
                     if (date > send.expirationDate) {
                         const newUser = yield mongoose_1.User.findById(send._id);
                         if (newUser) {
+                            newUser.followers = newUser.followers.concat(newUser.followRequest);
                             newUser.isPremium = false;
                             newUser.expirationDate = undefined;
                             newUser.plan = undefined;
                             newUser.isPrivate = false;
+                            newUser.set({ followRequest: [] });
                             yield newUser.save();
                         }
                     }
@@ -216,10 +218,12 @@ router.post("/", passport_1.default.authenticate("jwt", {
             const date = new Date();
             if (user.expirationDate) {
                 if (date > user.expirationDate) {
+                    user.followers = user.followers.concat(user.followRequest);
                     user.isPrivate = false;
                     user.isPremium = false;
                     user.expirationDate = undefined;
                     user.plan = undefined;
+                    user.set({ followRequest: [] });
                     yield user.save();
                 }
             }

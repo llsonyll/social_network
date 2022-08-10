@@ -20,6 +20,41 @@
 .containersiii{
     margin-top: 10%;
 }
+ol{
+    list-style: none;
+    height: 40%;
+    overflow-y: auto;
+}
+li  {
+    display: grid;
+    grid-template-columns: 40px 200px repeat(4,1fr);
+    /* grid-template-rows: repeat(2,1fr); */
+    border-bottom: 1px solid gray;
+    list-style: none;
+}
+li div {
+    float: right;
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+}
+
+.report_content{
+    border-right: 1px solid gray ;
+    overflow-y: auto;
+}
+.report_content img{
+    height: 100px;
+}
+.report__reason{
+    max-height: 100px;
+    overflow-y: auto;
+    border-right: 1px solid gray;
+}
+.username__report{
+    width: 100px;
+    border-right: 1px solid gray;
+}
 
 /* .borde{
     border-radius: 2%;
@@ -27,3 +62,63 @@
     border-style: solid;
     border-width: 1px;
 } */
+
+@media (max-width: 1196px) {
+    .li-header{
+        grid-template-columns: 40px 1fr repeat(3,1fr);
+    }
+    .li-reportes {
+       
+        grid-template-columns: 40px 200px repeat(3,1fr);
+        grid-template-rows: repeat(2,1fr);
+       
+       
+    }
+    .li-reportes  .button-container-li{
+       height: 100%;
+        grid-column: 1 / 6;
+        margin-bottom: 0px;
+       
+    }
+}
+@media (max-width: 636px) {
+    .li-header{
+        grid-template-columns: 40px 1fr repeat(2,1fr);
+    }
+    .li-header .li-header-content{
+        display: none;
+    }
+    .li-reportes {
+       
+        grid-template-columns: 40px 1fr repeat(2,1fr);
+        grid-template-rows: repeat(3,1fr);
+       
+       
+    }
+    .li-reportes .a_content{
+       grid-row: 2;
+       grid-column: 1 / 6;
+       height: 100%;
+       background-color: red;
+        
+       
+    }
+    .li-reportes  .button-container-li{
+        height: 100%;
+         grid-column: 1 / 6;
+        grid-row: 3;
+     }
+}
+@media (max-width: 346px) {
+    .li-header{
+        grid-template-columns: 20px 1fr repeat(2,1fr);
+    }
+    .li-reportes {
+       
+        grid-template-columns: 20px 1fr repeat(2,1fr);
+        
+       
+       
+    }
+   
+}

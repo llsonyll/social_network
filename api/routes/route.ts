@@ -29,7 +29,7 @@ const options: cors.CorsOptions = {
     'Authorization'
   ],
   credentials: true,
-  origin: "*",
+  origin: `${process.env.URL_FRONT}`,
   methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
   preflightContinue: false,
 };

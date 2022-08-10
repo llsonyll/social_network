@@ -12,13 +12,14 @@ import Logo from "../../../assets/LogoSN.png";
 //componentes
 import Register from "../../components/LandingRegister";
 import Signin from "../../components/LandingSignIn";
+import Swal from 'sweetalert2'
 
 const Landing = () => {
   const dispatch = useDispatch();
   const loggedUser = useSelector((store) => store.auth.loggedUser);
   const arrOfReviews = useSelector((state) => state.review.allReviewes);
   const navigate = useNavigate();
-
+    
   const [form, setForm] = useState("Sign in");
   //const [reviewToShow, setReviewToShow] = useState();
 
@@ -29,7 +30,14 @@ const Landing = () => {
   useEffect(() => {
     if (loggedUser.isDeleted) {
       localStorage.removeItem("token");
-      alert("You deleted your account. You have to create a new one to enter.");
+      Swal.fire({
+        icon: "info",
+        title: "You were banned",
+        text: 'You have to create a new account or contact an administrator to enter',
+        background: "#4c4d4c",
+        color: "white",
+      });
+      //alert("You were banned. You have to create a new account or contact an administrator to enter .");
       //navigate("/");
     }
     if (loggedUser._id && !loggedUser.isDeleted) {
@@ -69,7 +77,7 @@ const Landing = () => {
       </div>
     ) : null;
   };
-
+  
   return (
     <div className="landing_container">
       {form === "recovery" ? (

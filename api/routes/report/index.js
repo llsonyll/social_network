@@ -87,10 +87,10 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
                 .populate('userId', 'username')
                 .populate({
                 path: 'commentReportedId',
-                select: ['userId', 'content'],
+                select: ['userId', 'content', 'postId'],
                 populate: {
                     path: 'userId',
-                    select: ['firstname', 'lastname', 'username']
+                    select: ['firstname', 'lastname', 'username',]
                 }
             })
                 .populate({
@@ -125,7 +125,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
                 .populate('userId', 'username')
                 .populate({
                 path: 'commentReportedId',
-                select: ['userId', 'content'],
+                select: ['userId', 'content', 'postId'],
                 populate: {
                     path: 'userId',
                     select: ['firstname', 'lastname', 'username']

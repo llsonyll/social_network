@@ -1,3 +1,4 @@
+import  jwt  from 'jsonwebtoken';
 import express, { Request, Response } from "express";
 import { Comment, Post, User, Review, Chat, Message, Report } from "../../mongoose";
 import passport from "passport";
@@ -7,6 +8,47 @@ import { mailInfo, sendMail } from "../../utils/nodemailer";
 import { IUser } from "../../types";
 
 const router = express.Router();
+
+//-------------------query ?email="user.email"
+router.get("/restorePassWord", async (req:Request, res:Response) => {
+   try {
+      const { email } = req.query;
+      if(!email){ return res.status(400).json({ error: "Email not provided" })}
+      
+      const user: IUser | null = await User.findOne({email: email});
+
+      if (!user){
+        return res.status(400).json({
+           error: "Email provided does not belong to any registered user",
+        });
+      }
+
+      const tokenRestore = jwt.sign(
+        { id: user._id },
+        `${process.env.SECRET_TEST}`,
+        {
+          expiresIn: 60 * 15 *1000
+        }
+      );;
+
+      const mailMessage: mailInfo = {
+        title: "Password Restored",
+        subject: "Password Restoration",
+        message: `<li>Follow this link to restore your password: </li>
+        <li><a href="${process.env.URL_FRONT}/restore" target="_back" > ${process.env.URL_FRONT}/restore </a></li>`,
+        link:"https://www.socialn.me/"
+      };
+    
+      await sendMail(mailMessage, user.email);
+      
+      return res.status(200).cookie("restorePassword", `${tokenRestore}`,{domain:`.socialn.me`}).json({
+        message: "User's email successfully restored",
+      });
+   } catch (err) {
+      res.json(err);
+   }
+});
+
 // GET "/browser/:username"
 router.get(
   "/browser/:username",
@@ -263,6 +305,8 @@ router.get(
       const date = new Date().getTime();
 
       let result: any[] = [];
+      const privateUsers = await User.find({isPrivate: true}).select('_id')
+
       if (user.following.length > 0) {
         if (control === "true") {
           result = await Post.find({
@@ -277,7 +321,7 @@ router.get(
         } else {
           result = await Post.find({
             createdAt: { $gte: new Date(date - 259200000) },
-            userId: { $nin: [...user.following, user._id] },
+            userId: { $nin: [...user.following, ...privateUsers, user._id] },
           })
           .sort({ createdAt: -1 })
           .skip(page * 10)
@@ -289,6 +333,7 @@ router.get(
       if (user.following.length === 0) {
         result = await Post.find({
           createdAt: { $gte: new Date(date - 259200000) },
+          userId: {$nin: [...privateUsers]}
         })
           .sort({ createdAt: -1 })
           .skip(page * 10)
@@ -303,45 +348,44 @@ router.get(
 );
 
 
-
 // POST "/restorePassword"
 router.post("/restorePassword", async (req: Request, res: Response) => {
   try {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ error: "Email not provided" });
-    const [user] = await User.find({ email: email });
+    const { tokenRestore, password } = req.body;
+   
+    if (!password) return res.status(400).json({ error: "password not provided" });
+    
+    if(!tokenRestore) return res.status(400).json({error: "token restored expired"})
 
+    let userId: any = jwt.verify(`${tokenRestore}`,`${process.env.SECRET_TEST}`);
+
+    if(!userId.id) return res.status(400).json({error: "token restored invalid"});
+
+    //password encryption
+    let salt =  await bcrypt.genSalt(10);
+    let hash =  await bcrypt.hash(`${password}`, salt);
+
+    const user = await User.findByIdAndUpdate(`${userId.id}`,{
+        password: hash
+    },{new: true});
+   
     if (!user)
       return res.status(400).json({
-        error: "Email provided does not belong to any registered user",
+        error: "userId  does not registered user",
       });
 
-    const  generateRandomString = (num: number) => {
-      let result = Math.random().toString(36).substring(0, num);             
-      return result;
-    };
-
-    const dummyPassword = generateRandomString(Math.random() * 10 + 6);
 
     const mailMessage: mailInfo = {
       title: "Password Restored",
       subject: "Password Restoration",
-      message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
-      <li>New Password: <strong>${dummyPassword}</strong></li>`,
+      message: `<li>Your password was restored!</li>
+      <li>Your new Password is: <strong>${password}</strong></li>`,
     };
 
-    const { message } = await sendMail(mailMessage, user.email);
-    console.log(message);
-
-    //password encryption
-    let salt = await bcrypt.genSalt(10);
-    let hash = await bcrypt.hash(dummyPassword, salt);
-
-    user.password = hash;
-    await user.save();
-
+    await sendMail(mailMessage, user.email);
+ 
     return res.status(200).json({
-      message: "Successfully user's password restored",
+      message: "User's password successfully restored",
     });
   } catch (err) {
     return res.status(400).json(err);
@@ -472,8 +516,15 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
       });
       await Review.deleteOne({ userId: user._id });
 
+      const generateRandomString = (num: number) => {
+        let result: string = Math.random().toString(36).substring(0, num);
+        return result;
+      };
+      const trashEmail = generateRandomString(Math.random() * 10 + 6);
+
       user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
       user.username = 'User eliminated';
+      user.email = trashEmail + '/ ' + user.email; // SE AGREGA BASURA AL EMAIL. EL USUARIO PODRÁ VOLVER A HACERSE UNA CUENTA CON EL MISMO EMAIL EN EL FUTURO
       user.isDeleted = true;
       user.isAdmin = false;
       user.isPremium = false;

@@ -12,12 +12,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = require("../../mongoose");
 const passport_1 = __importDefault(require("passport"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const nodemailer_1 = require("../../utils/nodemailer");
 const router = express_1.default.Router();
+//-------------------query ?email="user.email"
+router.get("/restorePassWord", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.query;
+        if (!email) {
+            return res.status(400).json({ error: "Email not provided" });
+        }
+        const user = yield mongoose_1.User.findOne({ email: email });
+        if (!user) {
+            return res.status(400).json({
+                error: "Email provided does not belong to any registered user",
+            });
+        }
+        const tokenRestore = jsonwebtoken_1.default.sign({ id: user._id }, `${process.env.SECRET_TEST}`, {
+            expiresIn: 60 * 15 * 1000
+        });
+        ;
+        const mailMessage = {
+            title: "Password Restored",
+            subject: "Password Restoration",
+            message: `<li>Follow this link to restore your password: </li>
+        <li><a href="${process.env.URL_FRONT}/restore" target="_back" > ${process.env.URL_FRONT}/restore </a></li>`,
+            link: "https://www.socialn.me/"
+        };
+        yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
+        return res.status(200).cookie("restorePassword", `${tokenRestore}`, { domain: `.socialn.me` }).json({
+            message: "User's email successfully restored",
+        });
+    }
+    catch (err) {
+        res.json(err);
+    }
+}));
 // GET "/browser/:username"
 router.get("/browser/:username", passport_1.default.authenticate("jwt", {
     session: false,
@@ -220,6 +254,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
             return res.status(404).json({ errorMsg: "who are you?" });
         const date = new Date().getTime();
         let result = [];
+        const privateUsers = yield mongoose_1.User.find({ isPrivate: true }).select('_id');
         if (user.following.length > 0) {
             if (control === "true") {
                 result = yield mongoose_1.Post.find({
@@ -235,7 +270,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
             else {
                 result = yield mongoose_1.Post.find({
                     createdAt: { $gte: new Date(date - 259200000) },
-                    userId: { $nin: [...user.following, user._id] },
+                    userId: { $nin: [...user.following, ...privateUsers, user._id] },
                 })
                     .sort({ createdAt: -1 })
                     .skip(page * 10)
@@ -246,6 +281,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
         if (user.following.length === 0) {
             result = yield mongoose_1.Post.find({
                 createdAt: { $gte: new Date(date - 259200000) },
+                userId: { $nin: [...privateUsers] }
             })
                 .sort({ createdAt: -1 })
                 .skip(page * 10)
@@ -261,34 +297,33 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
 // POST "/restorePassword"
 router.post("/restorePassword", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email } = req.body;
-        if (!email)
-            return res.status(400).json({ error: "Email not provided" });
-        const [user] = yield mongoose_1.User.find({ email: email });
+        const { tokenRestore, password } = req.body;
+        if (!password)
+            return res.status(400).json({ error: "password not provided" });
+        if (!tokenRestore)
+            return res.status(400).json({ error: "token restored expired" });
+        let userId = jsonwebtoken_1.default.verify(`${tokenRestore}`, `${process.env.SECRET_TEST}`);
+        if (!userId.id)
+            return res.status(400).json({ error: "token restored invalid" });
+        //password encryption
+        let salt = yield bcrypt_1.default.genSalt(10);
+        let hash = yield bcrypt_1.default.hash(`${password}`, salt);
+        const user = yield mongoose_1.User.findByIdAndUpdate(`${userId.id}`, {
+            password: hash
+        }, { new: true });
         if (!user)
             return res.status(400).json({
-                error: "Email provided does not belong to any registered user",
+                error: "userId  does not registered user",
             });
-        const generateRandomString = (num) => {
-            let result = Math.random().toString(36).substring(0, num);
-            return result;
-        };
-        const dummyPassword = generateRandomString(Math.random() * 10 + 6);
         const mailMessage = {
             title: "Password Restored",
             subject: "Password Restoration",
-            message: `<li>Your password has been restored to a dummy value, you should change it quickly as possible, because its not safe now</li>
-      <li>New Password: <strong>${dummyPassword}</strong></li>`,
+            message: `<li>Your password was restored!</li>
+      <li>Your new Password is: <strong>${password}</strong></li>`,
         };
-        const { message } = yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
-        console.log(message);
-        //password encryption
-        let salt = yield bcrypt_1.default.genSalt(10);
-        let hash = yield bcrypt_1.default.hash(dummyPassword, salt);
-        user.password = hash;
-        yield user.save();
+        yield (0, nodemailer_1.sendMail)(mailMessage, user.email);
         return res.status(200).json({
-            message: "Successfully user's password restored",
+            message: "User's password successfully restored",
         });
     }
     catch (err) {
@@ -396,8 +431,14 @@ router.put("/deleted/:userId", passport_1.default.authenticate("jwt", { session:
             }
         });
         yield mongoose_1.Review.deleteOne({ userId: user._id });
+        const generateRandomString = (num) => {
+            let result = Math.random().toString(36).substring(0, num);
+            return result;
+        };
+        const trashEmail = generateRandomString(Math.random() * 10 + 6);
         user.profilePicture = 'https://recursoshumanostdf.ar/download/multimedia.normal.83e40515d7743bdf.6572726f725f6e6f726d616c2e706e67.png';
         user.username = 'User eliminated';
+        user.email = trashEmail + '/ ' + user.email; // SE AGREGA BASURA AL EMAIL. EL USUARIO PODRÁ VOLVER A HACERSE UNA CUENTA CON EL MISMO EMAIL EN EL FUTURO
         user.isDeleted = true;
         user.isAdmin = false;
         user.isPremium = false;

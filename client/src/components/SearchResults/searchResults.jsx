@@ -71,10 +71,10 @@ const SearchResults = ({
           !loading ? (
             searches.map((user) => {
               return (
-                <div className="" onClick={() => setInput("")}>
+                <div key={user._id} className="" onClick={() => setInput("")}>
                   <SearchUsersBox
-                    username={user.username}
                     key={user._id}
+                    username={user.username}
                     id={user._id}
                   />
                 </div>
