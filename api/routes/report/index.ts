@@ -166,6 +166,7 @@ async (req:Request, res:Response) =>{
             await newUser.save();
             
             const commentId = post.commentsId;
+            await Report.deleteMany({commentReportedId: {$in: commentId}})
             await Comment.deleteMany({_id: {$in: commentId}});
             await Report.deleteMany({postReportedId: {_id: post._id}})
             await post.remove();
@@ -194,7 +195,7 @@ async (req:Request, res:Response) =>{
             const newPost = await Post.findOneAndUpdate({_id: post._id}, {$pull: {commentsId: comment._id}}, {new: true});
             if (!newPost) return res.status(400).json('Not posible to delete');
             await newPost.save();
-            await Report.deleteMany({postReportedId: {_id: comment._id}})
+            await Report.deleteMany({commentReportedId: {_id: comment._id}})
             await comment.remove();
 
             const newReports = await Report.find({commentReportedId: {$exists: true}})

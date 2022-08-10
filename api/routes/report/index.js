@@ -169,6 +169,7 @@ router.put('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessio
                 return res.status(400).json('Not posible to delete');
             yield newUser.save();
             const commentId = post.commentsId;
+            yield mongoose_1.Report.deleteMany({ commentReportedId: { $in: commentId } });
             yield mongoose_1.Comment.deleteMany({ _id: { $in: commentId } });
             yield mongoose_1.Report.deleteMany({ postReportedId: { _id: post._id } });
             yield post.remove();
@@ -196,7 +197,7 @@ router.put('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessio
             if (!newPost)
                 return res.status(400).json('Not posible to delete');
             yield newPost.save();
-            yield mongoose_1.Report.deleteMany({ postReportedId: { _id: comment._id } });
+            yield mongoose_1.Report.deleteMany({ commentReportedId: { _id: comment._id } });
             yield comment.remove();
             const newReports = yield mongoose_1.Report.find({ commentReportedId: { $exists: true } })
                 .sort({ createdAt: -1 })

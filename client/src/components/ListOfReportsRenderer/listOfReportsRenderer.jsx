@@ -69,7 +69,7 @@ const ListOfReportsRenderer = ({type}) => {
                    usernameOfReporter= r.userId.username
                    idOfReported = r[tipoprueba]._id
                    idOfReporter = r.userId._id
-                  content = null
+                   content = null
                 } else {
                   console.log('aaaa',r);
                   firstname = r.userId.firstname
@@ -78,13 +78,17 @@ const ListOfReportsRenderer = ({type}) => {
                   usernameOfReporter = r.userId.username
                   idOfReported = r.postReportedId ? r.postReportedId.userId._id : null
                   idOfReporter = r.userId._id
-                  thingReportedId = r._id
+                  thingReportedId = r.postReportedId ? r.postReportedId._id : null
                   content = r.postReportedId ? r.postReportedId.content : null
                 }
                 if(tipoprueba === "commentReportedId")
                 {
+                  thingReportedId = r.commentReportedId ? r.commentReportedId._id : null
+                  usernameOfReported = r.commentReportedId ? r.commentReportedId.userId.username : null
                   thingReportedId=r[tipoprueba].postId
                   content = r.commentReportedId ? r.commentReportedId.content : null
+                  idOfReported = r.commentReportedId ? r.commentReportedId.userId._id : null
+                  idOfReporter = r.userId._id
                 } 
 
                 return(
