@@ -25,7 +25,7 @@ const userReducer = createSlice({
           }
           if(action.payload.length=== 0 && state.control==="true") {
             state.control = "false"
-          } else if (!state.homePostsData.length || state.homePostsData[state.homePostsData.length - 1]._id !== action.payload[action.payload?.length - 1]._id) {
+          } else if (!state.homePostsData.length || state.homePostsData[0]._id !== action.payload[0]._id) {
             state.homePostsData = state.homePostsData.concat(action.payload);
             if (action.payload.length < 10 && state.control === "true") {
               state.control = "false"
