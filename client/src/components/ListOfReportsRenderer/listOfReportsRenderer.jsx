@@ -67,7 +67,7 @@ const ListOfReportsRenderer = ({type}) => {
                    lastname= r[tipoprueba].lastname
                    usernameOfReported= r[tipoprueba].username
                    usernameOfReporter= r.userId.username
-                   idOfReported = r[tipoprueba]._id
+                   idOfReported = r[tipoprueba]?._id
                    idOfReporter = r.userId._id
                    content = null
                 } else {
@@ -122,7 +122,7 @@ const ListOfReportsRenderer = ({type}) => {
                                   handleCloseCase(userId, _id, tipoprueba)
                                 }}
                                 type="button"
-                            >Close Case</button>
+                            >Dismiss</button>
                     </div> 
                     </li>
                     </div>
