@@ -214,7 +214,7 @@ async (req:Request, res:Response) =>{
         }
         if (type === 'userReportedId') {
 
-            let userr = await User.findById(`${userId}`);
+            // let userr = await User.findById(`${userId}`);
             // await Report.deleteMany({ postReportedId: { $in: userr?.posts }});
 
             let user = await User.findOneAndUpdate({_id: `${report.userReportedId}`}, {
