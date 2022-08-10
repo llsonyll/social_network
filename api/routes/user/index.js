@@ -254,8 +254,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
             return res.status(404).json({ errorMsg: "who are you?" });
         const date = new Date().getTime();
         let result = [];
-        const privateUsers = yield mongoose_1.User.find({ isPrivate: true }).select('_id')
-        console.log(privateUsers)
+        const privateUsers = yield mongoose_1.User.find({ isPrivate: true }).select('_id');
         if (user.following.length > 0) {
             if (control === "true") {
                 result = yield mongoose_1.Post.find({
