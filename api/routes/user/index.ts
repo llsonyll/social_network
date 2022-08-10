@@ -1,6 +1,6 @@
 import  jwt  from 'jsonwebtoken';
 import express, { Request, Response } from "express";
-import { Comment, Post, User, Review, Chat, Message } from "../../mongoose";
+import { Comment, Post, User, Review, Chat, Message, Report } from "../../mongoose";
 import passport from "passport";
 import bcrypt from "bcrypt";
 
@@ -485,14 +485,16 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
   async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;
+
+      // let userr = await User.findById(`${userId}`);
+      // await Report.deleteMany({ postReportedId: { $in: userr?.posts }});
       
       let user = await User.findOneAndUpdate({_id: `${userId}`}, {
         $set: {
           posts: [],
           following: [],
           followers: [],
-          followRequest: [],
-          chats: []
+          followRequest: []
         }
       }, { new: true });
       if (!user) return res.status(404).json('User not found');
@@ -536,6 +538,7 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
       user.expirationDate = undefined;
 
       await user.save();
+      await Report.deleteMany({userReportedId: {_id: user._id}});
 
       return res.status(200).json('Deleted successfully');
     } catch (err) {

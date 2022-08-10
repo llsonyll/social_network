@@ -163,6 +163,7 @@ router.delete('/:userId/:postId/:commentId', passport_1.default.authenticate('jw
         }, { new: true });
         yield (post === null || post === void 0 ? void 0 : post.save());
         yield mongoose_1.Comment.deleteOne({ _id: comment._id });
+        yield mongoose_1.Report.deleteMany({ commentReportedId: { _id: comment._id } });
         const newPost = yield mongoose_1.Post.findById(comment.postId)
             .populate('userId', ['username', 'profilePicture'])
             .populate('dislikes', 'username')
