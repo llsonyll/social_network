@@ -5,10 +5,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import {Link} from 'react-router-dom'
 import { AiFillCloseSquare } from "react-icons/ai";
 
-//lo llamo desde profilePosts.jsx
-//Este componente renderiza las personas que dieron like/dislike/siguen/son seguidas...
-//Se puede usar para renderizar usuarios dependiendo de lo que uno necesite mostrar.
-//El arr que llega contiene las personas a renderizar. Si no hay arr debe haber id de post, si hay id de post, va y trae la gente que dio likes o dislikes al post.
+//lo llamo para mostrar el detalle de los pagos de un usuario.
 
 const ListOfUserPaymentsRenderer = ({arrayOfPaymentsToRender=[], closeRenderFunction}) => {
     const dispatch = useDispatch()
