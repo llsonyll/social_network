@@ -1,14 +1,16 @@
 import "./profile.css";
 // import { UsersDummy } from "../../data/20UsersDummy";
-import { Fragment, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Fragment, useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams, Link } from "react-router-dom";
 import EditFullname from "../../components/EditFullname";
 import EditUsername from "../../components/EditUsername";
 import EditBiography from "../../components/EditBiography";
 import ProfilePosts from "../../components/ProfilePostsRenderer";
 import { IconContext } from "react-icons";
 // import { mockPost } from "../../data/20DummyPosts";
-import { useSelector, useDispatch } from "react-redux";
+
+
 import { useEffect } from "react";
 import {
   acceptFollowRequest,
@@ -25,13 +27,12 @@ import { Link } from "react-router-dom";
 import { useRef } from "react";
 import axios from "axios";
 
-import { AiFillCloseCircle, AiFillMessage, AiFillEdit } from "react-icons/ai";
 import { getLoggedUserInfo } from "../../redux/actions/authActions";
 
 // import Multiselect from "multiselect-react-dropdown";
 
 //iconos
-import { AiFillSetting } from "react-icons/ai";
+import { AiFillSetting, AiFillCloseCircle, AiFillMessage, AiFillEdit } from "react-icons/ai";
 import { FaExclamation } from "react-icons/fa";
 import { AiFillEye } from "react-icons/ai";
 import { FaFirstOrderAlt } from "react-icons/fa";
@@ -42,10 +43,7 @@ import { clearAll, listFollowing, listFollowers } from '../../redux/actions/list
 import ListOfUsersRenderer from '../../components/ListOfUsersRenderer';
 import ListOfUsersRendererWithButtons from '../../components/ListOfUsersRendererWithButtons';
 
-
-
-
-
+import useFilters from "../../composables/filters";
 
 
 const Profile = () => {
@@ -53,6 +51,7 @@ const Profile = () => {
   const [firstname, setFirstname] = useState(false);
   const [username, setUsername] = useState(false);
   const [biography, setBiography] = useState(false);
+  const [showFollowRequests, setShowFollowRequests] = useState(false);
   const userLoggedId = useSelector((state) => state.auth.loggedUser._id);
   // const loggedUser = useSelector((state) => state.auth.loggedUser);
   // const error = useSelector((state) => state.user.errorProfile);
@@ -174,6 +173,20 @@ const Profile = () => {
     return `${Math.round(minutes / 60)} hours ago`;
   }
 
+  const {
+    currentContent,
+    restoreContent,
+    setCurrentContent,
+    handleMultimediaFilter,
+    handleDatePublishedFilter,
+    handleLikesFilter,
+    handleCommentsFilter,
+  } = useFilters(posts);
+
+  useEffect(() => {
+    setCurrentContent(posts);
+  }, [posts]);
+
   const [withMultimedia, setWithMultimedia] = useState(false);
   const [datePublishedAsc, setDatePublishedAsc] = useState(false);
   const [likesAsc, setLikesAsc] = useState(false);
@@ -181,7 +194,6 @@ const Profile = () => {
   const [filtersActive, setFiltersActive] = useState(false);
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowing, setShowFollowing] = useState(false);
-  const [showFollowRequests, setShowFollowRequests] = useState(false);
 
 
   useEffect(() => {
@@ -191,13 +203,32 @@ const Profile = () => {
       setLikesAsc(false);
       setCommentsQtyAsc(false);
     }
+    restoreContent();
   }, [filtersActive]);
+
+  useEffect(() => {
+    handleMultimediaFilter(withMultimedia);
+  }, [withMultimedia]);
+
+  useEffect(() => {
+    handleDatePublishedFilter(datePublishedAsc);
+  }, [datePublishedAsc]);
+
+  useEffect(() => {
+    handleLikesFilter(likesAsc);
+  }, [likesAsc]);
+
+  useEffect(() => {
+    handleCommentsFilter(commentsQtyAsc);
+  }, [commentsQtyAsc]);
 
   const filters = () => {
     return (
       <div className="bg-[#202225] flex md:flex-row flex-col justify-center items-center p-4 md:gap-8 gap-4 text-white font-semibold md:text-base text-xs">
         <div className="flex flex-row-reverse gap-1">
-          <label htmlFor=""> Filters </label>
+          <label htmlFor="">
+            {filtersActive ? "Reset Filters" : "Use filters"}
+          </label>
           <input
             type="checkbox"
             checked={filtersActive}
@@ -209,7 +240,9 @@ const Profile = () => {
             filtersActive ? "" : "opacity-75"
           }`}
         >
-          <label htmlFor=""> With Multimedia </label>
+          <label htmlFor="">
+            {!withMultimedia ? "With Multimedia" : "No Multimedia"}
+          </label>
           <input
             type="checkbox"
             checked={withMultimedia}
@@ -222,7 +255,9 @@ const Profile = () => {
             filtersActive ? "" : "opacity-75"
           }`}
         >
-          <label htmlFor="">Date {datePublishedAsc ? "ASC" : "DESC"}</label>
+          <label htmlFor="">
+            {!datePublishedAsc ? "Most recent" : "Most older"}
+          </label>
           <input
             type="checkbox"
             checked={datePublishedAsc}
@@ -235,7 +270,7 @@ const Profile = () => {
             filtersActive ? "" : "opacity-75"
           }`}
         >
-          <label htmlFor=""> Likes {likesAsc ? "ASC" : "DESC"} </label>
+          <label htmlFor=""> {likesAsc ? "Most likes" : "Least likes"} </label>
           <input
             type="checkbox"
             checked={likesAsc}
@@ -248,7 +283,9 @@ const Profile = () => {
             filtersActive ? "" : "opacity-75"
           }`}
         >
-          <label htmlFor="">Comments {commentsQtyAsc ? "ASC" : "DESC"}</label>
+          <label htmlFor="">
+            {commentsQtyAsc ? "Most comments" : "Least commented"}
+          </label>
           <input
             type="checkbox"
             checked={commentsQtyAsc}
@@ -260,60 +297,12 @@ const Profile = () => {
     );
   };
 
-  const postApplyFilters = () => {
-    if (!posts) return [];
-    if (!filtersActive) return posts;
-    let dummyPost = posts;
-
-    if (withMultimedia) {
-      dummyPost = dummyPost.filter((post) => !!post.multimedia);
-    } else {
-      dummyPost = dummyPost.filter((post) => !post.multimedia);
-    }
-
-    if (datePublishedAsc) {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        const t1 = new Date(nextPost.createdAt);
-        const t2 = new Date(post.createdAt);
-        return t1 - t2;
-      });
-    } else {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        const t1 = new Date(nextPost.createdAt);
-        const t2 = new Date(post.createdAt);
-        return t2 - t1;
-      });
-    }
-
-    if (likesAsc) {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        return post.likes.length - nextPost.likes.length;
-      });
-    } else {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        return nextPost.likes.length - post.likes.length;
-      });
-    }
-
-    if (commentsQtyAsc) {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        return post.commentsId.length - nextPost.commentsId.length;
-      });
-    } else {
-      dummyPost = dummyPost.sort((post, nextPost) => {
-        return nextPost.commentsId.length - post.commentsId.length;
-      });
-    }
-
-    return dummyPost;
-  };
-
   let renderer = () => {
-    if (posts && posts.length > 0) {
+    if (currentContent && currentContent.length > 0) {
       return (
         <>
           {filters()}
-          {postApplyFilters().map((p) => {
+          {currentContent.map((p) => {
             return (
               <Fragment key={p._id}>
                 <ProfilePosts
@@ -336,11 +325,11 @@ const Profile = () => {
       );
     }
   };
-
+  
   const followRenderer = () => {
     return usersFollowing.includes(userLoggedId) ? (
       <Fragment key={Math.random()}>Unfollow</Fragment>
-    ) : (followRequest.length && (followRequest?.includes(userLoggedId))) ? (
+    ) : followRequest.length && followRequest?.includes(userLoggedId) ? (
       <Fragment key={Math.random()}>Pending</Fragment>
     ) : (
       <Fragment key={Math.random()}>Follow</Fragment>
@@ -380,24 +369,24 @@ const Profile = () => {
           ) : (
             <>
               <div className={`img-container`}>
-                {
-                  isPremium === true && coverPicture || changeCover? 
-                  <img className="w-full h-full rounded-md" src={changeCover ? changeCover : coverPicture}  /> 
-                  :
-                  null 
-                }
-                {
-                  changeCover !== '' ? ( <button
-                  type="button"
-                  className="absolute left-1
-                  bg-green-600 rounded-md text-white p-1 bottom-1"
-                  onClick={handleSaveCover}
-                  >
+              {(isPremium === true && coverPicture) || changeCover ? (
+                  <img
+                    className="w-full h-full rounded-md"
+                    src={changeCover ? changeCover : coverPicture}
+                  />
+                ) : null}
+                {changeCover !== "" ? (
+                  <button
+                    type="button"
+                    className="absolute left-1
+                    bg-green-600 rounded-md text-white p-1 bottom-1"
+                    onClick={handleSaveCover}
+                    >
                     Save &#10004;
-                  </button> ) : null
-                }
-                {
-                  changeCover !== '' ? (<button
+                    </button>
+                ) : null}
+                {changeCover !== "" ? (
+                  <button
                     className="absolute left-1 bg-red-600 text-white p-1 rounded-md top-1"
                     type="button"
                     onClick={cancelChangeCover}
@@ -418,15 +407,14 @@ const Profile = () => {
               src='https://japanpowered.com/media/images//goku.png'
               alt='Profile Picture'>
             </img> */}
-            {
-              isPremium === true && _id === userLoggedId ? 
-              <button 
-              onClick={handleChangeCover}
-              className="transition-all bg-green-600 absolute right-1 bottom-1 text-white p-1 rounded-md hover:bg-green-800">
-                <MdModeEditOutline/>
-                </button> 
-                : null
-            }
+            {isPremium === true && _id === userLoggedId ? (
+                  <button
+                    onClick={handleChangeCover}
+                    className="transition-all bg-green-600 absolute right-1 bottom-1 text-white p-1 rounded-md hover:bg-green-800"
+                  >
+                    <MdModeEditOutline />
+                  </button>
+                ) : null}
                 <div className="imgChange_container">
                   {profilePicture ? (
                     <>
@@ -506,11 +494,16 @@ const Profile = () => {
                   </div>
                   <div className="user-username justify-between">
                     <div className="info_container">
-    <span className="span-info">Username</span>
-    <Fragment>
-    <div className="username_conected">{isConnected && <FaFirstOrderAlt color="green" className="mr-1"/>} {"@" + userUsername}  </div>
-    </Fragment>
-  </div>
+                    <span className="span-info">Username</span>
+                      <Fragment>
+                        <div className="username_conected">
+                          {"@" + userUsername}
+                          {isConnected && (
+                            <FaFirstOrderAlt color="green" className="ml-2" />
+                          )}
+                        </div>
+                      </Fragment>
+                    </div>
                     {params.id === userLoggedId ? (
                       <button
                         className="bg-green-600 hover:bg-green-700 my-2 flex items-center justify-center gap-1 font-semibold"
@@ -529,10 +522,13 @@ const Profile = () => {
                       <span className="span-info">Followers</span>
 
                       <section className="flex items-center">
-                       {followers ? followers.length : 0}
-                       <span className="followingAndFollowersButton ml-1 text-lg" onClick={renderFollowers}>
-                       <AiFillEye className="transition-all text-white hover:text-green-600"/>
-                       </span>
+                      {followers ? followers.length : 0}
+                        <span
+                          className="followingAndFollowersButton ml-1 text-lg"
+                          onClick={renderFollowers}
+                        >
+                          <AiFillEye className="transition-all text-white hover:text-green-600" />
+                        </span>
                       </section>
                     </div>
                   </div>
@@ -541,8 +537,11 @@ const Profile = () => {
                       <span className="span-info">Following</span>
                       <section className="flex items-center">
                       {_id ? following.length : 0}
-                      <span className="followingAndFollowersButton ml-1 text-lg" onClick={renderFollowing}>
-                      <AiFillEye className="transition-all text-white hover:text-green-600"/>
+                        <span
+                          className="followingAndFollowersButton ml-1 text-lg"
+                          onClick={renderFollowing}
+                        >
+                          <AiFillEye className="transition-all text-white hover:text-green-600" />
                         </span>
                       </section>
                     </div>
@@ -564,14 +563,18 @@ const Profile = () => {
                         Edit
                       </button>
                     ) : null}
-                  </div>                  
-                    
-                    {/* Boton que se renderiza cuando hay follow requests */}
-             { followRequest?.length > 0 && params.id === userLoggedId ?
-             <button className="bg-[#4E864C] rounded-md mr-3 p-1 pl-3 pr-3 ml-3"
-                     onClick={handleClickOnMostrarPendientes}> Follow Requests </button>: null}
-                  
+                    </div>
 
+                     {/* Boton que se renderiza cuando hay follow requests */}
+                   {followRequest?.length > 0 && params.id === userLoggedId ? (
+                   <button
+                      className="bg-[#4E864C] rounded-md mr-3 p-1 pl-3 pr-3 ml-3"
+                      onClick={handleClickOnMostrarPendientes}
+                      >
+                     {" "}
+                      Follow Requests{" "}
+                     </button>
+                     ) : null}
                   <div className="my-4">
                     <Link
                       to={`/home/messages/${params.id}`}
