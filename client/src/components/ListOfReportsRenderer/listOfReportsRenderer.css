@@ -22,7 +22,7 @@
 }
 ol{
     list-style: none;
-    height: 40%;
+    height: auto;
     overflow-y: auto;
 }
 li  {
