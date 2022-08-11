@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Avatar from '../Avatar'
 import './UserConversation.css' 
 import Mensajes from '../Mensajes/Mensajes'
+import { Link } from 'react-router-dom'
 
 //iconos
 import {AiOutlineSend, AiOutlinePhone} from 'react-icons/ai'
@@ -66,8 +67,13 @@ const UserConversation = ({mostrarMenu, setmostrarMenu}) => {
   return (
     chatInfo._id? <div className='userconversation__container'>
         <div className='header_conversation'>
+           <Link to={`/home/profile/${chatInfo.users[getIndex(chatInfo.users)]._id}`}>
             <Avatar size='l' imgUrl={chatInfo.users[getIndex(chatInfo.users)].profilePicture}/>
-           <span>{chatInfo.users[getIndex(chatInfo.users)].username}</span>
+           </Link>
+           <Link to={`/home/profile/${chatInfo.users[getIndex(chatInfo.users)]._id}`}>
+            <span>{chatInfo.users[getIndex(chatInfo.users)].username}</span>
+           </Link>
+
            <button type='button' onClick={handleCall} > <AiOutlinePhone /> </button>
            <button className='more_chat' onClick={()=> setmostrarMenu((state) => !state)}><AiOutlineMore /></button> 
            {

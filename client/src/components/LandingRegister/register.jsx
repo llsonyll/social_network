@@ -286,16 +286,12 @@ const Register = () => {
           <div className="line"></div>
         </div>
         <div className="social_buttons">
-          <Link to=''>
-          <button>
-            <BsGoogle />
-          </button>
-          </Link>
-          <Link to=''>
-          <button>
-            <AiFillFacebook />
-          </button>
-          </Link>
+        <a href='https://back.socialn.me/auth/loginGoogle'>
+						  <BsGoogle/>
+					  </a>
+						<a href='https://back.socialn.me/auth/loginFacebook'>
+							<AiFillFacebook/>
+						</a>
         </div>
       </div>
     </form>

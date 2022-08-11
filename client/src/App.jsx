@@ -70,11 +70,11 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // if (!localStorage.getItem("token") && location.pathname !== "/") {
-    //   dispatch(removeLoggedUser());
-    //   console.log("removeLoggedUser");
-    //   navigate("/");
-    // }
+    if (!localStorage.getItem("token") && location.pathname  !== "/" && location.pathname != '/restore') {
+      dispatch(removeLoggedUser());
+      // console.log("removeLoggedUser");
+      navigate("/");
+    }
   }, [location]);
 
   //SOCKET useEffect TO REPORT A LOGGED USER, AND HANDLE CALLS, AND GET NOTIFICATIONS
@@ -92,18 +92,16 @@ function App() {
   useEffect(() => {
     if (actualyLogged) {
       //CREATES A PEER AND GIVES THE USERID AS PEERID
-      console.log("loggeado");
-      console.log(peer);
+      
       peer = new Peer(actualyLogged);
-      console.log("siguio");
-      console.log(peer);
+      
       //FUNCTION TO ACCESS TO CAMERA
       const getUserMedia =
         navigator.getUserMedia ||
         navigator.webkitGetUserMedia ||
         navigator.mozGetUserMedia;
       peer.on("open", function (id) {
-        console.log("I got My peer ID:" + id, peer);
+        
       });
       //EMITS AN LOGGED ACTION
       socket.emit("logged", actualyLogged, socket.id);
