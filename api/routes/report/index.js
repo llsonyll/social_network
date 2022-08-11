@@ -214,8 +214,14 @@ router.put('/:userId/:reportId', passport_1.default.authenticate('jwt', { sessio
             return res.json(newReports);
         }
         if (type === 'userReportedId') {
-            // let userr = await User.findById(`${userId}`);
-            // await Report.deleteMany({ postReportedId: { $in: userr?.posts }});
+            let userr = yield mongoose_1.User.findById(`${report.userReportedId}`);
+            if (userr) {
+                yield mongoose_1.Report.deleteMany({ postReportedId: { $in: userr.posts } });
+                for (let i = 0; i < userr.posts.length; i++) {
+                    let postsFound = yield mongoose_1.Post.findById(`${userr.posts[i]}`);
+                    yield mongoose_1.Report.deleteMany({ commentReportedId: { $in: postsFound === null || postsFound === void 0 ? void 0 : postsFound.commentsId } });
+                }
+            }
             let user = yield mongoose_1.User.findOneAndUpdate({ _id: `${report.userReportedId}` }, {
                 $set: {
                     posts: [],
