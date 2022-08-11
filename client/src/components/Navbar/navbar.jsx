@@ -149,13 +149,13 @@ const NavBar = ({ openModal, openAdmin }) => {
           </div>
           <div className={`menu_responsive actions  flex-col absolute pt-5 ${mostrarMenu === true ? 'menu_responsive-mostrar' : null }`}>
                   <NewPostBtn action={openModal} onClick={MenuAnimation}/>
-                  <NavLink to="" className="flex items-center gap-2" onClick={MenuAnimation}>
+                  <NavLink to="" className="w-full justify-center  rounded-none flex items-center gap-2" onClick={MenuAnimation}>
                     <FaHome />
                     Home
                   </NavLink>
                   <NavLink
                     to={`/home/notifications`}
-                    className="flex items-center gap-2 relative "
+                    className="w-full justify-center  rounded-none flex items-center gap-2 relative "
                     style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
                     onClick={MenuAnimation}
                   >
@@ -165,7 +165,7 @@ const NavBar = ({ openModal, openAdmin }) => {
                   </NavLink>
                   <NavLink
                     to={`profile/${userId}`}
-                    className="flex items-center gap-2"
+                    className="w-full justify-center  rounded-none flex items-center gap-2"
                     style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
                     onClick={MenuAnimation}
                   >
@@ -174,7 +174,7 @@ const NavBar = ({ openModal, openAdmin }) => {
                   </NavLink>
                   <NavLink
                     to="messages"
-                    className="flex items-center gap-2 relative"
+                    className="w-full justify-center  rounded-none flex items-center gap-2 relative"
                     style={({ isActive }) => (isActive ? activeStyle : unactiveStyle)}
                     onClick={MenuAnimation}
                   >

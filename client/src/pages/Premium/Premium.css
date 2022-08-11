@@ -2,6 +2,12 @@
     display: flex;
     width: 100%;
 }
+.StripeElement {
+    border: 1px solid rgb(0, 0, 0);
+    padding: 10px;
+    background-color: rgba(153, 153, 153, 0.479);
+    color: white;
+}
 .premium_container .payments_container{
     display: flex;
     flex-direction: column;
@@ -78,13 +84,20 @@
 }
 .plan-escogido .card_payment{
     width: 90%;
-    background-color: rgb(109, 109, 109);
+    background-color: #4e864c96;
     text-align: center;
-    
+    height: 50%;
     padding: 20px;
     border: none;
     border-radius: 5px;
     margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+.plan-escogido .card_payment input::placeholder{
+  color: black;
     
 }
 
@@ -97,7 +110,7 @@
 
 
 .plan-escogido .card_payment button{
-    background-color: #4E864C;
+    background-color: #2c472b;
     border-radius: 5px;
     padding: 5px;
     margin-top: 40px;
@@ -122,7 +135,7 @@
 
 /* media queries */
 
-@media (max-width:692px) {
+@media (max-width:722px) {
     .premium_container{
         flex-wrap: wrap;
     }

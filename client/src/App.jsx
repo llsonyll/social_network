@@ -20,7 +20,7 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 
 //IMPORTS PARA SOCKET IO
 import io from "socket.io-client";
-//export const socket = io("http://localhost:3001");
+// export const socket = io("http://localhost:3001");
 export const socket = io("https://back.socialn.me");
 //export const socket = io("https://www.dream-team-api.social");
  
@@ -70,7 +70,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!localStorage.getItem("token") && location.pathname !== "/") {
+    if (!localStorage.getItem("token") && location.pathname  !== "/" && location.pathname != '/restore') {
       dispatch(removeLoggedUser());
       // console.log("removeLoggedUser");
       navigate("/");
@@ -92,18 +92,16 @@ function App() {
   useEffect(() => {
     if (actualyLogged) {
       //CREATES A PEER AND GIVES THE USERID AS PEERID
-      console.log("loggeado");
-      console.log(peer);
+      
       peer = new Peer(actualyLogged);
-      console.log("siguio");
-      console.log(peer);
+      
       //FUNCTION TO ACCESS TO CAMERA
       const getUserMedia =
         navigator.getUserMedia ||
         navigator.webkitGetUserMedia ||
         navigator.mozGetUserMedia;
       peer.on("open", function (id) {
-        console.log("I got My peer ID:" + id, peer);
+        
       });
       //EMITS AN LOGGED ACTION
       socket.emit("logged", actualyLogged, socket.id);

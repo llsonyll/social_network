@@ -17,9 +17,9 @@ const AdminBoard = () => {
         <div className="text-white font-bold text-4xl text-center md:mb-8 mb-4 ">
           Admin Dashboard
         </div>
-        <div className="flex md:mb-4 mb-2">
+        <div className="flex md:mb-4 mb-2 flex-wrap">
           <button
-            className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ${
+            className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ml-4 ${
               tab === "search" ? "opacity-100 underline" : ""
             }`}
             onClick={() => setTab("search")}
@@ -28,7 +28,7 @@ const AdminBoard = () => {
             Search
           </button>
           <button
-            className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ${
+            className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ml-4 ${
               tab === "reports" ? "opacity-100 underline" : ""
             }`}
             onClick={() => setTab("reports")}
@@ -37,7 +37,7 @@ const AdminBoard = () => {
             Reports
           </button>
           <button
-            className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ${
+            className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ml-4 ${
               tab === "reports" ? "opacity-100 underline" : ""
             }`}
             onClick={() => setTab("payments")}
@@ -46,7 +46,7 @@ const AdminBoard = () => {
             Payments
           </button>
           <button
-            className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ${
+            className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ml-6 ${
               tab === "stadistics" ? "opacity-100 underline" : ""
             }`}
             onClick={() => setTab("stadistics")}

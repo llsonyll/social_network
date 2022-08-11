@@ -216,14 +216,14 @@ let arr = [{
 }]
   return (
     <>
-      <div className="flex flex-row text-white font-bold">
-              <div className="m-2 ml-1">#</div>
-              <div className="m-2 ml-4">Fullname</div>
-              <div className="m-2 ml-32">Ids</div>
-              <div className="m-2 ml-28">Amount</div>
-              <div className="m-2 ml-16">Plan</div>
-              <div className="m-2 ml-28">Date</div>
-              <div className="m-2 ml-32">Status</div>
+      <div className="li-payments-header-container">
+              <div className="text-center">#</div>
+              <div className="text-center">Fullname</div>
+              <div className="li-payments-header-ids text-center">Ids</div>
+              <div className="text-center px-4">Amount</div>
+              <div className="text-center li-payments-header-plan">Plan</div>
+              <div className="text-center li-payments-header-date">Date</div>
+              <div className="text-center li-payments-header-status">Status</div>
       </div>
       <div className="flex items-center justify-center text-slate-100 bg-[#2E2E2E]  shadow-xl rounded-lg '">
         <div>
