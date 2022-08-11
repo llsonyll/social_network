@@ -215,8 +215,15 @@ async (req:Request, res:Response) =>{
         }
         if (type === 'userReportedId') {
 
-            // let userr = await User.findById(`${userId}`);
-            // await Report.deleteMany({ postReportedId: { $in: userr?.posts }});
+            let userr = await User.findById(`${report.userReportedId}`);
+
+            if (userr) {
+                await Report.deleteMany({ postReportedId: { $in: userr.posts }});
+                for (let i = 0; i < userr.posts.length; i ++) {
+                    let postsFound = await Post.findById(`${userr.posts[i]}`);
+                    await Report.deleteMany({ commentReportedId: {$in: postsFound?.commentsId } });
+                }
+            }
 
             let user = await User.findOneAndUpdate({_id: `${report.userReportedId}`}, {
                 $set: {
