@@ -38,7 +38,7 @@ const AdminBoard = () => {
           </button>
           <button
             className={`flex-1 flex items-center justify-center text-white opacity-50 gap-2 ml-4 ${
-              tab === "reports" ? "opacity-100 underline" : ""
+              tab === "payments" ? "opacity-100 underline" : ""
             }`}
             onClick={() => setTab("payments")}
           >
