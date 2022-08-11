@@ -22,7 +22,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         const admin = yield mongoose_1.User.findById(`${userId}`);
         if (!admin || !admin.isAdmin)
             return res.status(401).json('Missing permissions');
-        const users = yield mongoose_1.User.find({})
+        const users = yield mongoose_1.User.find({ isDeleted: false })
             .sort({ followers: -1 })
             .populate('review', ['description', 'stars'])
             .select(['-password', '-posts', '-chats', '-socketId']);
@@ -32,7 +32,7 @@ router.get('/:userId', passport_1.default.authenticate('jwt', { session: false, 
         const premiumUsers = users.filter(p => p.isPremium);
         const adminUsers = users.filter(a => a.isAdmin);
         const desactivatedUsers = users.filter(d => d.isDeleted);
-        const popularUser = users[0];
+        const popularUser = users.sort((a, b) => b.followers.length - a.followers.length)[0];
         const info = {
             registeredUsers: users.length,
             usersConnected: usersConnected.length,

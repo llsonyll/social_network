@@ -1,6 +1,7 @@
 import express, { Response, Request } from 'express';
 import passport from 'passport';
 import { Report, User, Comment, Post, Payment } from '../../mongoose';
+import { IUser } from '../../types';
 
 const router = express.Router()
 
@@ -12,7 +13,7 @@ async (req: Request, res: Response) => {
         const admin = await User.findById(`${userId}`);
         if (!admin || !admin.isAdmin) return res.status(401).json('Missing permissions');
 
-        const users = await User.find({})
+        const users = await User.find({isDeleted: false})
         .sort({followers: -1})
         .populate('review', ['description', 'stars'])
         .select(['-password', '-posts', '-chats', '-socketId'])
@@ -29,7 +30,7 @@ async (req: Request, res: Response) => {
 
         const desactivatedUsers = users.filter(d => d.isDeleted);
 
-        const popularUser = users[0];
+        const popularUser = users.sort((a: IUser,b: IUser) => b.followers.length - a.followers.length)[0]
         
         const info = {
             registeredUsers: users.length,
