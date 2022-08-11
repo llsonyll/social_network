@@ -70,11 +70,11 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // if (!localStorage.getItem("token") && location.pathname !== "/") {
-    //   dispatch(removeLoggedUser());
-    //   console.log("removeLoggedUser");
-    //   navigate("/");
-    // }
+    if (!localStorage.getItem("token") && location.pathname !== "/") {
+      dispatch(removeLoggedUser());
+      // console.log("removeLoggedUser");
+      navigate("/");
+    }
   }, [location]);
 
   //SOCKET useEffect TO REPORT A LOGGED USER, AND HANDLE CALLS, AND GET NOTIFICATIONS
