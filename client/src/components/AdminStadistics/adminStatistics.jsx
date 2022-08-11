@@ -13,7 +13,7 @@ const AdminStatistics = () => {
   useEffect(() => {
     dispatch(getUsersInfo(_id));
 
-  });
+  }, [ ]);
   const info = useSelector(store => store.admin.info);
 
   return (
