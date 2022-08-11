@@ -177,6 +177,11 @@
   color: white;
 }
 
+.user-biography{
+
+  word-break: break-all;
+}
+
 @media (max-width: 960px) {
   .profile-container .shadow-box .user_description div {
     flex-direction: column;
