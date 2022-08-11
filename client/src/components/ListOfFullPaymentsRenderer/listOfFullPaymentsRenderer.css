@@ -20,6 +20,16 @@
 .containersiii{
     margin-top: 10%;
 }
+.li-payments-header-container{
+    display: grid;
+    color: white;
+    grid-template-columns: 20px 110px repeat(5, 1fr) ;
+}
+.list-payments__container .li-payments  {
+    
+    display: grid;
+    grid-template-columns: 20px 110px repeat(5, 1fr) ;
+}
 
 /* .borde{
     border-radius: 2%;
@@ -27,3 +37,86 @@
     border-style: solid;
     border-width: 1px;
 } */
+
+@media (max-width:632px) {
+    .list-payments__container .li-payments  {
+    
+        grid-template-columns: 20px repeat(5, 1fr) ;
+        grid-template-rows:  repeat(2, 1fr) ;
+    }
+    .list-payments__container .li-payments .li-payments-ids  {
+    
+        grid-row: 2;
+        grid-column: 1 / 7;
+    }
+    .li-payments-header-container {
+        grid-template-columns: 20px repeat(5, 1fr) ;
+    }
+    .li-payments-header-container .li-payments-header-ids{
+      display: none;
+    }
+}
+@media (max-width:518px) {
+    .list-payments__container .li-payments  {
+    
+        grid-template-columns: 20px repeat(4, 1fr) ;
+        grid-template-rows:  repeat(3, 1fr) ;
+    }
+    .list-payments__container .li-payments .li-payments-date  {
+    
+        grid-row: 2;
+        grid-column: 1 / 7;
+    }
+    .li-payments-header-container {
+        grid-template-columns: 20px repeat(4, 1fr) ;
+    }
+    .li-payments-header-container .li-payments-header-date{
+      display: none;
+    }
+    .list-payments__container .li-payments .li-payments-ids  {
+    
+        grid-row: 3;
+        grid-column: 1 / 7;
+    }
+}
+
+
+@media (max-width:448px) {
+    .list-payments__container .li-payments  {
+    
+        grid-template-columns: 20px repeat(2, 1fr) ;
+        grid-template-rows:  repeat(5, 1fr) ;
+    }
+    .list-payments__container .li-payments .li-payments-status  {
+    
+        grid-row: 3;
+        grid-column: 1 / 7;
+    }
+    .list-payments__container .li-payments .li-payments-plan  {
+    
+        grid-row: 2;
+        grid-column: 1 / 7;
+    }
+    .list-payments__container .li-payments .li-payments-date  {
+    
+        grid-row: 5;
+        grid-column: 1 / 7;
+    }
+    .li-payments-header-container {
+        grid-template-columns: 20px repeat(2, 1fr) ;
+    }
+    .li-payments-header-container .li-payments-header-status{
+      display: none;
+    }
+    .li-payments-header-container .li-payments-header-status{
+      display: none;
+    }
+    .li-payments-header-container .li-payments-header-plan{
+      display: none;
+    }
+    .list-payments__container .li-payments .li-payments-ids  {
+    
+        grid-row: 4;
+        grid-column: 1 / 7;
+    }
+}
