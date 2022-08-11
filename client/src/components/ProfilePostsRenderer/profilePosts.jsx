@@ -55,9 +55,9 @@ const ProfilePosts = (props) => {
 
   const posts = useSelector((state) => state.user.userProfileData.posts);
   let index = posts.findIndex((post) => post._id === postNumber);
-
+  console.log(index);
   let renderHeartIcon = () => {
-    if (!posts[index].likes.includes(_id)) {
+    if (index >= 0 && !posts[index].likes.includes(_id)) {
       like !== "add" && setLike("add");
       return <FaHeart />;
     } else {
@@ -94,7 +94,7 @@ const ProfilePosts = (props) => {
   };
 
   let renderHeartBrokenIcon = () => {
-    if (!posts[index].dislikes.includes(_id)) {
+    if (index >= 0 && !posts[index].dislikes.includes(_id)) {
       console.log("Entra blanco");
       dislike !== "add" && setDislike("add");
       return <ImHeartBroken />;
@@ -194,13 +194,13 @@ const ProfilePosts = (props) => {
             {posts && renderHeartIcon()}
           </button>
           <button onClick={renderLikes}>
-            {posts && posts[index].likes.length}
+            {index >= 0 && posts[index].likes.length}
           </button>
           <button className="flex items-center gap-1" onClick={handleDislike}>
             {posts && renderHeartBrokenIcon()}
           </button>
           <button onClick={renderDislikes}>
-            {posts && posts[index].dislikes.length}
+            {index >= 0 && posts[index].dislikes.length}
           </button>
 
           {loggedUser._id !== userId ? (
