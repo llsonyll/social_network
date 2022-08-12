@@ -101,18 +101,19 @@ router.post("/refresh", (req, res) => __awaiter(void 0, void 0, void 0, function
         if (!tokenUser) {
             return res.status(400).json("token not exist");
         }
-        //---------------le resta 20 minutos a la actua ------------------------------
-        let difference = new Date().getTime();
-        difference = new Date(difference - 60 * 20000);
-        //---------------------cada 24 horas ------------------------------------------
-        let cookie = " ";
-        if (new Date(currentRefreshToken.exp * 1000) > difference) {
-            cookie = refreshToken(user, tokenUser._id.toString());
-        }
-        ;
-        return res.status(200).json();
+        // //---------------le resta 20 minutos a la actua ------------------------------
+        // let difference: any = new Date().getTime();
+        // difference = new Date(difference - 60 * 20000);
+        // //---------------------cada 24 horas ------------------------------------------
+        // let cookie = " ";
+        // if(new Date(currentRefreshToken.exp*1000) > difference) {
+        //     cookie = refreshToken(user as IUser, tokenUser._id.toString()); 
+        // };
+        console.log("ENTRE");
+        return res.status(200).json({ msg: "todo salio bien" });
     }
     catch (err) {
+        console.log(err);
         return res.json(err);
     }
 }));

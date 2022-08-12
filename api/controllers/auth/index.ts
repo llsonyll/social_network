@@ -12,8 +12,12 @@ import FacebookStrategy from "passport-facebook";
 import axios from "axios";
 
 const redirect = async(refreshToken: any)=>{
-    let res = await axios.post(`${process.env.URL}/auth/refresh`,{refreshToken});
-    return res.data;
+    try {
+        let res = await axios.post(`${process.env.URL}auth/refresh`,{refreshToken});
+        return res.data;    
+    } catch (err) {
+       console.log(err)
+    }
 };
 
 const profileArray = [

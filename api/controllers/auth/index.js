@@ -23,7 +23,8 @@ const passport_google_oauth20_1 = __importDefault(require("passport-google-oauth
 const passport_facebook_1 = __importDefault(require("passport-facebook"));
 const axios_1 = __importDefault(require("axios"));
 const redirect = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
-    let res = yield axios_1.default.post(`${process.env.URL}/auth/refresh`, { refreshToken });
+    console.log(refreshToken, "refresh");
+    let res = yield axios_1.default.post(`${process.env.URL}auth/refresh`, { refreshToken });
     return res.data;
 });
 const profileArray = [
