@@ -94,13 +94,15 @@ router.post("/refresh", (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         let currentRefreshToken = req.body.refreshToken;
         let user = yield mongoose_1.User.findOne({ email: currentRefreshToken.email });
-        if (!user) {
-            return res.status(400).json("user not register");
-        }
-        let tokenUser = yield mongoose_1.Token.findOneAndUpdate({ email: currentRefreshToken.email }, { token: createToken(user) }, { new: true }); //actualiza user
+        let tokenUser = yield mongoose_1.Token.findOne({ email: currentRefreshToken.email });
         if (!tokenUser) {
             return res.status(400).json("token not exist");
         }
+        if (!user || currentRefreshToken.userTokenId.toString() !== tokenUser._id.toString()) {
+            return res.status(400).json("user not register");
+        }
+        tokenUser.token = createToken(user);
+        tokenUser.save();
         // //---------------le resta 20 minutos a la actua ------------------------------
         // let difference: any = new Date().getTime();
         // difference = new Date(difference - 60 * 20000);
