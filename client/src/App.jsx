@@ -20,7 +20,7 @@ import PremiumComponent from "./pages/Premium/PremiumComponent";
 
 //IMPORTS PARA SOCKET IO
 import io from "socket.io-client";
-// export const socket = io("http://localhost:3001");
+//export const socket = io("http://localhost:3001");
 export const socket = io("https://back.socialn.me");
 //export const socket = io("https://www.dream-team-api.social");
  

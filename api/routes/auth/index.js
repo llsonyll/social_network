@@ -109,11 +109,9 @@ router.post("/refresh", (req, res) => __awaiter(void 0, void 0, void 0, function
         // if(new Date(currentRefreshToken.exp*1000) > difference) {
         //     cookie = refreshToken(user as IUser, tokenUser._id.toString()); 
         // };
-        console.log("ENTRE");
         return res.status(200).json({ msg: "todo salio bien" });
     }
     catch (err) {
-        console.log(err);
         return res.json(err);
     }
 }));

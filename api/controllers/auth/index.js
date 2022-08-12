@@ -23,9 +23,13 @@ const passport_google_oauth20_1 = __importDefault(require("passport-google-oauth
 const passport_facebook_1 = __importDefault(require("passport-facebook"));
 const axios_1 = __importDefault(require("axios"));
 const redirect = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(refreshToken, "refresh");
-    let res = yield axios_1.default.post(`${process.env.URL}auth/refresh`, { refreshToken });
-    return res.data;
+    try {
+        let res = yield axios_1.default.post(`${process.env.URL}auth/refresh`, { refreshToken });
+        return res.data;
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
 const profileArray = [
     "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png",
