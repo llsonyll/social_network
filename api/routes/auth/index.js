@@ -18,12 +18,18 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const passport_1 = __importDefault(require("passport"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const nodemailer_1 = require("../../utils/nodemailer");
-// @ts-ignore-error
-const email_existence_1 = __importDefault(require("email-existence"));
 let router = express_1.default.Router();
 //---------------function create Token--------------------
 const createToken = (user) => {
-    return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`);
+    return jsonwebtoken_1.default.sign({ user: { id: user._id, email: user.email } }, `${process.env.SECRET_TEST}`, {
+        expiresIn: 60 * 15,
+    });
+};
+//---------------function create Token--------------------
+const refreshToken = (user, _idToken) => {
+    return jsonwebtoken_1.default.sign({ email: user.email, userTokenId: _idToken }, `${process.env.SECRET_REFRESH}`, {
+        expiresIn: "1d",
+    });
 };
 //---------------middleware new User-----------------------------
 const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -50,25 +56,66 @@ const middlewareNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         let salt = yield bcrypt_1.default.genSalt(10);
         let hash = yield bcrypt_1.default.hash(password, salt);
         //verify email existence uwu
-        yield email_existence_1.default.check(`${email}`, (err, response) => __awaiter(void 0, void 0, void 0, function* () {
-            console.log(response);
-            if (response === false) {
-                return res.status(400).json({ message: "Email doesn't exists" });
-            }
-            else {
-                let newUser = new mongoose_1.User(Object.assign(Object.assign({}, req.body), { password: hash, profilePicture: profileArray[Math.floor(Math.random() * 5)] }));
-                yield newUser.save();
-                next();
-            }
-        }));
-        //create new User
-        //res.status(201).json(newUser);
-        // next();
+        // await emailExistence.check(`${email}`, async(err: any, response: boolean) => {
+        //   if(!response) {
+        //     return res.status(400).json({message: "Email doesn't exists"})
+        //   }
+        // })
+        let newUser = new mongoose_1.User(Object.assign(Object.assign({}, req.body), { password: hash, profilePicture: profileArray[Math.floor(Math.random() * 5)] }));
+        yield newUser.save();
+        next();
     }
     catch (error) {
         res.json(error);
     }
 });
+router.get("/logOuterr", (req, res) => {
+    res.status(400).json("fallo logOut");
+});
+//----------------------log up -----------------------------------------------
+router.put("/logOut", passport_1.default.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/logOuterr",
+}), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { user } = req;
+        if (!user) {
+            return res.status(400).json("user required");
+        }
+        yield mongoose_1.Token.deleteOne({ email: user.email });
+        return res.json({});
+    }
+    catch (err) {
+        res.json(err);
+    }
+}));
+//---------------------------refresh Token---------------------------------------------
+router.post("/refresh", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let currentRefreshToken = req.body.refreshToken;
+        let user = yield mongoose_1.User.findOne({ email: currentRefreshToken.email });
+        if (!user) {
+            return res.status(400).json("user not register");
+        }
+        let tokenUser = yield mongoose_1.Token.findOneAndUpdate({ email: currentRefreshToken.email }, { token: createToken(user) }, { new: true }); //actualiza user
+        if (!tokenUser) {
+            return res.status(400).json("token not exist");
+        }
+        //---------------le resta 20 minutos a la actua ------------------------------
+        let difference = new Date().getTime();
+        difference = new Date(difference - 60 * 20000);
+        //---------------------cada 24 horas ------------------------------------------
+        let cookie = " ";
+        if (new Date(currentRefreshToken.exp * 1000) > difference) {
+            cookie = refreshToken(user, tokenUser._id.toString());
+        }
+        ;
+        return res.status(200).json();
+    }
+    catch (err) {
+        return res.json(err);
+    }
+}));
 //------------rute register-----------------------------
 router.post("/register", middlewareNewUser, passport_1.default.authenticate("local", {
     session: false,
@@ -77,27 +124,34 @@ router.post("/register", middlewareNewUser, passport_1.default.authenticate("loc
     //user return of passport strategy
     try {
         let { user } = req;
-        if (user) {
-            const send = user;
-            const mailInfo = {
-                title: "New User Registered",
-                subject: "Registration",
-                message: `<li>Register has been completed successfully</li>`,
-            };
-            const { message } = yield (0, nodemailer_1.sendMail)(mailInfo, send.email);
-            console.log(message);
-            return res.status(200).json({
-                token: createToken(user),
-                username: send.username,
-                _id: send._id,
-                profilePicture: send.profilePicture,
-                isDeleted: send.isDeleted,
-                isAdmin: send.isAdmin,
-                isPremium: send.isPremium,
-            });
-            //res.redirect()
+        console.log(user);
+        if (!user) {
+            return res.status(400).json("The user does not exists");
         }
-        return res.status(400).json("The user does not exists");
+        const send = user;
+        const mailInfo = {
+            title: "New User Registered",
+            subject: "Registration",
+            message: `<li>Register has been completed successfully</li>`,
+        };
+        const { message } = yield (0, nodemailer_1.sendMail)(mailInfo, send.email);
+        console.log(message);
+        //------------------deleted token-----------------------------
+        yield mongoose_1.Token.deleteOne({ email: send.email });
+        let token = new mongoose_1.Token({
+            email: send.email,
+            token: createToken(user),
+        });
+        yield token.save();
+        return res.status(200).json({
+            token: refreshToken(user, token._id.toString()),
+            username: send.username,
+            _id: send._id,
+            profilePicture: send.profilePicture,
+            isDeleted: send.isDeleted,
+            isAdmin: send.isAdmin,
+            isPremium: send.isPremium,
+        });
     }
     catch (error) {
         res.json(error);
@@ -123,6 +177,13 @@ router.post("/login", passport_1.default.authenticate("local", {
         let { user } = req;
         if (user) {
             const send = user;
+            //--------------elimina susuario----------------------------
+            yield mongoose_1.Token.deleteOne({ email: send.email });
+            let token = new mongoose_1.Token({
+                email: send.email,
+                token: createToken(user),
+            });
+            yield token.save();
             if (send.isPremium) {
                 const date = new Date();
                 if (send.expirationDate) {
@@ -140,8 +201,9 @@ router.post("/login", passport_1.default.authenticate("local", {
                     }
                 }
             }
+            let newRefreshtoken = refreshToken(user, token._id.toString());
             return res.status(200).json({
-                token: createToken(user),
+                token: newRefreshtoken,
                 username: send.username,
                 _id: send._id,
                 profilePicture: send.profilePicture,
@@ -165,7 +227,14 @@ router.get("/loginGoogle", passport_1.default.authenticate("google", {
     try {
         const user = req.user;
         const send = user;
-        res.cookie("token", createToken(user), { domain: `.socialn.me`, maxAge: 10000 });
+        //------------------deleted token-----------------------------
+        yield mongoose_1.Token.deleteOne({ email: send.email });
+        let token = new mongoose_1.Token({
+            email: send.email,
+            token: createToken(user),
+        });
+        yield token.save();
+        res.cookie("token", refreshToken(user, token._id.toString()), { domain: `.socialn.me`, maxAge: 10000 });
         return res.redirect(`${process.env.URL_FRONT}`);
     }
     catch (err) {
@@ -181,7 +250,14 @@ router.get("/loginFacebook", passport_1.default.authenticate("facebook", {
     try {
         const user = req.user;
         const send = user;
-        res.cookie("token", createToken(user), { domain: `.socialn.me`, maxAge: 10000 });
+        //------------------deleted token-----------------------------
+        yield mongoose_1.Token.deleteOne({ email: send.email });
+        let token = new mongoose_1.Token({
+            email: send.email,
+            token: createToken(user),
+        });
+        yield token.save();
+        res.cookie("token", refreshToken(user, token._id.toString()), { domain: `.socialn.me`, maxAge: 10000 });
         return res.redirect(`${process.env.URL_FRONT}`);
     }
     catch (err) {
@@ -204,16 +280,17 @@ router.post("/", passport_1.default.authenticate("jwt", {
         }
         const token = authorization[1];
         //------------------------decode token-----------------------------------
-        let verifyToken = jsonwebtoken_1.default.verify(`${token}`, `${process.env.SECRET_TEST}`);
-        if (!verifyToken || !verifyToken.user) {
+        let verifyToken = jsonwebtoken_1.default.verify(`${token}`, `${process.env.SECRET_REFRESH}`);
+        if (!verifyToken || !verifyToken.email) {
             res.status(401).json("Invalid Token");
         }
-        let { id } = verifyToken.user;
-        const user = yield mongoose_1.User.findById(`${id}`);
+        let { email } = verifyToken;
+        const user = yield mongoose_1.User.findOne({ email: `${email}` });
+        console.log(user);
         if (!user) {
             return res.status(400).json("Invalid Token");
         }
-        let { username, profilePicture, isDeleted, isAdmin, isPremium } = user;
+        let { _id, username, profilePicture, isDeleted, isAdmin, isPremium } = user;
         if (user.isPremium) {
             const date = new Date();
             if (user.expirationDate) {
@@ -229,7 +306,7 @@ router.post("/", passport_1.default.authenticate("jwt", {
             }
         }
         return res.status(200).json({
-            _id: id,
+            _id: _id.toString(),
             username,
             profilePicture,
             isDeleted,

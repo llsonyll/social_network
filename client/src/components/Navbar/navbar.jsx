@@ -17,6 +17,7 @@ import { logOutUser } from "../../redux/reducers/authReducer.slice";
 import { MdOutlineLogout, MdAdminPanelSettings } from "react-icons/md";
 import SearchResults from "../SearchResults/searchResults";
 import { socket } from "../../App";
+import { logOut } from "../../redux/actions/authActions";
 
 const NavBar = ({ openModal, openAdmin }) => {
   let activeStyle = {
@@ -63,8 +64,11 @@ const NavBar = ({ openModal, openAdmin }) => {
 
   const handleLogOut = () => {
     socket.emit('logout', userId)
-    dispatch(logOutUser());
-    navigate("/");
+    dispatch(logOut());
+    //----para que no se rompa el logOut :)
+    setTimeout(()=>{
+      navigate("/");
+    },1000);
   };
 
   const handleSelectRecent = (recentName) => {

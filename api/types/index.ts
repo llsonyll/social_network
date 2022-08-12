@@ -105,3 +105,9 @@ export interface INotification {
    createdAt: Date;
    seen: boolean;
 }
+
+export interface IToken{
+   _id: Types.ObjectId;
+   email: string;
+   token: string;
+}

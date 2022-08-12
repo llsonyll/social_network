@@ -13,12 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Auth = void 0;
+const index_1 = require("./../../mongoose/index");
 const passport_1 = __importDefault(require("passport"));
 const passport_local_1 = __importDefault(require("passport-local"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const passport_google_oauth20_1 = __importDefault(require("passport-google-oauth20"));
 const passport_facebook_1 = __importDefault(require("passport-facebook"));
+const axios_1 = __importDefault(require("axios"));
+const redirect = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
+    let res = yield axios_1.default.post(`${process.env.URL}/auth/refresh`, { refreshToken });
+    return res.data;
+});
 const profileArray = [
     "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png",
     "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p2_tj88ek.png",
@@ -112,16 +119,30 @@ function Auth(app, userCollection) {
     passport_1.default.use('jwt', new passport_jwt_1.default.Strategy(
     //Extracts the token
     {
-        secretOrKey: `${process.env.SECRET_TEST}`,
+        secretOrKey: `${process.env.SECRET_REFRESH}`,
         jwtFromRequest: passport_jwt_1.default.ExtractJwt.fromAuthHeaderAsBearerToken()
     }, 
     //Tryes to read the user from the token, or auth fails 
-    (token, done) => __awaiter(this, void 0, void 0, function* () {
+    (refreshtoken, done) => __awaiter(this, void 0, void 0, function* () {
         try {
-            done(null, token.user);
+            let token = yield index_1.Token.findOne({ email: refreshtoken.email });
+            if (!token || !(refreshtoken.userTokenId === token._id.toString())) {
+                return done(null, false);
+            }
+            ;
+            token = jsonwebtoken_1.default.verify(token.token, `${process.env.SECRET_TEST}`);
+            return done(null, token.user);
         }
         catch (err) {
-            done(err);
+            if (err.message === 'jwt expired') {
+                yield redirect(refreshtoken);
+                let token = yield index_1.Token.findOne({ email: refreshtoken.email });
+                token = jsonwebtoken_1.default.verify(token.token, `${process.env.SECRET_TEST}`);
+                return done(null, token.user);
+            }
+            else {
+                return done(null, false);
+            }
         }
     })));
 }
