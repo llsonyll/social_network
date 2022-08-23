@@ -169,7 +169,7 @@ const ProfilePosts = (props) => {
           className="hover:bg-[#353535]  flex flex-col items-center rounded-md"
         >
           <div className="user-post-profile__content flex-1 pl-2 md:pl-4 ">
-            <div className="">
+            <div className="whitespace-pre-line">
               {showMore.length > 500 ? (
                 <p>
                   {showMore.substring(0, 500)}...{" "}
