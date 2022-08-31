@@ -82,10 +82,12 @@ router.get("/browserFollowing/:userId", passport_1.default.authenticate("jwt", {
         const user = yield mongoose_1.User.findById(`${userId}`);
         if (!user)
             return res.status(404).json({ errorMsg: "Who r u?!!!!" });
-        const foundUsers = yield mongoose_1.User.find({ username: {
+        const foundUsers = yield mongoose_1.User.find({
+            username: {
                 $regex: users,
                 $options: "i"
-            }, _id: { $in: user.following } })
+            }, _id: { $in: user.following }
+        })
             // .select(['-password', '-chats', '-socketId', '-isAdmin', '-chats', '-paymentsId', ''])
             .select(['_id', 'username', 'profilePicture', 'firstname', 'lastname', 'isPremium', 'isConnected']);
         console.log(foundUsers);
@@ -260,7 +262,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
                 result = yield mongoose_1.Post.find({
                     // userId: { $in: [...user.following, user._id] },
                     $or: [{ userId: user._id }, { userId: { $in: user.following } }],
-                    createdAt: { $gte: new Date(date - 259200000) },
+                    createdAt: { $gte: new Date(date - 604800000) },
                 }) //menos 3 dias
                     .sort({ createdAt: -1 })
                     .skip(page * 10)
@@ -269,7 +271,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
             }
             else {
                 result = yield mongoose_1.Post.find({
-                    createdAt: { $gte: new Date(date - 259200000) },
+                    // createdAt: { $gte: new Date(date - 259200000) },
                     userId: { $nin: [...user.following, ...privateUsers, user._id] },
                 })
                     .sort({ createdAt: -1 })
@@ -280,7 +282,7 @@ router.get("/home/:userId", passport_1.default.authenticate("jwt", {
         }
         if (user.following.length === 0) {
             result = yield mongoose_1.Post.find({
-                createdAt: { $gte: new Date(date - 259200000) },
+                // createdAt: { $gte: new Date(date - 259200000) },
                 userId: { $nin: [...privateUsers] }
             })
                 .sort({ createdAt: -1 })
