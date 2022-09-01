@@ -186,7 +186,7 @@ const HomePostCard = (props) => {
           id="a_content"
         >
           <div className="text-left" id="post_content">
-            <div>
+            <div className="whitespace-pre-line">
               {
                 showMore.length > 500 ?  
                 <p>{showMore.substring(0,500)}... {<span className="text-green-600 ">View more</span>}</p> 

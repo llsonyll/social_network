@@ -181,7 +181,7 @@ const PostTile = ({ post }) => {
                 : "3hr"}
             </div>
           </div>
-          <div className="text-white font-light text-base">
+          <div className="text-white font-light text-base whitespace-pre-line">
             {post
               ? post.content
               : `Duis excepteur qui dolor anim non sit cillum velit sint deserunt.
