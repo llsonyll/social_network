@@ -1,4 +1,4 @@
-import  jwt  from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import express, { Request, Response } from "express";
 import { Comment, Post, User, Review, Chat, Message, Report } from "../../mongoose";
 import passport from "passport";
@@ -10,43 +10,43 @@ import { IUser } from "../../types";
 const router = express.Router();
 
 //-------------------query ?email="user.email"
-router.get("/restorePassWord", async (req:Request, res:Response) => {
-   try {
-      const { email } = req.query;
-      if(!email){ return res.status(400).json({ error: "Email not provided" })}
-      
-      const user: IUser | null = await User.findOne({email: email});
+router.get("/restorePassWord", async (req: Request, res: Response) => {
+  try {
+    const { email } = req.query;
+    if (!email) { return res.status(400).json({ error: "Email not provided" }) }
 
-      if (!user){
-        return res.status(400).json({
-           error: "Email provided does not belong to any registered user",
-        });
-      }
+    const user: IUser | null = await User.findOne({ email: email });
 
-      const tokenRestore = jwt.sign(
-        { id: user._id },
-        `${process.env.SECRET_TEST}`,
-        {
-          expiresIn: 60 * 15 *1000
-        }
-      );;
-
-      const mailMessage: mailInfo = {
-        title: "Password Restored",
-        subject: "Password Restoration",
-        message: `<li>Follow this link to restore your password: </li>
-        <li><a href="${process.env.URL_FRONT}/restore" target="_back" > ${process.env.URL_FRONT}/restore </a></li>`,
-        link:"https://www.socialn.me/"
-      };
-    
-      await sendMail(mailMessage, user.email);
-      
-      return res.status(200).cookie("restorePassword", `${tokenRestore}`,{domain:`.socialn.me`}).json({
-        message: "User's email successfully restored",
+    if (!user) {
+      return res.status(400).json({
+        error: "Email provided does not belong to any registered user",
       });
-   } catch (err) {
-      res.json(err);
-   }
+    }
+
+    const tokenRestore = jwt.sign(
+      { id: user._id },
+      `${process.env.SECRET_TEST}`,
+      {
+        expiresIn: 60 * 15 * 1000
+      }
+    );;
+
+    const mailMessage: mailInfo = {
+      title: "Password Restored",
+      subject: "Password Restoration",
+      message: `<li>Follow this link to restore your password: </li>
+        <li><a href="${process.env.URL_FRONT}/restore" target="_back" > ${process.env.URL_FRONT}/restore </a></li>`,
+      link: "https://www.socialn.me/"
+    };
+
+    await sendMail(mailMessage, user.email);
+
+    return res.status(200).cookie("restorePassword", `${tokenRestore}`, { domain: `.socialn.me` }).json({
+      message: "User's email successfully restored",
+    });
+  } catch (err) {
+    res.json(err);
+  }
 });
 
 // GET "/browser/:username"
@@ -87,22 +87,24 @@ router.get(
   async (req: Request, res: Response) => {
     const { userId } = req.params;
     let { users } = req.query;
-    !users ? users="" : null
+    !users ? users = "" : null
     try {
 
       //---------------------find User by username ---> return ([{id,username},{}....])---------------------------
       const user = await User.findById(`${userId}`)
-      if(!user) return res.status(404).json({errorMsg: "Who r u?!!!!"})
+      if (!user) return res.status(404).json({ errorMsg: "Who r u?!!!!" })
 
 
 
 
-      const foundUsers = await User.find({username: {
-        $regex: users,
-        $options: "i"
-      }, _id: {$in: user.following}} )
-      // .select(['-password', '-chats', '-socketId', '-isAdmin', '-chats', '-paymentsId', ''])
-      .select(['_id', 'username', 'profilePicture', 'firstname', 'lastname', 'isPremium', 'isConnected'])
+      const foundUsers = await User.find({
+        username: {
+          $regex: users,
+          $options: "i"
+        }, _id: { $in: user.following }
+      })
+        // .select(['-password', '-chats', '-socketId', '-isAdmin', '-chats', '-paymentsId', ''])
+        .select(['_id', 'username', 'profilePicture', 'firstname', 'lastname', 'isPremium', 'isConnected'])
       console.log(foundUsers)
       return res.status(200).json(foundUsers);
     } catch (err) {
@@ -246,8 +248,8 @@ router.put(
 
       if (req.body.isPremium) {
         req.body.plan = 'weekly';
-        
-        function sumarDias(fecha: Date, dias: number){
+
+        function sumarDias(fecha: Date, dias: number) {
           fecha.setDate(fecha.getDate() + dias);
           return fecha;
         }
@@ -305,35 +307,35 @@ router.get(
       const date = new Date().getTime();
 
       let result: any[] = [];
-      const privateUsers = await User.find({isPrivate: true}).select('_id')
+      const privateUsers = await User.find({ isPrivate: true }).select('_id')
 
       if (user.following.length > 0) {
         if (control === "true") {
           result = await Post.find({
             // userId: { $in: [...user.following, user._id] },
             $or: [{ userId: user._id }, { userId: { $in: user.following } }],
-            createdAt: { $gte: new Date(date - 259200000) },
-          }) //menos 3 dias
+            createdAt: { $gte: new Date(date - 604800000) },
+          }) //menos 7 dias
             .sort({ createdAt: -1 })
             .skip(page * 10)
             .limit(10)
             .populate("userId", ["username", "profilePicture"]);
         } else {
           result = await Post.find({
-            createdAt: { $gte: new Date(date - 259200000) },
+            // createdAt: { $gte: new Date(date - 259200000) },
             userId: { $nin: [...user.following, ...privateUsers, user._id] },
           })
-          .sort({ createdAt: -1 })
-          .skip(page * 10)
-          .limit(10)
-          .populate("userId", ["username", "profilePicture", "isPrivate"]);
+            .sort({ createdAt: -1 })
+            .skip(page * 10)
+            .limit(10)
+            .populate("userId", ["username", "profilePicture", "isPrivate"]);
         }
       }
 
       if (user.following.length === 0) {
         result = await Post.find({
-          createdAt: { $gte: new Date(date - 259200000) },
-          userId: {$nin: [...privateUsers]}
+          // createdAt: { $gte: new Date(date - 259200000) },
+          userId: { $nin: [...privateUsers] }
         })
           .sort({ createdAt: -1 })
           .skip(page * 10)
@@ -352,23 +354,23 @@ router.get(
 router.post("/restorePassword", async (req: Request, res: Response) => {
   try {
     const { tokenRestore, password } = req.body;
-   
+
     if (!password) return res.status(400).json({ error: "password not provided" });
-    
-    if(!tokenRestore) return res.status(400).json({error: "token restored expired"})
 
-    let userId: any = jwt.verify(`${tokenRestore}`,`${process.env.SECRET_TEST}`);
+    if (!tokenRestore) return res.status(400).json({ error: "token restored expired" })
 
-    if(!userId.id) return res.status(400).json({error: "token restored invalid"});
+    let userId: any = jwt.verify(`${tokenRestore}`, `${process.env.SECRET_TEST}`);
+
+    if (!userId.id) return res.status(400).json({ error: "token restored invalid" });
 
     //password encryption
-    let salt =  await bcrypt.genSalt(10);
-    let hash =  await bcrypt.hash(`${password}`, salt);
+    let salt = await bcrypt.genSalt(10);
+    let hash = await bcrypt.hash(`${password}`, salt);
 
-    const user = await User.findByIdAndUpdate(`${userId.id}`,{
-        password: hash
-    },{new: true});
-   
+    const user = await User.findByIdAndUpdate(`${userId.id}`, {
+      password: hash
+    }, { new: true });
+
     if (!user)
       return res.status(400).json({
         error: "userId  does not registered user",
@@ -383,7 +385,7 @@ router.post("/restorePassword", async (req: Request, res: Response) => {
     };
 
     await sendMail(mailMessage, user.email);
- 
+
     return res.status(200).json({
       message: "User's password successfully restored",
     });
@@ -452,18 +454,18 @@ router.put(
         await userFollowed.save();
       } else {
         // user.following.push(userFollowed._id);
-        await User.findOneAndUpdate({_id: user._id},{
-          $addToSet:{
-              following: userFollowed._id
+        await User.findOneAndUpdate({ _id: user._id }, {
+          $addToSet: {
+            following: userFollowed._id
           }
-      })
+        })
         await user.save();
         // userFollowed.followers.push(user._id);
-        await User.findOneAndUpdate({_id: userFollowed._id},{
-          $addToSet:{
+        await User.findOneAndUpdate({ _id: userFollowed._id }, {
+          $addToSet: {
             followers: user._id
           }
-      })
+        })
         await userFollowed.save();
       }
 
@@ -489,14 +491,14 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
       let userr = await User.findById(`${userId}`);
 
       if (userr) {
-          await Report.deleteMany({ postReportedId: { $in: userr.posts }});
-          for (let i = 0; i < userr.posts.length; i ++) {
-              let postsFound = await Post.findById(`${userr.posts[i]}`);
-              await Report.deleteMany({ commentReportedId: {$in: postsFound?.commentsId } });
-          }
+        await Report.deleteMany({ postReportedId: { $in: userr.posts } });
+        for (let i = 0; i < userr.posts.length; i++) {
+          let postsFound = await Post.findById(`${userr.posts[i]}`);
+          await Report.deleteMany({ commentReportedId: { $in: postsFound?.commentsId } });
+        }
       }
-      
-      let user = await User.findOneAndUpdate({_id: `${userId}`}, {
+
+      let user = await User.findOneAndUpdate({ _id: `${userId}` }, {
         $set: {
           posts: [],
           following: [],
@@ -506,9 +508,9 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
       }, { new: true });
       if (!user) return res.status(404).json('User not found');
 
-      const posts = await Post.find({userId: user._id});
-      for (let i = 0; i < posts.length; i ++) {
-        await Comment.deleteMany({_id: {$in: posts[i].commentsId}});
+      const posts = await Post.find({ userId: user._id });
+      for (let i = 0; i < posts.length; i++) {
+        await Comment.deleteMany({ _id: { $in: posts[i].commentsId } });
       }
       await Post.deleteMany({ userId: user._id });
       await Post.updateMany({}, {
@@ -521,7 +523,8 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
         $pull: {
           following: `${user._id}`,
           followers: `${user._id}`,
-          followRequest: `${user._id}`}
+          followRequest: `${user._id}`
+        }
       });
       await Review.deleteOne({ userId: user._id });
 
@@ -545,7 +548,7 @@ router.put("/deleted/:userId", passport.authenticate("jwt", { session: false, fa
       user.expirationDate = undefined;
 
       await user.save();
-      await Report.deleteMany({userReportedId: {_id: user._id}});
+      await Report.deleteMany({ userReportedId: { _id: user._id } });
 
       return res.status(200).json('Deleted successfully');
     } catch (err) {
@@ -578,7 +581,7 @@ router.put(
           },
         },
         { new: true }
-      ).populate('followRequest',['username','profilePicture']);
+      ).populate('followRequest', ['username', 'profilePicture']);
       if (!user) return res.status(404).json({ msg: "User not found" });
       user.followers.push(`${userRequesting._id}`);
       await user.save();
@@ -622,7 +625,7 @@ router.put(
           },
         },
         { new: true }
-      ).populate('followRequest',['username','profilePicture']);
+      ).populate('followRequest', ['username', 'profilePicture']);
       if (!user) return res.status(404).json({ msg: "User not found" });
 
       await user.save();
@@ -641,36 +644,36 @@ router.get('/following/:userId', passport.authenticate("jwt", {
   session: false,
   failureRedirect: "/auth/loginjwt",
 }),
-async (req: Request, res: Response) => {
-  try {
+  async (req: Request, res: Response) => {
+    try {
       let userId = req.params.userId;
       let user: any = await User.findById(`${userId}`)
-                      .populate("following",['_id','username','profilePicture']);
-       
-      if(!user){ return res.status(400).json('not following')}
+        .populate("following", ['_id', 'username', 'profilePicture']);
+
+      if (!user) { return res.status(400).json('not following') }
 
       res.status(200).json(user.following);
-  } catch (err) {
-    res.status(400).json(err)
-  }
-})
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  })
 
 router.get('/followers/:userId', passport.authenticate("jwt", {
   session: false,
   failureRedirect: "/auth/loginjwt",
 }),
-async (req: Request, res: Response) => {
-  try {
+  async (req: Request, res: Response) => {
+    try {
       let userId = req.params.userId;
       let user: any = await User.findById(`${userId}`)
-                      .populate("followers",['_id','username','profilePicture']);
-       
-      if(!user){ return res.status(400).json('not followers')}
+        .populate("followers", ['_id', 'username', 'profilePicture']);
+
+      if (!user) { return res.status(400).json('not followers') }
 
       res.status(200).json(user.followers);
-  } catch (err) {
-    res.status(400).json(err)
-  }
-})
+    } catch (err) {
+      res.status(400).json(err)
+    }
+  })
 
 export default router;
