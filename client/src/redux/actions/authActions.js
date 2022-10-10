@@ -1,8 +1,16 @@
-import { loginUser } from "../reducers/authReducer.slice";
-import axios from "axios";
+import { loginUser, logOutUser } from "../reducers/authReducer.slice";
 import Swal from "sweetalert2";
 
 import { apiConnection, setAuthorization } from "../../utils/axios";
+
+export const logOut = () => async (dispatch) => {
+  try {
+    await apiConnection.put("/auth/logOut");
+    dispatch(logOutUser());
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 export const loginAction = (obj) => async (dispatch) => {
   try {

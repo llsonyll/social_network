@@ -1,6 +1,6 @@
 import express, { Response, Request, NextFunction } from "express";
 import { IUser } from "./../../types/index";
-import { User } from "../../mongoose";
+import { User, Token  } from "../../mongoose";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import jwt from "jsonwebtoken";
@@ -16,7 +16,21 @@ let router = express.Router();
 const createToken = (user: IUser) => {
   return jwt.sign(
     { user: { id: user._id, email: user.email } },
-    `${process.env.SECRET_TEST}`
+    `${process.env.SECRET_TEST}`,
+    {
+      expiresIn: 60 * 15 ,
+    }
+  );
+};
+
+//---------------function create Token--------------------
+const refreshToken = (user: IUser, _idToken: string) => {
+  return jwt.sign(
+    { email: user.email, userTokenId: _idToken },
+    `${process.env.SECRET_REFRESH}`,
+    {
+      expiresIn: "1d",
+    }
   );
 };
 
@@ -53,32 +67,88 @@ const middlewareNewUser = async (
     let hash = await bcrypt.hash(password, salt);
 
     //verify email existence uwu
-    await emailExistence.check(`${email}`, async(err: any, response: any) => {
-      console.log(response)
-      if(response===false) {
-        return res.status(400).json({message: "Email doesn't exists"})
-      }
-      else {
-        let newUser = new User({
-          ...req.body,
-          password: hash,
-          profilePicture: profileArray[Math.floor(Math.random() * 5)],
-        });
+    // await emailExistence.check(`${email}`, async(err: any, response: boolean) => {
+    //   if(!response) {
+    //     return res.status(400).json({message: "Email doesn't exists"})
+    //   }
+    // })
     
-        await newUser.save();
-        next()
-      }
-    })
+    let newUser = new User({
+      ...req.body,
+      password: hash,
+      profilePicture: profileArray[Math.floor(Math.random() * 5)],
+    });
+    await newUser.save();
+    next()
     
-    //create new User
-
-
-    //res.status(201).json(newUser);
-    // next();
   } catch (error) {
     res.json(error);
   }
 };
+
+router.get("/logOuterr", (req: Request, res: Response) => {
+  res.status(400).json("fallo logOut");
+});
+
+//----------------------log up -----------------------------------------------
+router.put(
+  "/logOut",
+  passport.authenticate("jwt", {
+    session: false,
+    failureRedirect: "/auth/logOuterr",
+  }),
+  async (req: Request, res: Response) => {
+    try {
+      let { user }: any = req;
+      if (!user) {
+        return res.status(400).json("user required");
+      }
+      await Token.deleteOne({ email: user.email });
+      return res.json({});
+    } catch (err) {
+      res.json(err);
+    }
+  }
+  );
+
+//---------------------------refresh Token---------------------------------------------
+router.post("/refresh", async (req: Request, res: Response) => {
+  try {
+
+    let currentRefreshToken = req.body.refreshToken;
+
+    let user = await User.findOne({ email: currentRefreshToken.email });
+
+    let tokenUser: any = await Token.findOne({ email: currentRefreshToken.email });
+    
+    if (!tokenUser) {
+      return res.status(400).json("token not exist");
+    }
+    
+    if (!user || currentRefreshToken.userTokenId.toString() !== tokenUser._id.toString()) {
+      return res.status(400).json("user not register");
+    }
+
+     tokenUser.token = createToken(user as IUser);
+     tokenUser.save();
+
+    // //---------------le resta 20 minutos a la actua ------------------------------
+    // let difference: any = new Date().getTime();
+    // difference = new Date(difference - 60 * 20000);
+    
+    // //---------------------cada 24 horas ------------------------------------------
+    // let cookie = " ";
+
+    // if(new Date(currentRefreshToken.exp*1000) > difference) {
+    //     cookie = refreshToken(user as IUser, tokenUser._id.toString()); 
+    // };
+
+    return res.status(200).json({msg: "todo salio bien"});
+  } catch (err) {
+    return res.json(err);
+  }
+});
+
 
 //------------rute register-----------------------------
 router.post(
@@ -92,8 +162,8 @@ router.post(
     //user return of passport strategy
     try {
       let { user } = req;
-
-      if (user) {
+      console.log(user);
+      if (!user) { return res.status(400).json("The user does not exists"); } 
         const send: IUser = user as IUser;
 
         const mailInfo: mailInfo = {
@@ -104,9 +174,19 @@ router.post(
 
         const { message } = await sendMail(mailInfo, send.email);
         console.log(message);
+       
+        //------------------deleted token-----------------------------
+        await Token.deleteOne({ email: send.email });
+
+        let token = new Token({
+          email: send.email,
+          token: createToken(user as IUser),
+        });
+
+        await token.save();
 
         return res.status(200).json({
-          token: createToken(user as IUser),
+          token: refreshToken(user as IUser, token._id.toString()),
           username: send.username,
           _id: send._id,
           profilePicture: send.profilePicture,
@@ -114,9 +194,7 @@ router.post(
           isAdmin: send.isAdmin,
           isPremium: send.isPremium,
         });
-        //res.redirect()
-      }
-      return res.status(400).json("The user does not exists");
+
     } catch (error) {
       res.json(error);
     }
@@ -149,6 +227,16 @@ router.post(
       if (user) {
         const send: IUser = user as IUser;
 
+       //--------------elimina susuario----------------------------
+         await Token.deleteOne({ email: send.email });
+
+          let token = new Token({
+          email: send.email,
+          token: createToken(user as IUser),
+        });
+
+        await token.save();
+
         if (send.isPremium) {
           const date = new Date();
           if (send.expirationDate) {
@@ -168,8 +256,10 @@ router.post(
           }
         }
 
+        let newRefreshtoken = refreshToken(user as IUser, token._id.toString());
+   
         return res.status(200).json({
-          token: createToken(user as IUser),
+          token: newRefreshtoken,
           username: send.username,
           _id: send._id,
           profilePicture: send.profilePicture,
@@ -199,7 +289,17 @@ router.get(
 
       const send: IUser = user as IUser;
 
-      res.cookie("token", createToken(user as IUser),{domain:`.socialn.me`, maxAge: 10000});
+      //------------------deleted token-----------------------------
+      await Token.deleteOne({ email: send.email });
+
+      let token = new Token({
+        email: send.email,
+        token: createToken(user as IUser),
+      });
+
+      await token.save();
+
+      res.cookie("token", refreshToken(user as IUser, token._id.toString()),{domain:`.socialn.me`, maxAge: 10000});
       return res.redirect(`${process.env.URL_FRONT}`);
     } catch (err) {
       res.status(400).json({ err: "todo salio mal" });
@@ -221,7 +321,17 @@ router.get(
 
       const send: IUser = user as IUser;
 
-      res.cookie("token", createToken(user as IUser),{domain:`.socialn.me`, maxAge: 10000});
+        //------------------deleted token-----------------------------
+        await Token.deleteOne({ email: send.email });
+
+        let token = new Token({
+          email: send.email,
+          token: createToken(user as IUser),
+        });
+  
+        await token.save();
+
+      res.cookie("token", refreshToken(user as IUser, token._id.toString()),{domain:`.socialn.me`, maxAge: 10000});
       return res.redirect(`${process.env.URL_FRONT}`);
     } catch (err) {
       res.status(400).json({ err: "todo salio mal" });
@@ -255,22 +365,22 @@ router.post(
       //------------------------decode token-----------------------------------
       let verifyToken: any = jwt.verify(
         `${token}`,
-        `${process.env.SECRET_TEST}`
+        `${process.env.SECRET_REFRESH}`
       );
 
-      if (!verifyToken || !verifyToken.user) {
+      if (!verifyToken || !verifyToken.email) {
         res.status(401).json("Invalid Token");
       }
 
-      let { id } = verifyToken.user;
+      let { email } = verifyToken;
 
-      const user: any = await User.findById(`${id}`);
-
+      const user: any= await User.findOne({ email: `${email}` });
+      console.log(user)
       if (!user) {
         return res.status(400).json("Invalid Token");
       }
 
-      let { username, profilePicture, isDeleted, isAdmin, isPremium } = user;
+      let { _id, username, profilePicture, isDeleted, isAdmin, isPremium } = user;
 
       if (user.isPremium) {
         const date = new Date();
@@ -288,7 +398,7 @@ router.post(
         }
       }
       return res.status(200).json({
-        _id: id,
+        _id: _id.toString(),
         username,
         profilePicture,
         isDeleted,

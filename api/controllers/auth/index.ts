@@ -1,12 +1,24 @@
+import { Token } from './../../mongoose/index';
 import passport, { use } from "passport";
 import passportLocal from 'passport-local';
 import jwtStrategy from 'passport-jwt';
 import bcrypt from 'bcrypt';
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 import express from 'express';
 import {IUser} from '../../types';
 import  GoogleStrategy from "passport-google-oauth20";
 import FacebookStrategy from "passport-facebook"; 
+import axios from "axios";
+
+const redirect = async(refreshToken: any)=>{
+    try {
+        let res = await axios.post(`${process.env.URL}auth/refresh`,{refreshToken});
+        return res.data;    
+    } catch (err) {
+       console.log(err)
+    }
+};
 
 const profileArray = [
     "https://res.cloudinary.com/dnw4kirdp/image/upload/v1658694142/p1_anad93.png",
@@ -102,15 +114,32 @@ export function Auth(app: express.Application, userCollection: mongoose.Model<IU
 
         //Extracts the token
         {
-            secretOrKey: `${process.env.SECRET_TEST}`,
+            secretOrKey: `${process.env.SECRET_REFRESH}`,
             jwtFromRequest: jwtStrategy.ExtractJwt.fromAuthHeaderAsBearerToken()
         },
         //Tryes to read the user from the token, or auth fails 
-        async (token, done) =>{
+        async (refreshtoken, done) =>{
             try{
-                done(null, token.user)
-            }catch(err){
-                done(err)
+                let token: any = await Token.findOne({email: refreshtoken.email});
+
+                if(!token || !(refreshtoken.userTokenId === token._id.toString()))
+                {return done(null,false)};
+
+                token = jwt.verify(token.token,`${process.env.SECRET_TEST}`);
+
+               return done(null, token.user);
+            }catch(err:any){
+                if(err.message === 'jwt expired'){
+                    await redirect(refreshtoken);
+
+                    let token: any = await Token.findOne({email: refreshtoken.email});
+
+                    token = jwt.verify(token.token,`${process.env.SECRET_TEST}`);
+
+                    return done(null, token.user);
+                }else{
+                    return done(null,false);
+                }
             }
         }
     ))

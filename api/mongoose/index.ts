@@ -1,5 +1,5 @@
 import mongoose, {model} from "mongoose";
-import { IChat, IComments, IMessage, IPost, IReview, IUser, IPayment, IReport, INotification } from "../types";
+import { IChat, IComments, IMessage, IPost, IReview, IUser, IPayment, IReport, INotification, IToken } from "../types";
 import { chatSchema } from "./Chat";
 import { commentsSchema } from "./Comment";
 import { messageSchema } from "./Message";
@@ -9,6 +9,7 @@ import { userSchema } from "./User";
 import { reportSchema } from './Report';
 import { paymentSchema } from './Payment';
 import { notificationSchema } from './Notification';
+import { tokenSchema } from './token/token';
 
 mongoose.connect(`${process.env.MONGO_URI}`) 
 
@@ -23,6 +24,7 @@ export let Message = model<IMessage>('Message', messageSchema)
 export let Report = model<IReport>('Report', reportSchema)
 export let Payment = model<IPayment>('Payment', paymentSchema)
 export let Notification = model<INotification>('Notification', notificationSchema)
+export let Token = model<IToken>('Token',tokenSchema)
 
 
 
